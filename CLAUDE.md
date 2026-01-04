@@ -128,8 +128,8 @@ npm run lint     # Run linter
 - [x] Study builder: Step 1 (intervention input)
 - [x] Study builder: Step 2 (configure options)
 - [x] Study builder: Step 3 (review protocol)
-- [ ] Study builder: Step 4 (consent review)
-- [ ] Study builder: Step 5 (study ready)
+- [x] Study builder: Step 4 (consent review)
+- [x] Study builder: Step 5 (study ready/success)
 - [ ] Participant UI shell
 - [ ] Clinical Protocol Agent
 - [ ] Consent & Compliance Agent
