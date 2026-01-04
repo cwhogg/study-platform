@@ -83,8 +83,13 @@ function ConfigureStudyContent() {
   useEffect(() => {
     try {
       const storedData = sessionStorage.getItem('studyDiscovery')
+      console.log('[Configure] Loading discovery data from sessionStorage')
       if (storedData) {
         const data = JSON.parse(storedData) as DiscoveryData
+        console.log('[Configure] Loaded discovery data:', JSON.stringify(data, null, 2))
+        console.log('[Configure] Endpoints:', data.endpoints?.length || 0)
+        console.log('[Configure] Populations:', data.populations?.length || 0)
+        console.log('[Configure] Treatment Stages:', data.treatmentStages?.length || 0)
         setDiscoveryData(data)
 
         // Set defaults from AI recommendations
@@ -112,9 +117,11 @@ function ConfigureStudyContent() {
         if (data.recommendedDuration?.weeks) {
           setDuration(data.recommendedDuration.weeks)
         }
+      } else {
+        console.log('[Configure] No discovery data found in sessionStorage, using fallbacks')
       }
     } catch (err) {
-      console.error('Failed to load discovery data:', err)
+      console.error('[Configure] Failed to load discovery data:', err)
     }
     setIsLoading(false)
   }, [])
@@ -138,27 +145,42 @@ function ConfigureStudyContent() {
     setIsSubmitting(true)
     setError('')
 
+    const requestBody = {
+      intervention,
+      population,
+      treatmentStage,
+      primaryEndpoint,
+      secondaryEndpoints,
+      durationWeeks: duration,
+    }
+
     try {
       // Call protocol generation API
+      console.log('[Protocol] Sending request:', JSON.stringify(requestBody, null, 2))
       const response = await fetch('/api/agents/protocol', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          intervention,
-          population,
-          treatmentStage,
-          primaryEndpoint,
-          secondaryEndpoints,
-          durationWeeks: duration,
-        }),
+        body: JSON.stringify(requestBody),
       })
 
       const data = await response.json()
+      console.log('[Protocol] Response status:', response.status)
+      console.log('[Protocol] Response data:', JSON.stringify(data, null, 2))
 
       if (!response.ok) {
+        console.error('[Protocol] Error response:', data)
         setError(data.error || 'Failed to generate protocol')
         setIsSubmitting(false)
         return
+      }
+
+      // Log key fields
+      if (data.data) {
+        console.log('[Protocol] Summary:', data.data.summary)
+        console.log('[Protocol] Inclusion Criteria:', data.data.inclusionCriteria?.length || 0)
+        console.log('[Protocol] Exclusion Criteria:', data.data.exclusionCriteria?.length || 0)
+        console.log('[Protocol] Instruments:', data.data.instruments?.length || 0)
+        console.log('[Protocol] Schedule timepoints:', data.data.schedule?.length || 0)
       }
 
       // Store protocol in sessionStorage for the review page

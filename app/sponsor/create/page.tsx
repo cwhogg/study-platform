@@ -27,6 +27,7 @@ export default function CreateStudyPage() {
 
     try {
       // Call study discovery API
+      console.log('[StudyDiscovery] Sending request for intervention:', intervention.trim())
       const response = await fetch('/api/agents/study-discovery', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,11 +35,23 @@ export default function CreateStudyPage() {
       })
 
       const data = await response.json()
+      console.log('[StudyDiscovery] Response status:', response.status)
+      console.log('[StudyDiscovery] Response data:', JSON.stringify(data, null, 2))
 
       if (!response.ok) {
+        console.error('[StudyDiscovery] Error response:', data)
         setError(data.error || 'Failed to analyze intervention')
         setIsSubmitting(false)
         return
+      }
+
+      // Log key fields from the discovery
+      if (data.data) {
+        console.log('[StudyDiscovery] Summary:', data.data.summary)
+        console.log('[StudyDiscovery] Endpoints:', data.data.endpoints?.length || 0)
+        console.log('[StudyDiscovery] Populations:', data.data.populations?.length || 0)
+        console.log('[StudyDiscovery] Risk Assessment:', data.data.riskAssessment)
+        console.log('[StudyDiscovery] Using fallback data:', data.fallback || false)
       }
 
       // Store discovery results in sessionStorage for the configure page
