@@ -501,77 +501,70 @@ For now, store hardcoded protocol. We'll add AI generation next.
 ### Prompt 5.1: Agent Infrastructure
 
 ```
-Create the agent infrastructure.
-
-lib/agents/types.ts
-- Define agent input/output types
-- Define common structures (see docs/AGENTS.md for PRO instrument format)
+Create the agent calling infrastructure.
 
 lib/agents/client.ts
-- Create OpenAI client wrapper
-- Add error handling
-- Add logging
-- Use gpt-4o as default model
-- Support o1-mini for complex reasoning tasks
+- Function to load agent instruction file from /agents/[name]/AGENT.md
+- Function to call OpenAI with the agent instructions as system prompt
+- Support for different models (gpt-4o default, o1-mini for protocol generation)
+- JSON response parsing
+- Error handling and logging
 
-lib/agents/prompts/clinical-protocol.ts
-- Study discovery prompt template
-- Protocol generation prompt template
+lib/agents/types.ts
+- TypeScript types for agent inputs/outputs
+- Import and export Instrument, Question, ScoringConfig types from clinical-protocol agent
 
-Reference docs/AGENTS.md for agent specifications and PRO output format.
+The agent instruction files already exist in /agents/*/AGENT.md - read them to understand the expected input/output schemas.
+
+Example usage pattern:
+const result = await callAgent('clinical-protocol', { task: 'discover', intervention: 'TRT' }, 'o1-mini');
+
+Reference docs/AGENTS.md for architecture overview.
+Reference agents/clinical-protocol/AGENT.md for schema definitions.
 ```
 
 ### Prompt 5.2: Study Discovery Call
 
 ```
-Implement the study discovery LLM call.
+Implement the study discovery API endpoint.
 
-lib/agents/clinical-protocol.ts
+app/api/agents/study-discovery/route.ts
 
-Function: discoverStudyOptions(intervention: string)
+1. Receive POST with { intervention: string }
+2. Call the clinical-protocol agent using callAgent()
+3. Pass task: 'discover' and the intervention
+4. Use o1-mini model for this complex reasoning task
+5. Return the structured options
 
-Input: Intervention name (e.g., "Testosterone Replacement Therapy")
+The agent instructions are in agents/clinical-protocol/AGENT.md - the agent knows what to return.
+The output schema is defined in that file under "Call 1: Study Discovery".
 
-Output (structured JSON):
-- endpoints: Array of { name, domain, instrument, confidence, source }
-- populations: Array of { name, description }
-- treatmentStages: Array of { name, description }
-- recommendedDuration: { weeks, rationale }
-
-Use OpenAI API with gpt-4o model and JSON mode for structured output.
-
-Reference docs/AGENTS.md for prompt details.
+Test with: POST /api/agents/study-discovery { "intervention": "Testosterone Replacement Therapy" }
 ```
 
 ### Prompt 5.3: Protocol Generation Call
 
 ```
-Implement the protocol generation LLM call.
+Implement the protocol generation API endpoint.
 
-lib/agents/clinical-protocol.ts
+app/api/agents/protocol/route.ts
 
-Function: generateProtocol(config)
+1. Receive POST with study configuration:
+   { intervention, population, treatmentStage, primaryEndpoint, secondaryEndpoints, durationWeeks }
+2. Call the clinical-protocol agent using callAgent()
+3. Pass task: 'generate' and the configuration
+4. Use o1-mini model for this complex reasoning task
+5. Return the full protocol specification
 
-Input:
-- intervention
-- population
-- treatmentStage
-- primaryEndpoint
-- secondaryEndpoints
-- durationWeeks
+The agent instructions are in agents/clinical-protocol/AGENT.md.
+The output schema is defined under "Call 2: Protocol Generation".
+The PRO instrument schema is also defined in that file.
 
-Output (structured JSON):
-- summary
-- inclusionCriteria: Array
-- exclusionCriteria: Array
-- instruments: Array of instrument objects (see docs/AGENTS.md for format)
-- schedule: Array of timepoints with which instruments to collect
-- safetyThresholds: Object
-
-Use OpenAI API with o1-mini model for this complex reasoning task.
-Return instruments in the format specified in docs/AGENTS.md.
-
-Reference docs/AGENTS.md for PRO instrument schema.
+Test with a full configuration object and verify:
+- Inclusion/exclusion criteria are returned
+- Instruments are in the correct schema with all questions
+- Schedule includes all timepoints
+- Safety monitoring rules are defined
 ```
 
 ### Prompt 5.4: Wire Up Study Builder
@@ -606,20 +599,20 @@ Connect study builder to Clinical Protocol Agent.
 ### Prompt 6.1: Consent Generation
 
 ```
-Implement the consent generation LLM call.
+Implement the consent generation API endpoint.
 
-lib/agents/consent-compliance.ts
+app/api/agents/consent/route.ts
 
-Function: generateConsent(protocol)
+1. Receive POST with { protocol: ProtocolSpec }
+2. Call the consent-compliance agent using callAgent()
+3. Pass the protocol specification
+4. Use gpt-4o model
+5. Return the consent document, comprehension questions, and summary
 
-Input: Protocol specification
+The agent instructions are in agents/consent-compliance/AGENT.md.
+The output schema is defined in that file.
 
-Output:
-- document: Markdown string of full consent
-- comprehensionQuestions: Array of { question, options, correctIndex }
-- summary: Plain language one-pager
-
-Reference docs/AGENTS.md for prompt details.
+The consent document should be returned as markdown sections that can be displayed one at a time on mobile.
 ```
 
 ### Prompt 6.2: Wire Up Consent Generation
@@ -648,25 +641,30 @@ Connect consent generation to study builder.
 ### Prompt 7.1: Enrollment Copy Generation
 
 ```
-Implement enrollment copy generation.
+Implement enrollment copy generation API endpoint.
 
-lib/agents/enrollment.ts
+app/api/agents/enrollment-copy/route.ts
 
-Function: generateEnrollmentCopy(study)
+1. Receive POST with study summary:
+   { studyName, intervention, sponsor, durationWeeks, proceduresSummary, estimatedTimePerAssessment, primaryBenefit }
+2. Call the enrollment agent using callAgent()
+3. Use gpt-4o model
+4. Return all enrollment screen copy
 
-Input: Study with protocol
+The agent instructions are in agents/enrollment/AGENT.md.
+The output schema is defined in that file - it includes copy for:
+- Welcome screen
+- Registration
+- Email verification
+- Pre-consent overview
+- Consent guidance
+- Comprehension quiz framing
+- Signature screen
+- Screening intro
+- Eligible/ineligible messages
+- Enrollment complete
 
-Output:
-- welcomeScreen: { headline, bullets, buttonText }
-- registrationScreen: { headline, labels, helpText }
-- consentIntro: { headline, body }
-- screeningIntro: { headline, body }
-- ineligibleMessage: { headline, body, buttonText }
-- eligibleMessage: { headline, body, buttonText }
-- baselineIntro: { headline, body }
-- completeMessage: { headline, body, nextSteps }
-
-Reference docs/AGENTS.md for details.
+Store the generated copy in the study record.
 ```
 
 ### Prompt 7.2: Wire Up Enrollment Copy
@@ -695,31 +693,26 @@ Make the copy dynamic based on study configuration.
 ### Prompt 8.1: Message Template Generation
 
 ```
-Implement message template generation.
+Implement message template generation API endpoint.
 
-lib/agents/patient-communication.ts
+app/api/agents/message-templates/route.ts
 
-Function: generateMessageTemplates(protocol)
+1. Receive POST with:
+   { studyName, sponsor, schedule, durationWeeks, assessmentMinutes }
+2. Call the patient-communication agent using callAgent()
+3. Use gpt-4o model
+4. Return all message templates
 
-Input: Protocol with schedule
+The agent instructions are in agents/patient-communication/AGENT.md.
+The output schema is defined in that file - it includes:
+- Assessment reminders (initial, followUp, final) for both SMS and email
+- Lab reminders
+- Milestone messages (enrolled, week4, halfway, finalReminder, complete)
+- Re-engagement messages (missedOne, missedMultiple, atRisk)
 
-Output:
-- reminders: Object keyed by timepoint
-  - initial: { subject, smsBody, emailBody }
-  - followUp: { subject, smsBody, emailBody }
-  - final: { subject, smsBody, emailBody }
-- milestones:
-  - enrolled: { subject, body }
-  - halfway: { subject, body }
-  - finalReminder: { subject, body }
-  - complete: { subject, body }
-- labReminders:
-  - initial: { subject, smsBody, emailBody }
-  - followUp: { subject, smsBody, emailBody }
+Templates use {{variables}} like {{firstName}}, {{link}}, {{timepoint}}.
 
-Include {{variables}} for personalization.
-
-Reference docs/AGENTS.md for details.
+Store the generated templates in the study record.
 ```
 
 ### Prompt 8.2: Email Sending
