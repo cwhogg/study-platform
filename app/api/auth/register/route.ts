@@ -1,7 +1,8 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 const SCHEMA = 'study_platform'
+const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,6 +46,32 @@ export async function POST(request: NextRequest) {
         { error: 'Failed to create user' },
         { status: 500 }
       )
+    }
+
+    // In demo mode, auto-confirm email to skip verification step
+    let emailConfirmed = !!authData.user.email_confirmed_at
+    if (IS_DEMO_MODE && !emailConfirmed) {
+      try {
+        const serviceClient = createServiceClient()
+        const { error: confirmError } = await serviceClient.auth.admin.updateUserById(
+          authData.user.id,
+          { email_confirm: true }
+        )
+        if (!confirmError) {
+          emailConfirmed = true
+          console.log('[Auth] Demo mode: Auto-confirmed email for', email)
+
+          // Update profile email_verified status
+          await serviceClient
+            .schema(SCHEMA)
+            .from('profiles')
+            .update({ email_verified: true })
+            .eq('id', authData.user.id)
+        }
+      } catch (err) {
+        console.warn('[Auth] Failed to auto-confirm email in demo mode:', err)
+        // Continue without auto-confirm - user can still verify manually
+      }
     }
 
     // 2. Check if study exists
@@ -95,7 +122,8 @@ export async function POST(request: NextRequest) {
       success: true,
       userId: authData.user.id,
       participantId: participant.id,
-      emailConfirmationRequired: !authData.user.email_confirmed_at,
+      emailConfirmationRequired: !emailConfirmed,
+      demoMode: IS_DEMO_MODE,
     })
 
   } catch (error) {

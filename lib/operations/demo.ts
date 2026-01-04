@@ -115,7 +115,7 @@ export async function advanceParticipantTime(
 export async function simulateLabResults(
   participantId: string,
   timepoint: string
-): Promise<{ success: boolean; labIds: string[]; error?: string }> {
+): Promise<{ success: boolean; labIds: string[]; alerts?: { created: number; alerts: string[] }; error?: string }> {
   const supabase = await createClient()
 
   // Get participant to verify they exist
@@ -139,10 +139,11 @@ export async function simulateLabResults(
     .single()
 
   // Define simulated lab markers (TRT-focused for demo)
+  // Values simulate post-TRT levels within normal therapeutic range
   const labMarkers = [
     {
       marker: 'testosterone_total',
-      generateValue: () => 450 + Math.random() * 400, // 450-850 ng/dL
+      generateValue: () => 450 + Math.random() * 200, // 450-650 ng/dL (post-TRT)
       unit: 'ng/dL',
       referenceRange: '300-1000',
     },
@@ -154,7 +155,7 @@ export async function simulateLabResults(
     },
     {
       marker: 'hematocrit',
-      generateValue: () => 42 + Math.random() * 8, // 42-50%
+      generateValue: () => 42 + Math.random() * 6, // 42-48%
       unit: '%',
       referenceRange: '38-50',
     },
@@ -166,7 +167,7 @@ export async function simulateLabResults(
     },
     {
       marker: 'estradiol',
-      generateValue: () => 20 + Math.random() * 30, // 20-50 pg/mL
+      generateValue: () => 20 + Math.random() * 20, // 20-40 pg/mL
       unit: 'pg/mL',
       referenceRange: '10-40',
     },
@@ -220,7 +221,89 @@ export async function simulateLabResults(
 
   console.log(`[Demo] Simulated ${labIds.length} lab results for participant ${participantId} at ${timepoint}`)
 
-  return { success: true, labIds }
+  // Run safety evaluation for lab results
+  const alerts = await evaluateLabSafety(participantId, timepoint, labIds)
+
+  return { success: true, labIds, alerts }
+}
+
+/**
+ * Evaluate lab results against safety thresholds
+ * Creates alerts for abnormal values
+ */
+async function evaluateLabSafety(
+  participantId: string,
+  timepoint: string,
+  labIds: string[]
+): Promise<{ created: number; alerts: string[] }> {
+  const supabase = await createClient()
+  const alertMessages: string[] = []
+
+  // Get the lab results we just created
+  const { data: labs } = await supabase
+    .schema(SCHEMA)
+    .from('lab_results')
+    .select('marker, value, unit, abnormal_flag')
+    .in('id', labIds)
+
+  if (!labs) return { created: 0, alerts: [] }
+
+  // Define lab safety thresholds (TRT-specific)
+  const labThresholds: Record<string, { high?: number; low?: number; action: string }> = {
+    hematocrit: {
+      high: 54, // >54% requires dose adjustment
+      action: 'Hematocrit elevated - consider dose reduction or phlebotomy',
+    },
+    psa: {
+      high: 4.0, // PSA >4 requires follow-up
+      action: 'PSA elevated - recommend urological evaluation',
+    },
+    testosterone_total: {
+      high: 1000, // Supratherapeutic
+      low: 300, // Subtherapeutic
+      action: 'Testosterone outside therapeutic range - consider dose adjustment',
+    },
+  }
+
+  for (const lab of labs) {
+    const threshold = labThresholds[lab.marker]
+    if (!threshold) continue
+
+    let shouldAlert = false
+    let alertMessage = threshold.action
+
+    if (threshold.high && lab.value > threshold.high) {
+      shouldAlert = true
+      alertMessage = `${lab.marker.replace('_', ' ')} HIGH (${lab.value} ${lab.unit}): ${threshold.action}`
+    } else if (threshold.low && lab.value < threshold.low) {
+      shouldAlert = true
+      alertMessage = `${lab.marker.replace('_', ' ')} LOW (${lab.value} ${lab.unit}): ${threshold.action}`
+    }
+
+    if (shouldAlert) {
+      // Create alert in database
+      await supabase
+        .schema(SCHEMA)
+        .from('alerts')
+        .insert({
+          participant_id: participantId,
+          type: 'lab_threshold',
+          trigger_source: lab.marker,
+          trigger_value: String(lab.value),
+          threshold: threshold.high ? `>${threshold.high}` : `<${threshold.low}`,
+          message: alertMessage,
+          status: 'open',
+        })
+
+      alertMessages.push(alertMessage)
+    }
+  }
+
+  if (alertMessages.length > 0) {
+    console.log(`[Demo] Created ${alertMessages.length} lab safety alerts for participant ${participantId}`)
+  }
+
+  return { created: alertMessages.length, alerts: alertMessages }
 }
 
 /**

@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       success: true,
       labCount: result.labIds.length,
       labIds: result.labIds,
+      alerts: result.alerts,
     })
 
   } catch (error) {
