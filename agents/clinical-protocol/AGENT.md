@@ -62,8 +62,37 @@ Produce a complete, actionable study protocol that:
     "weeks": 26,
     "rationale": "Why this duration is appropriate"
   },
+  "riskAssessment": {
+    "interventionCategory": "pharmacological | non_pharmacological",
+    "fdaApprovalStatus": {
+      "approved": true,
+      "indications": ["What the drug/biologic is approved for (if FDA-approved)"],
+      "approvalYear": 2020
+    },
+    "regulatoryDisclaimer": "Required for non-FDA-approved pharmacological interventions",
+    "knownRisks": [
+      {
+        "risk": "Description of the risk",
+        "severity": "high | moderate | low",
+        "frequency": "common | uncommon | rare",
+        "mitigation": "How to reduce or monitor for this risk"
+      }
+    ],
+    "contraindications": ["Conditions where intervention should NOT be used"],
+    "warnings": ["Key FDA label warnings, boxed warnings (if FDA-approved)"],
+    "communityReportedRisks": [
+      {
+        "risk": "Risk reported in patient communities (for non-FDA pharmacological)",
+        "severity": "moderate",
+        "frequency": "commonly reported"
+      }
+    ],
+    "overallRiskLevel": "high | moderate | low | minimal",
+    "riskSummary": "Plain language 2-3 sentence summary for participants",
+    "dataSources": ["FDA label", "PubMed", "Reddit r/testosterone", "etc"]
+  },
   "safetyConsiderations": [
-    "Known risks to monitor"
+    "Known risks to monitor during the study"
   ],
   "dataSources": ["PubMed", "ClinicalTrials.gov", "etc"]
 }
@@ -284,6 +313,8 @@ interface TriggerConfig {
    - When does clinical response typically occur?
    - How long should follow-up continue?
 
+7. **Assess risks using the Risk Assessment Framework** (see below)
+
 ### For Protocol Generation
 
 1. **Define inclusion criteria**
@@ -315,10 +346,132 @@ interface TriggerConfig {
 
 ---
 
+## Risk Assessment Framework
+
+**CRITICAL: Accurate risk disclosure is essential for informed consent. Follow this framework carefully.**
+
+### Step 1: Categorize the Intervention
+
+Determine which category the intervention falls into:
+
+#### Category A: Pharmacological Interventions
+Any substance that is ingested, injected, applied transdermally, inhaled nasally, or otherwise administered to the body.
+
+**Examples:**
+- FDA-approved drugs: Testosterone, GLP-1 agonists, SSRIs, statins
+- FDA-approved biologics: Insulin, monoclonal antibodies
+- Non-FDA-approved compounds: Peptides (BPC-157, TB-500), research chemicals
+- Supplements with therapeutic intent
+- Compounded medications
+
+**How to identify:**
+- Substance enters the body through any route of administration
+- Intended to have a physiological effect
+
+**Required in output:**
+- `interventionCategory`: "pharmacological"
+- `fdaApprovalStatus.approved`: true or false
+- If FDA-approved:
+  - `fdaApprovalStatus.indications`: List what it's approved for
+  - `warnings`: Include boxed warnings (if any), major label warnings
+  - `contraindications`: From the FDA label
+  - `knownRisks`: From FDA label adverse events section
+  - `dataSources`: Must include "FDA prescribing information"
+- If NOT FDA-approved:
+  - `regulatoryDisclaimer`: **REQUIRED** - "This intervention is NOT approved by the U.S. Food and Drug Administration (FDA). Its safety and efficacy have not been established through FDA review."
+  - `communityReportedRisks`: **REQUIRED** - Search patient forums, Reddit, online communities
+  - `dataSources`: Must explicitly list community sources searched
+
+#### Category B: Non-Pharmacological Interventions
+Behavioral, psychological, lifestyle, or educational interventions that do not involve administering substances to the body.
+
+**Examples:**
+- Psychological therapies: CBT, DBT, ACT, talk therapy
+- Behavioral interventions: Sleep hygiene, habit tracking
+- Lifestyle changes: Exercise programs, dietary changes
+- Mind-body practices: Meditation, yoga, breathwork
+- Educational programs: Health coaching, skills training
+
+**How to identify:**
+- No substance is administered to the body
+- Works through behavioral, psychological, or lifestyle mechanisms
+
+**Required in output:**
+- `interventionCategory`: "non_pharmacological"
+- `fdaApprovalStatus`: Not applicable (omit or set approved: false)
+- `knownRisks`: Any documented risks (e.g., emotional distress in therapy, exercise injuries)
+- `overallRiskLevel`: Usually "minimal" or "low"
+- `riskSummary`: Should note that physical risks are generally low, mention any psychological considerations
+
+### Step 2: Research Risks
+
+**For Pharmacological - FDA-Approved:**
+1. Find and read the FDA prescribing information / package insert
+2. Extract boxed warnings (highest priority)
+3. List contraindications
+4. Summarize common adverse events (>1%) with frequency
+5. Note serious adverse events regardless of frequency
+6. Include any REMS (Risk Evaluation and Mitigation Strategy) requirements
+
+**For Pharmacological - NOT FDA-Approved:**
+1. Search PubMed for safety studies and case reports
+2. **REQUIRED: Search patient communities:**
+   - Reddit subreddits relevant to the intervention (r/peptides, r/testosterone, r/nootropics, r/Supplements, etc.)
+   - Patient forums (e.g., ExcelMale, Longecity, disease-specific forums)
+   - Social media discussions
+3. Document commonly reported side effects from communities
+4. Note that formal safety data may be limited
+5. Be conservative - when in doubt, list the risk
+6. Do NOT downplay risks due to lack of formal studies
+
+**For Non-Pharmacological:**
+1. Search for documented adverse effects in clinical literature
+2. Note psychological risks if applicable (e.g., therapy can surface difficult emotions)
+3. Document any physical risks (e.g., exercise injuries)
+4. Acknowledge overall low risk profile
+
+### Step 3: Assign Overall Risk Level
+
+- **HIGH**: Life-threatening risks possible, significant adverse events common, or limited safety data for pharmacological intervention
+- **MODERATE**: Notable side effects, requires monitoring, but generally manageable
+- **LOW**: Side effects uncommon or mild, intervention well-tolerated
+- **MINIMAL**: Very low probability of any adverse effects (typical for non-pharmacological interventions)
+
+### Step 4: Write Plain Language Risk Summary
+
+Create a 2-3 sentence summary for participants that:
+- Accurately conveys risk level
+- Uses plain language (no medical jargon)
+- Is honest but not alarmist
+- For non-FDA pharmacological: Clearly states FDA status
+
+**Examples:**
+
+*Pharmacological - FDA-Approved (TRT):*
+"Testosterone replacement therapy is FDA-approved for treating low testosterone. Common side effects include acne, mood changes, and changes in blood counts. Regular monitoring can help manage these risks."
+
+*Pharmacological - NOT FDA-Approved (BPC-157):*
+"BPC-157 is a research peptide that is NOT approved by the FDA. While some users report benefits, there are no completed human clinical trials establishing its safety. Reported side effects from user communities include nausea and headaches. The long-term effects are unknown."
+
+*Non-Pharmacological (CBT):*
+"Cognitive Behavioral Therapy is a well-established psychological treatment with minimal physical risks. Some people may experience temporary emotional discomfort when discussing difficult topics, which is a normal part of the therapeutic process."
+
+---
+
 ## Quality Checklist
 
 Before returning a protocol, verify:
 
+### Risk Assessment Checklist (For Study Discovery)
+- [ ] Intervention is correctly categorized (pharmacological or non-pharmacological)
+- [ ] If pharmacological: FDA approval status is specified (approved: true/false)
+- [ ] If pharmacological + FDA-approved: warnings and contraindications from FDA label are included
+- [ ] If pharmacological + NOT FDA-approved: regulatory disclaimer is present AND community-reported risks are included
+- [ ] If non-pharmacological: overall risk level reflects low/minimal risk
+- [ ] riskSummary is plain language and accurate
+- [ ] dataSources for risks are explicitly listed
+
+### Protocol Checklist
 - [ ] Primary endpoint uses a validated instrument with known psychometric properties
 - [ ] Clinically meaningful change threshold is defined
 - [ ] PHQ-2 is included for depression screening at all/most timepoints

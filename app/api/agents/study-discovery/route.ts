@@ -27,6 +27,22 @@ const DEFAULT_DISCOVERY: DiscoveryOutput = {
     weeks: 26,
     rationale: 'Six months provides adequate time to observe clinical response and durability of effects.',
   },
+  riskAssessment: {
+    interventionCategory: 'pharmacological',
+    fdaApprovalStatus: {
+      approved: true,
+      indications: ['Various conditions - specific indications depend on intervention'],
+    },
+    knownRisks: [
+      { risk: 'Side effects may occur', severity: 'moderate', frequency: 'varies by individual' },
+      { risk: 'Drug interactions possible', severity: 'moderate', mitigation: 'Review with healthcare provider' },
+    ],
+    contraindications: ['Known hypersensitivity to intervention components'],
+    warnings: ['Review complete prescribing information before use'],
+    overallRiskLevel: 'moderate',
+    riskSummary: 'This intervention may have side effects. Please review the full informed consent for complete risk information. Discuss any concerns with your healthcare provider.',
+    dataSources: ['General clinical guidelines'],
+  },
   safetyConsiderations: [
     'Monitor for adverse reactions',
     'Track patient-reported symptoms',
@@ -78,6 +94,9 @@ export async function POST(request: NextRequest) {
         ? data.treatmentStages
         : DEFAULT_DISCOVERY.treatmentStages,
       recommendedDuration: data.recommendedDuration || DEFAULT_DISCOVERY.recommendedDuration,
+      riskAssessment: data.riskAssessment && data.riskAssessment.interventionCategory
+        ? data.riskAssessment
+        : DEFAULT_DISCOVERY.riskAssessment,
       safetyConsiderations: Array.isArray(data.safetyConsiderations) && data.safetyConsiderations.length > 0
         ? data.safetyConsiderations
         : DEFAULT_DISCOVERY.safetyConsiderations,

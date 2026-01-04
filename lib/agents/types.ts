@@ -87,6 +87,32 @@ export interface TreatmentStageOption {
   description: string
 }
 
+// Risk Assessment Types
+export interface RiskItem {
+  risk: string
+  severity: 'high' | 'moderate' | 'low'
+  frequency?: string  // e.g., "common", "rare", "1 in 1000"
+  mitigation?: string
+}
+
+export interface RiskAssessment {
+  interventionCategory: 'pharmacological' | 'non_pharmacological'
+  // For pharmacological interventions: FDA approval status
+  fdaApprovalStatus?: {
+    approved: boolean
+    indications?: string[]  // What it's approved for (if FDA-approved)
+    approvalYear?: number
+  }
+  regulatoryDisclaimer?: string  // Required for non-FDA-approved pharmacological interventions
+  knownRisks: RiskItem[]
+  contraindications?: string[]
+  warnings?: string[]  // For FDA-approved: boxed warnings, key label warnings
+  communityReportedRisks?: RiskItem[]  // For non-FDA pharmacological: from forums, Reddit, etc.
+  overallRiskLevel: 'high' | 'moderate' | 'low' | 'minimal'
+  riskSummary: string  // Plain language summary for participants
+  dataSources: string[]  // Where the risk information came from
+}
+
 export interface DiscoveryOutput {
   intervention: string
   summary: string
@@ -97,7 +123,8 @@ export interface DiscoveryOutput {
     weeks: number
     rationale: string
   }
-  safetyConsiderations: string[]
+  riskAssessment: RiskAssessment
+  safetyConsiderations: string[]  // Kept for backward compatibility
   dataSources: string[]
 }
 
