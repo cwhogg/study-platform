@@ -30,23 +30,20 @@ export async function updateSession(request: NextRequest) {
   )
 
   // Refresh session if expired
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  await supabase.auth.getUser()
 
-  // Define protected routes
-  const protectedRoutes = ['/sponsor', '/study', '/admin']
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  )
-
-  // Redirect to login if accessing protected route without auth
-  if (isProtectedRoute && !user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    url.searchParams.set('redirectTo', request.nextUrl.pathname)
-    return NextResponse.redirect(url)
-  }
+  // For demo mode, all routes are public
+  // TODO: Add auth protection for production
+  // const protectedRoutes = ['/sponsor', '/study', '/admin']
+  // const isProtectedRoute = protectedRoutes.some((route) =>
+  //   request.nextUrl.pathname.startsWith(route)
+  // )
+  // if (isProtectedRoute && !user) {
+  //   const url = request.nextUrl.clone()
+  //   url.pathname = '/login'
+  //   url.searchParams.set('redirectTo', request.nextUrl.pathname)
+  //   return NextResponse.redirect(url)
+  // }
 
   return supabaseResponse
 }
