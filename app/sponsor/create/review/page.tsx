@@ -148,17 +148,36 @@ function CollapsibleSection({ title, icon, count, children, onEdit, defaultOpen 
   )
 }
 
+// Risk assessment type from discovery
+interface RiskAssessment {
+  interventionCategory: 'pharmacological' | 'non_pharmacological'
+  fdaApprovalStatus?: {
+    approved: boolean
+    indications?: string[]
+    approvalYear?: number
+  }
+  regulatoryDisclaimer?: string
+  knownRisks: Array<{ risk: string; severity: string; frequency?: string; mitigation?: string }>
+  contraindications?: string[]
+  warnings?: string[]
+  communityReportedRisks?: Array<{ risk: string; severity: string; frequency?: string }>
+  overallRiskLevel: string
+  riskSummary: string
+  dataSources: string[]
+}
+
 function ReviewProtocolContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const intervention = searchParams.get('intervention') || 'Unknown Intervention'
 
   const [protocol, setProtocol] = useState<Protocol | null>(null)
+  const [riskAssessment, setRiskAssessment] = useState<RiskAssessment | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  // Load protocol from sessionStorage
+  // Load protocol and discovery data from sessionStorage
   useEffect(() => {
     try {
       const storedProtocol = sessionStorage.getItem('generatedProtocol')
@@ -166,6 +185,16 @@ function ReviewProtocolContent() {
         setProtocol(JSON.parse(storedProtocol) as Protocol)
       } else {
         setProtocol(FALLBACK_PROTOCOL)
+      }
+
+      // Load discovery data for riskAssessment
+      const storedDiscovery = sessionStorage.getItem('studyDiscovery')
+      if (storedDiscovery) {
+        const discovery = JSON.parse(storedDiscovery)
+        if (discovery.riskAssessment) {
+          setRiskAssessment(discovery.riskAssessment)
+          console.log('[Review] Loaded riskAssessment:', discovery.riskAssessment)
+        }
       }
     } catch (err) {
       console.error('Failed to load protocol:', err)
@@ -193,15 +222,19 @@ function ReviewProtocolContent() {
       const duration = parseInt(searchParams.get('duration') || '26')
 
       // Call consent generation API
+      const consentRequest = {
+        protocol,
+        studyName: `${intervention} Outcomes Study`,
+        intervention,
+        durationWeeks: duration,
+        riskAssessment,  // Pass risk assessment from discovery
+      }
+      console.log('[Consent] Sending request with riskAssessment:', riskAssessment)
+
       const response = await fetch('/api/agents/consent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          protocol,
-          studyName: `${intervention} Outcomes Study`,
-          intervention,
-          durationWeeks: duration,
-        }),
+        body: JSON.stringify(consentRequest),
       })
 
       const data = await response.json()

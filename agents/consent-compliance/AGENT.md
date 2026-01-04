@@ -85,10 +85,33 @@ The document must include these sections (FDA 21 CFR 50.25):
 - What happens at each visit/timepoint
 
 ### 3. Risks & Discomforts
-- Known risks of participation
+**CRITICAL: Use the `riskAssessment` data from the protocol to populate this section accurately.**
+
+#### For Pharmacological Interventions NOT FDA-Approved:
+**MUST include ALL of the following:**
+1. **Prominent regulatory disclaimer** (first paragraph, bold): "**[Intervention name] is NOT approved by the U.S. Food and Drug Administration (FDA). Its safety and effectiveness have not been established in clinical trials.**"
+2. **Statement about limited safety data**: "Because this is not an FDA-approved treatment, the full range of possible side effects is not known."
+3. **Known risks** from `riskAssessment.knownRisks` - list each with severity
+4. **Community-reported risks** from `riskAssessment.communityReportedRisks` - "Users have reported: [list]"
+5. **Unknown long-term effects**: "The long-term effects of [intervention] are not known."
+6. **Do NOT say "minimal risks"** for unapproved pharmacological interventions
+
+#### For FDA-Approved Pharmacological Interventions:
+1. List contraindications from FDA label
+2. List key warnings (especially boxed warnings)
+3. List common side effects with frequency
+4. Note this is observational - intervention risks exist independent of study
+
+#### For Non-Pharmacological Interventions:
+- Note generally low physical risk profile
+- Include psychological risks if applicable (therapy may surface difficult emotions)
+- Include physical risks if applicable (exercise injuries)
+
+#### Always Include:
 - Privacy/confidentiality risks
 - Time commitment
-- Psychological risks (e.g., sensitive questions)
+- Psychological risks from answering sensitive questions
+- That new risks may be discovered during the study
 
 ### 4. Benefits
 - Potential benefits to participant (if any)
@@ -255,6 +278,18 @@ This is shown BEFORE the full consent to orient participants.
 
 Before returning consent materials, verify:
 
+### Risk Disclosure Checklist (CRITICAL)
+- [ ] Checked `riskAssessment.interventionCategory` from protocol
+- [ ] If pharmacological + NOT FDA-approved:
+  - [ ] Regulatory disclaimer is FIRST paragraph of Risks section
+  - [ ] Disclaimer is in **bold**
+  - [ ] "Not known" language included for unknown risks
+  - [ ] Community-reported risks are listed
+  - [ ] Does NOT say "minimal risks" or "no serious side effects"
+- [ ] If pharmacological + FDA-approved: contraindications and warnings from label included
+- [ ] If non-pharmacological: risk level appropriately stated as low/minimal
+
+### General Checklist
 - [ ] All 10 required sections are included
 - [ ] Reading level is 6th-8th grade
 - [ ] Active voice and direct address used throughout

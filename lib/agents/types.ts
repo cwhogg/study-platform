@@ -194,6 +194,7 @@ export interface ConsentGenerationInput {
   studyName: string
   intervention: string
   durationWeeks: number
+  riskAssessment?: RiskAssessment  // From discovery phase
 }
 
 // Consent document section (displayed one at a time on mobile)

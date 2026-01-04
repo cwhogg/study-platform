@@ -9,7 +9,7 @@ import type {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { protocol, studyName, intervention, durationWeeks } = body
+    const { protocol, studyName, intervention, durationWeeks, riskAssessment } = body
 
     // Validate required fields
     if (!protocol) {
@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
     const name = studyName || `${intervention} Outcomes Study`
 
     console.log(`[Consent Generation] Starting for: ${name}`)
+    console.log(`[Consent Generation] Risk Assessment:`, JSON.stringify(riskAssessment, null, 2))
 
     // Build input for consent agent
     const input: ConsentGenerationInput = {
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
       studyName: name,
       intervention,
       durationWeeks: duration,
+      riskAssessment,  // Pass risk assessment to agent
     }
 
     // Call the consent-compliance agent
