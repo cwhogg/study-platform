@@ -103,6 +103,16 @@ npm run build    # Build for production
 npm run lint     # Run linter
 ```
 
+## Development Workflow
+
+**IMPORTANT:** Always run `npm run build` before pushing to GitHub. Vercel deploys from main branch, so broken builds block the deployment.
+
+1. Make changes
+2. Test locally with `npm run dev`
+3. Run `npm run build` to verify production build succeeds
+4. Commit and push to GitHub
+5. Vercel auto-deploys from main
+
 ## Key Files to Reference
 
 - `docs/AGENTS.md` - Detailed agent specifications and PRO instrument format
@@ -111,12 +121,15 @@ npm run lint     # Run linter
 
 ## Current Status
 
-[Update this as you build]
-
-- [ ] Project scaffolding
-- [ ] Deployed to Vercel
-- [ ] Supabase connected
-- [ ] Sponsor UI shell
+- [x] Project scaffolding
+- [x] Deployed to Vercel
+- [x] Supabase schema (study_platform namespace)
+- [x] Sponsor UI shell (landing page, layout)
+- [x] Study builder: Step 1 (intervention input)
+- [x] Study builder: Step 2 (configure options)
+- [x] Study builder: Step 3 (review protocol)
+- [ ] Study builder: Step 4 (consent review)
+- [ ] Study builder: Step 5 (study ready)
 - [ ] Participant UI shell
 - [ ] Clinical Protocol Agent
 - [ ] Consent & Compliance Agent
