@@ -33,8 +33,9 @@ function getOpenAI(): OpenAI {
 }
 
 // Default model mappings per agent
+// Note: o1-mini requires special API access, using gpt-4o for all agents
 const DEFAULT_MODELS: Record<AgentName, AgentModel> = {
-  'clinical-protocol': 'o1-mini',
+  'clinical-protocol': 'gpt-4o',
   'consent-compliance': 'gpt-4o',
   'enrollment': 'gpt-4o',
   'patient-communication': 'gpt-4o',
@@ -178,7 +179,7 @@ export async function discoverStudy(
     intervention,
   }
   return callAgent<DiscoveryInput, DiscoveryOutput>('clinical-protocol', input, {
-    model: 'o1-mini',
+    model: 'gpt-4o',
   })
 }
 
@@ -195,7 +196,7 @@ export async function generateProtocol(
   return callAgent<ProtocolGenerationInput, ProtocolGenerationOutput>(
     'clinical-protocol',
     fullInput,
-    { model: 'o1-mini' }
+    { model: 'gpt-4o' }
   )
 }
 
