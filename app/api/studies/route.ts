@@ -1,8 +1,12 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import type { StudyProtocol, ComprehensionQuestion, StudyConfig } from '@/lib/db/types'
 
 const SCHEMA = 'study_platform'
+
+// Demo sponsor ID - consistent across all demo studies
+const DEMO_SPONSOR_ID = '00000000-0000-0000-0000-000000000001'
+const DEMO_SPONSOR_EMAIL = 'demo-sponsor@study-platform.local'
 
 // Hardcoded protocol template - will be replaced by AI generation
 function generateProtocol(config: {
@@ -176,12 +180,7 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient()
 
     // Get current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-
-    if (userError || !user) {
-      // For demo, create without user - in production, require auth
-      console.log('No authenticated user, creating study without sponsor_id check')
-    }
+    const { data: { user } } = await supabase.auth.getUser()
 
     const durationWeeks = parseInt(duration) || 26
     const secondaryEndpointsList = typeof secondaryEndpoints === 'string'
@@ -213,12 +212,114 @@ export async function POST(request: NextRequest) {
       target_enrollment: 100,
     }
 
-    // For demo mode, use a placeholder sponsor_id if not authenticated
-    // In production, this would require authentication
-    const sponsorId = user?.id || '00000000-0000-0000-0000-000000000000'
+    let sponsorId: string
+    let dbClient
+
+    if (user) {
+      // Use authenticated user
+      sponsorId = user.id
+      dbClient = supabase
+    } else {
+      // Demo mode: use service client to bypass RLS
+      console.log('[Studies] No authenticated user, using demo mode')
+
+      try {
+        const serviceClient = createServiceClient()
+
+        // Check if demo sponsor profile exists
+        const { data: existingProfile } = await serviceClient
+          .schema(SCHEMA)
+          .from('profiles')
+          .select('id')
+          .eq('id', DEMO_SPONSOR_ID)
+          .single()
+
+        if (!existingProfile) {
+          console.log('[Studies] Creating demo sponsor user and profile')
+
+          // Create demo auth user using Admin API
+          const { data: authUser, error: authError } = await serviceClient.auth.admin.createUser({
+            email: DEMO_SPONSOR_EMAIL,
+            email_confirm: true,
+            user_metadata: { role: 'sponsor', name: 'Demo Sponsor' },
+          })
+
+          if (authError) {
+            // User might already exist - try to get them
+            console.log('[Studies] Auth user creation failed, checking if exists:', authError.message)
+
+            const { data: existingUser } = await serviceClient.auth.admin.listUsers()
+            const demoUser = existingUser?.users?.find(u => u.email === DEMO_SPONSOR_EMAIL)
+
+            if (demoUser) {
+              // Update the demo sponsor ID to match existing user
+              console.log('[Studies] Found existing demo user:', demoUser.id)
+
+              // Check if their profile exists
+              const { data: profile } = await serviceClient
+                .schema(SCHEMA)
+                .from('profiles')
+                .select('id')
+                .eq('id', demoUser.id)
+                .single()
+
+              if (!profile) {
+                // Create profile for existing auth user
+                await serviceClient
+                  .schema(SCHEMA)
+                  .from('profiles')
+                  .insert({
+                    id: demoUser.id,
+                    email: DEMO_SPONSOR_EMAIL,
+                    role: 'sponsor',
+                    first_name: 'Demo',
+                    last_name: 'Sponsor',
+                  })
+              }
+
+              sponsorId = demoUser.id
+            } else {
+              console.error('[Studies] Could not create or find demo user')
+              return NextResponse.json(
+                { error: 'Failed to set up demo mode' },
+                { status: 500 }
+              )
+            }
+          } else if (authUser?.user) {
+            // New user created - profile should be auto-created by trigger
+            // But let's make sure it has sponsor role
+            sponsorId = authUser.user.id
+
+            // Give the trigger a moment to run, then update role
+            await new Promise(resolve => setTimeout(resolve, 500))
+
+            await serviceClient
+              .schema(SCHEMA)
+              .from('profiles')
+              .update({ role: 'sponsor', first_name: 'Demo', last_name: 'Sponsor' })
+              .eq('id', sponsorId)
+          } else {
+            return NextResponse.json(
+              { error: 'Failed to create demo user' },
+              { status: 500 }
+            )
+          }
+        } else {
+          sponsorId = existingProfile.id
+        }
+
+        dbClient = serviceClient
+      } catch (serviceError) {
+        console.error('[Studies] Service client error:', serviceError)
+        return NextResponse.json(
+          { error: 'Demo mode requires SUPABASE_SERVICE_ROLE_KEY' },
+          { status: 500 }
+        )
+      }
+    }
 
     // Insert study
-    const { data: study, error: studyError } = await supabase
+    const { data: study, error: studyError } = await dbClient
       .schema(SCHEMA)
       .from('studies')
       .insert({
@@ -238,7 +339,7 @@ export async function POST(request: NextRequest) {
     if (studyError) {
       console.error('Failed to create study:', studyError)
       return NextResponse.json(
-        { error: 'Failed to create study' },
+        { error: `Failed to create study: ${studyError.message}` },
         { status: 500 }
       )
     }
