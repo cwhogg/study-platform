@@ -373,6 +373,72 @@ export interface EnrollmentCopyOutput {
 }
 
 // =============================================================================
+// Patient Communication Agent Types
+// =============================================================================
+
+export interface MessageTemplateInput {
+  studyName: string
+  sponsor: string
+  schedule: { timepoint: string; week: number }[]
+  durationWeeks: number
+  assessmentMinutes: number
+}
+
+// Email template structure
+export interface EmailTemplate {
+  subject: string
+  body: string
+}
+
+// SMS and Email combined message
+export interface MessageVariant {
+  sms: string
+  email: EmailTemplate
+}
+
+// Assessment reminder levels
+export interface AssessmentReminders {
+  initial: MessageVariant
+  followUp: MessageVariant
+  final: MessageVariant
+}
+
+// Lab reminder levels
+export interface LabReminders {
+  initial: MessageVariant
+  followUp: MessageVariant
+}
+
+// All reminder templates
+export interface ReminderTemplates {
+  assessment: AssessmentReminders
+  lab: LabReminders
+}
+
+// Milestone message templates
+export interface MilestoneTemplates {
+  enrolled: MessageVariant
+  week4: MessageVariant
+  halfway: MessageVariant
+  finalReminder: MessageVariant
+  complete: MessageVariant
+}
+
+// Re-engagement templates
+export interface ReEngagementTemplates {
+  missedOne: MessageVariant
+  missedMultiple: MessageVariant
+  atRisk: MessageVariant
+}
+
+// Full message templates output
+export interface MessageTemplatesOutput {
+  reminders: ReminderTemplates
+  milestones: MilestoneTemplates
+  reEngagement: ReEngagementTemplates
+}
+
+// =============================================================================
 // Agent Call Types
 // =============================================================================
 

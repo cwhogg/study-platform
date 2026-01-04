@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
 import { CheckCircle2, Calendar, FlaskConical, Mail } from 'lucide-react'
 import type { EnrollmentCopy } from '@/lib/db/types'
@@ -28,12 +28,15 @@ interface StudyData {
   enrollmentCopy: EnrollmentCopy | null
 }
 
-export default function CompletePage() {
+function CompletePageContent() {
   const params = useParams()
+  const searchParams = useSearchParams()
   const studyId = params.studyId as string
+  const participantId = searchParams.get('participantId')
 
   const [nextCheckInDate, setNextCheckInDate] = useState('')
   const [study, setStudy] = useState<StudyData | null>(null)
+  const [emailSent, setEmailSent] = useState(false)
 
   useEffect(() => {
     // Calculate next check-in date (2 weeks from now)
@@ -60,6 +63,34 @@ export default function CompletePage() {
     }
     fetchStudy()
   }, [studyId])
+
+  // Send enrollment confirmation email
+  useEffect(() => {
+    async function completeEnrollment() {
+      if (!participantId || emailSent) return
+
+      try {
+        const response = await fetch('/api/enrollment/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            participantId,
+            studyId,
+          }),
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          setEmailSent(data.emailSent)
+          console.log('[Complete] Enrollment email sent:', data.emailSent)
+        }
+      } catch (err) {
+        console.error('Error completing enrollment:', err)
+      }
+    }
+
+    completeEnrollment()
+  }, [participantId, studyId, emailSent])
 
   const copy = study?.enrollmentCopy?.enrollmentComplete || DEFAULT_ENROLLMENT_COMPLETE
 
@@ -168,5 +199,20 @@ export default function CompletePage() {
         </Link>
       </MobileBottomAction>
     </>
+  )
+}
+
+export default function CompletePage() {
+  return (
+    <Suspense fallback={
+      <MobileContainer centered>
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </MobileContainer>
+    }>
+      <CompletePageContent />
+    </Suspense>
   )
 }
