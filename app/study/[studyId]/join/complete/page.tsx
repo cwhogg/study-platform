@@ -5,12 +5,35 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
 import { CheckCircle2, Calendar, FlaskConical, Mail } from 'lucide-react'
+import type { EnrollmentCopy } from '@/lib/db/types'
+
+// Default copy if none generated
+const DEFAULT_ENROLLMENT_COMPLETE = {
+  headline: 'You\'re Enrolled!',
+  celebration: '🎉',
+  body: 'Thank you for joining. Your participation helps improve treatment for future patients.',
+  nextSteps: {
+    headline: 'What\'s Next',
+    items: [
+      { icon: 'calendar', title: 'Next check-in', body: 'Week 2. We\'ll text you a reminder.' },
+      { icon: 'mail', title: 'Consent copy', body: 'We emailed your signed consent for your records.' },
+    ],
+  },
+  buttonText: 'View Dashboard',
+}
+
+interface StudyData {
+  name: string
+  intervention: string
+  enrollmentCopy: EnrollmentCopy | null
+}
 
 export default function CompletePage() {
   const params = useParams()
   const studyId = params.studyId as string
 
   const [nextCheckInDate, setNextCheckInDate] = useState('')
+  const [study, setStudy] = useState<StudyData | null>(null)
 
   useEffect(() => {
     // Calculate next check-in date (2 weeks from now)
@@ -23,6 +46,39 @@ export default function CompletePage() {
     setNextCheckInDate(formatted)
   }, [])
 
+  useEffect(() => {
+    async function fetchStudy() {
+      try {
+        const response = await fetch(`/api/studies/${studyId}/public`)
+        if (response.ok) {
+          const data = await response.json()
+          setStudy(data)
+        }
+      } catch (err) {
+        console.error('Error fetching study:', err)
+      }
+    }
+    fetchStudy()
+  }, [studyId])
+
+  const copy = study?.enrollmentCopy?.enrollmentComplete || DEFAULT_ENROLLMENT_COMPLETE
+
+  // Replace {{intervention}} placeholder
+  const body = (copy.body || DEFAULT_ENROLLMENT_COMPLETE.body)
+    .replace('{{intervention}}', study?.intervention || 'treatment')
+    .replace('{{nextAssessmentDate}}', nextCheckInDate)
+
+  // Icon mapping
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'calendar': return Calendar
+      case 'mail': return Mail
+      case 'droplet':
+      case 'flask': return FlaskConical
+      default: return Calendar
+    }
+  }
+
   return (
     <>
       <MobileContainer withBottomPadding className="pt-8">
@@ -34,10 +90,10 @@ export default function CompletePage() {
         </div>
 
         <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
-          You&apos;re Enrolled!
+          {copy.headline || DEFAULT_ENROLLMENT_COMPLETE.headline}
         </h1>
         <p className="text-gray-600 text-center mb-8">
-          Thank you for joining the study. Your baseline is complete.
+          {body}
         </p>
 
         {/* Divider */}
@@ -45,7 +101,7 @@ export default function CompletePage() {
 
         {/* What's Next Section */}
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          What&apos;s Next
+          {copy.nextSteps?.headline || 'What\'s Next'}
         </h2>
 
         <div className="space-y-4">
@@ -108,7 +164,7 @@ export default function CompletePage() {
           className="block w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 transition-colors"
           style={{ minHeight: '52px' }}
         >
-          View Dashboard
+          {copy.buttonText || DEFAULT_ENROLLMENT_COMPLETE.buttonText}
         </Link>
       </MobileBottomAction>
     </>

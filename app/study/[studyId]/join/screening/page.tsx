@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
+import type { EnrollmentCopy } from '@/lib/db/types'
 
 interface ScreeningQuestion {
   id: string
@@ -10,6 +11,27 @@ interface ScreeningQuestion {
   type: 'date' | 'yes_no' | 'select'
   options?: string[]
   disqualifyingAnswer?: string | boolean
+}
+
+// Default copy if none generated
+const DEFAULT_SCREENING = {
+  headline: 'A Few Questions',
+  intro: 'These help us confirm you\'re eligible for this study.',
+  buttonText: 'Continue',
+}
+
+const DEFAULT_ELIGIBLE = {
+  headline: 'You\'re Eligible!',
+  body: 'Great news! You qualify for this study. Let\'s capture how you\'re feeling before you start treatment.',
+  subtext: 'This baseline helps us measure your progress.',
+  buttonText: 'Start Baseline Survey',
+  estimatedTime: 'About 5 minutes',
+}
+
+interface StudyData {
+  name: string
+  intervention: string
+  enrollmentCopy: EnrollmentCopy | null
 }
 
 const screeningQuestions: ScreeningQuestion[] = [
@@ -58,6 +80,24 @@ export default function ScreeningPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string | boolean>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [study, setStudy] = useState<StudyData | null>(null)
+
+  useEffect(() => {
+    async function fetchStudy() {
+      try {
+        const response = await fetch(`/api/studies/${studyId}/public`)
+        if (response.ok) {
+          const data = await response.json()
+          setStudy(data)
+        }
+      } catch (err) {
+        console.error('Error fetching study:', err)
+      }
+    }
+    fetchStudy()
+  }, [studyId])
+
+  const eligibleCopy = study?.enrollmentCopy?.eligible || DEFAULT_ELIGIBLE
 
   const question = screeningQuestions[currentQuestion]
   const totalQuestions = screeningQuestions.length
@@ -201,8 +241,11 @@ export default function ScreeningPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">You&apos;re Eligible!</h2>
-          <p className="text-gray-600">Preparing your baseline survey...</p>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{eligibleCopy.headline}</h2>
+          <p className="text-gray-600">{eligibleCopy.body}</p>
+          {eligibleCopy.estimatedTime && (
+            <p className="text-gray-500 text-sm mt-2">{eligibleCopy.estimatedTime}</p>
+          )}
         </div>
       </MobileContainer>
     )

@@ -163,6 +163,7 @@ export async function POST(request: NextRequest) {
       primaryEndpoint,
       secondaryEndpoints,
       duration,
+      enrollmentCopy,
     } = body
 
     if (!intervention) {
@@ -228,6 +229,7 @@ export async function POST(request: NextRequest) {
         protocol,
         consent_document: consentDocument,
         comprehension_questions: comprehensionQuestions,
+        enrollment_copy: enrollmentCopy || null,
         config,
       })
       .select()

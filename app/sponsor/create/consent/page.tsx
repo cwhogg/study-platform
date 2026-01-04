@@ -159,6 +159,36 @@ function ConsentReviewContent() {
       const storedProtocol = sessionStorage.getItem('generatedProtocol')
       const protocol = storedProtocol ? JSON.parse(storedProtocol) : null
 
+      const studyName = `${intervention} Outcomes Study`
+      const durationWeeks = parseInt(duration) || 26
+
+      // Generate enrollment copy
+      let enrollmentCopy = null
+      try {
+        const enrollmentResponse = await fetch('/api/agents/enrollment-copy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studyName,
+            intervention,
+            sponsor: 'Study Sponsor', // Could be customizable
+            durationWeeks,
+            proceduresSummary: `Short surveys every 2-4 weeks for ${Math.round(durationWeeks / 4)} months`,
+            estimatedTimePerAssessment: '5 minutes',
+            primaryBenefit: `Help improve ${intervention} treatment for future patients`,
+          }),
+        })
+
+        if (enrollmentResponse.ok) {
+          const enrollmentData = await enrollmentResponse.json()
+          enrollmentCopy = enrollmentData.data
+        } else {
+          console.warn('Failed to generate enrollment copy, using defaults')
+        }
+      } catch (enrollmentErr) {
+        console.warn('Error generating enrollment copy:', enrollmentErr)
+      }
+
       const response = await fetch('/api/studies', {
         method: 'POST',
         headers: {
@@ -175,6 +205,7 @@ function ConsentReviewContent() {
           protocol,
           consentDocument: consent?.document,
           comprehensionQuestions: consent?.comprehensionQuestions,
+          enrollmentCopy,
         }),
       })
 

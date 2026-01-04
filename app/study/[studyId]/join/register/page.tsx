@@ -1,12 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
 import { Eye, EyeOff } from 'lucide-react'
+import type { EnrollmentCopy } from '@/lib/db/types'
 
 // Demo mode - set to true to skip actual Supabase auth
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+
+// Default copy if none generated
+const DEFAULT_REGISTRATION = {
+  headline: 'Create Your Account',
+  emailLabel: 'Email',
+  emailHelp: 'Use your email address',
+  passwordLabel: 'Password',
+  passwordHelp: 'At least 8 characters',
+  confirmPasswordLabel: 'Confirm Password',
+  buttonText: 'Continue',
+  errors: {
+    emailInvalid: 'Please enter a valid email address',
+    passwordTooShort: 'Password must be at least 8 characters',
+    passwordMismatch: 'Passwords don\'t match',
+  },
+}
+
+interface StudyData {
+  enrollmentCopy: EnrollmentCopy | null
+}
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -20,6 +41,24 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [study, setStudy] = useState<StudyData | null>(null)
+
+  useEffect(() => {
+    async function fetchStudy() {
+      try {
+        const response = await fetch(`/api/studies/${studyId}/public`)
+        if (response.ok) {
+          const data = await response.json()
+          setStudy(data)
+        }
+      } catch (err) {
+        console.error('Error fetching study:', err)
+      }
+    }
+    fetchStudy()
+  }, [studyId])
+
+  const copy = study?.enrollmentCopy?.registration || DEFAULT_REGISTRATION
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,17 +73,17 @@ export default function RegisterPage() {
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address')
+      setError(copy.errors?.emailInvalid || 'Please enter a valid email address')
       return
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError(copy.errors?.passwordMismatch || 'Passwords do not match')
       return
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters')
+      setError(copy.errors?.passwordTooShort || 'Password must be at least 8 characters')
       return
     }
 
@@ -93,7 +132,7 @@ export default function RegisterPage() {
     <>
       <MobileContainer withBottomPadding className="pt-8">
         <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
-          Create Your Account
+          {copy.headline || 'Create Your Account'}
         </h1>
         <p className="text-gray-600 text-center mb-8">
           Enter your details to join the study
@@ -103,7 +142,7 @@ export default function RegisterPage() {
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email
+              {copy.emailLabel || 'Email'}
             </label>
             <input
               id="email"
@@ -115,12 +154,15 @@ export default function RegisterPage() {
               placeholder="you@example.com"
               style={{ minHeight: '52px' }}
             />
+            {copy.emailHelp && (
+              <p className="mt-1 text-xs text-gray-500">{copy.emailHelp}</p>
+            )}
           </div>
 
           {/* Password */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
+              {copy.passwordLabel || 'Password'}
             </label>
             <div className="relative">
               <input
@@ -130,7 +172,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-4 pr-12 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
-                placeholder="At least 8 characters"
+                placeholder={copy.passwordHelp || 'At least 8 characters'}
                 style={{ minHeight: '52px' }}
               />
               <button
@@ -147,7 +189,7 @@ export default function RegisterPage() {
           {/* Confirm Password */}
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm Password
+              {copy.confirmPasswordLabel || 'Confirm Password'}
             </label>
             <div className="relative">
               <input
@@ -188,7 +230,7 @@ export default function RegisterPage() {
           className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
-          {isSubmitting ? 'Creating Account...' : 'Continue'}
+          {isSubmitting ? 'Creating Account...' : (copy.buttonText || 'Continue')}
         </button>
       </MobileBottomAction>
     </>

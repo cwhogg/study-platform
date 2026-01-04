@@ -210,6 +210,169 @@ export interface ConsentGenerationOutput {
 }
 
 // =============================================================================
+// Enrollment Agent Types
+// =============================================================================
+
+export interface EnrollmentCopyInput {
+  studyName: string
+  intervention: string
+  sponsor: string
+  durationWeeks: number
+  proceduresSummary: string
+  estimatedTimePerAssessment: string
+  primaryBenefit: string
+}
+
+// Welcome screen copy
+export interface WelcomeCopy {
+  headline: string
+  subheadline: string
+  bullets: string[]
+  buttonText: string
+  footerNote: string
+}
+
+// Registration screen copy
+export interface RegistrationCopy {
+  headline: string
+  emailLabel: string
+  emailHelp: string
+  passwordLabel: string
+  passwordHelp: string
+  confirmPasswordLabel: string
+  buttonText: string
+  errors: {
+    emailInvalid: string
+    passwordTooShort: string
+    passwordMismatch: string
+  }
+}
+
+// Email verification screen copy
+export interface VerificationCopy {
+  headline: string
+  body: string
+  inputLabel: string
+  buttonText: string
+  resendText: string
+  errors: {
+    invalidCode: string
+    expiredCode: string
+  }
+}
+
+// Pre-consent overview section
+export interface PreConsentSection {
+  icon: string
+  title: string
+  body: string
+}
+
+// Pre-consent screen copy
+export interface PreConsentCopy {
+  headline: string
+  sections: PreConsentSection[]
+  buttonText: string
+}
+
+// Consent guidance copy
+export interface ConsentGuidanceCopy {
+  sectionIntros: {
+    introduction: string
+    procedures: string
+    risks: string
+    benefits: string
+    confidentiality: string
+    voluntary: string
+  }
+  encouragement: {
+    halfway: string
+    almostDone: string
+  }
+}
+
+// Comprehension quiz copy
+export interface ComprehensionQuizCopy {
+  headline: string
+  intro: string
+  correctFeedback: string
+  incorrectFeedback: string
+  continueButton: string
+}
+
+// Signature screen copy
+export interface SignatureCopy {
+  headline: string
+  instruction: string
+  inputLabel: string
+  checkboxLabel: string
+  dateLabel: string
+  buttonText: string
+  errors: {
+    nameRequired: string
+    checkboxRequired: string
+  }
+}
+
+// Screening screen copy
+export interface ScreeningCopy {
+  headline: string
+  intro: string
+  buttonText: string
+}
+
+// Eligible screen copy
+export interface EligibleCopy {
+  headline: string
+  body: string
+  subtext: string
+  buttonText: string
+  estimatedTime: string
+}
+
+// Ineligible screen copy
+export interface IneligibleCopy {
+  headline: string
+  body: string
+  reassurance: string
+  nextSteps: string
+  buttonText: string
+}
+
+// Enrollment complete screen copy
+export interface EnrollmentCompleteNextStep {
+  icon: string
+  title: string
+  body: string
+}
+
+export interface EnrollmentCompleteCopy {
+  headline: string
+  celebration: string
+  body: string
+  nextSteps: {
+    headline: string
+    items: EnrollmentCompleteNextStep[]
+  }
+  buttonText: string
+}
+
+// Full enrollment copy output
+export interface EnrollmentCopyOutput {
+  welcome: WelcomeCopy
+  registration: RegistrationCopy
+  verification: VerificationCopy
+  preConsent: PreConsentCopy
+  consentGuidance: ConsentGuidanceCopy
+  comprehensionQuiz: ComprehensionQuizCopy
+  signature: SignatureCopy
+  screening: ScreeningCopy
+  eligible: EligibleCopy
+  ineligible: IneligibleCopy
+  enrollmentComplete: EnrollmentCompleteCopy
+}
+
+// =============================================================================
 // Agent Call Types
 // =============================================================================
 
