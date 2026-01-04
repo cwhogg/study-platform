@@ -20,10 +20,17 @@ import type {
   ConsentGenerationOutput,
 } from './types'
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+// Lazy-initialize OpenAI client to avoid build-time errors
+let openaiClient: OpenAI | null = null
+
+function getOpenAI(): OpenAI {
+  if (!openaiClient) {
+    openaiClient = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  }
+  return openaiClient
+}
 
 // Default model mappings per agent
 const DEFAULT_MODELS: Record<AgentName, AgentModel> = {
@@ -68,6 +75,8 @@ export async function callAgent<TInput, TOutput>(
 
   try {
     let response: OpenAI.Chat.Completions.ChatCompletion
+
+    const openai = getOpenAI()
 
     // o1 models have different API requirements:
     // - No system messages, use developer role or include in user message
