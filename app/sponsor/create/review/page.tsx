@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -13,44 +13,84 @@ import {
   AlertCircle,
   ClipboardList,
   Calendar,
-  Shield
+  Shield,
+  Info
 } from 'lucide-react'
 
-// Hardcoded TRT protocol data (will be AI-generated later)
-const PROTOCOL = {
-  name: 'TRT Symptom Response Study',
-  summary: '26-week observational study of newly diagnosed hypogonadal men initiating TRT. Primary endpoint: qADAM score change at week 12.',
+// Types for AI-generated protocol
+interface InclusionCriterion {
+  criterion: string
+  rationale: string
+  assessmentMethod: string
+}
+
+interface ExclusionCriterion {
+  criterion: string
+  rationale: string
+  assessmentMethod: string
+}
+
+interface Instrument {
+  id: string
+  name: string
+  description: string
+  instructions?: string
+  estimatedMinutes: number
+  questions: unknown[]
+}
+
+interface ScheduleTimepoint {
+  timepoint: string
+  week: number
+  instruments: string[]
+  labs?: string[]
+  windowDays?: number
+}
+
+interface LabThreshold {
+  marker: string
+  threshold: string
+  action: string
+}
+
+interface ProAlert {
+  instrument: string
+  condition: string
+  action: string
+}
+
+interface Protocol {
+  summary: string
+  inclusionCriteria: InclusionCriterion[]
+  exclusionCriteria: ExclusionCriterion[]
+  instruments: Instrument[]
+  schedule: ScheduleTimepoint[]
+  safetyMonitoring: {
+    labThresholds: LabThreshold[]
+    proAlerts: ProAlert[]
+  }
+}
+
+// Fallback protocol if none generated
+const FALLBACK_PROTOCOL: Protocol = {
+  summary: 'Observational study protocol. Please go back and generate a protocol using AI.',
   inclusionCriteria: [
-    'Male, 30-65 years of age',
-    'Diagnosed hypogonadism with total testosterone <300 ng/dL',
-    'Initiating testosterone replacement therapy',
-    'Treatment-naive or >12 month gap since prior TRT',
-    'Willing and able to complete study assessments',
+    { criterion: 'Adults 18+ years', rationale: 'Standard adult population', assessmentMethod: 'Self-report' },
   ],
   exclusionCriteria: [
-    'History of prostate cancer',
-    'PSA >4.0 ng/mL at baseline',
-    'Hematocrit >50% at baseline',
-    'Cardiovascular event within past 6 months',
-    'Current use of chronic opioids or anabolic steroids',
-    'Untreated severe obstructive sleep apnea',
+    { criterion: 'Unable to provide consent', rationale: 'Ethical requirement', assessmentMethod: 'Consent process' },
   ],
   instruments: [
-    { name: 'qADAM', description: 'Quantitative Androgen Deficiency in Aging Males', questions: 10, primary: true },
-    { name: 'IIEF-5', description: 'International Index of Erectile Function', questions: 5 },
-    { name: 'PHQ-2', description: 'Patient Health Questionnaire (Depression Screen)', questions: 2 },
-    { name: 'Custom Symptoms', description: 'Energy, motivation, and well-being questions', questions: 6 },
+    { id: 'phq-2', name: 'PHQ-2', description: 'Depression screening', estimatedMinutes: 1, questions: [] },
   ],
-  schedule: {
-    assessments: ['Baseline', 'Week 2', 'Week 4', 'Week 6', 'Week 8', 'Week 12', 'Week 16', 'Week 20', 'Week 26'],
-    labs: ['Baseline', 'Week 6', 'Week 12', 'Week 26'],
+  schedule: [
+    { timepoint: 'baseline', week: 0, instruments: ['phq-2'] },
+    { timepoint: 'week_12', week: 12, instruments: ['phq-2'] },
+  ],
+  safetyMonitoring: {
+    labThresholds: [],
+    proAlerts: [{ instrument: 'phq-2', condition: 'total >= 3', action: 'Trigger PHQ-9' }],
   },
-  safetyMonitoring: [
-    { trigger: 'PHQ-2 score ≥3', action: 'Automatically administer PHQ-9' },
-    { trigger: 'PHQ-9 Question 9 >0', action: 'Display crisis resources immediately' },
-    { trigger: 'Hematocrit >54%', action: 'Alert study coordinator' },
-    { trigger: 'PSA increase >1.4 ng/mL from baseline', action: 'Alert study coordinator' },
-  ],
 }
 
 interface CollapsibleSectionProps {
@@ -112,7 +152,26 @@ function ReviewProtocolContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const intervention = searchParams.get('intervention') || 'Unknown Intervention'
+
+  const [protocol, setProtocol] = useState<Protocol | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Load protocol from sessionStorage
+  useEffect(() => {
+    try {
+      const storedProtocol = sessionStorage.getItem('generatedProtocol')
+      if (storedProtocol) {
+        setProtocol(JSON.parse(storedProtocol) as Protocol)
+      } else {
+        setProtocol(FALLBACK_PROTOCOL)
+      }
+    } catch (err) {
+      console.error('Failed to load protocol:', err)
+      setProtocol(FALLBACK_PROTOCOL)
+    }
+    setIsLoading(false)
+  }, [])
 
   const handleEdit = (section: string) => {
     // For now, just log - will implement edit modals later
@@ -122,10 +181,50 @@ function ReviewProtocolContent() {
   const handleSubmit = async () => {
     setIsSubmitting(true)
 
+    // Store protocol for consent page to use
+    if (protocol) {
+      sessionStorage.setItem('generatedProtocol', JSON.stringify(protocol))
+    }
+
     // Pass all params to consent step
     const params = new URLSearchParams(searchParams.toString())
     router.push(`/sponsor/create/consent?${params.toString()}`)
   }
+
+  if (isLoading || !protocol) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Loading protocol...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Find primary instrument (first one or one marked as such)
+  const primaryInstrument = protocol.instruments?.[0]
+
+  // Get unique timepoints for display
+  const assessmentTimepoints = protocol.schedule?.map(s =>
+    s.week === 0 ? 'Baseline' : `Week ${s.week}`
+  ) || []
+
+  const labTimepoints = protocol.schedule
+    ?.filter(s => s.labs && s.labs.length > 0)
+    .map(s => s.week === 0 ? 'Baseline' : `Week ${s.week}`) || []
+
+  // Combine safety rules
+  const safetyRules = [
+    ...(protocol.safetyMonitoring?.proAlerts?.map(a => ({
+      trigger: `${a.instrument}: ${a.condition}`,
+      action: a.action,
+    })) || []),
+    ...(protocol.safetyMonitoring?.labThresholds?.map(t => ({
+      trigger: `${t.marker} ${t.threshold}`,
+      action: t.action,
+    })) || []),
+  ]
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
@@ -139,13 +238,19 @@ function ReviewProtocolContent() {
           Back
         </Link>
         <div className="text-sm font-medium text-indigo-600 mb-2">GENERATED PROTOCOL</div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{PROTOCOL.name}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{intervention} Study</h1>
+      </div>
+
+      {/* AI-generated indicator */}
+      <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
+        <Info className="w-4 h-4" />
+        This protocol was generated by AI. Review and edit as needed before finalizing.
       </div>
 
       {/* Summary */}
       <div className="bg-indigo-50 rounded-xl p-6 mb-6">
         <h2 className="font-semibold text-gray-900 mb-2">Summary</h2>
-        <p className="text-gray-700">{PROTOCOL.summary}</p>
+        <p className="text-gray-700">{protocol.summary}</p>
       </div>
 
       {/* Collapsible Sections */}
@@ -154,62 +259,85 @@ function ReviewProtocolContent() {
         <CollapsibleSection
           title="Inclusion Criteria"
           icon={<CheckCircle2 className="w-5 h-5" />}
-          count={PROTOCOL.inclusionCriteria.length}
+          count={protocol.inclusionCriteria?.length || 0}
           onEdit={() => handleEdit('inclusion')}
           defaultOpen
         >
-          <ul className="space-y-2">
-            {PROTOCOL.inclusionCriteria.map((criterion, index) => (
-              <li key={index} className="flex items-start gap-2 text-gray-700">
-                <span className="text-green-500 mt-0.5">•</span>
-                {criterion}
-              </li>
+          <div className="space-y-3">
+            {protocol.inclusionCriteria?.map((criterion, index) => (
+              <div key={index} className="p-3 bg-green-50 rounded-lg border border-green-100">
+                <div className="flex items-start gap-2 text-gray-900 font-medium">
+                  <span className="text-green-500 mt-0.5">•</span>
+                  {criterion.criterion}
+                </div>
+                {criterion.rationale && (
+                  <p className="text-sm text-gray-600 mt-1 ml-4">{criterion.rationale}</p>
+                )}
+                {criterion.assessmentMethod && (
+                  <p className="text-xs text-gray-500 mt-1 ml-4">
+                    Assessment: {criterion.assessmentMethod}
+                  </p>
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         </CollapsibleSection>
 
         {/* Exclusion Criteria */}
         <CollapsibleSection
           title="Exclusion Criteria"
           icon={<AlertCircle className="w-5 h-5" />}
-          count={PROTOCOL.exclusionCriteria.length}
+          count={protocol.exclusionCriteria?.length || 0}
           onEdit={() => handleEdit('exclusion')}
         >
-          <ul className="space-y-2">
-            {PROTOCOL.exclusionCriteria.map((criterion, index) => (
-              <li key={index} className="flex items-start gap-2 text-gray-700">
-                <span className="text-red-500 mt-0.5">•</span>
-                {criterion}
-              </li>
+          <div className="space-y-3">
+            {protocol.exclusionCriteria?.map((criterion, index) => (
+              <div key={index} className="p-3 bg-red-50 rounded-lg border border-red-100">
+                <div className="flex items-start gap-2 text-gray-900 font-medium">
+                  <span className="text-red-500 mt-0.5">•</span>
+                  {criterion.criterion}
+                </div>
+                {criterion.rationale && (
+                  <p className="text-sm text-gray-600 mt-1 ml-4">{criterion.rationale}</p>
+                )}
+                {criterion.assessmentMethod && (
+                  <p className="text-xs text-gray-500 mt-1 ml-4">
+                    Assessment: {criterion.assessmentMethod}
+                  </p>
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         </CollapsibleSection>
 
         {/* PRO Instruments */}
         <CollapsibleSection
           title="PRO Instruments"
           icon={<ClipboardList className="w-5 h-5" />}
-          count={PROTOCOL.instruments.length}
+          count={protocol.instruments?.length || 0}
           onEdit={() => handleEdit('instruments')}
         >
           <div className="space-y-3">
-            {PROTOCOL.instruments.map((instrument, index) => (
+            {protocol.instruments?.map((instrument, index) => (
               <div
-                key={index}
+                key={instrument.id || index}
                 className={`p-3 rounded-lg border ${
-                  instrument.primary ? 'border-indigo-200 bg-indigo-50' : 'border-gray-100 bg-gray-50'
+                  index === 0 ? 'border-indigo-200 bg-indigo-50' : 'border-gray-100 bg-gray-50'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-medium text-gray-900">
                     {instrument.name}
-                    {instrument.primary && (
+                    {index === 0 && primaryInstrument && (
                       <span className="ml-2 text-xs bg-indigo-600 text-white px-2 py-0.5 rounded-full">
                         Primary
                       </span>
                     )}
                   </span>
-                  <span className="text-sm text-gray-500">{instrument.questions} questions</span>
+                  <span className="text-sm text-gray-500">
+                    {instrument.questions?.length || 0} questions
+                    {instrument.estimatedMinutes && ` • ~${instrument.estimatedMinutes} min`}
+                  </span>
                 </div>
                 <p className="text-sm text-gray-600">{instrument.description}</p>
               </div>
@@ -227,7 +355,7 @@ function ReviewProtocolContent() {
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-2">Assessment Timepoints</h4>
               <div className="flex flex-wrap gap-2">
-                {PROTOCOL.schedule.assessments.map((timepoint, index) => (
+                {assessmentTimepoints.map((timepoint, index) => (
                   <span
                     key={index}
                     className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
@@ -237,16 +365,42 @@ function ReviewProtocolContent() {
                 ))}
               </div>
             </div>
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Lab Collection</h4>
-              <div className="flex flex-wrap gap-2">
-                {PROTOCOL.schedule.labs.map((timepoint, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
-                  >
-                    {timepoint}
-                  </span>
+            {labTimepoints.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Lab Collection</h4>
+                <div className="flex flex-wrap gap-2">
+                  {labTimepoints.map((timepoint, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                    >
+                      {timepoint}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Detailed schedule */}
+            <div className="mt-4 border-t border-gray-100 pt-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Detailed Schedule</h4>
+              <div className="space-y-2">
+                {protocol.schedule?.map((timepoint, index) => (
+                  <div key={index} className="flex items-start gap-3 text-sm">
+                    <span className="font-medium text-gray-900 w-20">
+                      {timepoint.week === 0 ? 'Baseline' : `Week ${timepoint.week}`}
+                    </span>
+                    <div className="flex-1">
+                      <span className="text-gray-600">
+                        {timepoint.instruments?.join(', ')}
+                      </span>
+                      {timepoint.labs && timepoint.labs.length > 0 && (
+                        <span className="text-blue-600 ml-2">
+                          + Labs: {timepoint.labs.join(', ')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -257,11 +411,11 @@ function ReviewProtocolContent() {
         <CollapsibleSection
           title="Safety Monitoring"
           icon={<Shield className="w-5 h-5" />}
-          count={PROTOCOL.safetyMonitoring.length}
+          count={safetyRules.length}
           onEdit={() => handleEdit('safety')}
         >
           <div className="space-y-3">
-            {PROTOCOL.safetyMonitoring.map((rule, index) => (
+            {safetyRules.map((rule, index) => (
               <div key={index} className="p-3 rounded-lg border border-amber-200 bg-amber-50">
                 <div className="text-sm">
                   <span className="font-medium text-gray-900">If:</span>{' '}
@@ -273,6 +427,9 @@ function ReviewProtocolContent() {
                 </div>
               </div>
             ))}
+            {safetyRules.length === 0 && (
+              <p className="text-sm text-gray-500">No safety rules defined.</p>
+            )}
           </div>
         </CollapsibleSection>
       </div>

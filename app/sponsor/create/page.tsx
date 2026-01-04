@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, AlertCircle } from 'lucide-react'
 
 const EXAMPLES = [
   'GLP-1 medications',
@@ -16,16 +16,43 @@ export default function CreateStudyPage() {
   const router = useRouter()
   const [intervention, setIntervention] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!intervention.trim()) return
 
     setIsSubmitting(true)
+    setError('')
 
-    // Navigate to next step with intervention in URL params
-    const params = new URLSearchParams({ intervention: intervention.trim() })
-    router.push(`/sponsor/create/configure?${params.toString()}`)
+    try {
+      // Call study discovery API
+      const response = await fetch('/api/agents/study-discovery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ intervention: intervention.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Failed to analyze intervention')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Store discovery results in sessionStorage for the configure page
+      sessionStorage.setItem('studyDiscovery', JSON.stringify(data.data))
+
+      // Navigate to configure page
+      const params = new URLSearchParams({ intervention: intervention.trim() })
+      router.push(`/sponsor/create/configure?${params.toString()}`)
+
+    } catch (err) {
+      console.error('Study discovery error:', err)
+      setError('An unexpected error occurred. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   const handleExampleClick = (example: string) => {
@@ -59,7 +86,7 @@ export default function CreateStudyPage() {
           </div>
 
           {/* Examples */}
-          <div className="mb-8">
+          <div className="mb-6">
             <div className="text-sm text-gray-500 mb-3">Examples:</div>
             <div className="flex flex-wrap gap-2">
               {EXAMPLES.map((example) => (
@@ -75,6 +102,14 @@ export default function CreateStudyPage() {
             </div>
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
+
           {/* Submit */}
           <button
             type="submit"
@@ -84,7 +119,7 @@ export default function CreateStudyPage() {
             {isSubmitting ? (
               <>
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Processing...</span>
+                <span>Analyzing Intervention...</span>
               </>
             ) : (
               <>
