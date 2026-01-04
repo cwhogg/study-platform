@@ -169,15 +169,44 @@ export interface ConsentGenerationInput {
   durationWeeks: number
 }
 
-export interface ComprehensionQuestion {
-  id: number
-  question: string
-  correctAnswer: string
+// Consent document section (displayed one at a time on mobile)
+export interface ConsentSection {
+  id: string
+  title: string
+  content: string  // Markdown content
 }
 
+// Consent document structure
+export interface ConsentDocument {
+  title: string
+  version: string
+  sections: ConsentSection[]
+}
+
+// Comprehension question with multiple choice options
+export interface ComprehensionQuestionOption {
+  text: string
+  correct: boolean
+}
+
+export interface ComprehensionQuestion {
+  id: string
+  question: string
+  options: ComprehensionQuestionOption[]
+  explanation: string  // Shown if answered incorrectly
+}
+
+// Summary card shown before full consent
+export interface ConsentSummary {
+  title: string
+  bullets: string[]
+}
+
+// Full consent generation output
 export interface ConsentGenerationOutput {
-  consentDocument: string
+  document: ConsentDocument
   comprehensionQuestions: ComprehensionQuestion[]
+  summary: ConsentSummary
 }
 
 // =============================================================================

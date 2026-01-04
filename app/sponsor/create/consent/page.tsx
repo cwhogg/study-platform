@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -10,70 +10,47 @@ import {
   FileText,
   ExternalLink,
   CheckCircle2,
-  Pencil
+  Pencil,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  ListChecks,
 } from 'lucide-react'
 
-// Generate placeholder consent document based on intervention
-function generateConsentPreview(intervention: string, durationWeeks: number): string {
-  const months = Math.round(durationWeeks / 4)
-  return `# Informed Consent for Research Participation
-
-## ${intervention} Outcomes Study
-
-### Purpose of the Study
-You are being invited to participate in a research study about ${intervention}. The purpose of this study is to understand how ${intervention} affects symptoms like energy, mood, and quality of life over time.
-
-### What You Will Be Asked To Do
-If you agree to participate, you will:
-- Complete short questionnaires about your symptoms every 2-4 weeks
-- Have blood work done at baseline, 6 weeks, 12 weeks, and ${durationWeeks} weeks (same labs your doctor would order anyway)
-- The study lasts ${months} months total
-
-### Time Commitment
-- Questionnaires take about 5 minutes each
-- You'll complete 9 questionnaires over ${months} months
-
-### Risks
-This is an observational study. Your treatment does not change based on participation. The main risk is the time required to complete questionnaires.
-
-### Benefits
-You may not benefit directly, but your participation will help improve ${intervention} treatment for future patients.
-
-### Confidentiality
-Your responses are kept confidential. Data is stored securely and only study staff can access it. Results are reported in aggregate only.
-
-### Voluntary Participation
-Participation is voluntary. You can withdraw at any time without affecting your medical care.
-
-### Questions
-Contact the study coordinator at study@example.com with any questions.`
+// Types for AI-generated consent
+interface ConsentSection {
+  id: string
+  title: string
+  content: string
 }
 
-// Generate placeholder comprehension questions
-function generateComprehensionPreview(durationWeeks: number) {
-  const months = Math.round(durationWeeks / 4)
-  return [
-    {
-      id: 1,
-      question: 'How long does this study last?',
-      correctAnswer: `${months} months`,
-    },
-    {
-      id: 2,
-      question: 'Can you withdraw from the study at any time?',
-      correctAnswer: 'Yes',
-    },
-    {
-      id: 3,
-      question: 'What will you be asked to do?',
-      correctAnswer: 'Complete questionnaires and have blood work done',
-    },
-    {
-      id: 4,
-      question: 'Will participating change your treatment?',
-      correctAnswer: 'No',
-    },
-  ]
+interface ConsentDocument {
+  title: string
+  version: string
+  sections: ConsentSection[]
+}
+
+interface ComprehensionQuestionOption {
+  text: string
+  correct: boolean
+}
+
+interface ComprehensionQuestion {
+  id: string
+  question: string
+  options: ComprehensionQuestionOption[]
+  explanation: string
+}
+
+interface ConsentSummary {
+  title: string
+  bullets: string[]
+}
+
+interface GeneratedConsent {
+  document: ConsentDocument
+  comprehensionQuestions: ComprehensionQuestion[]
+  summary: ConsentSummary
 }
 
 interface CreatedStudy {
@@ -83,32 +60,105 @@ interface CreatedStudy {
   status: string
 }
 
+// Fallback consent if none generated
+const FALLBACK_CONSENT: GeneratedConsent = {
+  document: {
+    title: 'Study Consent',
+    version: '1.0',
+    sections: [
+      {
+        id: 'intro',
+        title: 'About This Study',
+        content: 'You are being invited to participate in a research study. Please review all sections carefully before signing.',
+      },
+      {
+        id: 'procedures',
+        title: 'What You Will Do',
+        content: 'Complete questionnaires at scheduled intervals during the study period.',
+      },
+      {
+        id: 'voluntary',
+        title: 'Voluntary Participation',
+        content: 'Participation is completely voluntary. You can stop at any time without any penalty.',
+      },
+    ],
+  },
+  comprehensionQuestions: [
+    {
+      id: 'q1',
+      question: 'Can you stop participating at any time?',
+      options: [
+        { text: 'No, you must complete the study', correct: false },
+        { text: 'Yes, you can stop at any time without penalty', correct: true },
+        { text: 'Only with your doctor\'s permission', correct: false },
+      ],
+      explanation: 'Participation is voluntary. You can stop at any time.',
+    },
+  ],
+  summary: {
+    title: 'Study at a Glance',
+    bullets: [
+      'Complete questionnaires at scheduled intervals',
+      'Participation is voluntary',
+      'Your information is kept confidential',
+    ],
+  },
+}
+
 function ConsentReviewContent() {
   const searchParams = useSearchParams()
   const intervention = searchParams.get('intervention') || 'Unknown Intervention'
-  const population = searchParams.get('population') || 'new_hypogonadal'
-  const treatmentStage = searchParams.get('treatmentStage') || 'initiation'
-  const primaryEndpoint = searchParams.get('primaryEndpoint') || 'qadam'
+  const population = searchParams.get('population') || ''
+  const treatmentStage = searchParams.get('treatmentStage') || ''
+  const primaryEndpoint = searchParams.get('primaryEndpoint') || ''
   const secondaryEndpoints = searchParams.get('secondaryEndpoints') || ''
   const duration = searchParams.get('duration') || '26'
-  const durationWeeks = parseInt(duration) || 26
 
+  const [consent, setConsent] = useState<GeneratedConsent | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [isFinalized, setIsFinalized] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState('')
   const [createdStudy, setCreatedStudy] = useState<CreatedStudy | null>(null)
   const [inviteLink, setInviteLink] = useState('')
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['intro']))
 
-  // Preview data (shown before finalization)
-  const consentPreview = generateConsentPreview(intervention, durationWeeks)
-  const comprehensionPreview = generateComprehensionPreview(durationWeeks)
+  // Load consent from sessionStorage
+  useEffect(() => {
+    try {
+      const storedConsent = sessionStorage.getItem('generatedConsent')
+      if (storedConsent) {
+        setConsent(JSON.parse(storedConsent) as GeneratedConsent)
+      } else {
+        setConsent(FALLBACK_CONSENT)
+      }
+    } catch (err) {
+      console.error('Failed to load consent:', err)
+      setConsent(FALLBACK_CONSENT)
+    }
+    setIsLoading(false)
+  }, [])
+
+  const toggleSection = (sectionId: string) => {
+    const newExpanded = new Set(expandedSections)
+    if (newExpanded.has(sectionId)) {
+      newExpanded.delete(sectionId)
+    } else {
+      newExpanded.add(sectionId)
+    }
+    setExpandedSections(newExpanded)
+  }
 
   const handleFinalize = async () => {
     setIsSubmitting(true)
     setError('')
 
     try {
+      // Get the protocol from sessionStorage
+      const storedProtocol = sessionStorage.getItem('generatedProtocol')
+      const protocol = storedProtocol ? JSON.parse(storedProtocol) : null
+
       const response = await fetch('/api/studies', {
         method: 'POST',
         headers: {
@@ -121,6 +171,10 @@ function ConsentReviewContent() {
           primaryEndpoint,
           secondaryEndpoints,
           duration,
+          // Include AI-generated content
+          protocol,
+          consentDocument: consent?.document,
+          comprehensionQuestions: consent?.comprehensionQuestions,
         }),
       })
 
@@ -135,6 +189,11 @@ function ConsentReviewContent() {
       setCreatedStudy(data.study)
       setInviteLink(data.inviteLink)
       setIsFinalized(true)
+
+      // Clear sessionStorage
+      sessionStorage.removeItem('studyDiscovery')
+      sessionStorage.removeItem('generatedProtocol')
+      sessionStorage.removeItem('generatedConsent')
     } catch (err) {
       console.error('Error creating study:', err)
       setError('An unexpected error occurred. Please try again.')
@@ -147,6 +206,17 @@ function ConsentReviewContent() {
     navigator.clipboard.writeText(inviteLink)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Loading consent document...</p>
+        </div>
+      </div>
+    )
   }
 
   // Success state
@@ -244,35 +314,84 @@ function ConsentReviewContent() {
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Review & Finalize</h1>
       </div>
 
-      {/* Consent Document Preview */}
+      {/* AI-generated indicator */}
+      {consent && consent !== FALLBACK_CONSENT && (
+        <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
+          <Info className="w-4 h-4" />
+          This consent document was generated by AI. Review and edit as needed.
+        </div>
+      )}
+
+      {/* Summary Card */}
+      {consent?.summary && (
+        <section className="bg-indigo-50 rounded-xl p-6 mb-6">
+          <h2 className="font-semibold text-gray-900 mb-3">{consent.summary.title || 'Study at a Glance'}</h2>
+          <ul className="space-y-2">
+            {consent.summary.bullets.map((bullet, index) => (
+              <li key={index} className="flex items-start gap-2 text-gray-700">
+                <span className="text-indigo-600 mt-0.5">•</span>
+                {bullet}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Consent Document Sections */}
       <section className="bg-white rounded-xl border border-gray-200 mb-6">
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
             <FileText className="w-5 h-5 text-gray-400" />
-            <span className="font-medium text-gray-900">Informed Consent Document</span>
+            <span className="font-medium text-gray-900">
+              {consent?.document?.title || 'Informed Consent Document'}
+            </span>
+            {consent?.document?.version && (
+              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                v{consent.document.version}
+              </span>
+            )}
           </div>
           <button className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-indigo-50">
             <Pencil className="w-3.5 h-3.5" />
             Edit
           </button>
         </div>
-        <div className="p-6 max-h-96 overflow-y-auto">
-          <div className="prose prose-sm prose-gray max-w-none">
-            {consentPreview.split('\n').map((line, index) => {
-              if (line.startsWith('# ')) {
-                return <h1 key={index} className="text-xl font-bold text-gray-900 mt-0">{line.replace('# ', '')}</h1>
-              } else if (line.startsWith('## ')) {
-                return <h2 key={index} className="text-lg font-semibold text-gray-900 mt-6 mb-2">{line.replace('## ', '')}</h2>
-              } else if (line.startsWith('### ')) {
-                return <h3 key={index} className="text-base font-semibold text-gray-800 mt-4 mb-2">{line.replace('### ', '')}</h3>
-              } else if (line.startsWith('- ')) {
-                return <li key={index} className="text-gray-700 ml-4">{line.replace('- ', '')}</li>
-              } else if (line.trim()) {
-                return <p key={index} className="text-gray-700 mb-3">{line}</p>
-              }
-              return null
-            })}
-          </div>
+        <div className="divide-y divide-gray-100">
+          {consent?.document?.sections?.map((section) => (
+            <div key={section.id} className="border-b border-gray-100 last:border-0">
+              <button
+                onClick={() => toggleSection(section.id)}
+                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-left"
+              >
+                <span className="font-medium text-gray-900">{section.title}</span>
+                {expandedSections.has(section.id) ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
+              {expandedSections.has(section.id) && (
+                <div className="px-4 pb-4 prose prose-sm prose-gray max-w-none">
+                  {section.content.split('\n').map((paragraph, index) => {
+                    if (paragraph.startsWith('- ')) {
+                      return (
+                        <li key={index} className="text-gray-700 ml-4">
+                          {paragraph.replace('- ', '')}
+                        </li>
+                      )
+                    } else if (paragraph.trim()) {
+                      return (
+                        <p key={index} className="text-gray-700 mb-2">
+                          {paragraph}
+                        </p>
+                      )
+                    }
+                    return null
+                  })}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -280,9 +399,11 @@ function ConsentReviewContent() {
       <section className="bg-white rounded-xl border border-gray-200 mb-8">
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-gray-400" />
+            <ListChecks className="w-5 h-5 text-gray-400" />
             <span className="font-medium text-gray-900">Comprehension Questions</span>
-            <span className="text-sm text-gray-500">({comprehensionPreview.length})</span>
+            <span className="text-sm text-gray-500">
+              ({consent?.comprehensionQuestions?.length || 0})
+            </span>
           </div>
           <button className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-indigo-50">
             <Pencil className="w-3.5 h-3.5" />
@@ -293,21 +414,38 @@ function ConsentReviewContent() {
           <p className="text-sm text-gray-500 mb-4">
             Participants must answer these questions correctly before signing consent.
           </p>
-          <div className="space-y-3">
-            {comprehensionPreview.map((q, index) => (
+          <div className="space-y-4">
+            {consent?.comprehensionQuestions?.map((q, index) => (
               <div key={q.id} className="p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3 mb-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-medium">
                     {index + 1}
                   </span>
-                  <div>
-                    <div className="font-medium text-gray-900 mb-1">{q.question}</div>
-                    <div className="text-sm text-gray-600">
-                      <span className="text-gray-500">Correct answer:</span>{' '}
-                      <span className="text-green-600 font-medium">{q.correctAnswer}</span>
-                    </div>
-                  </div>
+                  <div className="font-medium text-gray-900">{q.question}</div>
                 </div>
+                <div className="ml-9 space-y-2">
+                  {q.options?.map((option, optIndex) => (
+                    <div
+                      key={optIndex}
+                      className={`flex items-center gap-2 text-sm p-2 rounded ${
+                        option.correct
+                          ? 'bg-green-50 text-green-700 border border-green-200'
+                          : 'bg-white text-gray-600 border border-gray-200'
+                      }`}
+                    >
+                      {option.correct && <CheckCircle2 className="w-4 h-4" />}
+                      <span>{option.text}</span>
+                      {option.correct && (
+                        <span className="text-xs font-medium ml-auto">Correct</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {q.explanation && (
+                  <div className="ml-9 mt-2 text-xs text-gray-500">
+                    <span className="font-medium">If wrong:</span> {q.explanation}
+                  </div>
+                )}
               </div>
             ))}
           </div>
