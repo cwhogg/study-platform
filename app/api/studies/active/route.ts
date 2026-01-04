@@ -1,12 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 const SCHEMA = 'study_platform'
 
 // Public endpoint to get active studies open for enrollment
+// Uses service client to bypass RLS since this is public data
 export async function GET() {
   try {
-    const supabase = await createClient()
+    const supabase = createServiceClient()
 
     const { data: studies, error: studiesError } = await supabase
       .schema(SCHEMA)
