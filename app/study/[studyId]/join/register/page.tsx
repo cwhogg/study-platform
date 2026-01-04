@@ -5,6 +5,9 @@ import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
 import { Eye, EyeOff } from 'lucide-react'
 
+// Demo mode - set to true to skip actual Supabase auth
+const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+
 export default function RegisterPage() {
   const router = useRouter()
   const params = useParams()
@@ -28,6 +31,13 @@ export default function RegisterPage() {
       return
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address')
+      return
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       return
@@ -40,9 +50,43 @@ export default function RegisterPage() {
 
     setIsSubmitting(true)
 
-    // For demo, skip actual registration and go to verify
-    await new Promise(resolve => setTimeout(resolve, 500))
-    router.push(`/study/${studyId}/join/verify?email=${encodeURIComponent(email)}`)
+    try {
+      if (DEMO_MODE) {
+        // Demo mode - skip actual registration
+        await new Promise(resolve => setTimeout(resolve, 500))
+        router.push(`/study/${studyId}/join/verify?email=${encodeURIComponent(email)}&demo=true`)
+        return
+      }
+
+      // Call registration API
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          studyId,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Failed to create account')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Navigate to verification page
+      router.push(`/study/${studyId}/join/verify?email=${encodeURIComponent(email)}`)
+
+    } catch (err) {
+      console.error('Registration error:', err)
+      setError('An unexpected error occurred. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   return (

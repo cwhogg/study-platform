@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
-import { Mail } from 'lucide-react'
+import { Mail, CheckCircle2 } from 'lucide-react'
 
 function VerifyContent() {
   const router = useRouter()
@@ -11,10 +11,13 @@ function VerifyContent() {
   const searchParams = useSearchParams()
   const studyId = params.studyId as string
   const email = searchParams.get('email') || 'your email'
+  const isDemo = searchParams.get('demo') === 'true'
 
   const [code, setCode] = useState(['', '', '', '', '', ''])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isResending, setIsResending] = useState(false)
+  const [error, setError] = useState('')
+  const [resendSuccess, setResendSuccess] = useState(false)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   // Focus first input on mount
@@ -29,6 +32,7 @@ function VerifyContent() {
     const newCode = [...code]
     newCode[index] = digit
     setCode(newCode)
+    setError('')
 
     // Auto-advance to next input
     if (digit && index < 5) {
@@ -58,6 +62,7 @@ function VerifyContent() {
     }
 
     setCode(newCode)
+    setError('')
 
     if (pastedData.length === 6) {
       handleSubmit(pastedData)
@@ -71,17 +76,90 @@ function VerifyContent() {
     if (codeToVerify.length !== 6) return
 
     setIsSubmitting(true)
+    setError('')
 
-    // For demo, skip actual verification and proceed
-    await new Promise(resolve => setTimeout(resolve, 500))
-    router.push(`/study/${studyId}/join/overview`)
+    try {
+      if (isDemo) {
+        // Demo mode - skip actual verification
+        await new Promise(resolve => setTimeout(resolve, 500))
+        router.push(`/study/${studyId}/join/overview`)
+        return
+      }
+
+      // Call verification API
+      const response = await fetch('/api/auth/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          token: codeToVerify,
+          type: 'signup',
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Invalid verification code')
+        setIsSubmitting(false)
+        // Clear the code inputs
+        setCode(['', '', '', '', '', ''])
+        inputRefs.current[0]?.focus()
+        return
+      }
+
+      // Success - navigate to overview
+      router.push(`/study/${studyId}/join/overview`)
+
+    } catch (err) {
+      console.error('Verification error:', err)
+      setError('An unexpected error occurred. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   const handleResend = async () => {
     setIsResending(true)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    setError('')
+    setResendSuccess(false)
+
+    try {
+      if (isDemo) {
+        // Demo mode - just show success
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        setResendSuccess(true)
+        setIsResending(false)
+        setTimeout(() => setResendSuccess(false), 3000)
+        return
+      }
+
+      const response = await fetch('/api/auth/resend', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          studyId,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Failed to resend code')
+      } else {
+        setResendSuccess(true)
+        setTimeout(() => setResendSuccess(false), 3000)
+      }
+    } catch (err) {
+      console.error('Resend error:', err)
+      setError('Failed to resend code. Please try again.')
+    }
+
     setIsResending(false)
-    // In production, trigger resend email
   }
 
   return (
@@ -102,8 +180,15 @@ function VerifyContent() {
           <span className="font-medium text-gray-900">{email}</span>
         </p>
 
+        {/* Demo Mode Hint */}
+        {isDemo && (
+          <div className="mb-6 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm text-center">
+            Demo mode: Enter any 6-digit code to continue
+          </div>
+        )}
+
         {/* 6-digit Code Input */}
-        <div className="flex justify-center gap-2 mb-8" onPaste={handlePaste}>
+        <div className="flex justify-center gap-2 mb-4" onPaste={handlePaste}>
           {code.map((digit, index) => (
             <input
               key={index}
@@ -114,11 +199,28 @@ function VerifyContent() {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className="w-12 h-14 text-center text-xl font-semibold border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+              className={`w-12 h-14 text-center text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow ${
+                error ? 'border-red-300 bg-red-50' : 'border-gray-300'
+              }`}
               style={{ minWidth: '44px', minHeight: '52px' }}
             />
           ))}
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm text-center">
+            {error}
+          </div>
+        )}
+
+        {/* Success Message */}
+        {resendSuccess && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm text-center flex items-center justify-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            Verification code sent!
+          </div>
+        )}
 
         {/* Resend Link */}
         <div className="text-center">
