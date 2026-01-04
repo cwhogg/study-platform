@@ -13,29 +13,31 @@ import {
   Pencil
 } from 'lucide-react'
 
-// Placeholder consent document
-const CONSENT_DOCUMENT = `# Informed Consent for Research Participation
+// Generate placeholder consent document based on intervention
+function generateConsentPreview(intervention: string, durationWeeks: number): string {
+  const months = Math.round(durationWeeks / 4)
+  return `# Informed Consent for Research Participation
 
-## TRT Symptom Response Study
+## ${intervention} Outcomes Study
 
 ### Purpose of the Study
-You are being invited to participate in a research study about testosterone replacement therapy (TRT). The purpose of this study is to understand how TRT affects symptoms like energy, mood, and sexual function over time.
+You are being invited to participate in a research study about ${intervention}. The purpose of this study is to understand how ${intervention} affects symptoms like energy, mood, and quality of life over time.
 
 ### What You Will Be Asked To Do
 If you agree to participate, you will:
 - Complete short questionnaires about your symptoms every 2-4 weeks
-- Have blood work done at baseline, 6 weeks, 12 weeks, and 26 weeks (same labs your doctor would order anyway)
-- The study lasts 6 months total
+- Have blood work done at baseline, 6 weeks, 12 weeks, and ${durationWeeks} weeks (same labs your doctor would order anyway)
+- The study lasts ${months} months total
 
 ### Time Commitment
 - Questionnaires take about 5 minutes each
-- You'll complete 9 questionnaires over 6 months
+- You'll complete 9 questionnaires over ${months} months
 
 ### Risks
 This is an observational study. Your treatment does not change based on participation. The main risk is the time required to complete questionnaires.
 
 ### Benefits
-You may not benefit directly, but your participation will help improve TRT treatment for future patients.
+You may not benefit directly, but your participation will help improve ${intervention} treatment for future patients.
 
 ### Confidentiality
 Your responses are kept confidential. Data is stored securely and only study staff can access it. Results are reported in aggregate only.
@@ -45,48 +47,99 @@ Participation is voluntary. You can withdraw at any time without affecting your 
 
 ### Questions
 Contact the study coordinator at study@example.com with any questions.`
+}
 
-// Placeholder comprehension questions
-const COMPREHENSION_QUESTIONS = [
-  {
-    id: 1,
-    question: 'How long does this study last?',
-    correctAnswer: '6 months',
-  },
-  {
-    id: 2,
-    question: 'Can you withdraw from the study at any time?',
-    correctAnswer: 'Yes',
-  },
-  {
-    id: 3,
-    question: 'What will you be asked to do?',
-    correctAnswer: 'Complete questionnaires and have blood work done',
-  },
-  {
-    id: 4,
-    question: 'Will participating change your TRT treatment?',
-    correctAnswer: 'No',
-  },
-]
+// Generate placeholder comprehension questions
+function generateComprehensionPreview(durationWeeks: number) {
+  const months = Math.round(durationWeeks / 4)
+  return [
+    {
+      id: 1,
+      question: 'How long does this study last?',
+      correctAnswer: `${months} months`,
+    },
+    {
+      id: 2,
+      question: 'Can you withdraw from the study at any time?',
+      correctAnswer: 'Yes',
+    },
+    {
+      id: 3,
+      question: 'What will you be asked to do?',
+      correctAnswer: 'Complete questionnaires and have blood work done',
+    },
+    {
+      id: 4,
+      question: 'Will participating change your treatment?',
+      correctAnswer: 'No',
+    },
+  ]
+}
+
+interface CreatedStudy {
+  id: string
+  name: string
+  intervention: string
+  status: string
+}
 
 function ConsentReviewContent() {
   const searchParams = useSearchParams()
   const intervention = searchParams.get('intervention') || 'Unknown Intervention'
+  const population = searchParams.get('population') || 'new_hypogonadal'
+  const treatmentStage = searchParams.get('treatmentStage') || 'initiation'
+  const primaryEndpoint = searchParams.get('primaryEndpoint') || 'qadam'
+  const secondaryEndpoints = searchParams.get('secondaryEndpoints') || ''
+  const duration = searchParams.get('duration') || '26'
+  const durationWeeks = parseInt(duration) || 26
 
   const [isFinalized, setIsFinalized] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [error, setError] = useState('')
+  const [createdStudy, setCreatedStudy] = useState<CreatedStudy | null>(null)
+  const [inviteLink, setInviteLink] = useState('')
 
-  // Generate a fake study ID
-  const studyId = 'study_' + Math.random().toString(36).substring(2, 10)
-  const inviteLink = `https://study-platform-psi.vercel.app/join/${studyId}`
+  // Preview data (shown before finalization)
+  const consentPreview = generateConsentPreview(intervention, durationWeeks)
+  const comprehensionPreview = generateComprehensionPreview(durationWeeks)
 
   const handleFinalize = async () => {
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsFinalized(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/studies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          intervention,
+          population,
+          treatmentStage,
+          primaryEndpoint,
+          secondaryEndpoints,
+          duration,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Failed to create study')
+        setIsSubmitting(false)
+        return
+      }
+
+      setCreatedStudy(data.study)
+      setInviteLink(data.inviteLink)
+      setIsFinalized(true)
+    } catch (err) {
+      console.error('Error creating study:', err)
+      setError('An unexpected error occurred. Please try again.')
+    }
+
     setIsSubmitting(false)
   }
 
@@ -97,7 +150,7 @@ function ConsentReviewContent() {
   }
 
   // Success state
-  if (isFinalized) {
+  if (isFinalized && createdStudy) {
     return (
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
         <div className="w-full max-w-lg text-center">
@@ -117,11 +170,11 @@ function ConsentReviewContent() {
           <div className="bg-gray-50 rounded-xl p-6 mb-6 text-left">
             <div className="mb-4">
               <div className="text-sm text-gray-500 mb-1">Study Name</div>
-              <div className="font-semibold text-gray-900">TRT Symptom Response Study</div>
+              <div className="font-semibold text-gray-900">{createdStudy.name}</div>
             </div>
             <div>
               <div className="text-sm text-gray-500 mb-1">Study ID</div>
-              <div className="font-mono text-sm text-gray-900">{studyId}</div>
+              <div className="font-mono text-sm text-gray-900">{createdStudy.id}</div>
             </div>
           </div>
 
@@ -157,7 +210,7 @@ function ConsentReviewContent() {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href={`/sponsor/studies/${studyId}`}
+              href={`/sponsor/studies/${createdStudy.id}`}
               className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
             >
               View Study Dashboard
@@ -205,7 +258,7 @@ function ConsentReviewContent() {
         </div>
         <div className="p-6 max-h-96 overflow-y-auto">
           <div className="prose prose-sm prose-gray max-w-none">
-            {CONSENT_DOCUMENT.split('\n').map((line, index) => {
+            {consentPreview.split('\n').map((line, index) => {
               if (line.startsWith('# ')) {
                 return <h1 key={index} className="text-xl font-bold text-gray-900 mt-0">{line.replace('# ', '')}</h1>
               } else if (line.startsWith('## ')) {
@@ -229,7 +282,7 @@ function ConsentReviewContent() {
           <div className="flex items-center gap-3">
             <CheckCircle2 className="w-5 h-5 text-gray-400" />
             <span className="font-medium text-gray-900">Comprehension Questions</span>
-            <span className="text-sm text-gray-500">({COMPREHENSION_QUESTIONS.length})</span>
+            <span className="text-sm text-gray-500">({comprehensionPreview.length})</span>
           </div>
           <button className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-indigo-50">
             <Pencil className="w-3.5 h-3.5" />
@@ -241,7 +294,7 @@ function ConsentReviewContent() {
             Participants must answer these questions correctly before signing consent.
           </p>
           <div className="space-y-3">
-            {COMPREHENSION_QUESTIONS.map((q, index) => (
+            {comprehensionPreview.map((q, index) => (
               <div key={q.id} className="p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-medium">
@@ -260,6 +313,13 @@ function ConsentReviewContent() {
           </div>
         </div>
       </section>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+          {error}
+        </div>
+      )}
 
       {/* Finalize Button */}
       <button
