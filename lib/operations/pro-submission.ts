@@ -250,7 +250,7 @@ export async function isTimepointComplete(
   timepoint: string,
   requiredInstruments: string[]
 ): Promise<boolean> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   const { data: submissions, error } = await supabase
     
@@ -274,7 +274,7 @@ export async function getTimepointSubmissions(
   participantId: string,
   timepoint: string
 ): Promise<{ instrument: string; scores: Record<string, number> | null }[]> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   const { data: submissions, error } = await supabase
     
