@@ -6,7 +6,7 @@
  * without waiting for real time to pass.
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import { getParticipantSchedule, type ScheduledTimepoint } from './schedule'
 
 
@@ -26,7 +26,7 @@ export async function advanceParticipantTime(
   participantId: string,
   toWeek: number
 ): Promise<AdvanceTimeResult> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   // Get current participant state
   const { data: participant, error: participantError } = await supabase
@@ -115,7 +115,7 @@ export async function simulateLabResults(
   participantId: string,
   timepoint: string
 ): Promise<{ success: boolean; labIds: string[]; alerts?: { created: number; alerts: string[] }; error?: string }> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   // Get participant to verify they exist
   const { data: participant, error: participantError } = await supabase
@@ -235,7 +235,7 @@ async function evaluateLabSafety(
   timepoint: string,
   labIds: string[]
 ): Promise<{ created: number; alerts: string[] }> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
   const alertMessages: string[] = []
 
   // Get the lab results we just created
@@ -317,7 +317,7 @@ export async function getDemoState(participantId: string): Promise<{
   pendingLabs: string[]
   dueAssessments: string[]
 }> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   // Get participant
   const { data: participant } = await supabase

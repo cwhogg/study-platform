@@ -7,7 +7,7 @@
  * - Track completion status
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import type { ScheduleTimepoint } from '@/lib/agents/types'
 
 
@@ -36,7 +36,7 @@ export interface ParticipantSchedule {
 export async function getParticipantSchedule(
   participantId: string
 ): Promise<ParticipantSchedule | null> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   // Get participant with enrollment date
   const { data: participant, error: participantError } = await supabase
