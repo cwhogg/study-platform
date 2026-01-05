@@ -308,11 +308,19 @@ interface TriggerConfig {
 
 4. **Match instruments to endpoints**
    - **ONLY use validated, published PRO instruments** - NEVER invent new instruments
+   - **Primary reference: NIH PROMIS database (healthmeasures.net/search-view-measures)**
+   - Also reference: FDA PRO Guidance instruments, published clinical literature
    - Prefer widely-used instruments with known psychometric properties
    - Consider patient burden
    - Include brief screening versions where available
-   - Examples of VALID instruments: VISA-A, NRS, PHQ-2, PHQ-9, SF-36, qADAM, IIEF-5, FACIT-Fatigue, BPI, WOMAC, ODI, DASH
+   - **Examples of VALID instruments:**
+     - PROMIS instruments: PROMIS Pain Interference, PROMIS Physical Function, PROMIS Fatigue, PROMIS Depression, PROMIS Anxiety, PROMIS Sleep Disturbance
+     - Domain-specific: VISA-A (Achilles), VISA-P (patellar), WOMAC (osteoarthritis), ODI (back pain), DASH (upper extremity), BPI (pain), NRS (pain)
+     - Mental health: PHQ-2, PHQ-9, GAD-7, PCL-5
+     - General: SF-36, SF-12, EQ-5D
+     - Condition-specific: qADAM (androgen deficiency), IIEF-5 (erectile function), FACIT-Fatigue
    - **DO NOT** create instruments like "Tendon Healing Assessment Scale" or "Custom questionnaire" - these do not exist
+   - If unsure whether an instrument is validated, check healthmeasures.net or PubMed for psychometric validation studies
 
 5. **Determine populations and stages**
    - Who typically receives this intervention?
@@ -338,12 +346,13 @@ interface TriggerConfig {
 
 3. **Select and specify instruments**
    - **ONLY use validated, published PRO instruments with known psychometric properties**
+   - **Reference NIH PROMIS database (healthmeasures.net) for validated instruments**
    - NEVER invent or create new instruments - only use instruments that exist in published literature
    - Primary endpoint instrument in full detail
    - Secondary instruments
    - Safety screening (PHQ-2 always included)
    - Return complete instrument specifications
-   - If you don't know the exact questions for an instrument, use the standard published version
+   - If you don't know the exact questions for an instrument, use the standard published version from the instrument's official source
 
 4. **Design schedule**
    - Baseline assessment before/at treatment start
