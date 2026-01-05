@@ -99,6 +99,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Ensure profile exists (trigger may not have fired yet)
+    // First check by user ID
     const { data: existingProfile } = await serviceClient
       .from('sp_profiles')
       .select('id')
@@ -106,7 +107,23 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (!existingProfile) {
-      // Create profile manually if trigger hasn't fired
+      // Check if there's an orphaned profile with this email (from failed previous attempt)
+      const { data: profileByEmail } = await serviceClient
+        .from('sp_profiles')
+        .select('id')
+        .eq('email', email)
+        .single()
+
+      if (profileByEmail) {
+        // Orphaned profile exists - update it to use new user ID
+        // First delete the old profile (will cascade), then create new one
+        await serviceClient
+          .from('sp_profiles')
+          .delete()
+          .eq('email', email)
+      }
+
+      // Create profile for this user
       const { error: profileError } = await serviceClient
         .from('sp_profiles')
         .insert({
@@ -115,8 +132,8 @@ export async function POST(request: NextRequest) {
           role: 'participant',
         })
 
-      if (profileError && profileError.code !== '23505') {
-        console.error('Failed to create profile:', profileError)
+      if (profileError) {
+        console.error('Failed to create profile:', profileError, 'User ID:', authData.user.id)
         return NextResponse.json(
           { error: 'Failed to create user profile' },
           { status: 500 }
