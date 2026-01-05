@@ -62,7 +62,7 @@ This agent generates all copy/messaging for:
 ```json
 {
   "welcome": {
-    "headline": "Help Improve TRT Treatment",
+    "headline": "Help Study TRT Treatment",
     "subheadline": "Join a research study from Hone Health",
     "bullets": [
       "Short surveys every 2-4 weeks",
