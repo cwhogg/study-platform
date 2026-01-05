@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 2. Check if study exists (use service client to bypass RLS)
+    // 2. Get service client for bypassing RLS
     let serviceClient
     try {
       serviceClient = createServiceClient()
@@ -84,6 +84,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // 3. Check if study exists
     const { data: study, error: studyError } = await serviceClient
       .from('sp_studies')
       .select('id, status')
@@ -97,7 +98,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 3. Create participant record (use service client to bypass RLS for new user)
+    // 4. Ensure profile exists (trigger may not have fired yet)
+    const { data: existingProfile } = await serviceClient
+      .from('sp_profiles')
+      .select('id')
+      .eq('id', authData.user.id)
+      .single()
+
+    if (!existingProfile) {
+      // Create profile manually if trigger hasn't fired
+      const { error: profileError } = await serviceClient
+        .from('sp_profiles')
+        .insert({
+          id: authData.user.id,
+          email: email,
+          role: 'participant',
+        })
+
+      if (profileError && profileError.code !== '23505') {
+        console.error('Failed to create profile:', profileError)
+        return NextResponse.json(
+          { error: 'Failed to create user profile' },
+          { status: 500 }
+        )
+      }
+    }
+
+    // 5. Create participant record
     const { data: participant, error: participantError } = await serviceClient
       .from('sp_participants')
       .insert({
