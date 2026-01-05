@@ -1,8 +1,9 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 
 // Public endpoint to get study data for participants (enrollment flow)
+// Uses service client to bypass RLS since this is public data
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ studyId: string }> }
@@ -17,10 +18,18 @@ export async function GET(
       )
     }
 
-    const supabase = await createClient()
+    // Check if service role key is available
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.warn('SUPABASE_SERVICE_ROLE_KEY not configured')
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+
+    const supabase = createServiceClient()
 
     const { data: study, error: studyError } = await supabase
-      
       .from('sp_studies')
       .select('id, name, intervention, status, enrollment_copy, config')
       .eq('id', studyId)
