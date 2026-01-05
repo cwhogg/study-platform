@@ -49,6 +49,7 @@ export async function handleProSubmission(
   }
 
   try {
+    console.log('[PRO] Starting submission for participant:', participantId)
 
     // 1. Get participant and study with protocol
     const { data: participant, error: participantError } = await supabase
@@ -59,8 +60,10 @@ export async function handleProSubmission(
       .single()
 
     if (participantError || !participant) {
-      return { success: false, error: 'Participant not found' }
+      console.error('[PRO] Participant lookup failed:', participantError)
+      return { success: false, error: `Participant not found: ${participantError?.message || 'null result'}` }
     }
+    console.log('[PRO] Found participant, study_id:', participant.study_id)
 
     // Get study protocol
     const { data: study, error: studyError } = await supabase
@@ -71,8 +74,10 @@ export async function handleProSubmission(
       .single()
 
     if (studyError || !study) {
-      return { success: false, error: 'Study not found' }
+      console.error('[PRO] Study lookup failed:', studyError)
+      return { success: false, error: `Study not found: ${studyError?.message || 'null result'}` }
     }
+    console.log('[PRO] Found study, has protocol:', !!study.protocol)
 
     // 2. Find instrument in protocol
     const protocol = study.protocol as { instruments?: Instrument[] } | null
