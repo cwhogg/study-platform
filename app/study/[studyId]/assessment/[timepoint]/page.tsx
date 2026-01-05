@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer } from '@/components/ui/MobileContainer'
+import { createClient } from '@/lib/supabase/client'
 
 // Instrument types (same as baseline)
 interface Option {
@@ -164,6 +165,29 @@ export default function AssessmentPage() {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [showInstructions, setShowInstructions] = useState(true)
   const [isCompleting, setIsCompleting] = useState(false)
+  const [participantId, setParticipantId] = useState<string | null>(null)
+  const [startTime] = useState(() => Date.now())
+
+  // Get participant ID on mount
+  useEffect(() => {
+    async function getParticipant() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data: participant } = await supabase
+        .from('sp_participants')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('study_id', studyId)
+        .single()
+
+      if (participant) {
+        setParticipantId(participant.id)
+      }
+    }
+    getParticipant()
+  }, [studyId])
 
   // Get instruments for this timepoint
   const instrumentIds = timepointSchedule[timepoint] || ['phq-2', 'energy']
@@ -195,10 +219,63 @@ export default function AssessmentPage() {
     }
   }, [currentQuestion, isNewInstrument])
 
+  // Submit all instruments for this timepoint
+  const submitAssessment = useCallback(async (finalAnswers: Record<string, number>) => {
+    if (!participantId) {
+      console.error('No participant ID')
+      return
+    }
+
+    const durationSeconds = Math.floor((Date.now() - startTime) / 1000)
+
+    // Group answers by instrument
+    const answersByInstrument = new Map<string, { questionId: string; value: number }[]>()
+
+    for (const q of allQuestions) {
+      const value = finalAnswers[q.id]
+      if (value !== undefined) {
+        if (!answersByInstrument.has(q.instrumentId)) {
+          answersByInstrument.set(q.instrumentId, [])
+        }
+        answersByInstrument.get(q.instrumentId)!.push({
+          questionId: q.id,
+          value
+        })
+      }
+    }
+
+    // Submit each instrument
+    for (const [instrumentId, responses] of answersByInstrument) {
+      try {
+        const response = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            participantId,
+            timepoint,
+            instrumentId,
+            responses,
+            durationSeconds
+          })
+        })
+
+        if (!response.ok) {
+          const data = await response.json()
+          console.error('Submission failed:', data.error)
+        } else {
+          console.log(`Submitted ${instrumentId} for ${timepoint}`)
+        }
+      } catch (error) {
+        console.error('Submission error:', error)
+      }
+    }
+  }, [participantId, timepoint, allQuestions, startTime])
+
   const handleAnswer = async (value: number) => {
     if (isTransitioning || !question) return
 
-    setAnswers({ ...answers, [question.id]: value })
+    const newAnswers = { ...answers, [question.id]: value }
+    setAnswers(newAnswers)
     setIsTransitioning(true)
 
     // Brief animation delay
@@ -208,8 +285,9 @@ export default function AssessmentPage() {
       setCurrentQuestion(currentQuestion + 1)
       setShowInstructions(false)
     } else {
-      // Complete assessment
+      // Complete assessment - submit all data
       setIsCompleting(true)
+      await submitAssessment(newAnswers)
       await new Promise(resolve => setTimeout(resolve, 800))
       router.push(`/study/${studyId}/dashboard`)
     }
