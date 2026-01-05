@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ClipboardList, ArrowRight, Search } from 'lucide-react'
+import { PageSpinner } from '@/components/ui/Spinner'
 
 interface Study {
   id: string
@@ -23,8 +24,9 @@ export default function StudyPage() {
     async function fetchStudies() {
       try {
         const response = await fetch('/api/studies/active')
+        const data = await response.json()
+
         if (response.ok) {
-          const data = await response.json()
           setStudies(data.studies || [])
 
           // If only one study exists, redirect directly to it
@@ -32,9 +34,13 @@ export default function StudyPage() {
             router.push(`/study/${data.studies[0].id}/join`)
             return
           }
+        } else {
+          console.error('Error response from studies/active:', data)
+          setError(data.error || 'Failed to load studies')
         }
       } catch (err) {
         console.error('Error fetching studies:', err)
+        setError('Unable to connect to server. Please try again.')
       }
       setIsLoading(false)
     }
@@ -71,10 +77,7 @@ export default function StudyPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading...</p>
-        </div>
+        <PageSpinner label="Loading studies..." />
       </div>
     )
   }
@@ -105,7 +108,10 @@ export default function StudyPage() {
                 id="studyCode"
                 type="text"
                 value={studyCode}
-                onChange={(e) => setStudyCode(e.target.value)}
+                onChange={(e) => {
+                  setStudyCode(e.target.value)
+                  if (error) setError('')
+                }}
                 placeholder="Enter study code or ID"
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
@@ -125,6 +131,19 @@ export default function StudyPage() {
             You should have received a study code or invitation link from your provider
           </p>
         </form>
+
+        {/* API Error */}
+        {error && studies.length === 0 && !studyCode && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+            <p className="text-red-700 text-sm">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-2 text-sm text-red-600 underline hover:text-red-800"
+            >
+              Retry
+            </button>
+          </div>
+        )}
 
         {/* Available Studies */}
         {studies.length > 0 && (

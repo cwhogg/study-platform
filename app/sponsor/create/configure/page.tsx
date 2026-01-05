@@ -2,8 +2,10 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowRight, ArrowLeft, Info, AlertCircle } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Info } from 'lucide-react'
 import Link from 'next/link'
+import { PageSpinner, ButtonSpinner } from '@/components/ui/Spinner'
+import { ErrorMessage } from '@/components/ui/ErrorMessage'
 
 // Types for AI discovery response
 interface EndpointOption {
@@ -220,14 +222,7 @@ function ConfigureStudyContent() {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading study options...</p>
-        </div>
-      </div>
-    )
+    return <PageSpinner label="Loading study options..." />
   }
 
   return (
@@ -468,10 +463,10 @@ function ConfigureStudyContent() {
 
         {/* Error Message */}
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-            <span>{error}</span>
-          </div>
+          <ErrorMessage
+            message={error}
+            onDismiss={() => setError('')}
+          />
         )}
 
         {/* Submit */}
@@ -481,10 +476,7 @@ function ConfigureStudyContent() {
           className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
         >
           {isSubmitting ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span>Generating Protocol...</span>
-            </>
+            <ButtonSpinner label="Generating Protocol..." />
           ) : (
             <>
               <span>Generate Protocol</span>
@@ -499,7 +491,7 @@ function ConfigureStudyContent() {
 
 export default function ConfigureStudyPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+    <Suspense fallback={<PageSpinner label="Loading..." />}>
       <ConfigureStudyContent />
     </Suspense>
   )

@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, AlertCircle } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { ButtonSpinner } from '@/components/ui/Spinner'
+import { ErrorMessage } from '@/components/ui/ErrorMessage'
 
 const EXAMPLES = [
   'GLP-1 medications',
@@ -131,10 +133,11 @@ export default function CreateStudyPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2">
-              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <span>{error}</span>
-            </div>
+            <ErrorMessage
+              message={error}
+              onDismiss={() => setError('')}
+              className="mb-6"
+            />
           )}
 
           {/* Submit */}
@@ -144,10 +147,7 @@ export default function CreateStudyPage() {
             className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           >
             {isSubmitting ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Analyzing Intervention...</span>
-              </>
+              <ButtonSpinner label="Analyzing Intervention..." />
             ) : (
               <>
                 <span>Continue</span>

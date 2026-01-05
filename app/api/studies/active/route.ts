@@ -5,6 +5,12 @@ import { NextResponse } from 'next/server'
 // Uses service client to bypass RLS since this is public data
 export async function GET() {
   try {
+    // Check if service role key is available
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.warn('SUPABASE_SERVICE_ROLE_KEY not configured - returning empty studies list')
+      return NextResponse.json({ studies: [] })
+    }
+
     const supabase = createServiceClient()
 
     const { data: studies, error: studiesError } = await supabase

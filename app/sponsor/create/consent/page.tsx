@@ -16,6 +16,8 @@ import {
   ChevronUp,
   ListChecks,
 } from 'lucide-react'
+import { PageSpinner, ButtonSpinner } from '@/components/ui/Spinner'
+import { ErrorMessage } from '@/components/ui/ErrorMessage'
 
 // Types for AI-generated consent
 interface ConsentSection {
@@ -240,14 +242,7 @@ function ConsentReviewContent() {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading consent document...</p>
-        </div>
-      </div>
-    )
+    return <PageSpinner label="Loading consent document..." />
   }
 
   // Success state
@@ -485,9 +480,11 @@ function ConsentReviewContent() {
 
       {/* Error Message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-          {error}
-        </div>
+        <ErrorMessage
+          message={error}
+          onDismiss={() => setError('')}
+          className="mb-6"
+        />
       )}
 
       {/* Finalize Button */}
@@ -497,10 +494,7 @@ function ConsentReviewContent() {
         className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
       >
         {isSubmitting ? (
-          <>
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            <span>Creating Study...</span>
-          </>
+          <ButtonSpinner label="Creating Study..." />
         ) : (
           <>
             <span>Finalize Study</span>
@@ -518,7 +512,7 @@ function ConsentReviewContent() {
 
 export default function ConsentPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+    <Suspense fallback={<PageSpinner label="Loading..." />}>
       <ConsentReviewContent />
     </Suspense>
   )
