@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-const SCHEMA = 'study_platform'
 
 // Public endpoint to get study data for participants (enrollment flow)
 export async function GET(
@@ -21,8 +20,8 @@ export async function GET(
     const supabase = await createClient()
 
     const { data: study, error: studyError } = await supabase
-      .schema(SCHEMA)
-      .from('studies')
+      
+      .from('sp_studies')
       .select('id, name, intervention, status, enrollment_copy, config')
       .eq('id', studyId)
       .single()

@@ -3,7 +3,6 @@ import { createClient } from '@/lib/supabase/server'
 import { sendEmail } from '@/lib/email/client'
 import { emailTemplates } from '@/lib/email/templates'
 
-const SCHEMA = 'study_platform'
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,8 +20,8 @@ export async function POST(request: NextRequest) {
 
     // Get participant
     const { data: participant, error: participantError } = await supabase
-      .schema(SCHEMA)
-      .from('participants')
+      
+      .from('sp_participants')
       .select('id, user_id, status')
       .eq('id', participantId)
       .single()
@@ -37,8 +36,8 @@ export async function POST(request: NextRequest) {
 
     // Update participant status to enrolled
     const { error: updateError } = await supabase
-      .schema(SCHEMA)
-      .from('participants')
+      
+      .from('sp_participants')
       .update({
         status: 'enrolled',
         enrolled_at: new Date().toISOString(),
@@ -55,8 +54,8 @@ export async function POST(request: NextRequest) {
 
     // Get profile for email
     const { data: profile, error: profileError } = await supabase
-      .schema(SCHEMA)
-      .from('profiles')
+      
+      .from('sp_profiles')
       .select('email, first_name')
       .eq('id', participant.user_id)
       .single()
@@ -73,8 +72,8 @@ export async function POST(request: NextRequest) {
 
     // Get study name
     const { data: study, error: studyError } = await supabase
-      .schema(SCHEMA)
-      .from('studies')
+      
+      .from('sp_studies')
       .select('id, name')
       .eq('id', studyId)
       .single()
@@ -114,8 +113,8 @@ export async function POST(request: NextRequest) {
 
     // Log the message
     const { error: messageError } = await supabase
-      .schema(SCHEMA)
-      .from('messages')
+      
+      .from('sp_messages')
       .insert({
         participant_id: participantId,
         type: 'milestone',

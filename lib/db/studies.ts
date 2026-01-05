@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Study, StudyInsert, StudyUpdate } from './types'
 
-const SCHEMA = 'study_platform'
 
 /**
  * Create a new study
@@ -10,8 +9,8 @@ export async function createStudy(data: StudyInsert): Promise<Study> {
   const supabase = await createClient()
 
   const { data: study, error } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .insert(data)
     .select()
     .single()
@@ -30,8 +29,8 @@ export async function getStudy(id: string): Promise<Study | null> {
   const supabase = await createClient()
 
   const { data: study, error } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .select()
     .eq('id', id)
     .single()
@@ -54,8 +53,8 @@ export async function updateStudy(id: string, data: StudyUpdate): Promise<Study>
   const supabase = await createClient()
 
   const { data: study, error } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .update(data)
     .eq('id', id)
     .select()
@@ -84,8 +83,8 @@ export async function getStudiesBySponsor(sponsorId: string): Promise<Study[]> {
   const supabase = await createClient()
 
   const { data: studies, error } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .select()
     .eq('sponsor_id', sponsorId)
     .order('created_at', { ascending: false })
@@ -113,8 +112,8 @@ export async function getStudyWithStats(id: string): Promise<{
 
   // Get the study
   const { data: study, error: studyError } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .select()
     .eq('id', id)
     .single()
@@ -128,8 +127,8 @@ export async function getStudyWithStats(id: string): Promise<{
 
   // Get participant counts
   const { data: participants, error: participantsError } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select('status')
     .eq('study_id', id)
 
@@ -154,8 +153,8 @@ export async function deleteStudy(id: string): Promise<void> {
   const supabase = await createClient()
 
   const { error } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .delete()
     .eq('id', id)
 

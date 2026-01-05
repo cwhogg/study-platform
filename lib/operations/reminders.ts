@@ -16,7 +16,6 @@ import { getDueAssessments, type ScheduledTimepoint } from './schedule'
 import { sendEmail } from '@/lib/email/client'
 import { buildEmail, type TemplateVariables } from '@/lib/email/templates'
 
-const SCHEMA = 'study_platform'
 
 export interface ReminderResult {
   participantId: string
@@ -48,8 +47,8 @@ export async function processReminders(): Promise<ProcessRemindersResult> {
 
   // Get all active participants
   const { data: participants, error: participantsError } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select(`
       id,
       study_id,
@@ -103,8 +102,8 @@ export async function processReminders(): Promise<ProcessRemindersResult> {
 
       // Get participant profile
       const { data: profile } = await supabase
-        .schema(SCHEMA)
-        .from('profiles')
+        
+        .from('sp_profiles')
         .select('first_name, email')
         .eq('id', participant.user_id)
         .single()
@@ -125,8 +124,8 @@ export async function processReminders(): Promise<ProcessRemindersResult> {
 
       // Get study for templates
       const { data: study } = await supabase
-        .schema(SCHEMA)
-        .from('studies')
+        
+        .from('sp_studies')
         .select('id, name, message_templates')
         .eq('id', participant.study_id)
         .single()
@@ -215,8 +214,8 @@ async function checkReminderSentToday(
   today.setHours(0, 0, 0, 0)
 
   const { data: messages } = await supabase
-    .schema(SCHEMA)
-    .from('messages')
+    
+    .from('sp_messages')
     .select('id')
     .eq('participant_id', participantId)
     .eq('template_id', `${reminderType}_${timepoint}`)
@@ -290,8 +289,8 @@ async function sendReminder(
 
     // Log message
     await supabase
-      .schema(SCHEMA)
-      .from('messages')
+      
+      .from('sp_messages')
       .insert({
         participant_id: participantId,
         type: 'reminder',
@@ -322,8 +321,8 @@ async function sendReminder(
 
     // Log SMS (not actually sending in demo)
     await supabase
-      .schema(SCHEMA)
-      .from('messages')
+      
+      .from('sp_messages')
       .insert({
         participant_id: participantId,
         type: 'reminder',
@@ -361,8 +360,8 @@ export async function sendSingleReminder(
 
   // Get participant
   const { data: participant } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select('id, study_id, user_id')
     .eq('id', participantId)
     .single()
@@ -373,8 +372,8 @@ export async function sendSingleReminder(
 
   // Get profile
   const { data: profile } = await supabase
-    .schema(SCHEMA)
-    .from('profiles')
+    
+    .from('sp_profiles')
     .select('first_name, email')
     .eq('id', participant.user_id)
     .single()
@@ -385,8 +384,8 @@ export async function sendSingleReminder(
 
   // Get study
   const { data: study } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .select('id, name, message_templates')
     .eq('id', participant.study_id)
     .single()

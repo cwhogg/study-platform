@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Participant, ParticipantInsert, ParticipantStatus, ParticipantUpdate } from './types'
 
-const SCHEMA = 'study_platform'
 
 /**
  * Create a new participant (enrollment record)
@@ -21,8 +20,8 @@ export async function createParticipant(
   }
 
   const { data: participant, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .insert(data)
     .select()
     .single()
@@ -41,8 +40,8 @@ export async function getParticipant(id: string): Promise<Participant | null> {
   const supabase = await createClient()
 
   const { data: participant, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select()
     .eq('id', id)
     .single()
@@ -67,8 +66,8 @@ export async function getParticipantByUser(
   const supabase = await createClient()
 
   const { data: participant, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select()
     .eq('study_id', studyId)
     .eq('user_id', userId)
@@ -101,8 +100,8 @@ export async function updateParticipantStatus(
   }
 
   const { data: participant, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .update(updateData)
     .eq('id', id)
     .select()
@@ -125,8 +124,8 @@ export async function advanceParticipantWeek(
   const supabase = await createClient()
 
   const { data: participant, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .update({ current_week: week })
     .eq('id', id)
     .select()
@@ -149,8 +148,8 @@ export async function updateParticipant(
   const supabase = await createClient()
 
   const { data: participant, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .update(data)
     .eq('id', id)
     .select()
@@ -170,8 +169,8 @@ export async function getParticipantsByStudy(studyId: string): Promise<Participa
   const supabase = await createClient()
 
   const { data: participants, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select()
     .eq('study_id', studyId)
     .order('created_at', { ascending: false })
@@ -190,8 +189,8 @@ export async function getParticipantsByUser(userId: string): Promise<Participant
   const supabase = await createClient()
 
   const { data: participants, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select()
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
@@ -213,8 +212,8 @@ export async function saveScreeningResponses(
   const supabase = await createClient()
 
   const { data: participant, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .update({ screening_responses: responses })
     .eq('id', id)
     .select()
@@ -237,8 +236,8 @@ export async function getParticipantWithStudy(id: string): Promise<{
   const supabase = await createClient()
 
   const { data, error } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select(`
       *,
       studies!inner (

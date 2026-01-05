@@ -10,7 +10,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { ScheduleTimepoint } from '@/lib/agents/types'
 
-const SCHEMA = 'study_platform'
 
 export interface ScheduledTimepoint {
   timepoint: string
@@ -41,8 +40,8 @@ export async function getParticipantSchedule(
 
   // Get participant with enrollment date
   const { data: participant, error: participantError } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select('id, study_id, enrolled_at, current_week')
     .eq('id', participantId)
     .single()
@@ -53,8 +52,8 @@ export async function getParticipantSchedule(
 
   // Get study protocol
   const { data: study, error: studyError } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .select('protocol')
     .eq('id', participant.study_id)
     .single()
@@ -68,8 +67,8 @@ export async function getParticipantSchedule(
 
   // Get all submissions for this participant
   const { data: submissions } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select('timepoint, instrument')
     .eq('participant_id', participantId)
 

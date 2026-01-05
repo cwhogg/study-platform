@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-const SCHEMA = 'study_platform'
 
 /**
  * GET: Fetch all studies and participants for admin dashboard
@@ -12,8 +11,8 @@ export async function GET() {
 
     // Get all studies with participant counts
     const { data: studies, error: studiesError } = await supabase
-      .schema(SCHEMA)
-      .from('studies')
+      
+      .from('sp_studies')
       .select('id, name, intervention, status')
       .order('created_at', { ascending: false })
 
@@ -27,8 +26,8 @@ export async function GET() {
 
     // Get participant counts per study
     const { data: participantCounts } = await supabase
-      .schema(SCHEMA)
-      .from('participants')
+      
+      .from('sp_participants')
       .select('study_id')
 
     const countsByStudy = new Map<string, number>()
@@ -46,8 +45,8 @@ export async function GET() {
 
     // Get all participants with profile info
     const { data: participants, error: participantsError } = await supabase
-      .schema(SCHEMA)
-      .from('participants')
+      
+      .from('sp_participants')
       .select(`
         id,
         study_id,
@@ -69,8 +68,8 @@ export async function GET() {
     // Get profiles for participants
     const userIds = [...new Set(participants?.map(p => p.user_id) || [])]
     const { data: profiles } = await supabase
-      .schema(SCHEMA)
-      .from('profiles')
+      
+      .from('sp_profiles')
       .select('id, email, first_name')
       .in('id', userIds)
 

@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Submission, SubmissionInsert, ProResponses, ProScores } from './types'
 
-const SCHEMA = 'study_platform'
 
 /**
  * Create a new PRO submission
@@ -10,8 +9,8 @@ export async function createSubmission(data: SubmissionInsert): Promise<Submissi
   const supabase = await createClient()
 
   const { data: submission, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .insert(data)
     .select()
     .single()
@@ -30,8 +29,8 @@ export async function getSubmissions(participantId: string): Promise<Submission[
   const supabase = await createClient()
 
   const { data: submissions, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select()
     .eq('participant_id', participantId)
     .order('submitted_at', { ascending: false })
@@ -53,8 +52,8 @@ export async function getSubmissionsByTimepoint(
   const supabase = await createClient()
 
   const { data: submissions, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select()
     .eq('participant_id', participantId)
     .eq('timepoint', timepoint)
@@ -94,8 +93,8 @@ export async function getSubmission(id: string): Promise<Submission | null> {
   const supabase = await createClient()
 
   const { data: submission, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select()
     .eq('id', id)
     .single()
@@ -120,8 +119,8 @@ export async function getSubmissionsByInstrument(
   const supabase = await createClient()
 
   const { data: submissions, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select()
     .eq('participant_id', participantId)
     .eq('instrument', instrument)
@@ -141,8 +140,8 @@ export async function getLatestSubmission(participantId: string): Promise<Submis
   const supabase = await createClient()
 
   const { data: submission, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select()
     .eq('participant_id', participantId)
     .order('submitted_at', { ascending: false })
@@ -166,8 +165,8 @@ export async function getCompletedTimepoints(participantId: string): Promise<str
   const supabase = await createClient()
 
   const { data: submissions, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select('timepoint')
     .eq('participant_id', participantId)
 

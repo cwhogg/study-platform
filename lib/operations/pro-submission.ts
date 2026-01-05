@@ -13,7 +13,6 @@ import { createClient } from '@/lib/supabase/server'
 import type { Instrument, AlertConfig } from '@/lib/agents/types'
 import { evaluateSafety, type SafetyEvaluationResult } from './safety'
 
-const SCHEMA = 'study_platform'
 
 export interface ProResponse {
   questionId: string
@@ -46,8 +45,8 @@ export async function handleProSubmission(
 
     // 1. Get participant and study with protocol
     const { data: participant, error: participantError } = await supabase
-      .schema(SCHEMA)
-      .from('participants')
+      
+      .from('sp_participants')
       .select('id, study_id, user_id')
       .eq('id', participantId)
       .single()
@@ -58,8 +57,8 @@ export async function handleProSubmission(
 
     // Get study protocol
     const { data: study, error: studyError } = await supabase
-      .schema(SCHEMA)
-      .from('studies')
+      
+      .from('sp_studies')
       .select('id, protocol')
       .eq('id', participant.study_id)
       .single()
@@ -93,8 +92,8 @@ export async function handleProSubmission(
     })
 
     const { data: submission, error: submissionError } = await supabase
-      .schema(SCHEMA)
-      .from('submissions')
+      
+      .from('sp_submissions')
       .insert({
         participant_id: participantId,
         timepoint,
@@ -125,8 +124,8 @@ export async function handleProSubmission(
     if (safetyResult.alerts.length > 0) {
       for (const alert of safetyResult.alerts) {
         await supabase
-          .schema(SCHEMA)
-          .from('alerts')
+          
+          .from('sp_alerts')
           .insert({
             participant_id: participantId,
             type: alert.type,
@@ -254,8 +253,8 @@ export async function isTimepointComplete(
   const supabase = await createClient()
 
   const { data: submissions, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select('instrument')
     .eq('participant_id', participantId)
     .eq('timepoint', timepoint)
@@ -278,8 +277,8 @@ export async function getTimepointSubmissions(
   const supabase = await createClient()
 
   const { data: submissions, error } = await supabase
-    .schema(SCHEMA)
-    .from('submissions')
+    
+    .from('sp_submissions')
     .select('instrument, scores')
     .eq('participant_id', participantId)
     .eq('timepoint', timepoint)

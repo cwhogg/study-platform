@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-const SCHEMA = 'study_platform'
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,8 +38,8 @@ export async function POST(request: NextRequest) {
 
     // Update the profile email_verified status
     const { error: profileError } = await supabase
-      .schema(SCHEMA)
-      .from('profiles')
+      
+      .from('sp_profiles')
       .update({ email_verified: true })
       .eq('id', data.user.id)
 

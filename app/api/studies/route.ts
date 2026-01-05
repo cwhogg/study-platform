@@ -2,8 +2,6 @@ import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import type { StudyProtocol, ComprehensionQuestion, StudyConfig } from '@/lib/db/types'
 
-const SCHEMA = 'study_platform'
-
 // Demo sponsor ID - consistent across all demo studies
 const DEMO_SPONSOR_ID = '00000000-0000-0000-0000-000000000001'
 const DEMO_SPONSOR_EMAIL = 'demo-sponsor@study-platform.local'
@@ -226,26 +224,9 @@ export async function POST(request: NextRequest) {
       try {
         const serviceClient = createServiceClient()
 
-        // First, verify the schema exists by trying a simple query
-        const { error: schemaTestError } = await serviceClient
-          .schema(SCHEMA)
-          .from('profiles')
-          .select('id')
-          .limit(1)
-
-        if (schemaTestError) {
-          console.error('[Studies] Schema test failed:', schemaTestError)
-          // The schema might not exist - this is a setup issue
-          return NextResponse.json(
-            { error: `Database schema '${SCHEMA}' not found. Please run database migrations.` },
-            { status: 500 }
-          )
-        }
-
         // Check if demo sponsor profile exists
         const { data: existingProfile } = await serviceClient
-          .schema(SCHEMA)
-          .from('profiles')
+          .from('sp_profiles')
           .select('id')
           .eq('id', DEMO_SPONSOR_ID)
           .single()
@@ -273,8 +254,7 @@ export async function POST(request: NextRequest) {
 
               // Check if their profile exists
               const { data: profile } = await serviceClient
-                .schema(SCHEMA)
-                .from('profiles')
+                .from('sp_profiles')
                 .select('id')
                 .eq('id', demoUser.id)
                 .single()
@@ -282,8 +262,7 @@ export async function POST(request: NextRequest) {
               if (!profile) {
                 // Create profile for existing auth user
                 await serviceClient
-                  .schema(SCHEMA)
-                  .from('profiles')
+                  .from('sp_profiles')
                   .insert({
                     id: demoUser.id,
                     email: DEMO_SPONSOR_EMAIL,
@@ -310,8 +289,7 @@ export async function POST(request: NextRequest) {
             await new Promise(resolve => setTimeout(resolve, 500))
 
             await serviceClient
-              .schema(SCHEMA)
-              .from('profiles')
+              .from('sp_profiles')
               .update({ role: 'sponsor', first_name: 'Demo', last_name: 'Sponsor' })
               .eq('id', sponsorId)
           } else {
@@ -336,8 +314,7 @@ export async function POST(request: NextRequest) {
 
     // Insert study
     const { data: study, error: studyError } = await dbClient
-      .schema(SCHEMA)
-      .from('studies')
+      .from('sp_studies')
       .insert({
         sponsor_id: sponsorId,
         name: studyName,
@@ -400,8 +377,7 @@ export async function GET() {
     }
 
     const { data: studies, error: studiesError } = await supabase
-      .schema(SCHEMA)
-      .from('studies')
+      .from('sp_studies')
       .select('id, name, intervention, status, created_at, config')
       .eq('sponsor_id', user.id)
       .order('created_at', { ascending: false })

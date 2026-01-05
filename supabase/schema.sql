@@ -2,43 +2,56 @@
 -- Observational Study Platform - Database Schema
 -- =============================================================================
 -- This schema defines all tables for the study platform.
--- All objects are created in the 'study_platform' schema to avoid conflicts.
+-- Tables are created in the 'public' schema with 'sp_' prefix.
 -- Run this in Supabase SQL Editor to set up the database.
 -- =============================================================================
-
--- =============================================================================
--- SCHEMA SETUP
--- =============================================================================
-
--- Create dedicated schema for this application
-CREATE SCHEMA IF NOT EXISTS study_platform;
-
--- Set search path for this session (all objects created in study_platform)
-SET search_path TO study_platform, public;
 
 -- =============================================================================
 -- CLEANUP (drop existing objects to make schema re-runnable)
 -- =============================================================================
 
--- Drop trigger on auth.users first (this one always exists)
+-- Drop triggers first
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP TRIGGER IF EXISTS update_sp_profiles_updated_at ON sp_profiles;
+DROP TRIGGER IF EXISTS update_sp_studies_updated_at ON sp_studies;
+DROP TRIGGER IF EXISTS update_sp_participants_updated_at ON sp_participants;
 
--- Drop the entire schema and recreate (cleanest approach)
-DROP SCHEMA IF EXISTS study_platform CASCADE;
-CREATE SCHEMA study_platform;
+-- Drop functions
+DROP FUNCTION IF EXISTS sp_handle_new_user() CASCADE;
+DROP FUNCTION IF EXISTS sp_update_updated_at() CASCADE;
+
+-- Drop tables (in reverse order of dependencies)
+DROP TABLE IF EXISTS sp_messages CASCADE;
+DROP TABLE IF EXISTS sp_alerts CASCADE;
+DROP TABLE IF EXISTS sp_lab_results CASCADE;
+DROP TABLE IF EXISTS sp_submissions CASCADE;
+DROP TABLE IF EXISTS sp_consents CASCADE;
+DROP TABLE IF EXISTS sp_participants CASCADE;
+DROP TABLE IF EXISTS sp_studies CASCADE;
+DROP TABLE IF EXISTS sp_profiles CASCADE;
+
+-- Drop types
+DROP TYPE IF EXISTS sp_platform_role CASCADE;
+DROP TYPE IF EXISTS sp_study_status CASCADE;
+DROP TYPE IF EXISTS sp_participant_status CASCADE;
+DROP TYPE IF EXISTS sp_alert_type CASCADE;
+DROP TYPE IF EXISTS sp_alert_status CASCADE;
+DROP TYPE IF EXISTS sp_message_channel CASCADE;
+DROP TYPE IF EXISTS sp_message_status CASCADE;
+DROP TYPE IF EXISTS sp_message_type CASCADE;
 
 -- =============================================================================
 -- ENUMS
 -- =============================================================================
 
 -- User roles in the platform
-CREATE TYPE platform_role AS ENUM ('sponsor', 'participant', 'admin');
+CREATE TYPE sp_platform_role AS ENUM ('sponsor', 'participant', 'admin');
 
 -- Study lifecycle states
-CREATE TYPE study_status AS ENUM ('draft', 'active', 'paused', 'completed');
+CREATE TYPE sp_study_status AS ENUM ('draft', 'active', 'paused', 'completed');
 
 -- Participant journey through a study
-CREATE TYPE participant_status AS ENUM (
+CREATE TYPE sp_participant_status AS ENUM (
   'invited',      -- Received invitation, not yet registered
   'registered',   -- Created account, not yet consented
   'consented',    -- Signed consent, not yet screened
@@ -51,33 +64,31 @@ CREATE TYPE participant_status AS ENUM (
 );
 
 -- Types of safety/operational alerts
-CREATE TYPE alert_type AS ENUM ('safety', 'non_response', 'lab_threshold');
+CREATE TYPE sp_alert_type AS ENUM ('safety', 'non_response', 'lab_threshold');
 
 -- Alert resolution status
-CREATE TYPE alert_status AS ENUM ('open', 'acknowledged', 'resolved');
+CREATE TYPE sp_alert_status AS ENUM ('open', 'acknowledged', 'resolved');
 
 -- Communication channel types
-CREATE TYPE message_channel AS ENUM ('email', 'sms');
+CREATE TYPE sp_message_channel AS ENUM ('email', 'sms');
 
 -- Message delivery status
-CREATE TYPE message_status AS ENUM ('queued', 'sent', 'delivered', 'failed', 'bounced');
+CREATE TYPE sp_message_status AS ENUM ('queued', 'sent', 'delivered', 'failed', 'bounced');
 
 -- Types of messages sent to participants
-CREATE TYPE message_type AS ENUM ('reminder', 'milestone', 're_engagement');
+CREATE TYPE sp_message_type AS ENUM ('reminder', 'milestone', 're_engagement');
 
 -- =============================================================================
 -- TABLES
 -- =============================================================================
 
 -- -----------------------------------------------------------------------------
--- profiles: Extended user data (linked to Supabase auth.users)
+-- sp_profiles: Extended user data (linked to Supabase auth.users)
 -- -----------------------------------------------------------------------------
--- This table extends Supabase's built-in auth.users with application-specific
--- fields. The id matches auth.users.id for easy joins.
-CREATE TABLE profiles (
+CREATE TABLE sp_profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT UNIQUE NOT NULL,
-  role platform_role NOT NULL DEFAULT 'participant',
+  role sp_platform_role NOT NULL DEFAULT 'participant',
   first_name TEXT,
   last_name TEXT,
   phone TEXT,
@@ -86,391 +97,324 @@ CREATE TABLE profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-COMMENT ON TABLE profiles IS 'Extended user profiles linked to Supabase auth.users';
-COMMENT ON COLUMN profiles.role IS 'User role: sponsor (creates studies), participant (joins studies), admin (platform admin)';
-COMMENT ON COLUMN profiles.phone IS 'Phone number for SMS notifications';
+COMMENT ON TABLE sp_profiles IS 'Extended user profiles linked to Supabase auth.users';
 
 -- -----------------------------------------------------------------------------
--- studies: Study definitions created by sponsors
+-- sp_studies: Study definitions created by sponsors
 -- -----------------------------------------------------------------------------
--- Contains the full study configuration including AI-generated protocol,
--- consent documents, and message templates.
-CREATE TABLE studies (
+CREATE TABLE sp_studies (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  sponsor_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  sponsor_id UUID NOT NULL REFERENCES sp_profiles(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   intervention TEXT NOT NULL,
-  status study_status NOT NULL DEFAULT 'draft',
-  protocol JSONB,                    -- Full protocol specification (see DATA_MODEL.md)
-  consent_document TEXT,             -- Generated consent (markdown)
-  consent_data JSONB,                -- Structured consent data (sections, questions)
-  comprehension_questions JSONB,     -- Questions with correct answers for consent
-  enrollment_copy JSONB,             -- Generated enrollment UI copy
-  message_templates JSONB,           -- Generated reminder/milestone templates
-  config JSONB,                      -- Study configuration (duration, etc.)
+  status sp_study_status NOT NULL DEFAULT 'draft',
+  protocol JSONB,
+  consent_document TEXT,
+  consent_data JSONB,
+  comprehension_questions JSONB,
+  enrollment_copy JSONB,
+  message_templates JSONB,
+  config JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-COMMENT ON TABLE studies IS 'Study definitions created by sponsors via AI agents';
-COMMENT ON COLUMN studies.intervention IS 'The intervention being studied (e.g., TRT, GLP-1)';
-COMMENT ON COLUMN studies.protocol IS 'Full protocol JSON: population, endpoints, instruments, schedule, safety thresholds';
-COMMENT ON COLUMN studies.consent_document IS 'AI-generated informed consent document in markdown';
-COMMENT ON COLUMN studies.comprehension_questions IS 'Questions to verify participant understands consent';
-COMMENT ON COLUMN studies.message_templates IS 'Templates for reminders, milestones, re-engagement messages';
+COMMENT ON TABLE sp_studies IS 'Study definitions created by sponsors via AI agents';
 
 -- -----------------------------------------------------------------------------
--- participants: Enrollment records linking users to studies
+-- sp_participants: Enrollment records linking users to studies
 -- -----------------------------------------------------------------------------
--- Tracks a user's participation in a specific study, including their
--- current status and progress through the study timeline.
-CREATE TABLE participants (
+CREATE TABLE sp_participants (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  study_id UUID NOT NULL REFERENCES studies(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-  status participant_status NOT NULL DEFAULT 'invited',
-  enrolled_at TIMESTAMPTZ,           -- When enrollment completed
-  current_week INTEGER DEFAULT 0,    -- Current study week (for demo time compression)
-  screening_responses JSONB,         -- I/E screening answers
-  metadata JSONB,                    -- Additional participant data
+  study_id UUID NOT NULL REFERENCES sp_studies(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES sp_profiles(id) ON DELETE CASCADE,
+  status sp_participant_status NOT NULL DEFAULT 'invited',
+  enrolled_at TIMESTAMPTZ,
+  current_week INTEGER DEFAULT 0,
+  screening_responses JSONB,
+  metadata JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(study_id, user_id)          -- One enrollment per user per study
+  UNIQUE(study_id, user_id)
 );
 
-COMMENT ON TABLE participants IS 'Tracks user participation in studies';
-COMMENT ON COLUMN participants.current_week IS 'Current study week - can be advanced for demo purposes';
-COMMENT ON COLUMN participants.screening_responses IS 'Answers to inclusion/exclusion screening questions';
+COMMENT ON TABLE sp_participants IS 'Tracks user participation in studies';
 
 -- -----------------------------------------------------------------------------
--- consents: Signed consent records
+-- sp_consents: Signed consent records
 -- -----------------------------------------------------------------------------
--- Immutable audit trail of informed consent signatures.
-CREATE TABLE consents (
+CREATE TABLE sp_consents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
-  document_version TEXT NOT NULL,    -- Version of consent document signed
-  document_hash TEXT NOT NULL,       -- SHA256 hash of document content
-  signature_name TEXT NOT NULL,      -- Typed signature
+  participant_id UUID NOT NULL REFERENCES sp_participants(id) ON DELETE CASCADE,
+  document_version TEXT NOT NULL,
+  document_hash TEXT NOT NULL,
+  signature_name TEXT NOT NULL,
   signature_timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  ip_address TEXT,                   -- IP address at signing
-  user_agent TEXT,                   -- Browser/device at signing
-  comprehension_results JSONB,       -- Answers to comprehension questions
+  ip_address TEXT,
+  user_agent TEXT,
+  comprehension_results JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-COMMENT ON TABLE consents IS 'Immutable record of signed informed consent documents';
-COMMENT ON COLUMN consents.document_hash IS 'SHA256 hash to verify document integrity';
-COMMENT ON COLUMN consents.comprehension_results IS 'Participant answers to consent comprehension questions';
+COMMENT ON TABLE sp_consents IS 'Immutable record of signed informed consent documents';
 
 -- -----------------------------------------------------------------------------
--- submissions: PRO survey submissions
+-- sp_submissions: PRO survey submissions
 -- -----------------------------------------------------------------------------
--- Stores all Patient-Reported Outcome questionnaire responses.
-CREATE TABLE submissions (
+CREATE TABLE sp_submissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
-  timepoint TEXT NOT NULL,           -- e.g., 'baseline', 'week_2', 'week_4'
-  instrument TEXT NOT NULL,          -- e.g., 'qADAM', 'IIEF-5', 'PHQ-2'
-  responses JSONB NOT NULL,          -- Question-by-question responses
-  scores JSONB,                      -- Calculated scores (total, subscales)
-  duration_seconds INTEGER,          -- Time to complete survey
+  participant_id UUID NOT NULL REFERENCES sp_participants(id) ON DELETE CASCADE,
+  timepoint TEXT NOT NULL,
+  instrument TEXT NOT NULL,
+  responses JSONB NOT NULL,
+  scores JSONB,
+  duration_seconds INTEGER,
   submitted_at TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-COMMENT ON TABLE submissions IS 'PRO (Patient-Reported Outcome) survey submissions';
-COMMENT ON COLUMN submissions.timepoint IS 'Study timepoint: baseline, week_2, week_4, etc.';
-COMMENT ON COLUMN submissions.instrument IS 'PRO instrument name: qADAM, IIEF-5, PHQ-2, etc.';
-COMMENT ON COLUMN submissions.responses IS 'JSON object with question IDs and selected values/labels';
-COMMENT ON COLUMN submissions.scores IS 'Calculated total and subscale scores';
+COMMENT ON TABLE sp_submissions IS 'PRO (Patient-Reported Outcome) survey submissions';
 
 -- -----------------------------------------------------------------------------
--- lab_results: Lab data from external systems
+-- sp_lab_results: Lab data from external systems
 -- -----------------------------------------------------------------------------
--- Lab results received via webhook (simulated in demo mode).
-CREATE TABLE lab_results (
+CREATE TABLE sp_lab_results (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
-  timepoint TEXT NOT NULL,           -- e.g., 'baseline', 'week_6'
-  marker TEXT NOT NULL,              -- e.g., 'testosterone', 'hematocrit', 'psa'
-  value NUMERIC NOT NULL,            -- Lab value
-  unit TEXT NOT NULL,                -- e.g., 'ng/dL', '%'
-  reference_range TEXT,              -- e.g., '300-1000'
-  abnormal_flag TEXT,                -- 'H' (high), 'L' (low), or null
-  collection_date DATE,              -- When blood was drawn
+  participant_id UUID NOT NULL REFERENCES sp_participants(id) ON DELETE CASCADE,
+  timepoint TEXT NOT NULL,
+  marker TEXT NOT NULL,
+  value NUMERIC NOT NULL,
+  unit TEXT NOT NULL,
+  reference_range TEXT,
+  abnormal_flag TEXT,
+  collection_date DATE,
   received_at TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-COMMENT ON TABLE lab_results IS 'Lab results from external systems (simulated via webhook in demo)';
-COMMENT ON COLUMN lab_results.marker IS 'Lab marker name: testosterone, hematocrit, PSA, etc.';
-COMMENT ON COLUMN lab_results.abnormal_flag IS 'H for high, L for low, null for normal';
+COMMENT ON TABLE sp_lab_results IS 'Lab results from external systems';
 
 -- -----------------------------------------------------------------------------
--- alerts: Safety and operational alerts
+-- sp_alerts: Safety and operational alerts
 -- -----------------------------------------------------------------------------
--- Triggered when safety thresholds are exceeded or participants need attention.
-CREATE TABLE alerts (
+CREATE TABLE sp_alerts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
-  type alert_type NOT NULL,
-  trigger_source TEXT NOT NULL,      -- What triggered (e.g., 'PHQ-2', 'hematocrit')
-  trigger_value TEXT,                -- The value that triggered
-  threshold TEXT,                    -- The threshold that was exceeded
-  message TEXT NOT NULL,             -- Alert description
-  status alert_status NOT NULL DEFAULT 'open',
-  acknowledged_by UUID REFERENCES profiles(id),
+  participant_id UUID NOT NULL REFERENCES sp_participants(id) ON DELETE CASCADE,
+  type sp_alert_type NOT NULL,
+  trigger_source TEXT NOT NULL,
+  trigger_value TEXT,
+  threshold TEXT,
+  message TEXT NOT NULL,
+  status sp_alert_status NOT NULL DEFAULT 'open',
+  acknowledged_by UUID REFERENCES sp_profiles(id),
   acknowledged_at TIMESTAMPTZ,
   resolution_notes TEXT,
   resolved_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-COMMENT ON TABLE alerts IS 'Safety and operational alerts requiring attention';
-COMMENT ON COLUMN alerts.trigger_source IS 'The PRO instrument or lab marker that triggered the alert';
-COMMENT ON COLUMN alerts.type IS 'safety (immediate concern), non_response (missed surveys), lab_threshold (abnormal labs)';
+COMMENT ON TABLE sp_alerts IS 'Safety and operational alerts requiring attention';
 
 -- -----------------------------------------------------------------------------
--- messages: Sent messages log
+-- sp_messages: Sent messages log
 -- -----------------------------------------------------------------------------
--- Audit trail of all messages sent to participants.
-CREATE TABLE messages (
+CREATE TABLE sp_messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
-  type message_type NOT NULL,
-  channel message_channel NOT NULL,
-  template_id TEXT,                  -- Which template was used
-  subject TEXT,                      -- Email subject (if email)
-  body TEXT NOT NULL,                -- Message content
-  status message_status NOT NULL DEFAULT 'queued',
-  external_id TEXT,                  -- ID from Resend/Twilio
+  participant_id UUID NOT NULL REFERENCES sp_participants(id) ON DELETE CASCADE,
+  type sp_message_type NOT NULL,
+  channel sp_message_channel NOT NULL,
+  template_id TEXT,
+  subject TEXT,
+  body TEXT NOT NULL,
+  status sp_message_status NOT NULL DEFAULT 'queued',
+  external_id TEXT,
   sent_at TIMESTAMPTZ,
   delivered_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-COMMENT ON TABLE messages IS 'Log of all messages sent to participants';
-COMMENT ON COLUMN messages.type IS 'reminder (survey due), milestone (achievement), re_engagement (missed activity)';
-COMMENT ON COLUMN messages.external_id IS 'Message ID from email/SMS provider for tracking';
+COMMENT ON TABLE sp_messages IS 'Log of all messages sent to participants';
 
 -- =============================================================================
 -- INDEXES
 -- =============================================================================
 
--- Fast lookup of studies by sponsor
-CREATE INDEX idx_studies_sponsor ON studies(sponsor_id);
-
--- Fast lookup of participants by study
-CREATE INDEX idx_participants_study ON participants(study_id);
-
--- Fast lookup of participants by user
-CREATE INDEX idx_participants_user ON participants(user_id);
-
--- Fast lookup of submissions by participant
-CREATE INDEX idx_submissions_participant ON submissions(participant_id);
-
--- Fast lookup of submissions by participant and timepoint
-CREATE INDEX idx_submissions_timepoint ON submissions(participant_id, timepoint);
-
--- Fast lookup of lab results by participant
-CREATE INDEX idx_lab_results_participant ON lab_results(participant_id);
-
--- Fast lookup of open alerts
-CREATE INDEX idx_alerts_open ON alerts(status) WHERE status = 'open';
-
--- Fast lookup of alerts by participant
-CREATE INDEX idx_alerts_participant ON alerts(participant_id);
-
--- Fast lookup of messages by participant
-CREATE INDEX idx_messages_participant ON messages(participant_id);
+CREATE INDEX idx_sp_studies_sponsor ON sp_studies(sponsor_id);
+CREATE INDEX idx_sp_participants_study ON sp_participants(study_id);
+CREATE INDEX idx_sp_participants_user ON sp_participants(user_id);
+CREATE INDEX idx_sp_submissions_participant ON sp_submissions(participant_id);
+CREATE INDEX idx_sp_submissions_timepoint ON sp_submissions(participant_id, timepoint);
+CREATE INDEX idx_sp_lab_results_participant ON sp_lab_results(participant_id);
+CREATE INDEX idx_sp_alerts_open ON sp_alerts(status) WHERE status = 'open';
+CREATE INDEX idx_sp_alerts_participant ON sp_alerts(participant_id);
+CREATE INDEX idx_sp_messages_participant ON sp_messages(participant_id);
 
 -- =============================================================================
 -- ROW LEVEL SECURITY (RLS)
 -- =============================================================================
 
--- Enable RLS on all tables
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE studies ENABLE ROW LEVEL SECURITY;
-ALTER TABLE participants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE consents ENABLE ROW LEVEL SECURITY;
-ALTER TABLE submissions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE lab_results ENABLE ROW LEVEL SECURITY;
-ALTER TABLE alerts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sp_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sp_studies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sp_participants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sp_consents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sp_submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sp_lab_results ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sp_alerts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sp_messages ENABLE ROW LEVEL SECURITY;
 
 -- -----------------------------------------------------------------------------
--- profiles policies
+-- sp_profiles policies
 -- -----------------------------------------------------------------------------
 
--- Users can read their own profile
-CREATE POLICY "Users can read own profile" ON profiles
+CREATE POLICY "Users can read own profile" ON sp_profiles
   FOR SELECT USING (id = auth.uid());
 
--- Users can update their own profile
-CREATE POLICY "Users can update own profile" ON profiles
+CREATE POLICY "Users can update own profile" ON sp_profiles
   FOR UPDATE USING (id = auth.uid());
 
--- Allow insert during signup (handled by trigger, but needed for completeness)
-CREATE POLICY "Enable insert for authenticated users" ON profiles
+CREATE POLICY "Enable insert for authenticated users" ON sp_profiles
   FOR INSERT WITH CHECK (id = auth.uid());
 
 -- -----------------------------------------------------------------------------
--- studies policies
+-- sp_studies policies
 -- -----------------------------------------------------------------------------
 
--- Sponsors can read their own studies
-CREATE POLICY "Sponsors can read own studies" ON studies
+CREATE POLICY "Sponsors can read own studies" ON sp_studies
   FOR SELECT USING (sponsor_id = auth.uid());
 
--- Sponsors can create studies
-CREATE POLICY "Sponsors can create studies" ON studies
+CREATE POLICY "Sponsors can create studies" ON sp_studies
   FOR INSERT WITH CHECK (sponsor_id = auth.uid());
 
--- Sponsors can update their own studies
-CREATE POLICY "Sponsors can update own studies" ON studies
+CREATE POLICY "Sponsors can update own studies" ON sp_studies
   FOR UPDATE USING (sponsor_id = auth.uid());
 
--- Participants can read studies they're enrolled in
-CREATE POLICY "Participants can read enrolled studies" ON studies
+CREATE POLICY "Participants can read enrolled studies" ON sp_studies
   FOR SELECT USING (
-    id IN (SELECT study_id FROM participants WHERE user_id = auth.uid())
+    id IN (SELECT study_id FROM sp_participants WHERE user_id = auth.uid())
   );
 
+-- Allow reading active studies for public join page
+CREATE POLICY "Anyone can read active studies" ON sp_studies
+  FOR SELECT USING (status = 'active');
+
 -- -----------------------------------------------------------------------------
--- participants policies
+-- sp_participants policies
 -- -----------------------------------------------------------------------------
 
--- Users can read their own participant records
-CREATE POLICY "Users can read own participation" ON participants
+CREATE POLICY "Users can read own participation" ON sp_participants
   FOR SELECT USING (user_id = auth.uid());
 
--- Sponsors can read participants in their studies
-CREATE POLICY "Sponsors can read study participants" ON participants
+CREATE POLICY "Sponsors can read study participants" ON sp_participants
   FOR SELECT USING (
-    study_id IN (SELECT id FROM studies WHERE sponsor_id = auth.uid())
+    study_id IN (SELECT id FROM sp_studies WHERE sponsor_id = auth.uid())
   );
 
--- Users can insert their own participant record (enrollment)
-CREATE POLICY "Users can enroll in studies" ON participants
+CREATE POLICY "Users can enroll in studies" ON sp_participants
   FOR INSERT WITH CHECK (user_id = auth.uid());
 
--- Users can update their own participant record
-CREATE POLICY "Users can update own participation" ON participants
+CREATE POLICY "Users can update own participation" ON sp_participants
   FOR UPDATE USING (user_id = auth.uid());
 
 -- -----------------------------------------------------------------------------
--- consents policies
+-- sp_consents policies
 -- -----------------------------------------------------------------------------
 
--- Users can read their own consents
-CREATE POLICY "Users can read own consents" ON consents
+CREATE POLICY "Users can read own consents" ON sp_consents
   FOR SELECT USING (
-    participant_id IN (SELECT id FROM participants WHERE user_id = auth.uid())
+    participant_id IN (SELECT id FROM sp_participants WHERE user_id = auth.uid())
   );
 
--- Users can insert their own consent
-CREATE POLICY "Users can sign consent" ON consents
+CREATE POLICY "Users can sign consent" ON sp_consents
   FOR INSERT WITH CHECK (
-    participant_id IN (SELECT id FROM participants WHERE user_id = auth.uid())
+    participant_id IN (SELECT id FROM sp_participants WHERE user_id = auth.uid())
   );
 
--- Sponsors can read consents for their studies
-CREATE POLICY "Sponsors can read study consents" ON consents
+CREATE POLICY "Sponsors can read study consents" ON sp_consents
   FOR SELECT USING (
     participant_id IN (
-      SELECT p.id FROM participants p
-      JOIN studies s ON p.study_id = s.id
+      SELECT p.id FROM sp_participants p
+      JOIN sp_studies s ON p.study_id = s.id
       WHERE s.sponsor_id = auth.uid()
     )
   );
 
 -- -----------------------------------------------------------------------------
--- submissions policies
+-- sp_submissions policies
 -- -----------------------------------------------------------------------------
 
--- Participants can read their own submissions
-CREATE POLICY "Participants can read own submissions" ON submissions
+CREATE POLICY "Participants can read own submissions" ON sp_submissions
   FOR SELECT USING (
-    participant_id IN (SELECT id FROM participants WHERE user_id = auth.uid())
+    participant_id IN (SELECT id FROM sp_participants WHERE user_id = auth.uid())
   );
 
--- Participants can insert their own submissions
-CREATE POLICY "Participants can submit PROs" ON submissions
+CREATE POLICY "Participants can submit PROs" ON sp_submissions
   FOR INSERT WITH CHECK (
-    participant_id IN (SELECT id FROM participants WHERE user_id = auth.uid())
+    participant_id IN (SELECT id FROM sp_participants WHERE user_id = auth.uid())
   );
 
--- Sponsors can read submissions for their studies
-CREATE POLICY "Sponsors can read study submissions" ON submissions
+CREATE POLICY "Sponsors can read study submissions" ON sp_submissions
   FOR SELECT USING (
     participant_id IN (
-      SELECT p.id FROM participants p
-      JOIN studies s ON p.study_id = s.id
+      SELECT p.id FROM sp_participants p
+      JOIN sp_studies s ON p.study_id = s.id
       WHERE s.sponsor_id = auth.uid()
     )
   );
 
 -- -----------------------------------------------------------------------------
--- lab_results policies
+-- sp_lab_results policies
 -- -----------------------------------------------------------------------------
 
--- Participants can read their own lab results
-CREATE POLICY "Participants can read own labs" ON lab_results
+CREATE POLICY "Participants can read own labs" ON sp_lab_results
   FOR SELECT USING (
-    participant_id IN (SELECT id FROM participants WHERE user_id = auth.uid())
+    participant_id IN (SELECT id FROM sp_participants WHERE user_id = auth.uid())
   );
 
--- Sponsors can read lab results for their studies
-CREATE POLICY "Sponsors can read study labs" ON lab_results
+CREATE POLICY "Sponsors can read study labs" ON sp_lab_results
   FOR SELECT USING (
     participant_id IN (
-      SELECT p.id FROM participants p
-      JOIN studies s ON p.study_id = s.id
+      SELECT p.id FROM sp_participants p
+      JOIN sp_studies s ON p.study_id = s.id
       WHERE s.sponsor_id = auth.uid()
     )
   );
 
 -- -----------------------------------------------------------------------------
--- alerts policies
+-- sp_alerts policies
 -- -----------------------------------------------------------------------------
 
--- Sponsors can read alerts for their studies
-CREATE POLICY "Sponsors can read study alerts" ON alerts
+CREATE POLICY "Sponsors can read study alerts" ON sp_alerts
   FOR SELECT USING (
     participant_id IN (
-      SELECT p.id FROM participants p
-      JOIN studies s ON p.study_id = s.id
+      SELECT p.id FROM sp_participants p
+      JOIN sp_studies s ON p.study_id = s.id
       WHERE s.sponsor_id = auth.uid()
     )
   );
 
--- Sponsors can update alerts for their studies
-CREATE POLICY "Sponsors can update study alerts" ON alerts
+CREATE POLICY "Sponsors can update study alerts" ON sp_alerts
   FOR UPDATE USING (
     participant_id IN (
-      SELECT p.id FROM participants p
-      JOIN studies s ON p.study_id = s.id
+      SELECT p.id FROM sp_participants p
+      JOIN sp_studies s ON p.study_id = s.id
       WHERE s.sponsor_id = auth.uid()
     )
   );
 
 -- -----------------------------------------------------------------------------
--- messages policies
+-- sp_messages policies
 -- -----------------------------------------------------------------------------
 
--- Participants can read their own messages
-CREATE POLICY "Participants can read own messages" ON messages
+CREATE POLICY "Participants can read own messages" ON sp_messages
   FOR SELECT USING (
-    participant_id IN (SELECT id FROM participants WHERE user_id = auth.uid())
+    participant_id IN (SELECT id FROM sp_participants WHERE user_id = auth.uid())
   );
 
--- Sponsors can read messages for their studies
-CREATE POLICY "Sponsors can read study messages" ON messages
+CREATE POLICY "Sponsors can read study messages" ON sp_messages
   FOR SELECT USING (
     participant_id IN (
-      SELECT p.id FROM participants p
-      JOIN studies s ON p.study_id = s.id
+      SELECT p.id FROM sp_participants p
+      JOIN sp_studies s ON p.study_id = s.id
       WHERE s.sponsor_id = auth.uid()
     )
   );
@@ -480,7 +424,7 @@ CREATE POLICY "Sponsors can read study messages" ON messages
 -- =============================================================================
 
 -- Function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at()
+CREATE OR REPLACE FUNCTION sp_update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = NOW();
@@ -489,23 +433,23 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Apply updated_at trigger to relevant tables
-CREATE TRIGGER update_profiles_updated_at
-  BEFORE UPDATE ON profiles
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER update_sp_profiles_updated_at
+  BEFORE UPDATE ON sp_profiles
+  FOR EACH ROW EXECUTE FUNCTION sp_update_updated_at();
 
-CREATE TRIGGER update_studies_updated_at
-  BEFORE UPDATE ON studies
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER update_sp_studies_updated_at
+  BEFORE UPDATE ON sp_studies
+  FOR EACH ROW EXECUTE FUNCTION sp_update_updated_at();
 
-CREATE TRIGGER update_participants_updated_at
-  BEFORE UPDATE ON participants
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER update_sp_participants_updated_at
+  BEFORE UPDATE ON sp_participants
+  FOR EACH ROW EXECUTE FUNCTION sp_update_updated_at();
 
 -- Function to create profile on user signup
-CREATE OR REPLACE FUNCTION handle_new_user()
+CREATE OR REPLACE FUNCTION sp_handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO study_platform.profiles (id, email, role)
+  INSERT INTO sp_profiles (id, email, role)
   VALUES (NEW.id, NEW.email, 'participant');
   RETURN NEW;
 END;
@@ -514,18 +458,4 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Trigger to create profile when user signs up
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION study_platform.handle_new_user();
-
--- =============================================================================
--- GRANT PERMISSIONS
--- =============================================================================
--- Grant usage on schema to authenticated users
-GRANT USAGE ON SCHEMA study_platform TO authenticated;
-GRANT USAGE ON SCHEMA study_platform TO anon;
-
--- Grant table permissions
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA study_platform TO authenticated;
-GRANT SELECT ON ALL TABLES IN SCHEMA study_platform TO anon;
-
--- Grant sequence permissions (for auto-generated IDs)
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA study_platform TO authenticated;
+  FOR EACH ROW EXECUTE FUNCTION sp_handle_new_user();

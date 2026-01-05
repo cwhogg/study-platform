@@ -3,7 +3,6 @@ import { createClient } from '@/lib/supabase/server'
 import { sendEmail } from '@/lib/email/client'
 import { buildEmail, renderTemplate, TemplateVariables } from '@/lib/email/templates'
 
-const SCHEMA = 'study_platform'
 
 interface SendEmailRequest {
   participantId: string
@@ -36,8 +35,8 @@ export async function POST(request: NextRequest) {
 
     // Get participant with profile and study
     const { data: participant, error: participantError } = await supabase
-      .schema(SCHEMA)
-      .from('participants')
+      
+      .from('sp_participants')
       .select(`
         id,
         user_id,
@@ -56,8 +55,8 @@ export async function POST(request: NextRequest) {
 
     // Get profile (email and name)
     const { data: profile, error: profileError } = await supabase
-      .schema(SCHEMA)
-      .from('profiles')
+      
+      .from('sp_profiles')
       .select('email, first_name')
       .eq('id', participant.user_id)
       .single()
@@ -72,8 +71,8 @@ export async function POST(request: NextRequest) {
 
     // Get study with message templates
     const { data: study, error: studyError } = await supabase
-      .schema(SCHEMA)
-      .from('studies')
+      
+      .from('sp_studies')
       .select('id, name, message_templates')
       .eq('id', participant.study_id)
       .single()
@@ -139,8 +138,8 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       // Log failed message
       await supabase
-        .schema(SCHEMA)
-        .from('messages')
+        
+        .from('sp_messages')
         .insert({
           participant_id: participantId,
           type: templateType === 'milestone' ? 'milestone' : 'reminder',
@@ -159,8 +158,8 @@ export async function POST(request: NextRequest) {
 
     // Log successful message
     const { error: messageError } = await supabase
-      .schema(SCHEMA)
-      .from('messages')
+      
+      .from('sp_messages')
       .insert({
         participant_id: participantId,
         type: templateType === 'milestone' ? 'milestone' : 'reminder',

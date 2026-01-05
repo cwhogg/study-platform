@@ -9,7 +9,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getParticipantSchedule, type ScheduledTimepoint } from './schedule'
 
-const SCHEMA = 'study_platform'
 
 export interface AdvanceTimeResult {
   success: boolean
@@ -31,8 +30,8 @@ export async function advanceParticipantTime(
 
   // Get current participant state
   const { data: participant, error: participantError } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select('id, current_week, enrolled_at, status')
     .eq('id', participantId)
     .single()
@@ -70,8 +69,8 @@ export async function advanceParticipantTime(
 
   // Update participant's current week
   const { error: updateError } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .update({ current_week: toWeek })
     .eq('id', participantId)
 
@@ -89,8 +88,8 @@ export async function advanceParticipantTime(
   // to allow schedule calculations
   if (!participant.enrolled_at && (participant.status === 'enrolled' || participant.status === 'active')) {
     await supabase
-      .schema(SCHEMA)
-      .from('participants')
+      
+      .from('sp_participants')
       .update({ enrolled_at: new Date().toISOString() })
       .eq('id', participantId)
   }
@@ -120,8 +119,8 @@ export async function simulateLabResults(
 
   // Get participant to verify they exist
   const { data: participant, error: participantError } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select('id, study_id')
     .eq('id', participantId)
     .single()
@@ -132,8 +131,8 @@ export async function simulateLabResults(
 
   // Get study to check if it has lab requirements
   const { data: study } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .select('protocol')
     .eq('id', participant.study_id)
     .single()
@@ -198,8 +197,8 @@ export async function simulateLabResults(
     else if (value > max) abnormalFlag = 'H'
 
     const { data: lab, error: labError } = await supabase
-      .schema(SCHEMA)
-      .from('lab_results')
+      
+      .from('sp_lab_results')
       .insert({
         participant_id: participantId,
         timepoint,
@@ -241,8 +240,8 @@ async function evaluateLabSafety(
 
   // Get the lab results we just created
   const { data: labs } = await supabase
-    .schema(SCHEMA)
-    .from('lab_results')
+    
+    .from('sp_lab_results')
     .select('marker, value, unit, abnormal_flag')
     .in('id', labIds)
 
@@ -283,8 +282,8 @@ async function evaluateLabSafety(
     if (shouldAlert) {
       // Create alert in database
       await supabase
-        .schema(SCHEMA)
-        .from('alerts')
+        
+        .from('sp_alerts')
         .insert({
           participant_id: participantId,
           type: 'lab_threshold',
@@ -322,8 +321,8 @@ export async function getDemoState(participantId: string): Promise<{
 
   // Get participant
   const { data: participant } = await supabase
-    .schema(SCHEMA)
-    .from('participants')
+    
+    .from('sp_participants')
     .select('id, study_id, current_week')
     .eq('id', participantId)
     .single()
@@ -341,8 +340,8 @@ export async function getDemoState(participantId: string): Promise<{
 
   // Get study protocol for max week
   const { data: study } = await supabase
-    .schema(SCHEMA)
-    .from('studies')
+    
+    .from('sp_studies')
     .select('protocol')
     .eq('id', participant.study_id)
     .single()
@@ -355,8 +354,8 @@ export async function getDemoState(participantId: string): Promise<{
 
   // Get existing lab results
   const { data: existingLabs } = await supabase
-    .schema(SCHEMA)
-    .from('lab_results')
+    
+    .from('sp_lab_results')
     .select('timepoint')
     .eq('participant_id', participantId)
 

@@ -1,8 +1,6 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
-const SCHEMA = 'study_platform'
-
 // Public endpoint to get active studies open for enrollment
 // Uses service client to bypass RLS since this is public data
 export async function GET() {
@@ -10,8 +8,7 @@ export async function GET() {
     const supabase = createServiceClient()
 
     const { data: studies, error: studiesError } = await supabase
-      .schema(SCHEMA)
-      .from('studies')
+      .from('sp_studies')
       .select('id, name, intervention')
       .eq('status', 'active')
       .order('created_at', { ascending: false })

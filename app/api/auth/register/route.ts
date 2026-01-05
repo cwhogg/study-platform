@@ -1,7 +1,6 @@
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-const SCHEMA = 'study_platform'
 const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
 
 export async function POST(request: NextRequest) {
@@ -63,8 +62,8 @@ export async function POST(request: NextRequest) {
 
           // Update profile email_verified status
           await serviceClient
-            .schema(SCHEMA)
-            .from('profiles')
+            
+            .from('sp_profiles')
             .update({ email_verified: true })
             .eq('id', authData.user.id)
         }
@@ -76,8 +75,8 @@ export async function POST(request: NextRequest) {
 
     // 2. Check if study exists
     const { data: study, error: studyError } = await supabase
-      .schema(SCHEMA)
-      .from('studies')
+      
+      .from('sp_studies')
       .select('id, status')
       .eq('id', studyId)
       .single()
@@ -91,8 +90,8 @@ export async function POST(request: NextRequest) {
 
     // 3. Create participant record
     const { data: participant, error: participantError } = await supabase
-      .schema(SCHEMA)
-      .from('participants')
+      
+      .from('sp_participants')
       .insert({
         study_id: studyId,
         user_id: authData.user.id,
