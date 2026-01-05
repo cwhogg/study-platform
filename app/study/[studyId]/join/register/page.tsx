@@ -6,9 +6,6 @@ import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileConta
 import { Eye, EyeOff } from 'lucide-react'
 import type { EnrollmentCopy } from '@/lib/db/types'
 
-// Demo mode - set to true to skip actual Supabase auth
-const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
-
 // Default copy if none generated
 const DEFAULT_REGISTRATION = {
   headline: 'Create Your Account',
@@ -90,13 +87,6 @@ export default function RegisterPage() {
     setIsSubmitting(true)
 
     try {
-      if (DEMO_MODE) {
-        // Demo mode - skip actual registration
-        await new Promise(resolve => setTimeout(resolve, 500))
-        router.push(`/study/${studyId}/join/verify?email=${encodeURIComponent(email)}&demo=true`)
-        return
-      }
-
       // Call registration API
       const response = await fetch('/api/auth/register', {
         method: 'POST',
@@ -118,8 +108,14 @@ export default function RegisterPage() {
         return
       }
 
-      // Navigate to verification page
-      router.push(`/study/${studyId}/join/verify?email=${encodeURIComponent(email)}`)
+      // Check if email verification is needed
+      if (data.emailConfirmationRequired === false || data.demoMode === true) {
+        // Email already confirmed (demo mode) - skip to consent
+        router.push(`/study/${studyId}/join/overview`)
+      } else {
+        // Navigate to verification page
+        router.push(`/study/${studyId}/join/verify?email=${encodeURIComponent(email)}`)
+      }
 
     } catch (err) {
       console.error('Registration error:', err)
