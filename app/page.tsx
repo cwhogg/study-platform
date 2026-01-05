@@ -187,7 +187,7 @@ export default function Home() {
               <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center mb-4">
                 <Bell className="w-6 h-6 text-amber-600" />
               </div>
-              <h3 className="font-semibold text-stone-900 mb-2">Communication Agent</h3>
+              <h3 className="font-semibold text-stone-900 mb-2">Engagement Agent</h3>
               <p className="text-sm text-stone-500 leading-relaxed">
                 Sends personalized reminders and milestone messages to maximize retention.
               </p>
