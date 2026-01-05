@@ -80,8 +80,18 @@ export async function handleProSubmission(
     console.log('[PRO] Found study, has protocol:', !!study.protocol)
 
     // 2. Find instrument in protocol
-    const protocol = study.protocol as { instruments?: Instrument[] } | null
-    const instrument = protocol?.instruments?.find(i => i.id === instrumentId)
+    const protocol = study.protocol as { instruments?: Instrument[] | Record<string, Instrument> } | null
+
+    // Handle instruments as either array or object
+    let instrument: Instrument | undefined
+    if (protocol?.instruments) {
+      if (Array.isArray(protocol.instruments)) {
+        instrument = protocol.instruments.find(i => i.id === instrumentId)
+      } else if (typeof protocol.instruments === 'object') {
+        // instruments might be keyed by id
+        instrument = (protocol.instruments as Record<string, Instrument>)[instrumentId]
+      }
+    }
 
     if (!instrument) {
       // Use fallback validation if instrument not in protocol
