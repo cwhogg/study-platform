@@ -98,7 +98,7 @@ Produce a complete, actionable study protocol that:
     "dataSources": ["FDA label", "PubMed", "Reddit r/testosterone", "etc"]
   },
   "safetyConsiderations": [
-    "Known risks to monitor during the study"
+    "Detailed safety considerations derived from riskAssessment - see requirements below"
   ],
   "dataSources": ["PubMed", "ClinicalTrials.gov", "etc"]
 }
@@ -332,6 +332,33 @@ interface TriggerConfig {
 
 7. **Assess risks using the Risk Assessment Framework** (see below)
 
+8. **Generate comprehensive safetyConsiderations array**
+   - This is displayed prominently to sponsors during study configuration
+   - Must include **at least 5 specific safety considerations**
+   - Derive from riskAssessment data - include ALL known risks and community-reported risks
+   - Be specific about what to monitor (not just "monitor for side effects")
+
+   **Required content for pharmacological interventions:**
+   - FDA approval status warning (if not approved)
+   - Each specific side effect from knownRisks (e.g., "Injection site reactions: redness, swelling, pain at injection site")
+   - Each community-reported risk (e.g., "Nausea and gastrointestinal discomfort (commonly reported)")
+   - Any contraindications that apply to common populations
+   - Long-term safety unknowns (if applicable)
+   - What monitoring is recommended
+
+   **Example safetyConsiderations for BPC-157:**
+   ```json
+   "safetyConsiderations": [
+     "NOT FDA-approved: Safety and efficacy have not been established through clinical trials",
+     "Injection site reactions: Monitor for redness, swelling, pain, or infection at injection sites",
+     "Gastrointestinal effects: Nausea, stomach discomfort, and digestive issues commonly reported",
+     "Headaches: Frequently reported in user communities; usually mild and temporary",
+     "Unknown long-term effects: No long-term safety data available; effects beyond 12 weeks are unknown",
+     "Drug interactions: Potential interactions with other medications are not studied",
+     "Quality concerns: Product purity and dosing accuracy may vary between sources"
+   ]
+   ```
+
 ### For Protocol Generation
 
 1. **Define inclusion criteria**
@@ -491,6 +518,9 @@ Before returning a protocol, verify:
 - [ ] If non-pharmacological: overall risk level reflects low/minimal risk
 - [ ] riskSummary is plain language and accurate
 - [ ] dataSources for risks are explicitly listed
+- [ ] **safetyConsiderations array has at least 5 specific items**
+- [ ] safetyConsiderations includes each known risk and community-reported risk as separate items
+- [ ] safetyConsiderations items are specific (e.g., "Injection site reactions" not "side effects")
 
 ### Protocol Checklist
 - [ ] **ALL instruments are real, validated, published PRO instruments** (NOT invented)
