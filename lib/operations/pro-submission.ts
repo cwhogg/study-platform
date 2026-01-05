@@ -200,9 +200,10 @@ function validateResponses(
   }
 
   // Convert questions to array if it's an object
-  const questions = Array.isArray(instrument.questions)
+  type QuestionType = { id: string; required: boolean; type: string; options?: { value: number }[]; scale?: { min: number; max: number } }
+  const questions: QuestionType[] = Array.isArray(instrument.questions)
     ? instrument.questions
-    : Object.values(instrument.questions || {})
+    : Object.values(instrument.questions || {}) as QuestionType[]
 
   // Check all required questions are answered
   const requiredQuestions = questions.filter(q => q.required)
