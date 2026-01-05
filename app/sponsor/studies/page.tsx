@@ -1,42 +1,61 @@
 import Link from 'next/link'
 import { Plus, Users, Calendar, ChevronRight } from 'lucide-react'
+import { createServiceClient } from '@/lib/supabase/server'
 
-// Demo data - in production, fetch from database
-const demoStudies = [
-  {
-    id: 'trt-outcomes-001',
-    name: 'TRT Outcomes Study',
-    status: 'active',
-    intervention: 'Testosterone Replacement Therapy',
-    participants: 47,
-    enrolled: 52,
-    targetEnrollment: 100,
-    startDate: 'Jan 3, 2025',
-    duration: '26 weeks'
-  },
-  {
-    id: 'glp1-weight-002',
-    name: 'GLP-1 Weight Management Study',
-    status: 'enrolling',
-    intervention: 'GLP-1 Medications (Semaglutide)',
-    participants: 12,
-    enrolled: 12,
-    targetEnrollment: 200,
-    startDate: 'Dec 15, 2024',
-    duration: '52 weeks'
-  },
-  {
-    id: 'sleep-quality-003',
-    name: 'Sleep Quality Improvement Study',
-    status: 'draft',
-    intervention: 'CBT-I (Cognitive Behavioral Therapy for Insomnia)',
-    participants: 0,
-    enrolled: 0,
-    targetEnrollment: 75,
-    startDate: null,
-    duration: '12 weeks'
+// Force dynamic rendering - this page fetches from the database
+export const dynamic = 'force-dynamic'
+
+interface Study {
+  id: string
+  name: string
+  status: string
+  intervention: string
+  enrolled: number
+  targetEnrollment: number
+  startDate: string | null
+  duration: string
+}
+
+async function getStudies(): Promise<Study[]> {
+  const supabase = createServiceClient()
+
+  // Get all studies
+  const { data: studies, error: studiesError } = await supabase
+    .from('sp_studies')
+    .select('id, name, intervention, status, created_at, config, protocol')
+    .order('created_at', { ascending: false })
+
+  if (studiesError || !studies) {
+    console.error('[Sponsor Studies] Failed to fetch studies:', studiesError)
+    return []
   }
-]
+
+  // Get participant counts per study
+  const { data: participants } = await supabase
+    .from('sp_participants')
+    .select('study_id')
+
+  const countsByStudy = new Map<string, number>()
+  participants?.forEach(p => {
+    countsByStudy.set(p.study_id, (countsByStudy.get(p.study_id) || 0) + 1)
+  })
+
+  return studies.map(study => {
+    const durationWeeks = study.protocol?.durationWeeks || study.config?.duration_weeks || 26
+    return {
+      id: study.id,
+      name: study.name,
+      status: study.status,
+      intervention: study.intervention,
+      enrolled: countsByStudy.get(study.id) || 0,
+      targetEnrollment: study.config?.target_enrollment || 100,
+      startDate: study.created_at
+        ? new Date(study.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        : null,
+      duration: `${durationWeeks} weeks`,
+    }
+  })
+}
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -69,7 +88,9 @@ function getStatusBadge(status: string) {
   }
 }
 
-export default function StudiesPage() {
+export default async function StudiesPage() {
+  const studies = await getStudies()
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 py-8">
@@ -90,7 +111,7 @@ export default function StudiesPage() {
 
         {/* Studies List */}
         <div className="space-y-4">
-          {demoStudies.map((study) => (
+          {studies.map((study) => (
             <Link
               key={study.id}
               href={`/sponsor/studies/${study.id}`}
@@ -141,7 +162,7 @@ export default function StudiesPage() {
         </div>
 
         {/* Empty State (shown when no studies) */}
-        {demoStudies.length === 0 && (
+        {studies.length === 0 && (
           <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Plus className="w-8 h-8 text-gray-400" />

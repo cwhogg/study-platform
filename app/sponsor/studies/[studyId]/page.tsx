@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import {
@@ -12,11 +12,12 @@ import {
   UserX,
   Clock,
   ExternalLink,
-  MoreHorizontal
+  MoreHorizontal,
+  Loader2
 } from 'lucide-react'
 
-// Demo study data - in production, fetch from database
-const demoStudyData: Record<string, {
+interface StudyData {
+  id: string
   name: string
   status: 'active' | 'enrolling' | 'draft' | 'completed'
   intervention: string
@@ -28,58 +29,15 @@ const demoStudyData: Record<string, {
     completed: number
     withdrawn: number
   }
-}> = {
-  'trt-outcomes-001': {
-    name: 'TRT Outcomes Study',
-    status: 'active',
-    intervention: 'Testosterone Replacement Therapy',
-    duration: '26 weeks',
-    startDate: 'Jan 3, 2025',
-    stats: {
-      enrolled: 52,
-      active: 47,
-      completed: 3,
-      withdrawn: 2
-    }
-  },
-  'glp1-weight-002': {
-    name: 'GLP-1 Weight Management Study',
-    status: 'enrolling',
-    intervention: 'GLP-1 Medications (Semaglutide)',
-    duration: '52 weeks',
-    startDate: 'Dec 15, 2024',
-    stats: {
-      enrolled: 12,
-      active: 12,
-      completed: 0,
-      withdrawn: 0
-    }
-  },
-  'sleep-quality-003': {
-    name: 'Sleep Quality Improvement Study',
-    status: 'draft',
-    intervention: 'CBT-I (Cognitive Behavioral Therapy for Insomnia)',
-    duration: '12 weeks',
-    startDate: null,
-    stats: {
-      enrolled: 0,
-      active: 0,
-      completed: 0,
-      withdrawn: 0
-    }
-  }
+  participants: Array<{
+    id: string
+    email: string
+    firstName: string | null
+    status: string
+    currentWeek: number
+    enrolledAt: string
+  }>
 }
-
-// Demo participants - empty for now
-const demoParticipants: Array<{
-  id: string
-  email: string
-  enrolledDate: string
-  status: 'active' | 'completed' | 'withdrawn'
-  currentWeek: number
-  completedAssessments: number
-  totalAssessments: number
-}> = []
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -117,21 +75,31 @@ export default function StudyDashboardPage() {
   const studyId = params.studyId as string
 
   const [copied, setCopied] = useState(false)
+  const [study, setStudy] = useState<StudyData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Get study data or use default
-  const study = demoStudyData[studyId] || {
-    name: 'TRT Symptom Response Study',
-    status: 'active' as const,
-    intervention: 'Testosterone Replacement Therapy',
-    duration: '26 weeks',
-    startDate: 'Jan 3, 2025',
-    stats: {
-      enrolled: 0,
-      active: 0,
-      completed: 0,
-      withdrawn: 0
+  useEffect(() => {
+    async function fetchStudy() {
+      try {
+        const response = await fetch(`/api/studies/${studyId}`)
+        if (!response.ok) {
+          const data = await response.json()
+          throw new Error(data.error || 'Failed to fetch study')
+        }
+        const data = await response.json()
+        setStudy(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load study')
+      } finally {
+        setLoading(false)
+      }
     }
-  }
+
+    if (studyId) {
+      fetchStudy()
+    }
+  }, [studyId])
 
   const inviteLink = `https://study-platform-psi.vercel.app/study/${studyId}/join`
 
@@ -139,6 +107,38 @@ export default function StudyDashboardPage() {
     navigator.clipboard.writeText(inviteLink)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Loading study...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !study) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <UserX className="w-8 h-8 text-red-600" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Study Not Found</h2>
+          <p className="text-gray-600 mb-6">{error || 'Unable to load study data'}</p>
+          <Link
+            href="/sponsor/studies"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Studies
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -262,7 +262,7 @@ export default function StudyDashboardPage() {
             <h2 className="text-lg font-semibold text-gray-900">Participants</h2>
           </div>
 
-          {demoParticipants.length > 0 ? (
+          {study.participants && study.participants.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -285,14 +285,14 @@ export default function StudyDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {demoParticipants.map((participant) => (
+                  {study.participants.map((participant) => (
                     <tr key={participant.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{participant.email}</div>
-                        <div className="text-sm text-gray-500">ID: {participant.id}</div>
+                        <div className="text-sm text-gray-500">ID: {participant.id.slice(0, 8)}...</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {participant.enrolledDate}
+                        {participant.enrolledAt ? new Date(participant.enrolledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {getStatusBadge(participant.status)}
@@ -300,9 +300,6 @@ export default function StudyDashboardPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           Week {participant.currentWeek}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {participant.completedAssessments}/{participant.totalAssessments} assessments
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
