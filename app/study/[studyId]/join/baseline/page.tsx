@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer } from '@/components/ui/MobileContainer'
+import { createClient } from '@/lib/supabase/client'
 
 // Baseline instruments following the schema from docs/AGENTS.md
 interface Option {
@@ -119,6 +120,29 @@ export default function BaselinePage() {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [showInstructions, setShowInstructions] = useState(true)
   const [isCompleting, setIsCompleting] = useState(false)
+  const [participantId, setParticipantId] = useState<string | null>(null)
+  const [startTime] = useState(() => Date.now())
+
+  // Get participant ID on mount
+  useEffect(() => {
+    async function getParticipant() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data: participant } = await supabase
+        .from('sp_participants')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('study_id', studyId)
+        .maybeSingle()
+
+      if (participant) {
+        setParticipantId(participant.id)
+      }
+    }
+    getParticipant()
+  }, [studyId])
 
   const question = allQuestions[currentQuestion]
   const totalQuestions = allQuestions.length
@@ -134,10 +158,63 @@ export default function BaselinePage() {
     }
   }, [currentQuestion, isNewInstrument])
 
+  // Submit baseline data to API
+  const submitBaseline = useCallback(async (finalAnswers: Record<string, number>) => {
+    if (!participantId) {
+      console.error('No participant ID')
+      return
+    }
+
+    const durationSeconds = Math.floor((Date.now() - startTime) / 1000)
+
+    // Group answers by instrument
+    const answersByInstrument = new Map<string, { questionId: string; value: number }[]>()
+
+    for (const q of allQuestions) {
+      const value = finalAnswers[q.id]
+      if (value !== undefined) {
+        if (!answersByInstrument.has(q.instrumentId)) {
+          answersByInstrument.set(q.instrumentId, [])
+        }
+        answersByInstrument.get(q.instrumentId)!.push({
+          questionId: q.id,
+          value
+        })
+      }
+    }
+
+    // Submit each instrument
+    for (const [instrumentId, responses] of answersByInstrument) {
+      try {
+        const response = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            participantId,
+            timepoint: 'baseline',
+            instrumentId,
+            responses,
+            durationSeconds
+          })
+        })
+
+        if (!response.ok) {
+          const data = await response.json()
+          console.error('Submission failed:', data.error)
+        } else {
+          console.log(`Submitted ${instrumentId} for baseline`)
+        }
+      } catch (error) {
+        console.error('Submission error:', error)
+      }
+    }
+  }, [participantId, startTime])
+
   const handleAnswer = async (value: number) => {
     if (isTransitioning) return
 
-    setAnswers({ ...answers, [question.id]: value })
+    const newAnswers = { ...answers, [question.id]: value }
+    setAnswers(newAnswers)
     setIsTransitioning(true)
 
     // Brief animation delay
@@ -147,10 +224,11 @@ export default function BaselinePage() {
       setCurrentQuestion(currentQuestion + 1)
       setShowInstructions(false)
     } else {
-      // Complete baseline
+      // Complete baseline - submit all data
       setIsCompleting(true)
+      await submitBaseline(newAnswers)
       await new Promise(resolve => setTimeout(resolve, 500))
-      router.push(`/study/${studyId}/join/complete`)
+      router.push(`/study/${studyId}/join/complete?participantId=${participantId}`)
     }
 
     setIsTransitioning(false)
