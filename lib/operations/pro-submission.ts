@@ -9,7 +9,7 @@
  * 5. Check if timepoint is complete
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import type { Instrument, AlertConfig } from '@/lib/agents/types'
 import { evaluateSafety, type SafetyEvaluationResult } from './safety'
 
@@ -41,7 +41,7 @@ export async function handleProSubmission(
   durationSeconds?: number
 ): Promise<SubmissionResult> {
   try {
-    const supabase = await createClient()
+    const supabase = createServiceClient()
 
     // 1. Get participant and study with protocol
     const { data: participant, error: participantError } = await supabase
