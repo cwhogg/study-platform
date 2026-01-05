@@ -40,8 +40,15 @@ export async function handleProSubmission(
   responses: ProResponse[],
   durationSeconds?: number
 ): Promise<SubmissionResult> {
+  let supabase;
   try {
-    const supabase = createServiceClient()
+    supabase = createServiceClient()
+  } catch (e) {
+    console.error('[PRO] Failed to create service client:', e)
+    return { success: false, error: `Service client error: ${e instanceof Error ? e.message : 'unknown'}` }
+  }
+
+  try {
 
     // 1. Get participant and study with protocol
     const { data: participant, error: participantError } = await supabase
@@ -108,8 +115,10 @@ export async function handleProSubmission(
 
     if (submissionError) {
       console.error('[PRO] Failed to save submission:', submissionError)
-      return { success: false, error: `Failed to save submission: ${submissionError.message}` }
+      return { success: false, error: `Failed to save: ${submissionError.code} - ${submissionError.message}` }
     }
+
+    console.log('[PRO] Submission saved:', submission.id)
 
     // 6. Evaluate safety and create alerts
     const safetyResult = await evaluateSafety(
@@ -120,22 +129,29 @@ export async function handleProSubmission(
       instrument?.alerts
     )
 
-    // 7. Create alerts if needed
+    // 7. Create alerts if needed (wrapped in try-catch to not fail submission)
     // Map safety alert types to database enum: 'safety', 'non_response', 'lab_threshold'
     if (safetyResult.alerts.length > 0) {
       for (const alert of safetyResult.alerts) {
-        // All PRO-triggered alerts are 'safety' type in the database
-        await supabase
-          .from('sp_alerts')
-          .insert({
-            participant_id: participantId,
-            type: 'safety',
-            trigger_source: instrumentId,
-            trigger_value: String(scores.total),
-            threshold: alert.condition,
-            message: alert.message,
-            status: 'open',
-          })
+        try {
+          // All PRO-triggered alerts are 'safety' type in the database
+          const { error: alertError } = await supabase
+            .from('sp_alerts')
+            .insert({
+              participant_id: participantId,
+              type: 'safety',
+              trigger_source: instrumentId,
+              trigger_value: String(scores.total),
+              threshold: alert.condition,
+              message: alert.message,
+              status: 'open',
+            })
+          if (alertError) {
+            console.error('[PRO] Failed to create alert:', alertError)
+          }
+        } catch (alertErr) {
+          console.error('[PRO] Alert creation exception:', alertErr)
+        }
       }
     }
 
@@ -148,7 +164,8 @@ export async function handleProSubmission(
 
   } catch (error) {
     console.error('[PRO] Unexpected error:', error)
-    return { success: false, error: 'An unexpected error occurred' }
+    const msg = error instanceof Error ? error.message : String(error)
+    return { success: false, error: `Unexpected: ${msg}` }
   }
 }
 
