@@ -554,30 +554,225 @@ Before returning a protocol, verify:
 
 ---
 
-## Safety Monitoring Requirements
+## REQUIRED Safety Monitoring (MUST include ALL of these)
 
-### Always Include
+**CRITICAL: The safetyMonitoring section is NOT optional. You MUST generate comprehensive safety rules.**
 
-1. **PHQ-2** at every timepoint
-   - Triggers PHQ-9 if score >= 3
+### Mandatory PRO Alerts (minimum 4 required in proAlerts array)
 
-2. **PHQ-9** (triggered)
-   - Score >= 10: Coordinator alert (24hr)
-   - Score >= 15: Urgent alert (4hr)
-   - Q9 > 0: Crisis resources + urgent alert (1hr)
+You MUST include ALL of these PRO-based alerts:
 
-3. **Adverse Event Check** at every timepoint
-   - "Any new or worsening symptoms?"
-   - If yes: description, severity, impact
-   - Severe or high-impact: Coordinator alert
+1. **PHQ-2 >= 3 → Trigger PHQ-9**
+   ```json
+   { "instrument": "phq-2", "condition": "total >= 3", "action": "Trigger PHQ-9" }
+   ```
 
-### Intervention-Specific
+2. **PHQ-9 >= 10 → Coordinator alert (24hr)**
+   ```json
+   { "instrument": "phq-9", "condition": "total >= 10", "action": "Coordinator alert within 24 hours" }
+   ```
 
-Add safety monitoring appropriate to the intervention:
-- TRT: Hematocrit, PSA
-- GLP-1: GI symptoms, hypoglycemia signs
-- Ketamine: Dissociation, blood pressure
-- etc.
+3. **PHQ-9 >= 15 → Urgent alert (4hr)**
+   ```json
+   { "instrument": "phq-9", "condition": "total >= 15", "action": "Urgent alert within 4 hours" }
+   ```
+
+4. **PHQ-9 Q9 > 0 → Crisis resources + urgent alert (1hr)**
+   ```json
+   { "instrument": "phq-9", "condition": "q9 > 0", "action": "Show crisis resources + urgent alert within 1 hour" }
+   ```
+
+5. **Adverse Events severity >= moderate → Coordinator alert**
+   ```json
+   { "instrument": "adverse-events", "condition": "ae_severity >= 2", "action": "Coordinator alert within 24 hours" }
+   ```
+
+### Intervention-Specific Lab Thresholds (REQUIRED for pharmacological interventions)
+
+For ANY pharmacological intervention, you MUST include relevant lab thresholds in the labThresholds array. Research the intervention to identify appropriate monitoring.
+
+**Examples by intervention type:**
+
+| Intervention | Required Lab Thresholds |
+|--------------|------------------------|
+| TRT | hematocrit >54%, PSA >4.0 ng/mL, testosterone <300 or >1000 ng/dL |
+| GLP-1 agonists | blood glucose <70 mg/dL (hypoglycemia) |
+| Peptides (BPC-157, etc.) | No standard labs, but monitor injection sites |
+| Ketamine | blood pressure monitoring |
+| SSRIs | No routine labs, but monitor for serotonin syndrome symptoms |
+
+### Adverse Event Instrument (REQUIRED at every timepoint)
+
+You MUST include the "adverse-events" instrument at every timepoint after baseline. See the standard template below.
+
+---
+
+## Standard Instrument: Adverse Events Check
+
+**Always include this instrument at every timepoint after baseline:**
+
+```json
+{
+  "id": "adverse-events",
+  "name": "Adverse Events Check",
+  "description": "Check for new or worsening symptoms",
+  "instructions": "Please report any new or worsening symptoms since your last check-in.",
+  "estimatedMinutes": 1,
+  "questions": [
+    {
+      "id": "ae_new",
+      "text": "Have you experienced any new or worsening symptoms?",
+      "type": "single_choice",
+      "options": [
+        { "value": 0, "label": "No" },
+        { "value": 1, "label": "Yes" }
+      ],
+      "required": true
+    },
+    {
+      "id": "ae_severity",
+      "text": "How severe are these symptoms?",
+      "type": "single_choice",
+      "options": [
+        { "value": 0, "label": "Not applicable" },
+        { "value": 1, "label": "Mild - noticeable but not bothersome" },
+        { "value": 2, "label": "Moderate - bothersome but manageable" },
+        { "value": 3, "label": "Severe - significantly impacts daily activities" }
+      ],
+      "required": true
+    },
+    {
+      "id": "ae_description",
+      "text": "Please describe your symptoms:",
+      "type": "text",
+      "required": false
+    }
+  ],
+  "scoring": {
+    "method": "sum",
+    "range": { "min": 0, "max": 4 },
+    "interpretation": "lower_better"
+  },
+  "alerts": [
+    {
+      "condition": "ae_severity >= 2",
+      "type": "coordinator_alert",
+      "urgency": "24hr",
+      "message": "Participant reported moderate or severe adverse event"
+    },
+    {
+      "condition": "ae_severity >= 3",
+      "type": "urgent_alert",
+      "urgency": "4hr",
+      "message": "Participant reported SEVERE adverse event - immediate follow-up required"
+    }
+  ]
+}
+```
+
+---
+
+## Example: Complete TRT Safety Monitoring
+
+**When generating a protocol for Testosterone Replacement Therapy, your safetyMonitoring section should look like this:**
+
+```json
+"safetyMonitoring": {
+  "labThresholds": [
+    {
+      "marker": "hematocrit",
+      "threshold": ">54%",
+      "action": "Alert coordinator - consider dose reduction or phlebotomy"
+    },
+    {
+      "marker": "psa",
+      "threshold": ">4.0 ng/mL",
+      "action": "Alert coordinator - recommend urological evaluation"
+    },
+    {
+      "marker": "testosterone_total",
+      "threshold": "<300 ng/dL",
+      "action": "Alert coordinator - subtherapeutic level, dose adjustment needed"
+    },
+    {
+      "marker": "testosterone_total",
+      "threshold": ">1000 ng/dL",
+      "action": "Alert coordinator - supratherapeutic level, dose adjustment needed"
+    }
+  ],
+  "proAlerts": [
+    {
+      "instrument": "phq-2",
+      "condition": "total >= 3",
+      "action": "Trigger PHQ-9"
+    },
+    {
+      "instrument": "phq-9",
+      "condition": "total >= 10",
+      "action": "Coordinator alert within 24 hours"
+    },
+    {
+      "instrument": "phq-9",
+      "condition": "total >= 15",
+      "action": "Urgent alert within 4 hours"
+    },
+    {
+      "instrument": "phq-9",
+      "condition": "q9 > 0",
+      "action": "Show crisis resources + urgent alert within 1 hour"
+    },
+    {
+      "instrument": "adverse-events",
+      "condition": "ae_severity >= 2",
+      "action": "Coordinator alert within 24 hours"
+    }
+  ]
+}
+```
+
+## Example: Complete BPC-157 Safety Monitoring
+
+**When generating a protocol for BPC-157 (peptide therapy), your safetyMonitoring section should look like this:**
+
+```json
+"safetyMonitoring": {
+  "labThresholds": [],
+  "proAlerts": [
+    {
+      "instrument": "phq-2",
+      "condition": "total >= 3",
+      "action": "Trigger PHQ-9"
+    },
+    {
+      "instrument": "phq-9",
+      "condition": "total >= 10",
+      "action": "Coordinator alert within 24 hours"
+    },
+    {
+      "instrument": "phq-9",
+      "condition": "total >= 15",
+      "action": "Urgent alert within 4 hours"
+    },
+    {
+      "instrument": "phq-9",
+      "condition": "q9 > 0",
+      "action": "Show crisis resources + urgent alert within 1 hour"
+    },
+    {
+      "instrument": "adverse-events",
+      "condition": "ae_severity >= 2",
+      "action": "Coordinator alert within 24 hours - possible injection site reaction or systemic effect"
+    },
+    {
+      "instrument": "injection-site-monitoring",
+      "condition": "severity >= 2",
+      "action": "Coordinator alert - monitor for infection or adverse reaction"
+    }
+  ]
+}
+```
+
+**Note:** For peptides without established lab monitoring, focus on PRO-based safety monitoring including injection site reactions, GI symptoms, and adverse events.
 
 ---
 
