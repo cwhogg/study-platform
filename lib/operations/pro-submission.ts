@@ -199,8 +199,13 @@ function validateResponses(
     return null
   }
 
+  // Convert questions to array if it's an object
+  const questions = Array.isArray(instrument.questions)
+    ? instrument.questions
+    : Object.values(instrument.questions || {})
+
   // Check all required questions are answered
-  const requiredQuestions = instrument.questions.filter(q => q.required)
+  const requiredQuestions = questions.filter(q => q.required)
   const answeredIds = new Set(responses.map(r => r.questionId))
 
   for (const question of requiredQuestions) {
@@ -211,7 +216,7 @@ function validateResponses(
 
   // Validate each response
   for (const response of responses) {
-    const question = instrument.questions.find(q => q.id === response.questionId)
+    const question = questions.find(q => q.id === response.questionId)
     if (!question) {
       continue // Skip unknown questions
     }
