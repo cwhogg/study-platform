@@ -108,7 +108,7 @@ export async function handleProSubmission(
 
     if (submissionError) {
       console.error('[PRO] Failed to save submission:', submissionError)
-      return { success: false, error: 'Failed to save submission' }
+      return { success: false, error: `Failed to save submission: ${submissionError.message}` }
     }
 
     // 6. Evaluate safety and create alerts
@@ -133,7 +133,7 @@ export async function handleProSubmission(
             trigger_value: String(scores.total),
             threshold: alert.condition,
             message: alert.message,
-            status: 'pending',
+            status: 'open',
           })
       }
     }
