@@ -15,9 +15,11 @@ import {
   ChevronDown,
   ChevronUp,
   ListChecks,
+  Sparkles,
+  Loader2,
 } from 'lucide-react'
-import { PageSpinner, ButtonSpinner } from '@/components/ui/Spinner'
-import { ErrorMessage } from '@/components/ui/ErrorMessage'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
 
 // Types for AI-generated consent
 interface ConsentSection {
@@ -242,81 +244,80 @@ function ConsentReviewContent() {
   }
 
   if (isLoading) {
-    return <PageSpinner label="Loading consent document..." />
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center animate-fade-in">
+          <div className="w-12 h-12 mx-auto mb-4 relative">
+            <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
+            <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+          </div>
+          <p className="text-stone-500">Loading consent document...</p>
+        </div>
+      </div>
+    )
   }
 
   // Success state
   if (isFinalized && createdStudy) {
     return (
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
-        <div className="w-full max-w-lg text-center">
+        <div className="w-full max-w-lg text-center animate-fade-in-up">
           {/* Success Icon */}
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-8 h-8 text-green-600" />
+          <div className="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="font-display text-2xl sm:text-3xl text-stone-900 mb-2">
             Study Created!
           </h1>
-          <p className="text-gray-600 mb-8">
+          <p className="text-stone-500 mb-8">
             Your study is ready. Share the invitation link with eligible participants.
           </p>
 
           {/* Study Info */}
-          <div className="bg-gray-50 rounded-xl p-6 mb-6 text-left">
+          <Card variant="default" padding="md" className="mb-6 text-left">
             <div className="mb-4">
-              <div className="text-sm text-gray-500 mb-1">Study Name</div>
-              <div className="font-semibold text-gray-900">{createdStudy.name}</div>
+              <div className="text-sm text-stone-500 mb-1">Study Name</div>
+              <div className="font-semibold text-stone-900">{createdStudy.name}</div>
             </div>
             <div>
-              <div className="text-sm text-gray-500 mb-1">Study ID</div>
-              <div className="font-mono text-sm text-gray-900">{createdStudy.id}</div>
+              <div className="text-sm text-stone-500 mb-1">Study ID</div>
+              <div className="font-mono text-sm text-stone-600">{createdStudy.id}</div>
             </div>
-          </div>
+          </Card>
 
           {/* Invitation Link */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
-            <div className="text-sm font-medium text-gray-700 mb-3">Invitation Link</div>
+          <Card variant="default" padding="md" className="mb-8">
+            <div className="text-sm font-medium text-stone-700 mb-3">Invitation Link</div>
             <div className="flex items-center gap-2">
-              <div className="flex-1 bg-gray-50 rounded-lg px-4 py-3 text-sm text-gray-600 font-mono truncate">
+              <div className="flex-1 bg-stone-50 rounded-xl px-4 py-3 text-sm text-stone-600 font-mono truncate border border-stone-100">
                 {inviteLink}
               </div>
-              <button
+              <Button
+                variant={copied ? 'primary' : 'secondary'}
                 onClick={handleCopyLink}
-                className="flex items-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               >
-                {copied ? (
-                  <>
-                    <Check className="w-4 h-4" />
-                    <span>Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-4 h-4" />
-                    <span>Copy</span>
-                  </>
-                )}
-              </button>
+                {copied ? 'Copied!' : 'Copy'}
+              </Button>
             </div>
-            <p className="text-sm text-gray-500 mt-3">
+            <p className="text-sm text-stone-500 mt-3">
               Share this link with eligible participants to invite them to the study.
             </p>
-          </div>
+          </Card>
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              href={`/sponsor/studies/${createdStudy.id}`}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-            >
-              View Study Dashboard
-              <ExternalLink className="w-4 h-4" />
+            <Link href={`/sponsor/studies/${createdStudy.id}`} className="flex-1">
+              <Button size="lg" fullWidth>
+                View Study Dashboard
+                <ExternalLink className="w-4 h-4" />
+              </Button>
             </Link>
-            <Link
-              href="/"
-              className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
-            >
-              Back to Home
+            <Link href="/" className="flex-1">
+              <Button variant="secondary" size="lg" fullWidth>
+                Back to Home
+              </Button>
             </Link>
           </div>
         </div>
@@ -328,86 +329,91 @@ function ConsentReviewContent() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-8 animate-fade-in">
         <Link
           href={`/sponsor/create/review?${searchParams.toString()}`}
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4"
+          className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
         </Link>
-        <div className="text-sm font-medium text-indigo-600 mb-2">CONSENT DOCUMENT</div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Review & Finalize</h1>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-100 rounded-full text-xs font-medium text-teal-700 mb-3">
+          <Sparkles className="w-3.5 h-3.5" />
+          Consent Document
+        </div>
+        <h1 className="font-display text-2xl sm:text-3xl text-stone-900">Review & Finalize</h1>
       </div>
 
       {/* AI-generated indicator */}
       {consent && consent !== FALLBACK_CONSENT && (
-        <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
-          <Info className="w-4 h-4" />
-          This consent document was generated by AI. Review and edit as needed.
+        <div className="mb-6 p-4 bg-teal-50 border border-teal-100 rounded-xl text-teal-700 text-sm flex items-center gap-3 animate-fade-in">
+          <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Info className="w-4 h-4 text-teal-600" />
+          </div>
+          <span>This consent document was generated by AI. Review and edit as needed.</span>
         </div>
       )}
 
       {/* Summary Card */}
       {consent?.summary && (
-        <section className="bg-indigo-50 rounded-xl p-6 mb-6">
-          <h2 className="font-semibold text-gray-900 mb-3">{consent.summary.title || 'Study at a Glance'}</h2>
+        <Card variant="default" padding="md" className="mb-6 bg-gradient-to-br from-teal-50 to-white border-teal-100 animate-fade-in-up">
+          <h2 className="font-semibold text-stone-900 mb-3">{consent.summary.title || 'Study at a Glance'}</h2>
           <ul className="space-y-2">
             {consent.summary.bullets.map((bullet, index) => (
-              <li key={index} className="flex items-start gap-2 text-gray-700">
-                <span className="text-indigo-600 mt-0.5">•</span>
+              <li key={index} className="flex items-start gap-2 text-stone-600">
+                <span className="text-teal-500 mt-0.5">•</span>
                 {bullet}
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
       )}
 
       {/* Consent Document Sections */}
-      <section className="bg-white rounded-xl border border-gray-200 mb-6">
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+      <Card variant="default" padding="none" className="mb-6 overflow-hidden stagger-children">
+        <div className="flex items-center justify-between p-4 border-b border-stone-100">
           <div className="flex items-center gap-3">
-            <FileText className="w-5 h-5 text-gray-400" />
-            <span className="font-medium text-gray-900">
+            <FileText className="w-5 h-5 text-stone-400" />
+            <span className="font-medium text-stone-900">
               {consent?.document?.title || 'Informed Consent Document'}
             </span>
             {consent?.document?.version && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+              <span className="text-xs bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full">
                 v{consent.document.version}
               </span>
             )}
           </div>
-          <button className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-indigo-50">
+          <button className="text-sm text-teal-600 hover:text-teal-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-teal-50">
             <Pencil className="w-3.5 h-3.5" />
             Edit
           </button>
         </div>
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-stone-100">
           {consent?.document?.sections?.map((section) => (
-            <div key={section.id} className="border-b border-gray-100 last:border-0">
+            <div key={section.id} className="border-b border-stone-100 last:border-0">
               <button
                 onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors text-left"
+                className="w-full flex items-center justify-between p-4 hover:bg-stone-50 transition-colors text-left"
               >
-                <span className="font-medium text-gray-900">{section.title}</span>
+                <span className="font-medium text-stone-900">{section.title}</span>
                 {expandedSections.has(section.id) ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                  <ChevronUp className="w-5 h-5 text-stone-400" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                  <ChevronDown className="w-5 h-5 text-stone-400" />
                 )}
               </button>
               {expandedSections.has(section.id) && (
-                <div className="px-4 pb-4 prose prose-sm prose-gray max-w-none">
+                <div className="px-4 pb-4 prose prose-sm prose-stone max-w-none">
                   {section.content.split('\n').map((paragraph, index) => {
                     if (paragraph.startsWith('- ')) {
                       return (
-                        <li key={index} className="text-gray-700 ml-4">
+                        <li key={index} className="text-stone-600 ml-4">
                           {paragraph.replace('- ', '')}
                         </li>
                       )
                     } else if (paragraph.trim()) {
                       return (
-                        <p key={index} className="text-gray-700 mb-2">
+                        <p key={index} className="text-stone-600 mb-2">
                           {paragraph}
                         </p>
                       )
@@ -419,44 +425,44 @@ function ConsentReviewContent() {
             </div>
           ))}
         </div>
-      </section>
+      </Card>
 
       {/* Comprehension Questions */}
-      <section className="bg-white rounded-xl border border-gray-200 mb-8">
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+      <Card variant="default" padding="none" className="mb-8 overflow-hidden">
+        <div className="flex items-center justify-between p-4 border-b border-stone-100">
           <div className="flex items-center gap-3">
-            <ListChecks className="w-5 h-5 text-gray-400" />
-            <span className="font-medium text-gray-900">Comprehension Questions</span>
-            <span className="text-sm text-gray-500">
+            <ListChecks className="w-5 h-5 text-stone-400" />
+            <span className="font-medium text-stone-900">Comprehension Questions</span>
+            <span className="text-sm text-stone-500">
               ({consent?.comprehensionQuestions?.length || 0})
             </span>
           </div>
-          <button className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-indigo-50">
+          <button className="text-sm text-teal-600 hover:text-teal-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-teal-50">
             <Pencil className="w-3.5 h-3.5" />
             Edit
           </button>
         </div>
         <div className="p-4">
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-stone-500 mb-4">
             Participants must answer these questions correctly before signing consent.
           </p>
           <div className="space-y-4">
             {consent?.comprehensionQuestions?.map((q, index) => (
-              <div key={q.id} className="p-4 bg-gray-50 rounded-lg">
+              <div key={q.id} className="p-4 bg-stone-50 rounded-xl">
                 <div className="flex items-start gap-3 mb-3">
-                  <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-medium">
+                  <span className="flex-shrink-0 w-7 h-7 bg-teal-100 text-teal-700 rounded-lg flex items-center justify-center text-sm font-medium">
                     {index + 1}
                   </span>
-                  <div className="font-medium text-gray-900">{q.question}</div>
+                  <div className="font-medium text-stone-900">{q.question}</div>
                 </div>
-                <div className="ml-9 space-y-2">
+                <div className="ml-10 space-y-2">
                   {q.options?.map((option, optIndex) => (
                     <div
                       key={optIndex}
-                      className={`flex items-center gap-2 text-sm p-2 rounded ${
+                      className={`flex items-center gap-2 text-sm p-3 rounded-lg ${
                         option.correct
-                          ? 'bg-green-50 text-green-700 border border-green-200'
-                          : 'bg-white text-gray-600 border border-gray-200'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-white text-stone-600 border border-stone-200'
                       }`}
                     >
                       {option.correct && <CheckCircle2 className="w-4 h-4" />}
@@ -468,7 +474,7 @@ function ConsentReviewContent() {
                   ))}
                 </div>
                 {q.explanation && (
-                  <div className="ml-9 mt-2 text-xs text-gray-500">
+                  <div className="ml-10 mt-2 text-xs text-stone-500">
                     <span className="font-medium">If wrong:</span> {q.explanation}
                   </div>
                 )}
@@ -476,34 +482,37 @@ function ConsentReviewContent() {
             ))}
           </div>
         </div>
-      </section>
+      </Card>
 
       {/* Error Message */}
       {error && (
-        <ErrorMessage
-          message={error}
-          onDismiss={() => setError('')}
-          className="mb-6"
-        />
+        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm mb-6 animate-fade-in">
+          {error}
+        </div>
       )}
 
       {/* Finalize Button */}
-      <button
+      <Button
+        size="lg"
+        fullWidth
         onClick={handleFinalize}
         disabled={isSubmitting}
-        className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+        isLoading={isSubmitting}
       >
         {isSubmitting ? (
-          <ButtonSpinner label="Creating Study..." />
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Creating Study...
+          </>
         ) : (
           <>
-            <span>Finalize Study</span>
+            Finalize Study
             <Check className="w-5 h-5" />
           </>
         )}
-      </button>
+      </Button>
 
-      <p className="mt-4 text-center text-sm text-gray-500">
+      <p className="mt-4 text-center text-sm text-stone-500">
         Once finalized, you can share the invitation link with participants.
       </p>
     </div>
@@ -512,7 +521,17 @@ function ConsentReviewContent() {
 
 export default function ConsentPage() {
   return (
-    <Suspense fallback={<PageSpinner label="Loading..." />}>
+    <Suspense fallback={
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center animate-fade-in">
+          <div className="w-12 h-12 mx-auto mb-4 relative">
+            <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
+            <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+          </div>
+          <p className="text-stone-500">Loading...</p>
+        </div>
+      </div>
+    }>
       <ConsentReviewContent />
     </Suspense>
   )
