@@ -228,15 +228,17 @@ Generate a brief "Study at a Glance" summary that includes:
 
 This is shown BEFORE the full consent to orient participants.
 
+**Important: Do NOT use emojis in the summary bullets or anywhere else in the output.**
+
 ### Example
 ```json
 {
   "title": "Study at a Glance",
   "bullets": [
-    "📋 Short surveys every 2-4 weeks (~5 min each)",
-    "🩸 Blood tests at 4 timepoints (same as your regular care)",
-    "⏱️ 6 months total, you can stop anytime",
-    "🔒 Your information is kept private and secure"
+    "Short surveys every 2-4 weeks (~5 min each)",
+    "Blood tests at 4 timepoints (same as your regular care)",
+    "6 months total, you can stop anytime",
+    "Your information is kept private and secure"
   ]
 }
 ```
