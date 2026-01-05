@@ -479,6 +479,15 @@ export interface AgentCallOptions {
   temperature?: number
 }
 
+export interface AgentDebugInfo {
+  agentName: string
+  model: string
+  systemPromptLength: number
+  userMessage: string  // The full input JSON
+  rawResponse?: string  // The raw response from OpenAI
+  elapsedMs?: number
+}
+
 export interface AgentResult<T> {
   success: boolean
   data?: T
@@ -488,4 +497,5 @@ export interface AgentResult<T> {
     completionTokens: number
     totalTokens: number
   }
+  debug?: AgentDebugInfo  // Prompt details for client-side logging
 }

@@ -54,6 +54,20 @@ export default function CreateStudyPage() {
         console.log('[StudyDiscovery] Using fallback data:', data.fallback || false)
       }
 
+      // Log OpenAI prompt/response debug info
+      if (data.debug) {
+        console.log('\n=== OPENAI AGENT DEBUG INFO ===')
+        console.log('[Agent] Name:', data.debug.agentName)
+        console.log('[Agent] Model:', data.debug.model)
+        console.log('[Agent] System Prompt Length:', data.debug.systemPromptLength, 'chars')
+        console.log('[Agent] Elapsed:', data.debug.elapsedMs, 'ms')
+        console.log('\n[Agent] USER MESSAGE (what was sent to OpenAI):')
+        console.log(data.debug.userMessage)
+        console.log('\n[Agent] RAW RESPONSE (what came back from OpenAI):')
+        console.log(data.debug.rawResponse)
+        console.log('=== END DEBUG INFO ===\n')
+      }
+
       // Store discovery results in sessionStorage for the configure page
       sessionStorage.setItem('studyDiscovery', JSON.stringify(data.data))
 

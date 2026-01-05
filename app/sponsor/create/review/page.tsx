@@ -238,6 +238,22 @@ function ReviewProtocolContent() {
       })
 
       const data = await response.json()
+      console.log('[Consent] Response status:', response.status)
+      console.log('[Consent] Response data:', JSON.stringify(data, null, 2))
+
+      // Log OpenAI prompt/response debug info
+      if (data.debug) {
+        console.log('\n=== CONSENT AGENT DEBUG INFO ===')
+        console.log('[Agent] Name:', data.debug.agentName)
+        console.log('[Agent] Model:', data.debug.model)
+        console.log('[Agent] System Prompt Length:', data.debug.systemPromptLength, 'chars')
+        console.log('[Agent] Elapsed:', data.debug.elapsedMs, 'ms')
+        console.log('\n[Agent] USER MESSAGE (what was sent to OpenAI):')
+        console.log(data.debug.userMessage)
+        console.log('\n[Agent] RAW RESPONSE (what came back from OpenAI):')
+        console.log(data.debug.rawResponse)
+        console.log('=== END DEBUG INFO ===\n')
+      }
 
       if (!response.ok) {
         setError(data.error || 'Failed to generate consent document')

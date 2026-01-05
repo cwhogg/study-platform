@@ -12,6 +12,7 @@ import type {
   AgentModel,
   AgentCallOptions,
   AgentResult,
+  AgentDebugInfo,
   DiscoveryInput,
   DiscoveryOutput,
   ProtocolGenerationInput,
@@ -244,6 +245,16 @@ ${jsonContent}
     console.log(`[Agent] CALL SUCCESS: ${callId}`)
     console.log(`${'='.repeat(80)}\n`)
 
+    // Build debug info for client-side logging
+    const debugInfo: AgentDebugInfo = {
+      agentName,
+      model,
+      systemPromptLength: systemPrompt.length,
+      userMessage,
+      rawResponse: content,
+      elapsedMs: elapsed,
+    }
+
     return {
       success: true,
       data,
@@ -254,6 +265,7 @@ ${jsonContent}
             totalTokens: response.usage.total_tokens,
           }
         : undefined,
+      debug: debugInfo,
     }
   } catch (error) {
     console.error(`\n[Agent] CALL FAILED: ${callId}`)

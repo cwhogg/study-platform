@@ -183,6 +183,20 @@ function ConfigureStudyContent() {
         console.log('[Protocol] Schedule timepoints:', data.data.schedule?.length || 0)
       }
 
+      // Log OpenAI prompt/response debug info
+      if (data.debug) {
+        console.log('\n=== PROTOCOL AGENT DEBUG INFO ===')
+        console.log('[Agent] Name:', data.debug.agentName)
+        console.log('[Agent] Model:', data.debug.model)
+        console.log('[Agent] System Prompt Length:', data.debug.systemPromptLength, 'chars')
+        console.log('[Agent] Elapsed:', data.debug.elapsedMs, 'ms')
+        console.log('\n[Agent] USER MESSAGE (what was sent to OpenAI):')
+        console.log(data.debug.userMessage)
+        console.log('\n[Agent] RAW RESPONSE (what came back from OpenAI):')
+        console.log(data.debug.rawResponse)
+        console.log('=== END DEBUG INFO ===\n')
+      }
+
       // Store protocol in sessionStorage for the review page
       sessionStorage.setItem('generatedProtocol', JSON.stringify(data.data))
 

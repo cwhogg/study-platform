@@ -106,6 +106,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: protocol,
       usage: result.usage,
+      debug: result.debug,  // Include prompt/response debug info
     })
 
   } catch (error) {

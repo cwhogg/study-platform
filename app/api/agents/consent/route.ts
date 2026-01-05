@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: consent,
       usage: result.usage,
+      debug: result.debug,  // Include prompt/response debug info
     })
 
   } catch (error) {

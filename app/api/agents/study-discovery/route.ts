@@ -114,6 +114,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: mergedData,
       usage: result.usage,
+      debug: result.debug,  // Include prompt/response debug info
     })
 
   } catch (error) {

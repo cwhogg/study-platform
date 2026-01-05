@@ -103,7 +103,9 @@ CREATE TABLE studies (
   status study_status NOT NULL DEFAULT 'draft',
   protocol JSONB,                    -- Full protocol specification (see DATA_MODEL.md)
   consent_document TEXT,             -- Generated consent (markdown)
+  consent_data JSONB,                -- Structured consent data (sections, questions)
   comprehension_questions JSONB,     -- Questions with correct answers for consent
+  enrollment_copy JSONB,             -- Generated enrollment UI copy
   message_templates JSONB,           -- Generated reminder/milestone templates
   config JSONB,                      -- Study configuration (duration, etc.)
   created_at TIMESTAMPTZ DEFAULT NOW(),
