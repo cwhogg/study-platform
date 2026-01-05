@@ -121,14 +121,15 @@ export async function handleProSubmission(
     )
 
     // 7. Create alerts if needed
+    // Map safety alert types to database enum: 'safety', 'non_response', 'lab_threshold'
     if (safetyResult.alerts.length > 0) {
       for (const alert of safetyResult.alerts) {
+        // All PRO-triggered alerts are 'safety' type in the database
         await supabase
-          
           .from('sp_alerts')
           .insert({
             participant_id: participantId,
-            type: alert.type,
+            type: 'safety',
             trigger_source: instrumentId,
             trigger_value: String(scores.total),
             threshold: alert.condition,
