@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { sendEmail } from '@/lib/email/client'
 import { buildEmail, renderTemplate, TemplateVariables } from '@/lib/email/templates'
+import { getBaseUrl } from '@/lib/utils'
 
 
 interface SendEmailRequest {
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Build the email
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const baseUrl = getBaseUrl()
     const allVariables: TemplateVariables = {
       firstName: profile.first_name || 'there',
       studyName: study.name,

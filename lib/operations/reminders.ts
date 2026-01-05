@@ -15,6 +15,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getDueAssessments, type ScheduledTimepoint } from './schedule'
 import { sendEmail } from '@/lib/email/client'
 import { buildEmail, type TemplateVariables } from '@/lib/email/templates'
+import { getBaseUrl } from '@/lib/utils'
 
 
 export interface ReminderResult {
@@ -239,7 +240,7 @@ async function sendReminder(
   messageTemplates: unknown
 ): Promise<{ sent: boolean; error?: string }> {
   const supabase = await createClient()
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const baseUrl = getBaseUrl()
 
   // Build variables
   const variables: TemplateVariables = {

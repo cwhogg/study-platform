@@ -1,6 +1,7 @@
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import type { StudyProtocol, ComprehensionQuestion, StudyConfig } from '@/lib/db/types'
+import { getBaseUrl } from '@/lib/utils'
 
 // Demo sponsor ID - consistent across all demo studies
 const DEMO_SPONSOR_ID = '00000000-0000-0000-0000-000000000001'
@@ -338,8 +339,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate invite link
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    const inviteLink = `${baseUrl}/study/${study.id}/join`
+    const inviteLink = `${getBaseUrl()}/study/${study.id}/join`
 
     return NextResponse.json({
       success: true,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { sendEmail } from '@/lib/email/client'
 import { emailTemplates } from '@/lib/email/templates'
+import { getBaseUrl } from '@/lib/utils'
 
 
 export async function POST(request: NextRequest) {
@@ -96,7 +97,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Build enrollment confirmation email
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const baseUrl = getBaseUrl()
     const { subject, html } = emailTemplates.enrollmentConfirmation({
       firstName: profile.first_name || 'there',
       studyName: study.name,
