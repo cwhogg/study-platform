@@ -308,19 +308,33 @@ interface TriggerConfig {
 
 4. **Match instruments to endpoints**
    - **ONLY use validated, published PRO instruments** - NEVER invent new instruments
+   - **ALWAYS use the FULL OFFICIAL NAME** of the instrument - NEVER use generic descriptions
    - **Primary reference: NIH PROMIS database (healthmeasures.net/search-view-measures)**
-   - Also reference: FDA PRO Guidance instruments, published clinical literature
+   - Also reference: FDA PRO Guidance instruments, published clinical literature, sralab.org/rehabilitation-measures
    - Prefer widely-used instruments with known psychometric properties
    - Consider patient burden
    - Include brief screening versions where available
-   - **Examples of VALID instruments:**
-     - PROMIS instruments: PROMIS Pain Interference, PROMIS Physical Function, PROMIS Fatigue, PROMIS Depression, PROMIS Anxiety, PROMIS Sleep Disturbance
-     - Domain-specific: VISA-A (Achilles), VISA-P (patellar), WOMAC (osteoarthritis), ODI (back pain), DASH (upper extremity), BPI (pain), NRS (pain)
-     - Mental health: PHQ-2, PHQ-9, GAD-7, PCL-5
-     - General: SF-36, SF-12, EQ-5D
-     - Condition-specific: qADAM (androgen deficiency), IIEF-5 (erectile function), FACIT-Fatigue
+
+   **CRITICAL: Be SPECIFIC with instrument names:**
+   - WRONG: "Wound assessment tool" or "Pain scale" or "Depression questionnaire"
+   - RIGHT: "Bates-Jensen Wound Assessment Tool (BWAT)" or "Brief Pain Inventory (BPI)" or "PHQ-9"
+
+   **Examples of VALID instruments by domain:**
+   - **PROMIS instruments:** PROMIS Pain Interference, PROMIS Physical Function, PROMIS Fatigue, PROMIS Depression, PROMIS Anxiety, PROMIS Sleep Disturbance, PROMIS Global Health
+   - **Pain:** Brief Pain Inventory (BPI), Numeric Rating Scale (NRS), Visual Analog Scale (VAS), McGill Pain Questionnaire (MPQ), WOMAC Pain Subscale
+   - **Mental health:** PHQ-2, PHQ-9, GAD-7, PCL-5, Beck Depression Inventory (BDI-II), Hamilton Depression Rating Scale (HAM-D)
+   - **General QoL:** SF-36, SF-12, EQ-5D-5L, WHOQOL-BREF
+   - **Musculoskeletal:** VISA-A (Achilles tendinopathy), VISA-P (patellar tendinopathy), WOMAC (osteoarthritis), Oswestry Disability Index (ODI), DASH (upper extremity), Lysholm Knee Score, KOOS (knee)
+   - **Wound healing:** Bates-Jensen Wound Assessment Tool (BWAT), Pressure Ulcer Scale for Healing (PUSH), Wound Bed Score (WBS)
+   - **Sexual function:** IIEF-5 (erectile function), Female Sexual Function Index (FSFI), qADAM (androgen deficiency)
+   - **Fatigue:** FACIT-Fatigue, Multidimensional Fatigue Inventory (MFI), Fatigue Severity Scale (FSS)
+   - **Sleep:** Pittsburgh Sleep Quality Index (PSQI), Insomnia Severity Index (ISI), Epworth Sleepiness Scale (ESS)
+   - **Functional status:** Barthel Index, Katz ADL Index, Lawton IADL Scale
+   - **Neurological:** Montreal Cognitive Assessment (MoCA), Mini-Mental State Examination (MMSE)
+
    - **DO NOT** create instruments like "Tendon Healing Assessment Scale" or "Custom questionnaire" - these do not exist
-   - If unsure whether an instrument is validated, check healthmeasures.net or PubMed for psychometric validation studies
+   - **DO NOT** use generic names like "wound assessment tool" - always use the specific validated instrument name
+   - If unsure which specific instrument to use, search sralab.org/rehabilitation-measures or healthmeasures.net for validated options in that domain
 
 5. **Determine populations and stages**
    - Who typically receives this intervention?
