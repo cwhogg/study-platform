@@ -73,9 +73,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 2. Check if study exists
-    const { data: study, error: studyError } = await supabase
-      
+    // 2. Check if study exists (use service client to bypass RLS)
+    let serviceClient
+    try {
+      serviceClient = createServiceClient()
+    } catch {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+
+    const { data: study, error: studyError } = await serviceClient
       .from('sp_studies')
       .select('id, status')
       .eq('id', studyId)
@@ -88,9 +97,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 3. Create participant record
-    const { data: participant, error: participantError } = await supabase
-      
+    // 3. Create participant record (use service client to bypass RLS for new user)
+    const { data: participant, error: participantError } = await serviceClient
       .from('sp_participants')
       .insert({
         study_id: studyId,
