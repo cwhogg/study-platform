@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { MobileContainer } from '@/components/ui/MobileContainer'
 import { CheckCircle2, Clock, FlaskConical } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
-// Demo data - in production, this would come from the database
 interface Assessment {
   id: string
   timepoint: string
@@ -16,38 +16,165 @@ interface Assessment {
   dueDate?: string
   hasLabs?: boolean
   labsReceived?: boolean
+  instruments: string[]
+  completedInstruments: string[]
 }
 
-const demoAssessments: Assessment[] = [
-  { id: 'baseline', timepoint: 'Baseline', week: 0, status: 'completed', completedDate: 'Jan 3' },
-  { id: 'week2', timepoint: 'Week 2', week: 2, status: 'completed', completedDate: 'Jan 17' },
-  { id: 'week4', timepoint: 'Week 4', week: 4, status: 'completed', completedDate: 'Jan 31' },
-  { id: 'week6', timepoint: 'Week 6', week: 6, status: 'completed', completedDate: 'Feb 14', hasLabs: true, labsReceived: true },
-  { id: 'week8', timepoint: 'Week 8', week: 8, status: 'due', dueDate: 'Feb 28' },
-  { id: 'week12', timepoint: 'Week 12', week: 12, status: 'upcoming', dueDate: 'Mar 28', hasLabs: true },
-  { id: 'week16', timepoint: 'Week 16', week: 16, status: 'upcoming', dueDate: 'Apr 25' },
-  { id: 'week20', timepoint: 'Week 20', week: 20, status: 'upcoming', dueDate: 'May 23' },
-  { id: 'week26', timepoint: 'Week 26', week: 26, status: 'upcoming', dueDate: 'Jul 4', hasLabs: true }
+// Schedule defines which instruments are needed at each timepoint
+const scheduleConfig: { id: string; timepoint: string; week: number; instruments: string[]; hasLabs?: boolean }[] = [
+  { id: 'baseline', timepoint: 'Baseline', week: 0, instruments: ['phq-2', 'energy'] },
+  { id: 'week2', timepoint: 'Week 2', week: 2, instruments: ['phq-2', 'energy'] },
+  { id: 'week4', timepoint: 'Week 4', week: 4, instruments: ['phq-2', 'energy', 'symptoms'] },
+  { id: 'week6', timepoint: 'Week 6', week: 6, instruments: ['phq-2', 'energy', 'symptoms'], hasLabs: true },
+  { id: 'week8', timepoint: 'Week 8', week: 8, instruments: ['phq-2', 'energy', 'symptoms', 'satisfaction'] },
+  { id: 'week12', timepoint: 'Week 12', week: 12, instruments: ['phq-2', 'energy', 'symptoms', 'satisfaction'], hasLabs: true },
+  { id: 'week16', timepoint: 'Week 16', week: 16, instruments: ['phq-2', 'energy', 'symptoms'] },
+  { id: 'week20', timepoint: 'Week 20', week: 20, instruments: ['phq-2', 'energy', 'symptoms'] },
+  { id: 'week26', timepoint: 'Week 26', week: 26, instruments: ['phq-2', 'energy', 'symptoms', 'satisfaction'], hasLabs: true }
 ]
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
 
 export default function DashboardPage() {
   const params = useParams()
   const studyId = params.studyId as string
 
-  const [assessments] = useState<Assessment[]>(demoAssessments)
-  const [currentWeek, setCurrentWeek] = useState(8)
+  const [assessments, setAssessments] = useState<Assessment[]>([])
+  const [currentWeek, setCurrentWeek] = useState(0)
+  const [loading, setLoading] = useState(true)
   const totalWeeks = 26
 
+  const loadDashboardData = useCallback(async () => {
+    const supabase = createClient()
+
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setLoading(false)
+      return
+    }
+
+    // Get participant record
+    const { data: participant } = await supabase
+      .from('sp_participants')
+      .select('id, enrolled_at, current_week')
+      .eq('user_id', user.id)
+      .eq('study_id', studyId)
+      .single()
+
+    if (!participant || !participant.enrolled_at) {
+      setLoading(false)
+      return
+    }
+
+    // Get all submissions for this participant
+    const { data: submissions } = await supabase
+      .from('sp_submissions')
+      .select('timepoint, instrument, submitted_at')
+      .eq('participant_id', participant.id)
+
+    // Get lab results for this participant
+    const { data: labResults } = await supabase
+      .from('sp_lab_results')
+      .select('timepoint')
+      .eq('participant_id', participant.id)
+
+    // Build submissions map
+    const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null }>()
+    submissions?.forEach(s => {
+      if (!submissionsByTimepoint.has(s.timepoint)) {
+        submissionsByTimepoint.set(s.timepoint, { instruments: new Set(), lastSubmitted: null })
+      }
+      const entry = submissionsByTimepoint.get(s.timepoint)!
+      entry.instruments.add(s.instrument)
+      if (s.submitted_at) {
+        const submittedDate = new Date(s.submitted_at)
+        if (!entry.lastSubmitted || submittedDate > entry.lastSubmitted) {
+          entry.lastSubmitted = submittedDate
+        }
+      }
+    })
+
+    // Build lab results set
+    const labsByTimepoint = new Set(labResults?.map(l => l.timepoint) || [])
+
+    // Calculate current week from enrollment
+    const enrolledAt = new Date(participant.enrolled_at)
+    const now = new Date()
+    const diffMs = now.getTime() - enrolledAt.getTime()
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+    const calculatedWeek = Math.floor(diffDays / 7)
+    setCurrentWeek(calculatedWeek)
+
+    // Build assessment status from schedule
+    const assessmentList: Assessment[] = scheduleConfig.map(config => {
+      const dueDate = new Date(enrolledAt)
+      dueDate.setDate(dueDate.getDate() + config.week * 7)
+
+      const windowDays = 7
+      const windowStart = new Date(dueDate)
+      windowStart.setDate(windowStart.getDate() - Math.floor(windowDays / 2))
+      const windowEnd = new Date(dueDate)
+      windowEnd.setDate(windowEnd.getDate() + Math.ceil(windowDays / 2))
+
+      const submissionEntry = submissionsByTimepoint.get(config.id)
+      const completedInstruments = Array.from(submissionEntry?.instruments || [])
+      const allCompleted = config.instruments.every(i => completedInstruments.includes(i))
+
+      let status: Assessment['status']
+      if (allCompleted) {
+        status = 'completed'
+      } else if (now > windowEnd) {
+        status = 'overdue'
+      } else if (now >= windowStart && now <= windowEnd) {
+        status = 'due'
+      } else {
+        status = 'upcoming'
+      }
+
+      // Check if we have labs for this timepoint
+      const labsReceived = labsByTimepoint.has(config.id)
+
+      return {
+        id: config.id,
+        timepoint: config.timepoint,
+        week: config.week,
+        status,
+        completedDate: allCompleted && submissionEntry?.lastSubmitted
+          ? formatDate(submissionEntry.lastSubmitted)
+          : undefined,
+        dueDate: formatDate(dueDate),
+        hasLabs: config.hasLabs,
+        labsReceived,
+        instruments: config.instruments,
+        completedInstruments
+      }
+    })
+
+    setAssessments(assessmentList)
+    setLoading(false)
+  }, [studyId])
+
   useEffect(() => {
-    // In production, calculate current week based on enrollment date
-    // For demo, use week 8
-    setCurrentWeek(8)
-  }, [])
+    loadDashboardData()
+  }, [loadDashboardData])
 
   const progress = (currentWeek / totalWeeks) * 100
-  const dueAssessment = assessments.find(a => a.status === 'due')
+  const dueAssessment = assessments.find(a => a.status === 'due' || a.status === 'overdue')
   const completedAssessments = assessments.filter(a => a.status === 'completed')
   const upcomingAssessments = assessments.filter(a => a.status === 'upcoming')
+
+  if (loading) {
+    return (
+      <MobileContainer className="pt-4 pb-8">
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+        </div>
+      </MobileContainer>
+    )
+  }
 
   return (
     <MobileContainer className="pt-4 pb-8">
@@ -62,7 +189,7 @@ export default function DashboardPage() {
         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-indigo-600 transition-all duration-500 ease-out"
-            style={{ width: `${progress}%` }}
+            style={{ width: `${Math.min(progress, 100)}%` }}
           />
         </div>
       </div>
@@ -73,7 +200,9 @@ export default function DashboardPage() {
           <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 bg-indigo-600 rounded-full animate-pulse" />
-              <span className="text-sm font-semibold text-indigo-900">DUE NOW</span>
+              <span className="text-sm font-semibold text-indigo-900">
+                {dueAssessment.status === 'overdue' ? 'OVERDUE' : 'DUE NOW'}
+              </span>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               {dueAssessment.timepoint} Check-in
@@ -89,6 +218,19 @@ export default function DashboardPage() {
               Start
             </Link>
           </div>
+        </div>
+      )}
+
+      {/* All Done Message */}
+      {!dueAssessment && completedAssessments.length > 0 && (
+        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-center">
+          <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
+          <p className="font-medium text-green-900">You&apos;re all caught up!</p>
+          <p className="text-sm text-green-700 mt-1">
+            {upcomingAssessments.length > 0
+              ? `Next check-in: ${upcomingAssessments[0].timepoint}`
+              : 'No more assessments scheduled'}
+          </p>
         </div>
       )}
 
