@@ -1,6 +1,10 @@
 import Link from 'next/link'
-import { Plus, Users, Calendar, ChevronRight } from 'lucide-react'
+import { Plus, Users, Calendar, ChevronRight, FolderOpen } from 'lucide-react'
 import { createServiceClient } from '@/lib/supabase/server'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { StatusBadge } from '@/components/ui/Badge'
+import { ProgressBar } from '@/components/ui/Progress'
 
 // Force dynamic rendering - this page fetches from the database
 export const dynamic = 'force-dynamic'
@@ -57,126 +61,108 @@ async function getStudies(): Promise<Study[]> {
   })
 }
 
-function getStatusBadge(status: string) {
-  switch (status) {
-    case 'active':
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-          Active
-        </span>
-      )
-    case 'enrolling':
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          Enrolling
-        </span>
-      )
-    case 'draft':
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-          Draft
-        </span>
-      )
-    case 'completed':
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-          Completed
-        </span>
-      )
-    default:
-      return null
-  }
-}
-
 export default async function StudiesPage() {
   const studies = await getStudies()
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-stone-50">
+      <div className="container-wide py-8 sm:py-12">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Your Studies</h1>
-            <p className="text-gray-600 mt-1">Manage and monitor your research studies</p>
+            <h1 className="font-display text-2xl sm:text-3xl text-stone-900">Your Studies</h1>
+            <p className="text-stone-500 mt-1">Manage and monitor your research studies</p>
           </div>
-          <Link
-            href="/sponsor/create"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            New Study
+          <Link href="/sponsor/create">
+            <Button leftIcon={<Plus className="w-5 h-5" />}>
+              New Study
+            </Button>
           </Link>
         </div>
 
         {/* Studies List */}
-        <div className="space-y-4">
-          {studies.map((study) => (
-            <Link
-              key={study.id}
-              href={`/sponsor/studies/${study.id}`}
-              className="block bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h2 className="text-lg font-semibold text-gray-900">{study.name}</h2>
-                    {getStatusBadge(study.status)}
-                  </div>
-                  <p className="text-gray-600 text-sm mb-4">{study.intervention}</p>
-
-                  <div className="flex items-center gap-6 text-sm">
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <Users className="w-4 h-4" />
-                      <span>
-                        <span className="font-medium text-gray-900">{study.enrolled}</span>
-                        {' / '}{study.targetEnrollment} enrolled
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <Calendar className="w-4 h-4" />
-                      <span>{study.duration}</span>
-                    </div>
-                    {study.startDate && (
-                      <span className="text-gray-500">Started {study.startDate}</span>
-                    )}
-                  </div>
-
-                  {/* Enrollment Progress Bar */}
-                  {study.targetEnrollment > 0 && (
-                    <div className="mt-4">
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-indigo-600 transition-all"
-                          style={{ width: `${(study.enrolled / study.targetEnrollment) * 100}%` }}
+        {studies.length > 0 ? (
+          <div className="space-y-4 stagger-children">
+            {studies.map((study) => (
+              <Link
+                key={study.id}
+                href={`/sponsor/studies/${study.id}`}
+                className="block"
+              >
+                <Card variant="interactive" padding="md">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      {/* Title and status */}
+                      <div className="flex items-center gap-3 mb-2">
+                        <h2 className="text-lg font-semibold text-stone-900 truncate">
+                          {study.name}
+                        </h2>
+                        <StatusBadge
+                          status={study.status as 'active' | 'enrolling' | 'draft' | 'completed'}
                         />
                       </div>
+
+                      {/* Intervention */}
+                      <p className="text-stone-500 text-sm mb-4 truncate">
+                        {study.intervention}
+                      </p>
+
+                      {/* Stats row */}
+                      <div className="flex items-center gap-6 text-sm">
+                        <div className="flex items-center gap-2 text-stone-500">
+                          <Users className="w-4 h-4" />
+                          <span>
+                            <span className="font-semibold text-stone-900">{study.enrolled}</span>
+                            <span className="text-stone-400"> / {study.targetEnrollment}</span>
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-stone-500">
+                          <Calendar className="w-4 h-4" />
+                          <span>{study.duration}</span>
+                        </div>
+                        {study.startDate && (
+                          <span className="text-stone-400 hidden sm:block">
+                            Started {study.startDate}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Enrollment Progress Bar */}
+                      {study.targetEnrollment > 0 && (
+                        <div className="mt-4">
+                          <ProgressBar
+                            value={study.enrolled}
+                            max={study.targetEnrollment}
+                            size="sm"
+                          />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
 
-                <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0 ml-4" />
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Empty State (shown when no studies) */}
-        {studies.length === 0 && (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Plus className="w-8 h-8 text-gray-400" />
-            </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">No studies yet</h2>
-            <p className="text-gray-600 mb-6">Create your first study to get started</p>
-            <Link
-              href="/sponsor/create"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-            >
-              <Plus className="w-5 h-5" />
-              Create Study
-            </Link>
+                    <ChevronRight className="w-5 h-5 text-stone-300 flex-shrink-0 mt-1" />
+                  </div>
+                </Card>
+              </Link>
+            ))}
           </div>
+        ) : (
+          /* Empty State */
+          <Card variant="default" padding="lg" className="text-center">
+            <div className="py-8">
+              <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <FolderOpen className="w-8 h-8 text-stone-400" />
+              </div>
+              <h2 className="text-xl font-semibold text-stone-900 mb-2">No studies yet</h2>
+              <p className="text-stone-500 mb-6 max-w-sm mx-auto">
+                Create your first study to get started with AI-powered clinical research.
+              </p>
+              <Link href="/sponsor/create">
+                <Button leftIcon={<Plus className="w-5 h-5" />}>
+                  Create Study
+                </Button>
+              </Link>
+            </div>
+          </Card>
         )}
       </div>
     </div>

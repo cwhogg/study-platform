@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { MobileFullScreen, MobileBottomAction } from '@/components/ui/MobileContainer'
-import { ClipboardList, Clock, Heart } from 'lucide-react'
+import { MobileFullScreen, MobileBottomAction, MobileDivider } from '@/components/ui/MobileContainer'
+import { Button } from '@/components/ui/Button'
+import { ClipboardCheck, Clock, Sparkles, Shield } from 'lucide-react'
 import type { EnrollmentCopy } from '@/lib/db/types'
 
 interface StudyData {
@@ -18,15 +19,17 @@ interface StudyData {
 // Default copy if none generated
 const DEFAULT_WELCOME = {
   headline: 'Join Our Research Study',
-  subheadline: 'Help improve treatment for future patients',
+  subheadline: 'Help shape the future of care',
   bullets: [
-    'Short surveys every 2-4 weeks',
-    'Your regular care continues',
-    'Make an impact on future care',
+    'Quick check-ins from your phone',
+    'Your regular treatment continues',
+    'Make a real impact on research',
   ],
   buttonText: 'Get Started',
   footerNote: 'Takes about 10 minutes to enroll',
 }
+
+const FEATURE_ICONS = [ClipboardCheck, Clock, Sparkles]
 
 export default function JoinPage() {
   const params = useParams()
@@ -61,9 +64,12 @@ export default function JoinPage() {
   if (isLoading) {
     return (
       <MobileFullScreen className="flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading study...</p>
+        <div className="text-center animate-fade-in">
+          <div className="w-12 h-12 mx-auto mb-4 relative">
+            <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
+            <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+          </div>
+          <p className="text-stone-500">Loading study...</p>
         </div>
       </MobileFullScreen>
     )
@@ -72,9 +78,12 @@ export default function JoinPage() {
   if (error || !study) {
     return (
       <MobileFullScreen className="flex items-center justify-center">
-        <div className="text-center px-4">
-          <h1 className="text-xl font-bold text-gray-900 mb-2">Unable to Load Study</h1>
-          <p className="text-gray-600">{error || 'Study not found'}</p>
+        <div className="text-center px-4 animate-fade-in">
+          <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-stone-400" />
+          </div>
+          <h1 className="text-xl font-semibold text-stone-900 mb-2">Unable to Load Study</h1>
+          <p className="text-stone-500">{error || 'Study not found'}</p>
         </div>
       </MobileFullScreen>
     )
@@ -85,56 +94,76 @@ export default function JoinPage() {
 
   return (
     <>
-      <MobileFullScreen className="pb-24">
-        {/* Study Name */}
-        <div className="text-center mb-8 pt-4">
-          <h1 className="text-2xl font-bold text-gray-900">{welcome.headline || study.name}</h1>
-          {welcome.subheadline && (
-            <p className="text-gray-600 mt-2">{welcome.subheadline}</p>
-          )}
-        </div>
-
-        {/* Divider */}
-        <div className="border-t border-gray-100 my-6" />
-
-        {/* Value Proposition */}
-        <div className="flex-1">
-          {/* 3 Bullet Points */}
-          <div className="space-y-6">
-            {bullets.slice(0, 3).map((bullet, index) => {
-              const icons = [ClipboardList, Clock, Heart]
-              const Icon = icons[index % icons.length]
-              return (
-                <div key={index} className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-6 h-6 text-indigo-600" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">{bullet}</div>
-                  </div>
-                </div>
-              )
-            })}
+      <MobileFullScreen className="pb-32">
+        {/* Hero Section */}
+        <div className="text-center pt-8 mb-8 stagger-children">
+          {/* Logo/Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-100 rounded-full mb-6">
+            <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-teal-700">Research Study</span>
           </div>
 
-          {/* Footer note */}
-          {welcome.footerNote && (
-            <p className="text-center text-sm text-gray-500 mt-8">
-              {welcome.footerNote}
+          {/* Headline */}
+          <h1 className="font-display text-3xl text-stone-900 mb-3 text-balance">
+            {welcome.headline || study.name}
+          </h1>
+
+          {/* Subheadline */}
+          {welcome.subheadline && (
+            <p className="text-stone-500 text-lg">
+              {welcome.subheadline}
             </p>
           )}
         </div>
+
+        <MobileDivider />
+
+        {/* Value Props */}
+        <div className="space-y-4 stagger-children">
+          {bullets.slice(0, 3).map((bullet, index) => {
+            const Icon = FEATURE_ICONS[index % FEATURE_ICONS.length]
+            return (
+              <div
+                key={index}
+                className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-stone-100 shadow-sm"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-6 h-6 text-teal-600" />
+                </div>
+                <div className="flex-1 pt-1">
+                  <p className="font-medium text-stone-900">{bullet}</p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Duration Badge */}
+        <div className="mt-8 text-center">
+          <div className="inline-flex items-center gap-2 text-sm text-stone-500">
+            <Clock className="w-4 h-4" />
+            <span>{study.durationWeeks} week study</span>
+          </div>
+        </div>
+
+        {/* Footer note */}
+        {welcome.footerNote && (
+          <p className="text-center text-sm text-stone-400 mt-4">
+            {welcome.footerNote}
+          </p>
+        )}
       </MobileFullScreen>
 
       {/* Fixed Bottom CTA */}
-      <MobileBottomAction>
-        <Link
-          href={`/study/${studyId}/join/register`}
-          className="block w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 transition-colors"
-          style={{ minHeight: '52px' }}
-        >
-          {welcome.buttonText || 'Get Started'}
+      <MobileBottomAction variant="blur">
+        <Link href={`/study/${studyId}/join/register`} className="block">
+          <Button size="lg" fullWidth>
+            {welcome.buttonText || 'Get Started'}
+          </Button>
         </Link>
+        <p className="text-center text-xs text-stone-400 mt-3">
+          By continuing, you agree to review the study information
+        </p>
       </MobileBottomAction>
     </>
   )

@@ -12,9 +12,12 @@ import {
   UserX,
   Clock,
   ExternalLink,
-  MoreHorizontal,
-  Loader2
+  Loader2,
+  AlertCircle
 } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Card, CardHeader } from '@/components/ui/Card'
+import { StatusBadge } from '@/components/ui/Badge'
 
 interface StudyData {
   id: string
@@ -37,37 +40,6 @@ interface StudyData {
     currentWeek: number
     enrolledAt: string
   }>
-}
-
-function getStatusBadge(status: string) {
-  switch (status) {
-    case 'active':
-      return (
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-          Active
-        </span>
-      )
-    case 'enrolling':
-      return (
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-          Enrolling
-        </span>
-      )
-    case 'draft':
-      return (
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-          Draft
-        </span>
-      )
-    case 'completed':
-      return (
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-          Completed
-        </span>
-      )
-    default:
-      return null
-  }
 }
 
 export default function StudyDashboardPage() {
@@ -101,7 +73,7 @@ export default function StudyDashboardPage() {
     }
   }, [studyId])
 
-  const inviteLink = `https://study-platform-psi.vercel.app/study/${studyId}/join`
+  const inviteLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/study/${studyId}/join`
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(inviteLink)
@@ -111,10 +83,13 @@ export default function StudyDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading study...</p>
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+        <div className="text-center animate-fade-in">
+          <div className="w-12 h-12 mx-auto mb-4 relative">
+            <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
+            <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+          </div>
+          <p className="text-stone-500">Loading study...</p>
         </div>
       </div>
     )
@@ -122,46 +97,75 @@ export default function StudyDashboardPage() {
 
   if (error || !study) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <UserX className="w-8 h-8 text-red-600" />
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+        <div className="text-center animate-fade-in">
+          <div className="w-16 h-16 bg-red-50 border border-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-500" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Study Not Found</h2>
-          <p className="text-gray-600 mb-6">{error || 'Unable to load study data'}</p>
-          <Link
-            href="/sponsor/studies"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Studies
+          <h2 className="text-xl font-semibold text-stone-900 mb-2">Study Not Found</h2>
+          <p className="text-stone-500 mb-6">{error || 'Unable to load study data'}</p>
+          <Link href="/sponsor/studies">
+            <Button variant="secondary" leftIcon={<ArrowLeft className="w-4 h-4" />}>
+              Back to Studies
+            </Button>
           </Link>
         </div>
       </div>
     )
   }
 
+  const statCards = [
+    {
+      label: 'Total Enrolled',
+      value: study.stats.enrolled,
+      icon: Users,
+      iconBg: 'bg-teal-50',
+      iconColor: 'text-teal-600',
+    },
+    {
+      label: 'Active',
+      value: study.stats.active,
+      icon: Clock,
+      iconBg: 'bg-emerald-50',
+      iconColor: 'text-emerald-600',
+    },
+    {
+      label: 'Completed',
+      value: study.stats.completed,
+      icon: UserCheck,
+      iconBg: 'bg-violet-50',
+      iconColor: 'text-violet-600',
+    },
+    {
+      label: 'Withdrawn',
+      value: study.stats.withdrawn,
+      icon: UserX,
+      iconBg: 'bg-stone-100',
+      iconColor: 'text-stone-500',
+    },
+  ]
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-stone-50">
+      <div className="container-wide py-8 sm:py-12">
         {/* Back Link */}
         <Link
           href="/sponsor/studies"
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6"
+          className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           All Studies
         </Link>
 
         {/* Header */}
-        <div className="flex items-start justify-between mb-8">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
+          <div className="animate-fade-in">
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl font-bold text-gray-900">{study.name}</h1>
-              {getStatusBadge(study.status)}
+              <h1 className="font-display text-2xl sm:text-3xl text-stone-900">{study.name}</h1>
+              <StatusBadge status={study.status} />
             </div>
-            <p className="text-gray-600">{study.intervention}</p>
-            <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+            <p className="text-stone-500">{study.intervention}</p>
+            <div className="flex items-center gap-4 mt-2 text-sm text-stone-400">
               <span>{study.duration}</span>
               {study.startDate && (
                 <>
@@ -171,141 +175,98 @@ export default function StudyDashboardPage() {
               )}
             </div>
           </div>
-          <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
-            <MoreHorizontal className="w-5 h-5" />
-          </button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-indigo-600" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stagger-children">
+          {statCards.map((stat) => (
+            <Card key={stat.label} variant="default" padding="md">
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-10 h-10 ${stat.iconBg} rounded-xl flex items-center justify-center`}>
+                  <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
+                </div>
               </div>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{study.stats.enrolled}</div>
-            <div className="text-sm text-gray-500">Total Enrolled</div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-5 h-5 text-green-600" />
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{study.stats.active}</div>
-            <div className="text-sm text-gray-500">Active</div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <UserCheck className="w-5 h-5 text-purple-600" />
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{study.stats.completed}</div>
-            <div className="text-sm text-gray-500">Completed</div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <UserX className="w-5 h-5 text-gray-600" />
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{study.stats.withdrawn}</div>
-            <div className="text-sm text-gray-500">Withdrawn</div>
-          </div>
+              <div className="text-2xl font-semibold text-stone-900 font-mono">{stat.value}</div>
+              <div className="text-sm text-stone-500">{stat.label}</div>
+            </Card>
+          ))}
         </div>
 
         {/* Invitation Link */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Invitation Link</h2>
-          <div className="flex items-center gap-2">
-            <div className="flex-1 bg-gray-50 rounded-lg px-4 py-3 text-sm text-gray-600 font-mono truncate">
+        <Card variant="default" padding="md" className="mb-8 animate-fade-in-up">
+          <CardHeader title="Invitation Link" subtitle="Share this link with eligible participants" />
+          <div className="flex items-center gap-2 mt-4">
+            <div className="flex-1 bg-stone-50 rounded-xl px-4 py-3 text-sm text-stone-600 font-mono truncate border border-stone-100">
               {inviteLink}
             </div>
-            <button
+            <Button
+              variant={copied ? 'primary' : 'secondary'}
               onClick={handleCopyLink}
-              className="flex items-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             >
-              {copied ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  <span>Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4" />
-                  <span>Copy</span>
-                </>
-              )}
-            </button>
+              {copied ? 'Copied!' : 'Copy'}
+            </Button>
             <a
               href={inviteLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-3 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-xl transition-colors"
             >
               <ExternalLink className="w-5 h-5" />
             </a>
           </div>
-          <p className="text-sm text-gray-500 mt-3">
-            Share this link with eligible participants to invite them to the study.
-          </p>
-        </div>
+        </Card>
 
         {/* Participants Table */}
-        <div className="bg-white rounded-xl border border-gray-200">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-900">Participants</h2>
+        <Card variant="default" padding="none" className="animate-fade-in-up">
+          <div className="p-5 sm:p-6 border-b border-stone-100">
+            <h2 className="text-lg font-semibold text-stone-900">Participants</h2>
           </div>
 
           {study.participants && study.participants.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-stone-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                       Participant
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                       Enrolled
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                       Progress
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-stone-100">
                   {study.participants.map((participant) => (
-                    <tr key={participant.id} className="hover:bg-gray-50">
+                    <tr key={participant.id} className="hover:bg-stone-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{participant.email}</div>
-                        <div className="text-sm text-gray-500">ID: {participant.id.slice(0, 8)}...</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {participant.enrolledAt ? new Date(participant.enrolledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {getStatusBadge(participant.status)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          Week {participant.currentWeek}
+                        <div className="text-sm font-medium text-stone-900">{participant.email}</div>
+                        <div className="text-xs text-stone-400 font-mono">
+                          {participant.id.slice(0, 8)}...
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <button className="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
-                          View
-                        </button>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500">
+                        {participant.enrolledAt
+                          ? new Date(participant.enrolledAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            })
+                          : '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <StatusBadge
+                          status={participant.status as 'active' | 'completed' | 'withdrawn'}
+                        />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-stone-900">Week {participant.currentWeek}</div>
                       </td>
                     </tr>
                   ))}
@@ -314,23 +275,19 @@ export default function StudyDashboardPage() {
             </div>
           ) : (
             <div className="p-12 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-gray-400" />
+              <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-stone-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No participants yet</h3>
-              <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+              <h3 className="text-lg font-medium text-stone-900 mb-2">No participants yet</h3>
+              <p className="text-stone-500 mb-6 max-w-sm mx-auto">
                 Share the invitation link with eligible participants to start enrolling.
               </p>
-              <button
-                onClick={handleCopyLink}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                <Copy className="w-4 h-4" />
+              <Button onClick={handleCopyLink} leftIcon={<Copy className="w-4 h-4" />}>
                 Copy Invitation Link
-              </button>
+              </Button>
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </div>
   )

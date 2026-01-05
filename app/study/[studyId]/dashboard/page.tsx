@@ -3,8 +3,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { MobileContainer } from '@/components/ui/MobileContainer'
-import { CheckCircle2, Clock, FlaskConical } from 'lucide-react'
+import { MobileContainer, MobileSection, MobileDivider } from '@/components/ui/MobileContainer'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
+import { ProgressRing } from '@/components/ui/Progress'
+import { CheckCircle2, Clock, FlaskConical, ArrowRight, Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 interface Assessment {
@@ -99,80 +103,80 @@ export default function DashboardPage() {
         console.error('Error fetching lab results:', labsError)
       }
 
-    // Build submissions map
-    const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null }>()
-    submissions?.forEach(s => {
-      if (!submissionsByTimepoint.has(s.timepoint)) {
-        submissionsByTimepoint.set(s.timepoint, { instruments: new Set(), lastSubmitted: null })
-      }
-      const entry = submissionsByTimepoint.get(s.timepoint)!
-      entry.instruments.add(s.instrument)
-      if (s.submitted_at) {
-        const submittedDate = new Date(s.submitted_at)
-        if (!entry.lastSubmitted || submittedDate > entry.lastSubmitted) {
-          entry.lastSubmitted = submittedDate
+      // Build submissions map
+      const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null }>()
+      submissions?.forEach(s => {
+        if (!submissionsByTimepoint.has(s.timepoint)) {
+          submissionsByTimepoint.set(s.timepoint, { instruments: new Set(), lastSubmitted: null })
         }
-      }
-    })
+        const entry = submissionsByTimepoint.get(s.timepoint)!
+        entry.instruments.add(s.instrument)
+        if (s.submitted_at) {
+          const submittedDate = new Date(s.submitted_at)
+          if (!entry.lastSubmitted || submittedDate > entry.lastSubmitted) {
+            entry.lastSubmitted = submittedDate
+          }
+        }
+      })
 
-    // Build lab results set
-    const labsByTimepoint = new Set(labResults?.map(l => l.timepoint) || [])
+      // Build lab results set
+      const labsByTimepoint = new Set(labResults?.map(l => l.timepoint) || [])
 
-    // Calculate current week from enrollment
-    const enrolledAt = new Date(participant.enrolled_at)
-    const now = new Date()
-    const diffMs = now.getTime() - enrolledAt.getTime()
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-    const calculatedWeek = Math.floor(diffDays / 7)
-    setCurrentWeek(calculatedWeek)
+      // Calculate current week from enrollment
+      const enrolledAt = new Date(participant.enrolled_at)
+      const now = new Date()
+      const diffMs = now.getTime() - enrolledAt.getTime()
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+      const calculatedWeek = Math.floor(diffDays / 7)
+      setCurrentWeek(calculatedWeek)
 
-    // Build assessment status from schedule
-    const assessmentList: Assessment[] = scheduleConfig.map(config => {
-      const dueDate = new Date(enrolledAt)
-      dueDate.setDate(dueDate.getDate() + config.week * 7)
+      // Build assessment status from schedule
+      const assessmentList: Assessment[] = scheduleConfig.map(config => {
+        const dueDate = new Date(enrolledAt)
+        dueDate.setDate(dueDate.getDate() + config.week * 7)
 
-      const windowDays = 7
-      const windowStart = new Date(dueDate)
-      windowStart.setDate(windowStart.getDate() - Math.floor(windowDays / 2))
-      const windowEnd = new Date(dueDate)
-      windowEnd.setDate(windowEnd.getDate() + Math.ceil(windowDays / 2))
+        const windowDays = 7
+        const windowStart = new Date(dueDate)
+        windowStart.setDate(windowStart.getDate() - Math.floor(windowDays / 2))
+        const windowEnd = new Date(dueDate)
+        windowEnd.setDate(windowEnd.getDate() + Math.ceil(windowDays / 2))
 
-      const submissionEntry = submissionsByTimepoint.get(config.id)
-      const completedInstruments = Array.from(submissionEntry?.instruments || [])
-      const allCompleted = config.instruments.every(i => completedInstruments.includes(i))
+        const submissionEntry = submissionsByTimepoint.get(config.id)
+        const completedInstruments = Array.from(submissionEntry?.instruments || [])
+        const allCompleted = config.instruments.every(i => completedInstruments.includes(i))
 
-      let status: Assessment['status']
-      if (allCompleted) {
-        status = 'completed'
-      } else if (now > windowEnd) {
-        status = 'overdue'
-      } else if (now >= windowStart && now <= windowEnd) {
-        status = 'due'
-      } else {
-        status = 'upcoming'
-      }
+        let status: Assessment['status']
+        if (allCompleted) {
+          status = 'completed'
+        } else if (now > windowEnd) {
+          status = 'overdue'
+        } else if (now >= windowStart && now <= windowEnd) {
+          status = 'due'
+        } else {
+          status = 'upcoming'
+        }
 
-      // Check if we have labs for this timepoint
-      const labsReceived = labsByTimepoint.has(config.id)
+        // Check if we have labs for this timepoint
+        const labsReceived = labsByTimepoint.has(config.id)
 
-      return {
-        id: config.id,
-        timepoint: config.timepoint,
-        week: config.week,
-        status,
-        completedDate: allCompleted && submissionEntry?.lastSubmitted
-          ? formatDate(submissionEntry.lastSubmitted)
-          : undefined,
-        dueDate: formatDate(dueDate),
-        hasLabs: config.hasLabs,
-        labsReceived,
-        instruments: config.instruments,
-        completedInstruments
-      }
-    })
+        return {
+          id: config.id,
+          timepoint: config.timepoint,
+          week: config.week,
+          status,
+          completedDate: allCompleted && submissionEntry?.lastSubmitted
+            ? formatDate(submissionEntry.lastSubmitted)
+            : undefined,
+          dueDate: formatDate(dueDate),
+          hasLabs: config.hasLabs,
+          labsReceived,
+          instruments: config.instruments,
+          completedInstruments
+        }
+      })
 
-    setAssessments(assessmentList)
-    setLoading(false)
+      setAssessments(assessmentList)
+      setLoading(false)
     } catch (error) {
       console.error('Dashboard error:', error)
       setLoading(false)
@@ -183,16 +187,22 @@ export default function DashboardPage() {
     loadDashboardData()
   }, [loadDashboardData])
 
-  const progress = (currentWeek / totalWeeks) * 100
+  const progress = Math.min((currentWeek / totalWeeks) * 100, 100)
   const dueAssessment = assessments.find(a => a.status === 'due' || a.status === 'overdue')
   const completedAssessments = assessments.filter(a => a.status === 'completed')
   const upcomingAssessments = assessments.filter(a => a.status === 'upcoming')
 
   if (loading) {
     return (
-      <MobileContainer className="pt-4 pb-8">
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+      <MobileContainer className="pt-8">
+        <div className="flex items-center justify-center py-16">
+          <div className="text-center animate-fade-in">
+            <div className="w-12 h-12 mx-auto mb-4 relative">
+              <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
+              <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+            </div>
+            <p className="text-stone-500">Loading your dashboard...</p>
+          </div>
         </div>
       </MobileContainer>
     )
@@ -200,20 +210,20 @@ export default function DashboardPage() {
 
   if (notEnrolled) {
     return (
-      <MobileContainer className="pt-4 pb-8">
-        <div className="text-center py-12">
-          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Clock className="w-8 h-8 text-amber-600" />
+      <MobileContainer className="pt-8">
+        <div className="text-center py-12 animate-fade-in">
+          <div className="w-16 h-16 bg-amber-50 border border-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Clock className="w-8 h-8 text-amber-500" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Enrollment Not Complete</h2>
-          <p className="text-gray-600 mb-6">
-            Please complete the enrollment process to access your dashboard.
+          <h2 className="text-xl font-semibold text-stone-900 mb-2">Complete Your Enrollment</h2>
+          <p className="text-stone-500 mb-6 max-w-xs mx-auto">
+            You&apos;re almost there! Complete the enrollment process to start your study journey.
           </p>
-          <Link
-            href={`/study/${studyId}/join/overview`}
-            className="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl"
-          >
-            Continue Enrollment
+          <Link href={`/study/${studyId}/join/overview`}>
+            <Button size="lg">
+              Continue Enrollment
+              <ArrowRight className="w-4 h-4" />
+            </Button>
           </Link>
         </div>
       </MobileContainer>
@@ -221,130 +231,144 @@ export default function DashboardPage() {
   }
 
   return (
-    <MobileContainer className="pt-4 pb-8">
-      {/* Progress Section */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-600">Your Progress</span>
-          <span className="text-sm font-semibold text-gray-900">
-            Week {currentWeek} of {totalWeeks}
-          </span>
+    <MobileContainer className="pt-6 pb-8">
+      {/* Header with Progress Ring */}
+      <div className="flex items-center justify-between mb-6 animate-fade-in">
+        <div>
+          <h1 className="text-xl font-semibold text-stone-900">Your Study</h1>
+          <p className="text-sm text-stone-500">Week {currentWeek} of {totalWeeks}</p>
         </div>
-        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-indigo-600 transition-all duration-500 ease-out"
-            style={{ width: `${Math.min(progress, 100)}%` }}
-          />
-        </div>
+        <ProgressRing
+          value={progress}
+          size={64}
+          strokeWidth={5}
+          showValue={false}
+          label={`${Math.round(progress)}%`}
+        />
       </div>
 
       {/* Due Assessment Card */}
       {dueAssessment && (
-        <div className="mb-6">
-          <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
+        <Card
+          variant="glow"
+          padding="md"
+          className="mb-6 animate-fade-in-up relative overflow-hidden"
+        >
+          {/* Decorative gradient */}
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl" />
+
+          <div className="relative">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-indigo-600 rounded-full animate-pulse" />
-              <span className="text-sm font-semibold text-indigo-900">
-                {dueAssessment.status === 'overdue' ? 'OVERDUE' : 'DUE NOW'}
-              </span>
+              <Badge
+                variant={dueAssessment.status === 'overdue' ? 'danger' : 'warning'}
+                dot
+                dotPulse
+              >
+                {dueAssessment.status === 'overdue' ? 'Overdue' : 'Due Now'}
+              </Badge>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+
+            <h3 className="text-lg font-semibold text-stone-900 mb-1">
               {dueAssessment.timepoint} Check-in
             </h3>
-            <p className="text-gray-600 text-sm mb-4">
-              ~5 minutes
+            <p className="text-stone-500 text-sm mb-4">
+              Quick survey · ~5 minutes
             </p>
-            <Link
-              href={`/study/${studyId}/assessment/${dueAssessment.id}`}
-              className="block w-full py-3 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 transition-colors"
-              style={{ minHeight: '48px' }}
-            >
-              Start
+
+            <Link href={`/study/${studyId}/assessment/${dueAssessment.id}`}>
+              <Button size="lg" fullWidth>
+                Start Check-in
+                <ArrowRight className="w-4 h-4" />
+              </Button>
             </Link>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* All Done Message */}
       {!dueAssessment && completedAssessments.length > 0 && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-center">
-          <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-          <p className="font-medium text-green-900">You&apos;re all caught up!</p>
-          <p className="text-sm text-green-700 mt-1">
-            {upcomingAssessments.length > 0
-              ? `Next check-in: ${upcomingAssessments[0].timepoint}`
-              : 'No more assessments scheduled'}
-          </p>
-        </div>
+        <Card variant="default" padding="md" className="mb-6 animate-fade-in-up">
+          <div className="text-center py-4">
+            <div className="w-14 h-14 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <Sparkles className="w-7 h-7 text-emerald-500" />
+            </div>
+            <h3 className="font-semibold text-stone-900 mb-1">You&apos;re all caught up!</h3>
+            <p className="text-sm text-stone-500">
+              {upcomingAssessments.length > 0
+                ? `Next check-in: ${upcomingAssessments[0].timepoint}`
+                : 'No more assessments scheduled'}
+            </p>
+          </div>
+        </Card>
       )}
+
+      <MobileDivider />
 
       {/* Completed Section */}
       {completedAssessments.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-            Completed
-          </h2>
-          <div className="space-y-2">
+        <MobileSection title="Completed">
+          <div className="space-y-2 stagger-children">
             {completedAssessments.map((assessment) => (
               <div
                 key={assessment.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
+                className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-stone-100"
               >
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <div className="w-9 h-9 bg-emerald-50 rounded-lg flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                  </div>
                   <div>
-                    <span className="font-medium text-gray-900">{assessment.timepoint}</span>
+                    <span className="font-medium text-stone-900 text-sm">{assessment.timepoint}</span>
                     {assessment.hasLabs && assessment.labsReceived && (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <FlaskConical className="w-3 h-3 text-green-500" />
-                        <span className="text-xs text-green-600">Labs received</span>
+                        <FlaskConical className="w-3 h-3 text-emerald-500" />
+                        <span className="text-xs text-emerald-600">Labs received</span>
                       </div>
                     )}
                   </div>
                 </div>
-                <span className="text-sm text-gray-500">{assessment.completedDate}</span>
+                <span className="text-xs text-stone-400 font-mono">{assessment.completedDate}</span>
               </div>
             ))}
           </div>
-        </div>
+        </MobileSection>
       )}
 
       {/* Upcoming Section */}
       {upcomingAssessments.length > 0 && (
-        <div>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-            Upcoming
-          </h2>
-          <div className="space-y-2">
-            {upcomingAssessments.map((assessment) => (
+        <MobileSection title="Upcoming">
+          <div className="space-y-2 stagger-children">
+            {upcomingAssessments.slice(0, 4).map((assessment) => (
               <div
                 key={assessment.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
+                className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-stone-100"
               >
                 <div className="flex items-center gap-3">
-                  <Clock className="w-5 h-5 text-gray-400" />
+                  <div className="w-9 h-9 bg-stone-50 rounded-lg flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-stone-400" />
+                  </div>
                   <div>
-                    <span className="font-medium text-gray-700">{assessment.timepoint}</span>
+                    <span className="font-medium text-stone-700 text-sm">{assessment.timepoint}</span>
                     {assessment.hasLabs && (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <FlaskConical className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500">Labs scheduled</span>
+                        <FlaskConical className="w-3 h-3 text-stone-400" />
+                        <span className="text-xs text-stone-500">Labs scheduled</span>
                       </div>
                     )}
                   </div>
                 </div>
-                <span className="text-sm text-gray-500">{assessment.dueDate}</span>
+                <span className="text-xs text-stone-400 font-mono">{assessment.dueDate}</span>
               </div>
             ))}
           </div>
-        </div>
+        </MobileSection>
       )}
 
       {/* Help Link */}
       <div className="mt-8 text-center">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-stone-400">
           Questions?{' '}
-          <a href="mailto:research@example.com" className="text-indigo-600 font-medium">
+          <a href="mailto:research@example.com" className="text-teal-600 font-medium hover:text-teal-700">
             Contact support
           </a>
         </p>

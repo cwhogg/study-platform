@@ -29,7 +29,7 @@ export function MobileContainer({
         px-5
         py-6
         ${centered ? 'flex flex-col items-center justify-center flex-1' : ''}
-        ${withBottomPadding ? 'pb-24' : ''}
+        ${withBottomPadding ? 'pb-28' : ''}
         ${className}
       `}
     >
@@ -60,6 +60,7 @@ export function MobileFullScreen({
         mx-auto
         px-5
         py-6
+        safe-top
         ${className}
       `}
     >
@@ -71,13 +72,16 @@ export function MobileFullScreen({
 /**
  * Fixed bottom button container for mobile.
  * Use for primary CTAs that should always be visible.
+ * Features a subtle blur backdrop and safe area padding.
  */
 export function MobileBottomAction({
   children,
   className = '',
+  variant = 'solid',
 }: {
   children: ReactNode
   className?: string
+  variant?: 'solid' | 'blur'
 }) {
   return (
     <div
@@ -86,16 +90,163 @@ export function MobileBottomAction({
         bottom-0
         left-0
         right-0
-        bg-white
-        border-t
-        border-gray-100
-        p-4
+        z-50
+        ${variant === 'blur'
+          ? 'bg-white/80 backdrop-blur-lg border-t border-stone-200/50'
+          : 'bg-white border-t border-stone-100'
+        }
         ${className}
       `}
+      style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
     >
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto px-5 pt-4">
         {children}
       </div>
     </div>
+  )
+}
+
+/**
+ * Mobile page header with optional back button and title
+ */
+export function MobileHeader({
+  title,
+  subtitle,
+  backHref,
+  backLabel = 'Back',
+  action,
+  className = '',
+}: {
+  title?: string
+  subtitle?: string
+  backHref?: string
+  backLabel?: string
+  action?: ReactNode
+  className?: string
+}) {
+  return (
+    <header className={`mb-6 ${className}`}>
+      <div className="flex items-center justify-between gap-4">
+        {backHref ? (
+          <a
+            href={backHref}
+            className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 transition-colors -ml-1"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            {backLabel}
+          </a>
+        ) : (
+          <div />
+        )}
+        {action && <div>{action}</div>}
+      </div>
+      {title && (
+        <div className="mt-4">
+          <h1 className="text-xl font-semibold text-stone-900">{title}</h1>
+          {subtitle && <p className="text-sm text-stone-500 mt-1">{subtitle}</p>}
+        </div>
+      )}
+    </header>
+  )
+}
+
+/**
+ * Divider component for mobile layouts
+ */
+export function MobileDivider({ className = '' }: { className?: string }) {
+  return (
+    <div
+      className={`
+        h-px
+        bg-gradient-to-r
+        from-transparent
+        via-stone-200
+        to-transparent
+        my-6
+        ${className}
+      `}
+    />
+  )
+}
+
+/**
+ * Section component for grouping related content
+ */
+export function MobileSection({
+  title,
+  children,
+  className = '',
+}: {
+  title?: string
+  children: ReactNode
+  className?: string
+}) {
+  return (
+    <section className={`mb-6 ${className}`}>
+      {title && (
+        <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3">
+          {title}
+        </h2>
+      )}
+      {children}
+    </section>
+  )
+}
+
+/**
+ * List item for mobile lists
+ */
+export function MobileListItem({
+  children,
+  leftIcon,
+  rightContent,
+  onClick,
+  href,
+  className = '',
+}: {
+  children: ReactNode
+  leftIcon?: ReactNode
+  rightContent?: ReactNode
+  onClick?: () => void
+  href?: string
+  className?: string
+}) {
+  const Component = href ? 'a' : onClick ? 'button' : 'div'
+  const interactive = href || onClick
+
+  return (
+    <Component
+      href={href}
+      onClick={onClick}
+      className={`
+        flex items-center gap-3
+        w-full
+        p-3.5
+        bg-white
+        rounded-xl
+        border border-stone-100
+        ${interactive
+          ? 'hover:bg-stone-50 hover:border-stone-200 active:scale-[0.99] transition-all duration-150 cursor-pointer'
+          : ''
+        }
+        ${className}
+      `}
+    >
+      {leftIcon && (
+        <div className="flex-shrink-0 w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-stone-600">
+          {leftIcon}
+        </div>
+      )}
+      <div className="flex-1 min-w-0">{children}</div>
+      {rightContent && <div className="flex-shrink-0">{rightContent}</div>}
+    </Component>
   )
 }

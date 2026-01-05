@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight } from 'lucide-react'
-import { ButtonSpinner } from '@/components/ui/Spinner'
-import { ErrorMessage } from '@/components/ui/ErrorMessage'
+import Link from 'next/link'
+import { ArrowRight, ArrowLeft, Sparkles, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Textarea } from '@/components/ui/Input'
+import { Card } from '@/components/ui/Card'
 
 const EXAMPLES = [
   'GLP-1 medications',
@@ -38,36 +40,12 @@ export default function CreateStudyPage() {
 
       const data = await response.json()
       console.log('[StudyDiscovery] Response status:', response.status)
-      console.log('[StudyDiscovery] Response data:', JSON.stringify(data, null, 2))
 
       if (!response.ok) {
         console.error('[StudyDiscovery] Error response:', data)
         setError(data.error || 'Failed to analyze intervention')
         setIsSubmitting(false)
         return
-      }
-
-      // Log key fields from the discovery
-      if (data.data) {
-        console.log('[StudyDiscovery] Summary:', data.data.summary)
-        console.log('[StudyDiscovery] Endpoints:', data.data.endpoints?.length || 0)
-        console.log('[StudyDiscovery] Populations:', data.data.populations?.length || 0)
-        console.log('[StudyDiscovery] Risk Assessment:', data.data.riskAssessment)
-        console.log('[StudyDiscovery] Using fallback data:', data.fallback || false)
-      }
-
-      // Log OpenAI prompt/response debug info
-      if (data.debug) {
-        console.log('\n=== OPENAI AGENT DEBUG INFO ===')
-        console.log('[Agent] Name:', data.debug.agentName)
-        console.log('[Agent] Model:', data.debug.model)
-        console.log('[Agent] System Prompt Length:', data.debug.systemPromptLength, 'chars')
-        console.log('[Agent] Elapsed:', data.debug.elapsedMs, 'ms')
-        console.log('\n[Agent] USER MESSAGE (what was sent to OpenAI):')
-        console.log(data.debug.userMessage)
-        console.log('\n[Agent] RAW RESPONSE (what came back from OpenAI):')
-        console.log(data.debug.rawResponse)
-        console.log('=== END DEBUG INFO ===\n')
       }
 
       // Store discovery results in sessionStorage for the configure page
@@ -89,77 +67,105 @@ export default function CreateStudyPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
-      <div className="w-full max-w-xl">
+    <div className="min-h-screen bg-gradient-to-b from-white to-stone-50">
+      {/* Decorative elements */}
+      <div className="fixed -right-40 top-20 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed -left-40 bottom-20 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative container-base py-8 sm:py-12">
+        {/* Back link */}
+        <Link
+          href="/sponsor"
+          className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors mb-8"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Link>
+
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="text-sm font-medium text-indigo-600 mb-2">
-            CREATE A NEW STUDY
+        <div className="text-center mb-10 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-100 rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-teal-600" />
+            <span className="text-xs font-medium text-teal-700">New Study</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-            What intervention do you want to study?
+
+          <h1 className="font-display text-3xl sm:text-4xl text-stone-900 mb-3">
+            What do you want to study?
           </h1>
+          <p className="text-stone-500 max-w-md mx-auto">
+            Describe the treatment or intervention, and our AI will design a complete study protocol.
+          </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <textarea
-              value={intervention}
-              onChange={(e) => setIntervention(e.target.value)}
-              placeholder="Testosterone replacement therapy for men with hypogonadism..."
-              className="w-full px-4 py-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-shadow"
-              rows={3}
-              autoFocus
-            />
-          </div>
-
-          {/* Examples */}
-          <div className="mb-6">
-            <div className="text-sm text-gray-500 mb-3">Examples:</div>
-            <div className="flex flex-wrap gap-2">
-              {EXAMPLES.map((example) => (
-                <button
-                  key={example}
-                  type="button"
-                  onClick={() => handleExampleClick(example)}
-                  className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
-                >
-                  {example}
-                </button>
-              ))}
+        {/* Form Card */}
+        <Card variant="elevated" padding="lg" className="max-w-xl mx-auto animate-fade-in-up">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-6">
+              <Textarea
+                value={intervention}
+                onChange={(e) => setIntervention(e.target.value)}
+                placeholder="e.g., Testosterone replacement therapy for men with hypogonadism..."
+                className="text-lg min-h-[140px]"
+                autoFocus
+              />
             </div>
-          </div>
 
-          {/* Error Message */}
-          {error && (
-            <ErrorMessage
-              message={error}
-              onDismiss={() => setError('')}
-              className="mb-6"
-            />
-          )}
+            {/* Examples */}
+            <div className="mb-6">
+              <div className="text-sm text-stone-500 mb-3">Try an example:</div>
+              <div className="flex flex-wrap gap-2">
+                {EXAMPLES.map((example) => (
+                  <button
+                    key={example}
+                    type="button"
+                    onClick={() => handleExampleClick(example)}
+                    className={`
+                      px-3 py-1.5 text-sm rounded-full border transition-all duration-150
+                      ${intervention === example
+                        ? 'bg-teal-50 border-teal-200 text-teal-700'
+                        : 'bg-white border-stone-200 text-stone-600 hover:border-stone-300 hover:bg-stone-50'
+                      }
+                    `}
+                  >
+                    {example}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={!intervention.trim() || isSubmitting}
-            className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-          >
-            {isSubmitting ? (
-              <ButtonSpinner label="Analyzing Intervention..." />
-            ) : (
-              <>
-                <span>Continue</span>
-                <ArrowRight className="w-5 h-5" />
-              </>
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl animate-fade-in">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
             )}
-          </button>
-        </form>
+
+            {/* Submit */}
+            <Button
+              type="submit"
+              size="lg"
+              fullWidth
+              disabled={!intervention.trim()}
+              isLoading={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Analyzing Intervention...
+                </>
+              ) : (
+                <>
+                  Continue
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </Button>
+          </form>
+        </Card>
 
         {/* Info */}
-        <p className="mt-6 text-center text-sm text-gray-500">
-          Our AI will design a complete study protocol based on your intervention,
+        <p className="mt-8 text-center text-sm text-stone-400 max-w-md mx-auto animate-fade-in">
+          Our AI will analyze your intervention and generate a complete study protocol
           including endpoints, PRO instruments, and safety monitoring.
         </p>
       </div>
