@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: mergedData,
       usage: result.usage,
-      debug: result.debug,  // Include prompt/response debug info
+      ...(process.env.NODE_ENV === 'development' && { debug: result.debug }),
     })
 
   } catch (error) {
