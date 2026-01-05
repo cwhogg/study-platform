@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 
 /**
@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server'
  */
 export async function GET() {
   try {
-    const supabase = await createClient()
+    const supabase = createServiceClient()
 
     // Get all studies with participant counts
     const { data: studies, error: studiesError } = await supabase
@@ -98,6 +98,48 @@ export async function GET() {
 
   } catch (error) {
     console.error('[Admin] Unexpected error:', error)
+    return NextResponse.json(
+      { error: 'An unexpected error occurred' },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * DELETE: Delete a study by ID
+ */
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const studyId = searchParams.get('studyId')
+
+    if (!studyId) {
+      return NextResponse.json(
+        { error: 'Study ID is required' },
+        { status: 400 }
+      )
+    }
+
+    const supabase = createServiceClient()
+
+    // Delete the study (cascades to participants, submissions, etc.)
+    const { error } = await supabase
+      .from('sp_studies')
+      .delete()
+      .eq('id', studyId)
+
+    if (error) {
+      console.error('[Admin] Failed to delete study:', error)
+      return NextResponse.json(
+        { error: `Failed to delete study: ${error.message}` },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ success: true })
+
+  } catch (error) {
+    console.error('[Admin] Delete error:', error)
     return NextResponse.json(
       { error: 'An unexpected error occurred' },
       { status: 500 }

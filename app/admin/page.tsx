@@ -11,7 +11,8 @@ import {
   RefreshCw,
   Calendar,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Trash2
 } from 'lucide-react'
 
 interface Study {
@@ -101,6 +102,30 @@ export default function AdminPage() {
       }
     } catch {
       setMessage({ type: 'error', text: 'Failed to simulate labs' })
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  async function deleteStudy(studyId: string, studyName: string) {
+    if (!confirm(`Delete "${studyName}"? This will delete all participants and data.`)) {
+      return
+    }
+    setActionLoading(`delete-${studyId}`)
+    setMessage(null)
+    try {
+      const response = await fetch(`/api/admin/data?studyId=${studyId}`, {
+        method: 'DELETE',
+      })
+      const data = await response.json()
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'Study deleted' })
+        fetchData()
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Failed to delete study' })
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Failed to delete study' })
     } finally {
       setActionLoading(null)
     }
@@ -227,11 +252,24 @@ export default function AdminPage() {
                         </span>
                       </div>
                     </div>
-                    {expandedStudy === study.id ? (
-                      <ChevronUp className="w-5 h-5 text-gray-400" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
-                    )}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          deleteStudy(study.id, study.name)
+                        }}
+                        disabled={actionLoading === `delete-${study.id}`}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                        title="Delete study"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      {expandedStudy === study.id ? (
+                        <ChevronUp className="w-5 h-5 text-gray-400" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-gray-400" />
+                      )}
+                    </div>
                   </div>
 
                   {/* Expanded Participant List */}
