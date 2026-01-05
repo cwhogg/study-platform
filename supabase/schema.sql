@@ -425,12 +425,12 @@ CREATE POLICY "Sponsors can read study messages" ON sp_messages
 
 -- Function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION sp_update_updated_at()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $func$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$func$ LANGUAGE plpgsql;
 
 -- Apply updated_at trigger to relevant tables
 CREATE TRIGGER update_sp_profiles_updated_at
@@ -447,13 +447,13 @@ CREATE TRIGGER update_sp_participants_updated_at
 
 -- Function to create profile on user signup
 CREATE OR REPLACE FUNCTION sp_handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $func$
 BEGIN
   INSERT INTO sp_profiles (id, email, role)
   VALUES (NEW.id, NEW.email, 'participant');
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$func$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Trigger to create profile when user signs up
 CREATE TRIGGER on_auth_user_created
