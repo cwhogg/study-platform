@@ -1,5 +1,6 @@
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { getBaseUrl } from '@/lib/utils'
 
 const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
 
@@ -17,12 +18,13 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient()
 
     // 1. Create user with Supabase Auth
+    const baseUrl = getBaseUrl()
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
         // For demo, we'll handle verification differently
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/study/${studyId}/join/verify`,
+        emailRedirectTo: `${baseUrl}/study/${studyId}/join/verify`,
       },
     })
 
