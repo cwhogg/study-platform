@@ -44,42 +44,60 @@ export default function DashboardPage() {
   const [assessments, setAssessments] = useState<Assessment[]>([])
   const [currentWeek, setCurrentWeek] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [notEnrolled, setNotEnrolled] = useState(false)
   const totalWeeks = 26
 
   const loadDashboardData = useCallback(async () => {
     const supabase = createClient()
 
-    // Get current user
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      setLoading(false)
-      return
-    }
+    try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        setLoading(false)
+        return
+      }
 
-    // Get participant record
-    const { data: participant } = await supabase
-      .from('sp_participants')
-      .select('id, enrolled_at, current_week')
-      .eq('user_id', user.id)
-      .eq('study_id', studyId)
-      .single()
+      // Get participant record (use maybeSingle to handle no results gracefully)
+      const { data: participant, error: participantError } = await supabase
+        .from('sp_participants')
+        .select('id, enrolled_at, current_week')
+        .eq('user_id', user.id)
+        .eq('study_id', studyId)
+        .maybeSingle()
 
-    if (!participant || !participant.enrolled_at) {
-      setLoading(false)
-      return
-    }
+      if (participantError) {
+        console.error('Error fetching participant:', participantError)
+        setLoading(false)
+        return
+      }
 
-    // Get all submissions for this participant
-    const { data: submissions } = await supabase
-      .from('sp_submissions')
-      .select('timepoint, instrument, submitted_at')
-      .eq('participant_id', participant.id)
+      if (!participant || !participant.enrolled_at) {
+        // User is registered but not fully enrolled yet
+        setNotEnrolled(true)
+        setLoading(false)
+        return
+      }
 
-    // Get lab results for this participant
-    const { data: labResults } = await supabase
-      .from('sp_lab_results')
-      .select('timepoint')
-      .eq('participant_id', participant.id)
+      // Get all submissions for this participant
+      const { data: submissions, error: submissionsError } = await supabase
+        .from('sp_submissions')
+        .select('timepoint, instrument, submitted_at')
+        .eq('participant_id', participant.id)
+
+      if (submissionsError) {
+        console.error('Error fetching submissions:', submissionsError)
+      }
+
+      // Get lab results for this participant
+      const { data: labResults, error: labsError } = await supabase
+        .from('sp_lab_results')
+        .select('timepoint')
+        .eq('participant_id', participant.id)
+
+      if (labsError) {
+        console.error('Error fetching lab results:', labsError)
+      }
 
     // Build submissions map
     const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null }>()
@@ -155,6 +173,10 @@ export default function DashboardPage() {
 
     setAssessments(assessmentList)
     setLoading(false)
+    } catch (error) {
+      console.error('Dashboard error:', error)
+      setLoading(false)
+    }
   }, [studyId])
 
   useEffect(() => {
@@ -171,6 +193,28 @@ export default function DashboardPage() {
       <MobileContainer className="pt-4 pb-8">
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+        </div>
+      </MobileContainer>
+    )
+  }
+
+  if (notEnrolled) {
+    return (
+      <MobileContainer className="pt-4 pb-8">
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Clock className="w-8 h-8 text-amber-600" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Enrollment Not Complete</h2>
+          <p className="text-gray-600 mb-6">
+            Please complete the enrollment process to access your dashboard.
+          </p>
+          <Link
+            href={`/study/${studyId}/join/overview`}
+            className="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl"
+          >
+            Continue Enrollment
+          </Link>
         </div>
       </MobileContainer>
     )
