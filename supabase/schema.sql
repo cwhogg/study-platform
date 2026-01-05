@@ -447,7 +447,8 @@ CREATE OR REPLACE FUNCTION sp_handle_new_user()
 RETURNS TRIGGER AS $func$
 BEGIN
   INSERT INTO sp_profiles (id, email, role)
-  VALUES (NEW.id, NEW.email, 'participant');
+  VALUES (NEW.id, NEW.email, 'participant')
+  ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
 $func$ LANGUAGE plpgsql SECURITY DEFINER;
