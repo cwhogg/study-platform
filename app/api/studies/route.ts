@@ -226,6 +226,22 @@ export async function POST(request: NextRequest) {
       try {
         const serviceClient = createServiceClient()
 
+        // First, verify the schema exists by trying a simple query
+        const { error: schemaTestError } = await serviceClient
+          .schema(SCHEMA)
+          .from('profiles')
+          .select('id')
+          .limit(1)
+
+        if (schemaTestError) {
+          console.error('[Studies] Schema test failed:', schemaTestError)
+          // The schema might not exist - this is a setup issue
+          return NextResponse.json(
+            { error: `Database schema '${SCHEMA}' not found. Please run database migrations.` },
+            { status: 500 }
+          )
+        }
+
         // Check if demo sponsor profile exists
         const { data: existingProfile } = await serviceClient
           .schema(SCHEMA)

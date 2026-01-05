@@ -500,6 +500,109 @@ function ReviewProtocolContent() {
             )}
           </div>
         </CollapsibleSection>
+
+        {/* Risk Assessment from Discovery */}
+        {riskAssessment && (
+          <CollapsibleSection
+            title="Intervention Risk Assessment"
+            icon={<AlertCircle className="w-5 h-5" />}
+            defaultOpen
+          >
+            <div className="space-y-4">
+              {/* FDA Status */}
+              <div className={`p-3 rounded-lg ${
+                riskAssessment.fdaApprovalStatus?.approved
+                  ? 'bg-green-50 border border-green-200'
+                  : 'bg-red-50 border border-red-200'
+              }`}>
+                <div className="font-medium text-gray-900 mb-1">
+                  {riskAssessment.fdaApprovalStatus?.approved
+                    ? '✓ FDA Approved'
+                    : '⚠️ NOT FDA Approved'}
+                </div>
+                {!riskAssessment.fdaApprovalStatus?.approved && riskAssessment.regulatoryDisclaimer && (
+                  <p className="text-sm text-red-700">{riskAssessment.regulatoryDisclaimer}</p>
+                )}
+              </div>
+
+              {/* Risk Summary */}
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="font-medium text-gray-900 mb-1">Risk Summary</div>
+                <p className="text-sm text-gray-700">{riskAssessment.riskSummary}</p>
+                <div className="mt-2">
+                  <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                    riskAssessment.overallRiskLevel === 'high' ? 'bg-red-100 text-red-700' :
+                    riskAssessment.overallRiskLevel === 'moderate' ? 'bg-amber-100 text-amber-700' :
+                    'bg-green-100 text-green-700'
+                  }`}>
+                    Overall Risk: {riskAssessment.overallRiskLevel}
+                  </span>
+                </div>
+              </div>
+
+              {/* Known Risks */}
+              {riskAssessment.knownRisks && riskAssessment.knownRisks.length > 0 && (
+                <div>
+                  <div className="font-medium text-gray-900 mb-2">Known Risks</div>
+                  <div className="space-y-2">
+                    {riskAssessment.knownRisks.map((risk, index) => (
+                      <div key={index} className="flex items-start gap-2 text-sm">
+                        <span className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${
+                          risk.severity === 'high' ? 'bg-red-500' :
+                          risk.severity === 'moderate' ? 'bg-amber-500' : 'bg-green-500'
+                        }`} />
+                        <span className="text-gray-700">
+                          <strong>{risk.risk}</strong>
+                          {risk.frequency && ` (${risk.frequency})`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Community-Reported Risks */}
+              {riskAssessment.communityReportedRisks && riskAssessment.communityReportedRisks.length > 0 && (
+                <div>
+                  <div className="font-medium text-gray-900 mb-2">Community-Reported Risks</div>
+                  <div className="space-y-2">
+                    {riskAssessment.communityReportedRisks.map((risk, index) => (
+                      <div key={index} className="flex items-start gap-2 text-sm">
+                        <span className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${
+                          risk.severity === 'high' ? 'bg-red-500' :
+                          risk.severity === 'moderate' ? 'bg-amber-500' : 'bg-green-500'
+                        }`} />
+                        <span className="text-gray-700">
+                          <strong>{risk.risk}</strong>
+                          {risk.frequency && ` (${risk.frequency})`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Contraindications */}
+              {riskAssessment.contraindications && riskAssessment.contraindications.length > 0 && (
+                <div>
+                  <div className="font-medium text-gray-900 mb-2">Contraindications</div>
+                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                    {riskAssessment.contraindications.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Data Sources */}
+              {riskAssessment.dataSources && riskAssessment.dataSources.length > 0 && (
+                <div className="text-xs text-gray-500">
+                  Sources: {riskAssessment.dataSources.join(', ')}
+                </div>
+              )}
+            </div>
+          </CollapsibleSection>
+        )}
       </div>
 
       {/* Error Message */}

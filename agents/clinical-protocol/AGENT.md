@@ -32,6 +32,12 @@ Produce a complete, actionable study protocol that:
 
 **Task:** Research the intervention and return structured options for the sponsor to configure.
 
+**IMPORTANT REQUIREMENTS:**
+- Return **at least 3 options** for `endpoints` (5 is ideal)
+- Return **at least 3 options** for `populations`
+- Return **at least 3 options** for `treatmentStages`
+- If you cannot identify 3 distinct options, create reasonable variations based on common clinical scenarios
+
 **Output Schema:**
 ```json
 {
@@ -301,9 +307,12 @@ interface TriggerConfig {
    - Adherence / satisfaction
 
 4. **Match instruments to endpoints**
-   - Prefer validated, widely-used instruments
+   - **ONLY use validated, published PRO instruments** - NEVER invent new instruments
+   - Prefer widely-used instruments with known psychometric properties
    - Consider patient burden
    - Include brief screening versions where available
+   - Examples of VALID instruments: VISA-A, NRS, PHQ-2, PHQ-9, SF-36, qADAM, IIEF-5, FACIT-Fatigue, BPI, WOMAC, ODI, DASH
+   - **DO NOT** create instruments like "Tendon Healing Assessment Scale" or "Custom questionnaire" - these do not exist
 
 5. **Determine populations and stages**
    - Who typically receives this intervention?
@@ -328,10 +337,13 @@ interface TriggerConfig {
    - Keep list practical
 
 3. **Select and specify instruments**
+   - **ONLY use validated, published PRO instruments with known psychometric properties**
+   - NEVER invent or create new instruments - only use instruments that exist in published literature
    - Primary endpoint instrument in full detail
    - Secondary instruments
    - Safety screening (PHQ-2 always included)
    - Return complete instrument specifications
+   - If you don't know the exact questions for an instrument, use the standard published version
 
 4. **Design schedule**
    - Baseline assessment before/at treatment start
@@ -472,6 +484,7 @@ Before returning a protocol, verify:
 - [ ] dataSources for risks are explicitly listed
 
 ### Protocol Checklist
+- [ ] **ALL instruments are real, validated, published PRO instruments** (NOT invented)
 - [ ] Primary endpoint uses a validated instrument with known psychometric properties
 - [ ] Clinically meaningful change threshold is defined
 - [ ] PHQ-2 is included for depression screening at all/most timepoints
