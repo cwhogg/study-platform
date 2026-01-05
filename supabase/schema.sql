@@ -10,17 +10,14 @@
 -- CLEANUP (drop existing objects to make schema re-runnable)
 -- =============================================================================
 
--- Drop triggers first
+-- Drop trigger on auth.users first (system table we don't drop)
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-DROP TRIGGER IF EXISTS update_sp_profiles_updated_at ON sp_profiles;
-DROP TRIGGER IF EXISTS update_sp_studies_updated_at ON sp_studies;
-DROP TRIGGER IF EXISTS update_sp_participants_updated_at ON sp_participants;
 
--- Drop functions
+-- Drop functions (CASCADE will drop dependent triggers)
 DROP FUNCTION IF EXISTS sp_handle_new_user() CASCADE;
 DROP FUNCTION IF EXISTS sp_update_updated_at() CASCADE;
 
--- Drop tables (in reverse order of dependencies)
+-- Drop tables (CASCADE drops their triggers automatically)
 DROP TABLE IF EXISTS sp_messages CASCADE;
 DROP TABLE IF EXISTS sp_alerts CASCADE;
 DROP TABLE IF EXISTS sp_lab_results CASCADE;
