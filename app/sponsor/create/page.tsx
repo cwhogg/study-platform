@@ -129,22 +129,6 @@ const INTERVENTIONS: InterventionOption[] = [
   { name: 'Collagen peptides', category: 'supplement' },
 ]
 
-const CATEGORY_LABELS: Record<InterventionOption['category'], string> = {
-  pharmacological: 'Pharmacological',
-  behavioral: 'Behavioral',
-  lifestyle: 'Lifestyle',
-  device: 'Devices',
-  supplement: 'Supplements',
-}
-
-const CATEGORY_ORDER: InterventionOption['category'][] = [
-  'pharmacological',
-  'behavioral',
-  'lifestyle',
-  'device',
-  'supplement',
-]
-
 export default function CreateStudyPage() {
   const router = useRouter()
   const [intervention, setIntervention] = useState('')
@@ -155,24 +139,12 @@ export default function CreateStudyPage() {
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
-  // Filter interventions based on input
-  const filteredInterventions = intervention.trim().length > 0
-    ? INTERVENTIONS.filter(item =>
-        item.name.toLowerCase().includes(intervention.toLowerCase())
-      )
-    : INTERVENTIONS
-
-  // Group filtered interventions by category
-  const groupedSuggestions = CATEGORY_ORDER
-    .map(category => ({
-      category,
-      label: CATEGORY_LABELS[category],
-      items: filteredInterventions.filter(item => item.category === category),
-    }))
-    .filter(group => group.items.length > 0)
-
-  // Flatten for keyboard navigation
-  const flattenedSuggestions = groupedSuggestions.flatMap(group => group.items)
+  // Filter interventions based on input - limit to top 8 matches
+  const filteredSuggestions = intervention.trim().length > 0
+    ? INTERVENTIONS
+        .filter(item => item.name.toLowerCase().includes(intervention.toLowerCase()))
+        .slice(0, 8)
+    : []
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -199,25 +171,25 @@ export default function CreateStudyPage() {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!showSuggestions) return
+    if (!showSuggestions || filteredSuggestions.length === 0) return
 
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault()
         setHighlightedIndex(prev =>
-          prev < flattenedSuggestions.length - 1 ? prev + 1 : 0
+          prev < filteredSuggestions.length - 1 ? prev + 1 : 0
         )
         break
       case 'ArrowUp':
         e.preventDefault()
         setHighlightedIndex(prev =>
-          prev > 0 ? prev - 1 : flattenedSuggestions.length - 1
+          prev > 0 ? prev - 1 : filteredSuggestions.length - 1
         )
         break
       case 'Enter':
-        if (highlightedIndex >= 0 && flattenedSuggestions[highlightedIndex]) {
+        if (highlightedIndex >= 0 && filteredSuggestions[highlightedIndex]) {
           e.preventDefault()
-          handleSelectSuggestion(flattenedSuggestions[highlightedIndex].name)
+          handleSelectSuggestion(filteredSuggestions[highlightedIndex].name)
         }
         break
       case 'Escape':
@@ -308,70 +280,49 @@ export default function CreateStudyPage() {
                 value={intervention}
                 onChange={(e) => {
                   setIntervention(e.target.value)
-                  setShowSuggestions(true)
+                  setShowSuggestions(e.target.value.trim().length > 0)
                   setHighlightedIndex(-1)
                 }}
-                onFocus={() => setShowSuggestions(true)}
                 onKeyDown={handleKeyDown}
-                placeholder="Start typing or select an intervention..."
+                placeholder="Start typing to search interventions..."
                 className="text-lg min-h-[100px]"
                 autoFocus
               />
 
-              {/* Autocomplete Dropdown */}
-              {showSuggestions && flattenedSuggestions.length > 0 && (
+              {/* Autocomplete Dropdown - only show when typing */}
+              {showSuggestions && filteredSuggestions.length > 0 && (
                 <div
                   ref={suggestionsRef}
-                  className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-[320px] overflow-y-auto"
+                  className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden"
                 >
-                  {groupedSuggestions.map((group, groupIndex) => {
-                    // Calculate the starting index for this group in the flattened list
-                    const startIndex = groupedSuggestions
-                      .slice(0, groupIndex)
-                      .reduce((acc, g) => acc + g.items.length, 0)
+                  {filteredSuggestions.map((item, index) => {
+                    const isHighlighted = index === highlightedIndex
 
                     return (
-                      <div key={group.category}>
-                        {/* Category Header */}
-                        <div className="sticky top-0 px-4 py-2 bg-slate-50 border-b border-slate-100">
-                          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                            {group.label}
-                          </span>
-                        </div>
-
-                        {/* Items */}
-                        {group.items.map((item, itemIndex) => {
-                          const flatIndex = startIndex + itemIndex
-                          const isHighlighted = flatIndex === highlightedIndex
-
-                          return (
-                            <button
-                              key={item.name}
-                              type="button"
-                              onClick={() => handleSelectSuggestion(item.name)}
-                              className={`
-                                w-full text-left px-4 py-3 text-sm transition-colors
-                                ${isHighlighted
-                                  ? 'bg-[#3B82F6]/10 text-[#3B82F6]'
-                                  : 'text-slate-700 hover:bg-slate-50'
-                                }
-                              `}
-                            >
-                              {item.name}
-                            </button>
-                          )
-                        })}
-                      </div>
+                      <button
+                        key={item.name}
+                        type="button"
+                        onClick={() => handleSelectSuggestion(item.name)}
+                        className={`
+                          w-full text-left px-4 py-3 text-sm transition-colors border-b border-slate-100 last:border-b-0
+                          ${isHighlighted
+                            ? 'bg-indigo-50 text-indigo-600'
+                            : 'text-slate-700 hover:bg-slate-50'
+                          }
+                        `}
+                      >
+                        {item.name}
+                      </button>
                     )
                   })}
                 </div>
               )}
 
               {/* No results message */}
-              {showSuggestions && intervention.trim().length > 0 && flattenedSuggestions.length === 0 && (
+              {showSuggestions && intervention.trim().length > 0 && filteredSuggestions.length === 0 && (
                 <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl p-4">
                   <p className="text-sm text-slate-500 text-center">
-                    No matching interventions. You can still continue with your custom input.
+                    No matching interventions found. You can still continue with your custom input.
                   </p>
                 </div>
               )}
