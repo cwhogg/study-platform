@@ -537,6 +537,27 @@ body::before {
   animation: draw-check 0.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
+/* Hero headline strikethrough animation */
+@keyframes strike-through {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-strike {
+  animation: strike-through 0.4s ease-out 0.1s forwards;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* Hero "Everything" text glow */
+.hero-everything {
+  text-shadow: 0 0 40px rgba(34, 211, 238, 0.4);
+}
+
 /* Number count up - use with JS */
 .count-up {
   font-variant-numeric: tabular-nums;

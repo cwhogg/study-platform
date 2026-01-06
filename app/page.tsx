@@ -34,11 +34,28 @@ export default function Home() {
               <span className="text-sm font-medium text-indigo-300">AI-Powered Clinical Research</span>
             </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-100 mb-6 text-balance">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-100 mb-6 text-balance leading-tight">
               Proove{' '}
-              <span className="relative inline-block">
-                <span className="absolute -top-4 sm:-top-5 left-0 text-lg sm:text-xl lg:text-2xl text-cyan-400 font-medium">Everything</span>
-                <span className="line-through decoration-2 decoration-slate-500 text-slate-500">Anything</span>
+              <span className="relative inline-flex flex-col items-start align-baseline">
+                {/* "Everything" - prominent correction with glow */}
+                <span
+                  className="hero-everything text-cyan-400 text-[0.75em] font-medium tracking-tight
+                             drop-shadow-[0_0_25px_rgba(34,211,238,0.5)]
+                             animate-fade-in-up opacity-0"
+                  style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
+                >
+                  Everything
+                </span>
+                {/* "Anything" - smaller, muted, with animated strikethrough */}
+                <span className="relative text-slate-600 text-[0.5em] -mt-2 sm:-mt-3">
+                  <span className="relative">
+                    Anything
+                    {/* Animated strikethrough line */}
+                    <span
+                      className="absolute left-0 right-0 top-1/2 h-0.5 bg-gradient-to-r from-slate-500 to-slate-600 animate-strike"
+                    />
+                  </span>
+                </span>
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-slate-400 mb-12 max-w-2xl mx-auto text-balance leading-relaxed">
