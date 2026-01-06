@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { FileText, Users, BarChart3, Shield, Clipboard, Bell, ArrowRight, Sparkles, Zap, Check } from 'lucide-react'
+import { FileText, Users, BarChart3, Shield, Clipboard, Bell, ArrowRight, Sparkles, Check } from 'lucide-react'
+import { ProoveLogo } from '@/components/ui/ProoveLogo'
 
 export default function Home() {
   return (
@@ -9,9 +10,7 @@ export default function Home() {
         <div className="container-wide">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
-                <Zap className="w-5 h-5 text-white" />
-              </div>
+              <ProoveLogo size={36} className="shadow-lg shadow-indigo-500/25 rounded-full" />
               <span className="font-semibold text-slate-100">Proove Platform</span>
             </div>
             <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">Demo Mode</div>
