@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileBottomAction } from '@/components/ui/MobileContainer'
+import { ConsentContent } from '@/components/participant/ConsentContent'
 import { Loader2 } from 'lucide-react'
 
 // Types for consent sections
@@ -207,13 +208,7 @@ export default function ConsentPage() {
         <h2 className="text-xl font-bold text-slate-900 mb-4">
           {section.title}
         </h2>
-        <div className="prose max-w-none">
-          {section.content.split('\n\n').map((paragraph, idx) => (
-            <p key={idx} className="text-slate-700 mb-4 leading-relaxed whitespace-pre-line">
-              {paragraph}
-            </p>
-          ))}
-        </div>
+        <ConsentContent content={section.content} />
 
         {/* Section Navigation Dots */}
         <div className="flex justify-center gap-2 mt-8 pt-4 border-t border-slate-200">
