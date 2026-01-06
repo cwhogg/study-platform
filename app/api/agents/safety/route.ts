@@ -73,17 +73,63 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Log summary of what was generated
+    // Normalize proAlerts - handle LLM returning 'instrument' instead of 'instrumentId'
+    // Cast to unknown first since LLM output may not match our types exactly
+    const rawProAlerts = safety.proAlerts as unknown as Record<string, unknown>[]
+    const normalizedProAlerts = rawProAlerts.map((alert, index) => {
+      // Handle 'instrument' -> 'instrumentId' field name mismatch
+      let instrumentId = alert.instrumentId as string | undefined
+      if (!instrumentId && alert.instrument) {
+        instrumentId = alert.instrument as string
+        console.warn(`[Safety Generation] Alert ${index}: normalized 'instrument' to 'instrumentId'`)
+      }
+
+      if (!instrumentId) {
+        console.error(`[Safety Generation] Alert ${index}: missing instrumentId, skipping`)
+        return null
+      }
+
+      return {
+        instrumentId,
+        condition: alert.condition as string || '',
+        type: alert.type as string || 'coordinator_alert',
+        target: alert.target as string | null || null,
+        urgency: alert.urgency as string | null || null,
+        message: alert.message as string || 'Safety alert triggered',
+      }
+    }).filter(Boolean)
+
+    // Normalize labThresholds - ensure required fields
+    const rawLabThresholds = (safety.labThresholds || []) as unknown as Record<string, unknown>[]
+    const normalizedLabThresholds = rawLabThresholds.map((threshold) => ({
+      marker: threshold.marker as string || '',
+      operator: threshold.operator as string || '>',
+      value: typeof threshold.value === 'number' ? threshold.value : 0,
+      unit: threshold.unit as string || '',
+      type: threshold.type as string || 'coordinator_alert',
+      urgency: threshold.urgency as string || '24hr',
+      action: threshold.action as string || 'Review required',
+    })).filter((t: { marker: string }) => t.marker) // Filter out entries without marker
+
+    const normalizedSafety = {
+      ...safety,
+      proAlerts: normalizedProAlerts,
+      labThresholds: normalizedLabThresholds,
+    }
+
+    // Log summary of what was generated (comparing raw vs normalized)
     console.log('[Safety Generation] Summary:', {
-      proAlerts: safety.proAlerts.length,
-      labThresholds: safety.labThresholds?.length ?? 0,
+      rawProAlerts: safety.proAlerts.length,
+      normalizedProAlerts: normalizedProAlerts.length,
+      rawLabThresholds: safety.labThresholds?.length ?? 0,
+      normalizedLabThresholds: normalizedLabThresholds.length,
       hasCrisisProtocol: !!safety.crisisProtocol,
       adverseEventMonitoring: safety.adverseEventMonitoring?.enabled ?? false,
     })
 
     return NextResponse.json({
       success: true,
-      data: safety,
+      data: normalizedSafety,
       usage: result.usage,
       ...(process.env.NODE_ENV === 'development' && { debug: result.debug }),
     })
