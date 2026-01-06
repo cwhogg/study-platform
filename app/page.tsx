@@ -88,16 +88,16 @@ export default function Home() {
               {/* Sponsor Path */}
               <Link
                 href="/sponsor"
-                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#1E3A5F]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
+                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#6D28D9]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
               >
-                <div className="w-14 h-14 bg-[#1E3A5F]/5 rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform border border-[#1E3A5F]/10">
-                  <FileText className="w-7 h-7 text-[#1E3A5F]" />
+                <div className="w-14 h-14 bg-[#6D28D9] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
+                  <FileText className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-lg font-semibold text-slate-900 mb-2">Create a Study</h2>
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
                   Design and launch an observational study with AI-generated protocols.
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-[#1E3A5F] font-medium text-sm group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[#6D28D9] font-medium text-sm group-hover:gap-2.5 transition-all">
                   Sponsor Demo
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -106,16 +106,16 @@ export default function Home() {
               {/* Participant Path */}
               <Link
                 href="/study"
-                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-orange-600/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
+                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#EA580C]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
               >
-                <div className="w-14 h-14 bg-orange-600/10 rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform border border-orange-600/20">
-                  <Clipboard className="w-7 h-7 text-orange-700" />
+                <div className="w-14 h-14 bg-[#EA580C] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
+                  <Clipboard className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-lg font-semibold text-slate-900 mb-2">Join a Study</h2>
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
                   Experience the participant flow: consent, screening, and PRO surveys.
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-orange-700 font-medium text-sm group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[#EA580C] font-medium text-sm group-hover:gap-2.5 transition-all">
                   Participant Demo
                   <ArrowRight className="w-4 h-4" />
                 </span>
