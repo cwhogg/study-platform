@@ -554,38 +554,38 @@ Before returning a protocol, verify:
 
 ---
 
-## REQUIRED Safety Monitoring (MUST include ALL of these)
+## REQUIRED Safety Monitoring
 
-**CRITICAL: The safetyMonitoring section is NOT optional. You MUST generate comprehensive safety rules.**
+**CRITICAL: The safetyMonitoring section is NOT optional. You MUST generate comprehensive, INTERVENTION-SPECIFIC safety rules.**
 
-### Mandatory PRO Alerts (minimum 4 required in proAlerts array)
+### PRO Alerts (required in proAlerts array)
 
-You MUST include ALL of these PRO-based alerts:
+**Include alerts ONLY for instruments that are actually in your protocol.** Do NOT include PHQ-9 alerts if PHQ-9 is not an instrument in this study.
 
-1. **PHQ-2 >= 3 → Trigger PHQ-9**
-   ```json
-   { "instrument": "phq-2", "condition": "total >= 3", "action": "Trigger PHQ-9" }
-   ```
+#### If PHQ-2/PHQ-9 are included in the study:
+```json
+{ "instrument": "phq-2", "condition": "total >= 3", "action": "Trigger PHQ-9" }
+{ "instrument": "phq-9", "condition": "total >= 10", "action": "Coordinator alert within 24 hours" }
+{ "instrument": "phq-9", "condition": "total >= 15", "action": "Urgent alert within 4 hours" }
+{ "instrument": "phq-9", "condition": "q9 > 0", "action": "Show crisis resources + urgent alert within 1 hour" }
+```
 
-2. **PHQ-9 >= 10 → Coordinator alert (24hr)**
-   ```json
-   { "instrument": "phq-9", "condition": "total >= 10", "action": "Coordinator alert within 24 hours" }
-   ```
+#### Always include if using adverse-events instrument:
+```json
+{ "instrument": "adverse-events", "condition": "ae_severity >= 2", "action": "Coordinator alert within 24 hours" }
+```
 
-3. **PHQ-9 >= 15 → Urgent alert (4hr)**
-   ```json
-   { "instrument": "phq-9", "condition": "total >= 15", "action": "Urgent alert within 4 hours" }
-   ```
+### Intervention-Specific PRO Alerts (REQUIRED)
 
-4. **PHQ-9 Q9 > 0 → Crisis resources + urgent alert (1hr)**
-   ```json
-   { "instrument": "phq-9", "condition": "q9 > 0", "action": "Show crisis resources + urgent alert within 1 hour" }
-   ```
+**You MUST create PRO alerts specific to the intervention being studied.** Think about what symptoms or outcomes would require coordinator attention.
 
-5. **Adverse Events severity >= moderate → Coordinator alert**
-   ```json
-   { "instrument": "adverse-events", "condition": "ae_severity >= 2", "action": "Coordinator alert within 24 hours" }
-   ```
+| Intervention | Relevant PRO Alerts |
+|--------------|---------------------|
+| Intermittent Fasting | Hunger severity >= 8, Dizziness/lightheadedness, Binge eating episodes |
+| TRT | Mood changes, Sleep apnea symptoms, Aggression/irritability |
+| GLP-1 agonists | Severe nausea, Vomiting episodes, Injection site reactions |
+| Exercise programs | Pain severity >= 7, Injury reports, Excessive fatigue |
+| Meditation/mindfulness | Anxiety increase, Dissociation symptoms |
 
 ### Intervention-Specific Lab Thresholds (REQUIRED for pharmacological interventions)
 
