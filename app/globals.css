@@ -15,17 +15,17 @@
   --color-primary-100: rgba(30, 58, 95, 0.15);
   --color-primary-900: #0A1929;
 
-  /* Accent - Burnt Orange (energy, highlights) */
-  --color-accent: #EA580C;
-  --color-accent-light: #F97316;
-  --color-accent-dark: #C2410C;
-  --color-accent-50: rgba(234, 88, 12, 0.1);
+  /* Accent - Burnt Sienna (warm, earthy energy) */
+  --color-accent: #9A3412;
+  --color-accent-light: #C2410C;
+  --color-accent-dark: #7C2D12;
+  --color-accent-50: rgba(154, 52, 18, 0.1);
 
   /* Rich Accent Palette */
-  --color-purple: #6D28D9;
-  --color-purple-light: #7C3AED;
-  --color-purple-dark: #5B21B6;
-  --color-purple-50: rgba(109, 40, 217, 0.1);
+  --color-purple: #4C1D95;
+  --color-purple-light: #5B21B6;
+  --color-purple-dark: #3B0764;
+  --color-purple-50: rgba(76, 29, 149, 0.1);
 
   --color-teal: #0F766E;
   --color-teal-light: #14B8A6;
