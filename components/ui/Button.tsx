@@ -32,17 +32,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       rounded-2xl
       transition-all duration-200
       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white
-      disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+      disabled:cursor-not-allowed disabled:transform-none
       active:scale-[0.98]
     `
 
     const variants = {
       primary: `
-        bg-[#3B82F6]
+        bg-gradient-to-b from-[#6366F1] to-[#4F46E5]
         text-white
-        shadow-md
-        hover:bg-[#2563EB] hover:shadow-lg hover:-translate-y-0.5
-        focus-visible:ring-[#3B82F6]
+        shadow-md shadow-indigo-500/25
+        hover:from-[#818CF8] hover:to-[#6366F1] hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5
+        focus-visible:ring-indigo-500
+        disabled:from-slate-300 disabled:to-slate-400 disabled:text-slate-500 disabled:shadow-none
       `,
       secondary: `
         bg-white
