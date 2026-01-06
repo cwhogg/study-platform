@@ -54,14 +54,21 @@ interface ScheduleTimepoint {
 
 interface LabThreshold {
   marker: string
-  threshold: string
+  operator: string
+  value: number
+  unit: string
+  type: string
+  urgency: string
   action: string
 }
 
 interface ProAlert {
-  instrument: string
+  instrumentId: string
   condition: string
-  action: string
+  type: string
+  message: string
+  target?: string | null
+  urgency?: string | null
 }
 
 interface Protocol {
@@ -94,7 +101,7 @@ const FALLBACK_PROTOCOL: Protocol = {
   ],
   safetyMonitoring: {
     labThresholds: [],
-    proAlerts: [{ instrument: 'phq-2', condition: 'total >= 3', action: 'Trigger PHQ-9' }],
+    proAlerts: [{ instrumentId: 'phq-2', condition: 'total >= 3', type: 'trigger_instrument', message: 'Trigger PHQ-9 follow-up', target: 'phq-9' }],
   },
 }
 
@@ -309,11 +316,11 @@ function ReviewProtocolContent() {
   // Combine safety rules
   const safetyRules = [
     ...(protocol.safetyMonitoring?.proAlerts?.map(a => ({
-      trigger: `${a.instrument}: ${a.condition}`,
-      action: a.action,
+      trigger: `${a.instrumentId}: ${a.condition}`,
+      action: a.message,
     })) || []),
     ...(protocol.safetyMonitoring?.labThresholds?.map(t => ({
-      trigger: `${t.marker} ${t.threshold}`,
+      trigger: `${t.marker} ${t.operator} ${t.value} ${t.unit}`,
       action: t.action,
     })) || []),
   ]
