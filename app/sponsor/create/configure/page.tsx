@@ -26,6 +26,12 @@ interface TreatmentStageOption {
   description: string
 }
 
+interface RiskAssessment {
+  interventionCategory?: 'pharmacological' | 'non_pharmacological'
+  knownRisks?: Array<{ risk: string; severity: string; frequency?: string }>
+  overallRiskLevel?: string
+}
+
 interface DiscoveryData {
   intervention: string
   summary: string
@@ -36,6 +42,7 @@ interface DiscoveryData {
     weeks: number
     rationale: string
   }
+  riskAssessment?: RiskAssessment
   safetyConsiderations: string[]
 }
 
@@ -80,6 +87,7 @@ function ConfigureStudyContent() {
   const [secondaryEndpoints, setSecondaryEndpoints] = useState<string[]>([])
   const [duration, setDuration] = useState(26)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submissionPhase, setSubmissionPhase] = useState<'protocol' | 'safety' | null>(null)
 
   // Load discovery data from sessionStorage
   useEffect(() => {
@@ -145,6 +153,7 @@ function ConfigureStudyContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmissionPhase('protocol')
     setError('')
 
     const requestBody = {
@@ -157,50 +166,89 @@ function ConfigureStudyContent() {
     }
 
     try {
-      // Call protocol generation API
+      // Step 1: Call Protocol Agent (generates study design, NOT safety rules)
       console.log('[Protocol] Sending request:', JSON.stringify(requestBody, null, 2))
-      const response = await fetch('/api/agents/protocol', {
+      const protocolResponse = await fetch('/api/agents/protocol', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
       })
 
-      const data = await response.json()
-      console.log('[Protocol] Response status:', response.status)
-      console.log('[Protocol] Response data:', JSON.stringify(data, null, 2))
+      const protocolData = await protocolResponse.json()
+      console.log('[Protocol] Response status:', protocolResponse.status)
 
-      if (!response.ok) {
-        console.error('[Protocol] Error response:', data)
-        setError(data.error || 'Failed to generate protocol')
+      if (!protocolResponse.ok) {
+        console.error('[Protocol] Error response:', protocolData)
+        setError(protocolData.error || 'Failed to generate protocol')
         setIsSubmitting(false)
+        setSubmissionPhase(null)
         return
       }
 
-      // Log key fields
-      if (data.data) {
-        console.log('[Protocol] Summary:', data.data.summary)
-        console.log('[Protocol] Inclusion Criteria:', data.data.inclusionCriteria?.length || 0)
-        console.log('[Protocol] Exclusion Criteria:', data.data.exclusionCriteria?.length || 0)
-        console.log('[Protocol] Instruments:', data.data.instruments?.length || 0)
-        console.log('[Protocol] Schedule timepoints:', data.data.schedule?.length || 0)
+      const protocol = protocolData.data
+      console.log('[Protocol] Summary:', protocol.summary)
+      console.log('[Protocol] Instruments:', protocol.instruments?.length || 0)
+      console.log('[Protocol] Schedule timepoints:', protocol.schedule?.length || 0)
+
+      // Step 2: Call Safety Agent with protocol context
+      setSubmissionPhase('safety')
+      console.log('[Safety] Generating safety rules...')
+
+      // Extract lab markers from schedule
+      const labMarkers: string[] = []
+      if (protocol.schedule) {
+        for (const tp of protocol.schedule) {
+          if (tp.labs && Array.isArray(tp.labs)) {
+            for (const lab of tp.labs) {
+              if (!labMarkers.includes(lab)) {
+                labMarkers.push(lab)
+              }
+            }
+          }
+        }
       }
 
-      // Log OpenAI prompt/response debug info
-      if (data.debug) {
-        console.log('\n=== PROTOCOL AGENT DEBUG INFO ===')
-        console.log('[Agent] Name:', data.debug.agentName)
-        console.log('[Agent] Model:', data.debug.model)
-        console.log('[Agent] System Prompt Length:', data.debug.systemPromptLength, 'chars')
-        console.log('[Agent] Elapsed:', data.debug.elapsedMs, 'ms')
-        console.log('\n[Agent] USER MESSAGE (what was sent to OpenAI):')
-        console.log(data.debug.userMessage)
-        console.log('\n[Agent] RAW RESPONSE (what came back from OpenAI):')
-        console.log(data.debug.rawResponse)
-        console.log('=== END DEBUG INFO ===\n')
+      const safetyRequestBody = {
+        intervention,
+        interventionCategory: discoveryData?.riskAssessment?.interventionCategory || 'pharmacological',
+        instruments: protocol.instruments || [],
+        riskAssessment: discoveryData?.riskAssessment,
+        labMarkers,
       }
 
-      // Store protocol in sessionStorage for the review page
-      sessionStorage.setItem('generatedProtocol', JSON.stringify(data.data))
+      console.log('[Safety] Request body:', JSON.stringify(safetyRequestBody, null, 2))
+      const safetyResponse = await fetch('/api/agents/safety', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(safetyRequestBody),
+      })
+
+      const safetyData = await safetyResponse.json()
+      console.log('[Safety] Response status:', safetyResponse.status)
+
+      // Safety Agent failure is non-fatal - continue with empty safety rules
+      let safetyMonitoring = { proAlerts: [], labThresholds: [] }
+      if (safetyResponse.ok && safetyData.data) {
+        safetyMonitoring = {
+          proAlerts: safetyData.data.proAlerts || [],
+          labThresholds: safetyData.data.labThresholds || [],
+        }
+        console.log('[Safety] Generated:', {
+          proAlerts: safetyMonitoring.proAlerts.length,
+          labThresholds: safetyMonitoring.labThresholds.length,
+        })
+      } else {
+        console.warn('[Safety] Failed to generate safety rules, using empty defaults:', safetyData.error)
+      }
+
+      // Step 3: Merge safety into protocol
+      const completeProtocol = {
+        ...protocol,
+        safetyMonitoring,
+      }
+
+      // Store complete protocol in sessionStorage for the review page
+      sessionStorage.setItem('generatedProtocol', JSON.stringify(completeProtocol))
 
       // Build URL params for next step
       const params = new URLSearchParams({
@@ -218,6 +266,7 @@ function ConfigureStudyContent() {
       console.error('Protocol generation error:', err)
       setError('An unexpected error occurred. Please try again.')
       setIsSubmitting(false)
+      setSubmissionPhase(null)
     }
   }
 
@@ -494,7 +543,7 @@ function ConfigureStudyContent() {
           {isSubmitting ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              Generating Protocol...
+              {submissionPhase === 'safety' ? 'Generating Safety Rules...' : 'Generating Protocol...'}
             </>
           ) : (
             <>

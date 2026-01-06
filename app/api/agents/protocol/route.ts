@@ -1,49 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { generateProtocol } from '@/lib/agents/client'
-import type { ProtocolGenerationOutput } from '@/lib/agents/types'
 
 /**
- * Validate that the generated protocol has sufficient safety monitoring
+ * Protocol Generation API Route
+ *
+ * Generates study protocols using the Clinical Protocol Agent.
+ * Note: Safety monitoring rules are generated separately by the Safety Agent.
  */
-function validateSafetyMonitoring(protocol: ProtocolGenerationOutput): string[] {
-  const warnings: string[] = []
-
-  const proAlerts = protocol.safetyMonitoring?.proAlerts || []
-  const labThresholds = protocol.safetyMonitoring?.labThresholds || []
-
-  // Must have at least 4 PRO alerts (PHQ-2, PHQ-9 x3, adverse events)
-  if (proAlerts.length < 4) {
-    warnings.push(`Safety monitoring may be insufficient: only ${proAlerts.length} PRO alerts (recommended minimum: 4)`)
-  }
-
-  // Must include PHQ-2 trigger
-  const hasPhq2 = proAlerts.some(a => a.instrument?.toLowerCase().includes('phq-2') || a.instrument?.toLowerCase() === 'phq2')
-  if (!hasPhq2) {
-    warnings.push('Missing PHQ-2 depression screening alert')
-  }
-
-  // Must include PHQ-9 alerts
-  const hasPhq9 = proAlerts.some(a => a.instrument?.toLowerCase().includes('phq-9') || a.instrument?.toLowerCase() === 'phq9')
-  if (!hasPhq9) {
-    warnings.push('Missing PHQ-9 depression escalation alerts')
-  }
-
-  // Check for adverse events monitoring
-  const hasAdverseEvents = proAlerts.some(a =>
-    a.instrument?.toLowerCase().includes('adverse') ||
-    a.instrument?.toLowerCase().includes('ae')
-  )
-  if (!hasAdverseEvents) {
-    warnings.push('Missing adverse events monitoring alert')
-  }
-
-  // Log lab threshold count (not a hard requirement for all interventions)
-  if (labThresholds.length === 0) {
-    warnings.push('No lab thresholds defined - verify if appropriate for this intervention')
-  }
-
-  return warnings
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -142,21 +105,12 @@ export async function POST(request: NextRequest) {
       exclusionCriteria: protocol.exclusionCriteria?.length ?? 0,
       instruments: protocol.instruments?.length ?? 0,
       scheduleTimepoints: protocol.schedule?.length ?? 0,
-      labThresholds: protocol.safetyMonitoring?.labThresholds?.length ?? 0,
-      proAlerts: protocol.safetyMonitoring?.proAlerts?.length ?? 0,
     })
-
-    // Validate safety monitoring completeness
-    const safetyWarnings = validateSafetyMonitoring(protocol)
-    if (safetyWarnings.length > 0) {
-      console.warn('[Protocol Generation] Safety monitoring warnings:', safetyWarnings)
-    }
 
     return NextResponse.json({
       success: true,
       data: protocol,
       usage: result.usage,
-      safetyWarnings: safetyWarnings.length > 0 ? safetyWarnings : undefined,
       ...(process.env.NODE_ENV === 'development' && { debug: result.debug }),
     })
 

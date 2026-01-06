@@ -467,10 +467,65 @@ export interface MessageTemplatesOutput {
 }
 
 // =============================================================================
+// Safety Agent Types
+// =============================================================================
+
+export interface SafetyGenerationInput {
+  intervention: string
+  interventionCategory: 'pharmacological' | 'non_pharmacological'
+  instruments: Instrument[]
+  riskAssessment?: RiskAssessment
+  labMarkers?: string[]
+}
+
+export interface SafetyProAlert {
+  instrumentId: string
+  condition: string  // e.g., "total >= 3", "q9 > 0"
+  type: 'trigger_instrument' | 'coordinator_alert' | 'urgent_alert' | 'crisis_resources'
+  target?: string | null  // For trigger_instrument, which instrument ID
+  urgency?: string | null  // e.g., "1hr", "4hr", "24hr"
+  message: string
+}
+
+export interface SafetyLabThreshold {
+  marker: string
+  operator: '>' | '<' | '>=' | '<=' | '==' | '!='
+  value: number
+  unit: string
+  type: 'coordinator_alert' | 'urgent_alert'
+  urgency: string
+  action: string
+}
+
+export interface CrisisProtocol {
+  triggers: string[]
+  resources: {
+    title: string
+    hotlines: Array<{ name: string; number?: string; value?: string }>
+    followUp: string
+  }
+}
+
+export interface AdverseEventMonitoring {
+  enabled: boolean
+  severityThresholds: {
+    coordinatorAlert: number
+    urgentAlert: number
+  }
+}
+
+export interface SafetyGenerationOutput {
+  proAlerts: SafetyProAlert[]
+  labThresholds: SafetyLabThreshold[]
+  crisisProtocol: CrisisProtocol
+  adverseEventMonitoring: AdverseEventMonitoring
+}
+
+// =============================================================================
 // Agent Call Types
 // =============================================================================
 
-export type AgentName = 'clinical-protocol' | 'consent-compliance' | 'enrollment' | 'patient-communication'
+export type AgentName = 'clinical-protocol' | 'consent-compliance' | 'enrollment' | 'patient-communication' | 'safety'
 
 export type AgentModel = 'gpt-4o' | 'o1-mini'
 

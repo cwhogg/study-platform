@@ -19,6 +19,8 @@ import type {
   ProtocolGenerationOutput,
   ConsentGenerationInput,
   ConsentGenerationOutput,
+  SafetyGenerationInput,
+  SafetyGenerationOutput,
 } from './types'
 
 // Enable verbose logging with AGENT_DEBUG=true
@@ -43,6 +45,7 @@ const DEFAULT_MODELS: Record<AgentName, AgentModel> = {
   'consent-compliance': 'gpt-4o',
   'enrollment': 'gpt-4o',
   'patient-communication': 'gpt-4o',
+  'safety': 'gpt-4o',
 }
 
 /**
@@ -352,6 +355,19 @@ export async function generateConsent(
 ): Promise<AgentResult<ConsentGenerationOutput>> {
   return callAgent<ConsentGenerationInput, ConsentGenerationOutput>(
     'consent-compliance',
+    input,
+    { model: 'gpt-4o' }
+  )
+}
+
+/**
+ * Call the Safety Agent for safety rule generation
+ */
+export async function generateSafetyRules(
+  input: SafetyGenerationInput
+): Promise<AgentResult<SafetyGenerationOutput>> {
+  return callAgent<SafetyGenerationInput, SafetyGenerationOutput>(
+    'safety',
     input,
     { model: 'gpt-4o' }
   )
