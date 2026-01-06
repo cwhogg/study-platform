@@ -30,7 +30,7 @@ export default function SponsorPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/sponsor/create"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all group"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all group"
               >
                 Create a Study
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
@@ -81,8 +81,8 @@ export default function SponsorPage() {
                 step: '03',
                 title: 'Invite Participants',
                 description: 'Participants complete consent, screening, and baseline surveys on mobile.',
-                iconBg: 'bg-[#6D28D9]',
-                stepColor: 'text-[#6D28D9]',
+                iconBg: 'bg-[#1E40AF]',
+                stepColor: 'text-[#1E40AF]',
               },
               {
                 icon: BarChart3,
@@ -164,7 +164,7 @@ export default function SponsorPage() {
             {/* Right: Example study card */}
             <div className="relative">
               {/* Decorative gradient */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E40AF]/10 via-transparent to-[#6D28D9]/10 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E40AF]/10 via-transparent to-[#1E40AF]/10 rounded-3xl blur-2xl" />
 
               <div className="relative bg-white rounded-2xl border border-slate-200 shadow-md p-8">
                 <div className="flex items-center justify-between mb-6">
@@ -198,7 +198,7 @@ export default function SponsorPage() {
                 <div className="pt-6 border-t border-slate-200">
                   <div className="text-xs text-slate-500 mb-3">Generated in</div>
                   <div className="flex items-center gap-2">
-                    <div className="text-3xl font-display text-[#6D28D9]">~2 min</div>
+                    <div className="text-3xl font-display text-[#1E40AF]">~2 min</div>
                     <div className="text-sm text-slate-500">by AI</div>
                   </div>
                 </div>
@@ -211,7 +211,7 @@ export default function SponsorPage() {
       {/* CTA Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-[#1E40AF]/5 border-t border-slate-200">
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1E40AF]/5 via-transparent to-[#6D28D9]/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1E40AF]/5 via-transparent to-[#1E40AF]/5" />
 
         <div className="relative container-wide py-16 sm:py-20 text-center">
           <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
@@ -222,7 +222,7 @@ export default function SponsorPage() {
           </p>
           <Link
             href="/sponsor/create"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             Create Your First Study
             <ArrowRight className="w-5 h-5" />
