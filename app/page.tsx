@@ -303,7 +303,7 @@ export default function Home() {
                 ].map((item) => (
                   <li key={item.text} className="flex items-center gap-3 text-white/90">
                     <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
-                      <item.icon className="w-4 h-4 text-orange-500" />
+                      <item.icon className="w-4 h-4 text-white" />
                     </div>
                     <span>{item.text}</span>
                   </li>
@@ -329,7 +329,7 @@ export default function Home() {
                 <div className="mt-6 pt-6 border-t border-white/10">
                   <div className="text-xs text-white/50 mb-2">Generated in</div>
                   <div className="flex items-center gap-2">
-                    <span className="text-3xl font-display text-[#C2410C]">~2 min</span>
+                    <span className="text-3xl font-display text-white">~2 min</span>
                     <span className="text-white/50">by AI</span>
                   </div>
                 </div>
