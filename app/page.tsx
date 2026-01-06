@@ -88,16 +88,16 @@ export default function Home() {
               {/* Sponsor Path */}
               <Link
                 href="/sponsor"
-                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#6D28D9]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
+                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#0891B2]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
               >
-                <div className="w-14 h-14 bg-[#6D28D9] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
+                <div className="w-14 h-14 bg-[#0891B2] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
                   <FileText className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-lg font-semibold text-slate-900 mb-2">Create a Study</h2>
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
                   Design and launch an observational study with AI-generated protocols.
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-[#6D28D9] font-medium text-sm group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[#0891B2] font-medium text-sm group-hover:gap-2.5 transition-all">
                   Sponsor Demo
                   <ArrowRight className="w-4 h-4" />
                 </span>
