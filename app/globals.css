@@ -15,11 +15,37 @@
   --color-primary-100: rgba(30, 58, 95, 0.15);
   --color-primary-900: #0A1929;
 
-  /* Accent - Amber (energy, highlights) */
-  --color-accent: #F59E0B;
-  --color-accent-light: #FBBF24;
-  --color-accent-dark: #D97706;
-  --color-accent-50: rgba(245, 158, 11, 0.1);
+  /* Accent - Burnt Orange (energy, highlights) */
+  --color-accent: #EA580C;
+  --color-accent-light: #F97316;
+  --color-accent-dark: #C2410C;
+  --color-accent-50: rgba(234, 88, 12, 0.1);
+
+  /* Rich Accent Palette */
+  --color-purple: #6D28D9;
+  --color-purple-light: #7C3AED;
+  --color-purple-dark: #5B21B6;
+  --color-purple-50: rgba(109, 40, 217, 0.1);
+
+  --color-teal: #0F766E;
+  --color-teal-light: #14B8A6;
+  --color-teal-dark: #115E59;
+  --color-teal-50: rgba(15, 118, 110, 0.1);
+
+  --color-sapphire: #1E40AF;
+  --color-sapphire-light: #3B82F6;
+  --color-sapphire-dark: #1E3A8A;
+  --color-sapphire-50: rgba(30, 64, 175, 0.1);
+
+  --color-forest: #166534;
+  --color-forest-light: #22C55E;
+  --color-forest-dark: #14532D;
+  --color-forest-50: rgba(22, 101, 52, 0.1);
+
+  --color-wine: #881337;
+  --color-wine-light: #BE123C;
+  --color-wine-dark: #4C0519;
+  --color-wine-50: rgba(136, 19, 55, 0.1);
 
   /* Backgrounds - Clean and crisp */
   --color-surface: #FFFFFF;
@@ -65,7 +91,7 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
   --shadow-glow: 0 0 20px rgba(30, 58, 95, 0.12);
   --shadow-glow-lg: 0 0 40px rgba(30, 58, 95, 0.15);
-  --shadow-glow-amber: 0 0 20px rgba(245, 158, 11, 0.2);
+  --shadow-glow-accent: 0 0 20px rgba(234, 88, 12, 0.2);
   --shadow-glow-success: 0 0 15px rgba(5, 150, 105, 0.2);
 
   /* Typography */
@@ -261,12 +287,12 @@ body::before {
 .btn-accent {
   background: var(--color-accent);
   color: white;
-  box-shadow: var(--shadow-md), var(--shadow-glow-amber);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-accent:hover:not(:disabled) {
   background: var(--color-accent-dark);
-  box-shadow: var(--shadow-lg), var(--shadow-glow-amber);
+  box-shadow: var(--shadow-lg);
   transform: translateY(-1px);
 }
 
@@ -474,18 +500,18 @@ body::before {
   animation: pulse-glow 2s infinite;
 }
 
-/* Pulse glow - amber */
-@keyframes pulse-glow-amber {
+/* Pulse glow - accent */
+@keyframes pulse-glow-accent {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+    box-shadow: 0 0 0 8px rgba(234, 88, 12, 0);
   }
 }
 
-.animate-pulse-glow-amber {
-  animation: pulse-glow-amber 2s infinite;
+.animate-pulse-glow-accent {
+  animation: pulse-glow-accent 2s infinite;
 }
 
 /* Shimmer glow effect */
@@ -580,9 +606,9 @@ body::before {
   }
 }
 
-/* Hero "Everything" text glow - amber */
+/* Hero "Everything" text glow - burnt orange */
 .hero-everything {
-  text-shadow: 0 0 40px rgba(245, 158, 11, 0.4);
+  text-shadow: 0 0 40px rgba(234, 88, 12, 0.4);
 }
 
 /* Number count up - use with JS */
@@ -652,10 +678,10 @@ body::before {
   );
 }
 
-.bg-gradient-radial-amber {
+.bg-gradient-radial-accent {
   background: radial-gradient(
     ellipse at bottom right,
-    rgba(245, 158, 11, 0.04) 0%,
+    rgba(234, 88, 12, 0.04) 0%,
     transparent 50%
   );
 }

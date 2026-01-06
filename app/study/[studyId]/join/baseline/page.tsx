@@ -273,12 +273,12 @@ export default function BaselinePage() {
 
       {/* Instructions (shown for new instruments) */}
       {showInstructions && isNewInstrument && (
-        <div className="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
-          <p className="text-sm font-medium text-amber-800 mb-1">{question.instrumentName}</p>
-          <p className="text-sm text-amber-700">{question.instructions}</p>
+        <div className="mb-6 p-4 bg-orange-50 rounded-xl border border-orange-200">
+          <p className="text-sm font-medium text-orange-900 mb-1">{question.instrumentName}</p>
+          <p className="text-sm text-orange-800">{question.instructions}</p>
           <button
             onClick={handleDismissInstructions}
-            className="mt-3 text-sm font-medium text-amber-600 active:text-amber-500"
+            className="mt-3 text-sm font-medium text-orange-700 active:text-orange-500"
           >
             Got it
           </button>

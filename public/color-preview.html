@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accent Color Options</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      color: #1E3A5F;
+      margin-bottom: 40px;
+      font-size: 24px;
+    }
+    .option {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07);
+      border: 1px solid #e2e8f0;
+    }
+    .option-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .color-swatch {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .option-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .option-subtitle {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .headline {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 48px;
+      color: #0f172a;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .headline-wrapper {
+      display: inline-block;
+      position: relative;
+    }
+    .everything {
+      position: absolute;
+      top: -0.85em;
+      left: 0;
+      font-weight: 700;
+      font-size: 0.97em;
+    }
+    .something {
+      color: #94a3b8;
+      font-weight: 400;
+      position: relative;
+    }
+    .strikethrough {
+      position: absolute;
+      left: -5%;
+      top: 40%;
+      width: 110%;
+      height: 50%;
+    }
+    .strikethrough path {
+      stroke-width: 3;
+      stroke-linecap: round;
+      fill: none;
+    }
+
+    /* Color Options */
+    .vermillion .everything { color: #DC2626; }
+    .vermillion .strikethrough path { stroke: #DC2626; }
+    .vermillion .color-swatch { background: linear-gradient(135deg, #DC2626, #B91C1C); }
+
+    .burnt-orange .everything { color: #EA580C; }
+    .burnt-orange .strikethrough path { stroke: #EA580C; }
+    .burnt-orange .color-swatch { background: linear-gradient(135deg, #EA580C, #C2410C); }
+
+    .royal-purple .everything { color: #7C3AED; }
+    .royal-purple .strikethrough path { stroke: #7C3AED; }
+    .royal-purple .color-swatch { background: linear-gradient(135deg, #7C3AED, #6D28D9); }
+
+    .deep-violet .everything { color: #8B5CF6; }
+    .deep-violet .strikethrough path { stroke: #8B5CF6; }
+    .deep-violet .color-swatch { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+
+    .royal-blue .everything { color: #2563EB; }
+    .royal-blue .strikethrough path { stroke: #2563EB; }
+    .royal-blue .color-swatch { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+
+    .sapphire .everything { color: #4F46E5; }
+    .sapphire .strikethrough path { stroke: #4F46E5; }
+    .sapphire .color-swatch { background: linear-gradient(135deg, #4F46E5, #4338CA); }
+
+    .current-amber .everything { color: #F59E0B; }
+    .current-amber .strikethrough path { stroke: #F59E0B; }
+    .current-amber .color-swatch { background: linear-gradient(135deg, #F59E0B, #D97706); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Accent Color Options for "Everything"</h1>
+
+    <!-- Current Amber (for reference) -->
+    <div class="option current-amber">
+      <div class="option-header">
+        <div class="color-swatch"></div>
+        <div>
+          <div class="option-title">Current: Amber</div>
+          <div class="option-subtitle">#F59E0B - Current color for reference</div>
+        </div>
+      </div>
+      <div class="headline">
+        Proove <span class="headline-wrapper">
+          <span class="everything">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Vermillion Red -->
+    <div class="option vermillion">
+      <div class="option-header">
+        <div class="color-swatch"></div>
+        <div>
+          <div class="option-title">Option 1: Vermillion Red</div>
+          <div class="option-subtitle">#DC2626 - Deep, rich red with energy</div>
+        </div>
+      </div>
+      <div class="headline">
+        Proove <span class="headline-wrapper">
+          <span class="everything">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Burnt Orange -->
+    <div class="option burnt-orange">
+      <div class="option-header">
+        <div class="color-swatch"></div>
+        <div>
+          <div class="option-title">Option 2: Burnt Orange</div>
+          <div class="option-subtitle">#EA580C - Deeper, richer orange-red</div>
+        </div>
+      </div>
+      <div class="headline">
+        Proove <span class="headline-wrapper">
+          <span class="everything">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Royal Purple -->
+    <div class="option royal-purple">
+      <div class="option-header">
+        <div class="color-swatch"></div>
+        <div>
+          <div class="option-title">Option 3: Royal Purple</div>
+          <div class="option-subtitle">#7C3AED - Rich, regal purple</div>
+        </div>
+      </div>
+      <div class="headline">
+        Proove <span class="headline-wrapper">
+          <span class="everything">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Deep Violet -->
+    <div class="option deep-violet">
+      <div class="option-header">
+        <div class="color-swatch"></div>
+        <div>
+          <div class="option-title">Option 4: Deep Violet</div>
+          <div class="option-subtitle">#8B5CF6 - Softer purple with vibrancy</div>
+        </div>
+      </div>
+      <div class="headline">
+        Proove <span class="headline-wrapper">
+          <span class="everything">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Royal Blue -->
+    <div class="option royal-blue">
+      <div class="option-header">
+        <div class="color-swatch"></div>
+        <div>
+          <div class="option-title">Option 5: Royal Blue</div>
+          <div class="option-subtitle">#2563EB - Classic, trustworthy blue</div>
+        </div>
+      </div>
+      <div class="headline">
+        Proove <span class="headline-wrapper">
+          <span class="everything">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Sapphire -->
+    <div class="option sapphire">
+      <div class="option-header">
+        <div class="color-swatch"></div>
+        <div>
+          <div class="option-title">Option 6: Sapphire</div>
+          <div class="option-subtitle">#4F46E5 - Deep indigo-blue blend</div>
+        </div>
+      </div>
+      <div class="headline">
+        Proove <span class="headline-wrapper">
+          <span class="everything">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

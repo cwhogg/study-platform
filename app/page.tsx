@@ -19,10 +19,10 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+      <section className="relative overflow-hidden bg-slate-50">
         {/* Decorative elements */}
         <div className="absolute -right-40 -top-40 w-96 h-96 bg-[#1E3A5F]/5 rounded-full blur-3xl" />
-        <div className="absolute -left-40 top-1/2 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="absolute -left-40 top-1/2 w-96 h-96 bg-orange-600/5 rounded-full blur-3xl" />
         <div className="absolute right-1/4 bottom-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
 
         <div className="relative container-wide pt-12 sm:pt-16 pb-20 sm:pb-28">
@@ -36,21 +36,20 @@ export default function Home() {
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-6 text-balance leading-tight tracking-tight">
               Proove{' '}
               <span className="relative inline-block">
-                {/* "Everything" - amber gradient, bold, above "Something" */}
+                {/* "Everything" - burnt orange, bold, above "Something" */}
                 <span
                   className="absolute -top-[0.9em] left-0
-                             text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-600
-                             text-[0.9em] font-bold tracking-tight
-                             drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]
+                             text-[#EA580C]
+                             text-[0.97em] font-bold tracking-tight
                              animate-fade-in-up opacity-0"
                   style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
                 >
                   Everything
                 </span>
-                {/* "Something" - muted, lighter weight, with amber hand-drawn strikethrough */}
+                {/* "Something" - muted, lighter weight, with burnt orange hand-drawn strikethrough */}
                 <span className="relative text-slate-400 font-normal">
                   Something
-                  {/* Hand-drawn amber strikethrough - primary line */}
+                  {/* Hand-drawn burnt orange strikethrough - primary line */}
                   <svg
                     className="absolute -left-[5%] top-[40%] w-[110%] h-[50%] overflow-visible animate-strike"
                     viewBox="0 0 100 20"
@@ -59,7 +58,7 @@ export default function Home() {
                     <path
                       d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10"
                       fill="none"
-                      stroke="#F59E0B"
+                      stroke="#EA580C"
                       strokeWidth="3"
                       strokeLinecap="round"
                       className="origin-left"
@@ -69,7 +68,7 @@ export default function Home() {
                     <path
                       d="M 5 15 Q 30 12, 50 15 Q 75 18, 95 13"
                       fill="none"
-                      stroke="#F59E0B"
+                      stroke="#EA580C"
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       opacity="0.4"
@@ -107,16 +106,16 @@ export default function Home() {
               {/* Participant Path */}
               <Link
                 href="/study"
-                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-amber-500/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
+                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-orange-600/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
               >
-                <div className="w-14 h-14 bg-amber-500/10 rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform border border-amber-500/20">
-                  <Clipboard className="w-7 h-7 text-amber-600" />
+                <div className="w-14 h-14 bg-orange-600/10 rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform border border-orange-600/20">
+                  <Clipboard className="w-7 h-7 text-orange-700" />
                 </div>
                 <h2 className="text-lg font-semibold text-slate-900 mb-2">Join a Study</h2>
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
                   Experience the participant flow: consent, screening, and PRO surveys.
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-amber-600 font-medium text-sm group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-orange-700 font-medium text-sm group-hover:gap-2.5 transition-all">
                   Participant Demo
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -140,33 +139,58 @@ export default function Home() {
                 step: '01',
                 title: 'Define Intervention',
                 description: 'Enter what you\'re studying. AI generates the complete protocol.',
+                icon: Sparkles,
+                iconBg: 'bg-[#1E3A5F]',
+                iconColor: 'text-white',
+                stepColor: 'text-[#1E3A5F]',
+                hoverBorder: 'hover:border-[#1E3A5F]/40',
               },
               {
                 step: '02',
                 title: 'Enroll Participants',
                 description: 'Share a link. Participants complete consent and screening on mobile.',
+                icon: Users,
+                iconBg: 'bg-[#6D28D9]',
+                iconColor: 'text-white',
+                stepColor: 'text-[#6D28D9]',
+                hoverBorder: 'hover:border-[#6D28D9]/40',
               },
               {
                 step: '03',
                 title: 'Collect Outcomes',
                 description: 'Validated PRO instruments with automated reminders and safety monitoring.',
+                icon: Clipboard,
+                iconBg: 'bg-[#EA580C]',
+                iconColor: 'text-white',
+                stepColor: 'text-[#EA580C]',
+                hoverBorder: 'hover:border-[#EA580C]/40',
               },
               {
                 step: '04',
                 title: 'Analyze Results',
                 description: 'Real-world evidence from patient-reported outcomes and lab data.',
+                icon: BarChart3,
+                iconBg: 'bg-[#0F766E]',
+                iconColor: 'text-white',
+                stepColor: 'text-[#0F766E]',
+                hoverBorder: 'hover:border-[#0F766E]/40',
               },
             ].map((item) => (
               <div
                 key={item.step}
-                className="group relative p-6 bg-slate-50 rounded-2xl border border-slate-200 hover:border-[#1E3A5F]/20 hover:bg-white hover:shadow-md transition-all duration-300"
+                className={`group relative p-6 bg-white rounded-2xl border border-slate-200 ${item.hoverBorder} hover:shadow-lg transition-all duration-300`}
               >
                 {/* Step number */}
                 <div className="absolute -top-3 -right-2 w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-sm">
-                  <span className="text-sm font-mono font-semibold text-[#1E3A5F]">{item.step}</span>
+                  <span className={`text-sm font-mono font-bold ${item.stepColor}`}>{item.step}</span>
                 </div>
 
-                <h3 className="font-semibold text-slate-900 mb-2 mt-2">{item.title}</h3>
+                {/* Icon */}
+                <div className={`w-12 h-12 ${item.iconBg} rounded-xl flex items-center justify-center mb-4 shadow-md`}>
+                  <item.icon className={`w-6 h-6 ${item.iconColor}`} />
+                </div>
+
+                <h3 className="font-semibold text-slate-900 mb-2">{item.title}</h3>
                 <p className="text-sm text-slate-600 leading-relaxed">{item.description}</p>
               </div>
             ))}
@@ -191,9 +215,9 @@ export default function Home() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#1E3A5F]/30 hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-[#1E3A5F]/5 rounded-xl flex items-center justify-center mb-4 border border-[#1E3A5F]/10">
-                <FileText className="w-6 h-6 text-[#1E3A5F]" />
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#1E3A5F]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#1E3A5F] rounded-xl flex items-center justify-center mb-4 shadow-md">
+                <FileText className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Protocol Agent</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -201,9 +225,9 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-emerald-500/30 hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-4 border border-emerald-500/20">
-                <Shield className="w-6 h-6 text-emerald-600" />
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#166534]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#166534] rounded-xl flex items-center justify-center mb-4 shadow-md">
+                <Shield className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Consent Agent</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -211,9 +235,9 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-violet-500/30 hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-violet-500/10 rounded-xl flex items-center justify-center mb-4 border border-violet-500/20">
-                <Users className="w-6 h-6 text-violet-600" />
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#6D28D9]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#6D28D9] rounded-xl flex items-center justify-center mb-4 shadow-md">
+                <Users className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Enrollment Agent</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -221,9 +245,9 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-amber-500/30 hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-4 border border-amber-500/20">
-                <Bell className="w-6 h-6 text-amber-600" />
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#EA580C]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#EA580C] rounded-xl flex items-center justify-center mb-4 shadow-md">
+                <Bell className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Engagement Agent</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -236,8 +260,6 @@ export default function Home() {
 
       {/* Demo Case Study */}
       <section className="relative overflow-hidden bg-[#1E3A5F] border-t border-slate-200">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] via-[#1E3A5F] to-[#0F2744]" />
 
         <div className="relative container-wide py-20 sm:py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -261,7 +283,7 @@ export default function Home() {
                 ].map((item) => (
                   <li key={item.text} className="flex items-center gap-3 text-white/90">
                     <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
-                      <item.icon className="w-4 h-4 text-amber-400" />
+                      <item.icon className="w-4 h-4 text-orange-500" />
                     </div>
                     <span>{item.text}</span>
                   </li>
@@ -270,10 +292,7 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              {/* Glow effect */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-amber-500/20 via-transparent to-white/10 rounded-3xl blur-2xl" />
-
-              <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8">
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8">
                 <div className="space-y-4">
                   {[
                     { label: 'Primary Endpoint', value: 'qADAM Score at Week 12' },
@@ -290,7 +309,7 @@ export default function Home() {
                 <div className="mt-6 pt-6 border-t border-white/10">
                   <div className="text-xs text-white/50 mb-2">Generated in</div>
                   <div className="flex items-center gap-2">
-                    <span className="text-3xl font-display text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-300">~2 min</span>
+                    <span className="text-3xl font-display text-[#EA580C]">~2 min</span>
                     <span className="text-white/50">by AI</span>
                   </div>
                 </div>
@@ -331,8 +350,8 @@ export default function Home() {
                   },
                 ].map((feature) => (
                   <li key={feature.title} className="flex gap-4">
-                    <div className="flex-shrink-0 w-6 h-6 bg-emerald-500/10 rounded-full flex items-center justify-center mt-0.5 border border-emerald-500/20">
-                      <Check className="w-4 h-4 text-emerald-600" strokeWidth={2.5} />
+                    <div className="flex-shrink-0 w-6 h-6 bg-[#166534] rounded-full flex items-center justify-center mt-0.5 shadow-sm">
+                      <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
                     </div>
                     <div>
                       <h4 className="font-medium text-slate-900">{feature.title}</h4>
@@ -345,12 +364,11 @@ export default function Home() {
 
             {/* Visual */}
             <div className="relative">
-              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E3A5F]/5 via-transparent to-amber-500/5 rounded-3xl blur-2xl" />
-              <div className="relative bg-slate-50 rounded-2xl border border-slate-200 p-8">
+              <div className="bg-slate-50 rounded-2xl border border-slate-200 p-8">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-[#1E3A5F]/5 rounded-lg flex items-center justify-center border border-[#1E3A5F]/10">
-                      <FileText className="w-5 h-5 text-[#1E3A5F]" />
+                    <div className="w-10 h-10 bg-[#1E3A5F] rounded-lg flex items-center justify-center shadow-sm">
+                      <FileText className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
                       <div className="h-2.5 bg-slate-200 rounded-full w-3/4 mb-2" />
@@ -358,8 +376,8 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center border border-emerald-500/20">
-                      <Shield className="w-5 h-5 text-emerald-600" />
+                    <div className="w-10 h-10 bg-[#166534] rounded-lg flex items-center justify-center shadow-sm">
+                      <Shield className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
                       <div className="h-2.5 bg-slate-200 rounded-full w-2/3 mb-2" />
@@ -367,8 +385,8 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-violet-500/10 rounded-lg flex items-center justify-center border border-violet-500/20">
-                      <Users className="w-5 h-5 text-violet-600" />
+                    <div className="w-10 h-10 bg-[#6D28D9] rounded-lg flex items-center justify-center shadow-sm">
+                      <Users className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
                       <div className="h-2.5 bg-slate-200 rounded-full w-4/5 mb-2" />

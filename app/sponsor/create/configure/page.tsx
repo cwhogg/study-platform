@@ -296,7 +296,7 @@ function ConfigureStudyContent() {
                   )}
                 </div>
                 {index === 0 && discoveryData && (
-                  <span className="text-amber-600 text-xs font-medium bg-amber-100 px-2 py-1 rounded-full whitespace-nowrap border border-amber-200">Recommended</span>
+                  <span className="text-orange-700 text-xs font-medium bg-orange-100 px-2 py-1 rounded-full whitespace-nowrap border border-orange-200">Recommended</span>
                 )}
               </label>
             ))}
@@ -332,7 +332,7 @@ function ConfigureStudyContent() {
                   )}
                 </div>
                 {index === 0 && discoveryData && (
-                  <span className="text-amber-600 text-xs font-medium bg-amber-100 px-2 py-1 rounded-full whitespace-nowrap border border-amber-200">Recommended</span>
+                  <span className="text-orange-700 text-xs font-medium bg-orange-100 px-2 py-1 rounded-full whitespace-nowrap border border-orange-200">Recommended</span>
                 )}
               </label>
             ))}
@@ -446,7 +446,7 @@ function ConfigureStudyContent() {
                 />
                 <span className="flex-1 text-slate-900 font-medium">{option.label}</span>
                 {discoveryData?.recommendedDuration?.weeks === option.weeks && (
-                  <span className="text-amber-600 text-xs font-medium bg-amber-100 px-2 py-1 rounded-full border border-amber-200">Recommended</span>
+                  <span className="text-orange-700 text-xs font-medium bg-orange-100 px-2 py-1 rounded-full border border-orange-200">Recommended</span>
                 )}
               </label>
             ))}
@@ -463,12 +463,12 @@ function ConfigureStudyContent() {
 
         {/* Safety Considerations */}
         {discoveryData?.safetyConsiderations && discoveryData.safetyConsiderations.length > 0 && (
-          <Card variant="default" padding="md" className="border-amber-200 bg-amber-50">
+          <Card variant="default" padding="md" className="border-orange-200 bg-orange-50">
             <h2 className="font-semibold text-slate-900 mb-3">Safety Considerations</h2>
-            <ul className="space-y-2 text-sm text-amber-700">
+            <ul className="space-y-2 text-sm text-orange-800">
               {discoveryData.safetyConsiderations.map((consideration, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <span className="mt-1.5 w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0" />
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-orange-500 rounded-full flex-shrink-0" />
                   {consideration}
                 </li>
               ))}

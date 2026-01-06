@@ -40,7 +40,7 @@ export function ProgressBar({
         <div
           className={`
             ${sizes[size]}
-            bg-gradient-to-r from-[#1E3A5F] to-amber-500
+            bg-gradient-to-r from-[#1E3A5F] to-[#EA580C]
             rounded-full
             transition-all duration-700 ease-out
           `}
@@ -111,7 +111,7 @@ export function ProgressRing({
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#1E3A5F" />
-            <stop offset="100%" stopColor="#F59E0B" />
+            <stop offset="100%" stopColor="#EA580C" />
           </linearGradient>
         </defs>
       </svg>

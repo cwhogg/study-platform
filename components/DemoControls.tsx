@@ -32,7 +32,7 @@ export function DemoBadge() {
 
   return (
     <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
-      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-700 text-sm font-medium rounded-full border border-amber-200">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-800 text-sm font-medium rounded-full border border-orange-200">
         <Beaker className="w-4 h-4" />
         Demo Mode
       </span>
@@ -96,7 +96,7 @@ export function DemoControlsPanel({
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <div className="flex items-center gap-2">
-              <Beaker className="w-5 h-5 text-amber-500" />
+              <Beaker className="w-5 h-5 text-orange-500" />
               <span className="font-semibold text-slate-900">Demo Controls</span>
             </div>
             <div className="flex items-center gap-1">
@@ -165,7 +165,7 @@ export function DemoControlsPanel({
             {onTriggerReminder && (
               <button
                 onClick={onTriggerReminder}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 font-medium rounded-lg hover:bg-amber-200 transition-colors border border-amber-200"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-100 text-orange-800 font-medium rounded-lg hover:bg-orange-200 transition-colors border border-orange-200"
               >
                 <Bell className="w-4 h-4" />
                 Send Reminder
@@ -202,18 +202,18 @@ export function DemoControlsInline({
   if (!isDemoMode || !participantId) return null
 
   return (
-    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
       <div className="flex items-center gap-2 mb-3">
-        <Beaker className="w-4 h-4 text-amber-600" />
-        <span className="text-sm font-medium text-amber-700">Demo Controls</span>
-        <span className="text-xs text-amber-700 bg-amber-100 px-2 py-0.5 rounded">
+        <Beaker className="w-4 h-4 text-orange-700" />
+        <span className="text-sm font-medium text-orange-800">Demo Controls</span>
+        <span className="text-xs text-orange-800 bg-orange-100 px-2 py-0.5 rounded">
           Week {currentWeek}
         </span>
       </div>
       <div className="flex flex-wrap gap-2">
         {onAdvanceWeek && (
           <select
-            className="appearance-none bg-white border border-amber-200 rounded px-3 py-1.5 text-sm text-amber-700 cursor-pointer hover:border-amber-300"
+            className="appearance-none bg-white border border-orange-200 rounded px-3 py-1.5 text-sm text-orange-800 cursor-pointer hover:border-orange-300"
             onChange={(e) => {
               if (e.target.value) {
                 onAdvanceWeek(parseInt(e.target.value))
@@ -232,7 +232,7 @@ export function DemoControlsInline({
         {onSimulateLabs && (
           <button
             onClick={onSimulateLabs}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-amber-200 rounded text-sm text-amber-700 hover:border-amber-300"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-orange-200 rounded text-sm text-orange-800 hover:border-orange-300"
           >
             <TestTube className="w-3.5 h-3.5" />
             Simulate Labs
@@ -241,7 +241,7 @@ export function DemoControlsInline({
         {onTriggerReminder && (
           <button
             onClick={onTriggerReminder}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-amber-200 rounded text-sm text-amber-700 hover:border-amber-300"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-orange-200 rounded text-sm text-orange-800 hover:border-orange-300"
           >
             <Bell className="w-3.5 h-3.5" />
             Send Reminder

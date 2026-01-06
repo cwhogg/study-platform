@@ -157,9 +157,9 @@ export default function AdminPage() {
     const styles: Record<string, string> = {
       draft: 'bg-slate-100 text-slate-600',
       active: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-      paused: 'bg-amber-100 text-amber-700 border border-amber-200',
+      paused: 'bg-orange-100 text-orange-800 border border-orange-200',
       completed: 'bg-violet-100 text-violet-700 border border-violet-200',
-      enrolled: 'bg-amber-100 text-amber-700 border border-amber-200',
+      enrolled: 'bg-orange-100 text-orange-800 border border-orange-200',
       consented: 'bg-[#1E3A5F]/10 text-[#1E3A5F] border border-[#1E3A5F]/20',
       screening: 'bg-orange-100 text-orange-700 border border-orange-200',
       withdrawn: 'bg-red-100 text-red-700 border border-red-200',

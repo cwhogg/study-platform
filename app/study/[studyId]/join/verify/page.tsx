@@ -182,7 +182,7 @@ function VerifyContent() {
 
         {/* Demo Mode Hint */}
         {isDemo && (
-          <div className="mb-6 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm text-center">
+          <div className="mb-6 p-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-800 text-sm text-center">
             Demo mode: Enter any 6-digit code to continue
           </div>
         )}

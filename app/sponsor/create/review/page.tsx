@@ -512,7 +512,7 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-3">
             {safetyRules.map((rule, index) => (
-              <div key={index} className="p-3 rounded-xl border border-amber-200 bg-amber-50">
+              <div key={index} className="p-3 rounded-xl border border-orange-200 bg-orange-50">
                 <div className="text-sm">
                   <span className="font-medium text-slate-900">If:</span>{' '}
                   <span className="text-slate-700">{rule.trigger}</span>
@@ -560,7 +560,7 @@ function ReviewProtocolContent() {
                 <div className="mt-2">
                   <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
                     riskAssessment.overallRiskLevel === 'high' ? 'bg-red-100 text-red-700' :
-                    riskAssessment.overallRiskLevel === 'moderate' ? 'bg-amber-100 text-amber-700' :
+                    riskAssessment.overallRiskLevel === 'moderate' ? 'bg-orange-100 text-orange-800' :
                     'bg-emerald-100 text-emerald-700'
                   }`}>
                     Overall Risk: {riskAssessment.overallRiskLevel}
@@ -577,7 +577,7 @@ function ReviewProtocolContent() {
                       <div key={index} className="flex items-start gap-2 text-sm">
                         <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${
                           risk.severity === 'high' ? 'bg-red-500' :
-                          risk.severity === 'moderate' ? 'bg-amber-500' : 'bg-emerald-500'
+                          risk.severity === 'moderate' ? 'bg-orange-500' : 'bg-emerald-500'
                         }`} />
                         <span className="text-slate-700">
                           <strong>{risk.risk}</strong>
@@ -598,7 +598,7 @@ function ReviewProtocolContent() {
                       <div key={index} className="flex items-start gap-2 text-sm">
                         <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${
                           risk.severity === 'high' ? 'bg-red-500' :
-                          risk.severity === 'moderate' ? 'bg-amber-500' : 'bg-emerald-500'
+                          risk.severity === 'moderate' ? 'bg-orange-500' : 'bg-emerald-500'
                         }`} />
                         <span className="text-slate-700">
                           <strong>{risk.risk}</strong>

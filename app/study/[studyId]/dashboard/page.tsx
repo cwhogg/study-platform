@@ -212,8 +212,8 @@ export default function DashboardPage() {
     return (
       <MobileContainer className="pt-8 bg-white">
         <div className="text-center py-12 animate-fade-in">
-          <div className="w-16 h-16 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Clock className="w-8 h-8 text-amber-600" />
+          <div className="w-16 h-16 bg-orange-50 border border-orange-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Clock className="w-8 h-8 text-orange-700" />
           </div>
           <h2 className="text-xl font-semibold text-slate-900 mb-2">Complete Your Enrollment</h2>
           <p className="text-slate-600 mb-6 max-w-xs mx-auto">
@@ -368,7 +368,7 @@ export default function DashboardPage() {
       <div className="mt-8 text-center">
         <p className="text-sm text-slate-600">
           Questions?{' '}
-          <a href="mailto:research@example.com" className="text-amber-600 font-medium hover:text-amber-500">
+          <a href="mailto:research@example.com" className="text-orange-700 font-medium hover:text-orange-500">
             Contact support
           </a>
         </p>

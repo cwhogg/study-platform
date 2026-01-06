@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rich Color Palette</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f8fafc;
+      padding: 40px 20px;
+      color: #0f172a;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 32px;
+      margin-bottom: 8px;
+      color: #1E3A5F;
+    }
+    .subtitle { color: #64748b; margin-bottom: 40px; }
+
+    /* Palette Grid */
+    .palette-section {
+      margin-bottom: 48px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .color-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .color-swatch {
+      height: 100px;
+      display: flex;
+      align-items: flex-end;
+      padding: 12px;
+    }
+    .color-swatch span {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 8px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 4px;
+    }
+    .color-info {
+      padding: 12px;
+    }
+    .color-name {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .color-use {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Demo Section */
+    .demo-section {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+      border: 1px solid #e2e8f0;
+    }
+    .demo-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    /* Headline Demo */
+    .headline-demo {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 48px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+    .headline-wrapper {
+      display: inline-block;
+      position: relative;
+    }
+    .everything {
+      position: absolute;
+      top: -0.85em;
+      left: 0;
+      font-weight: 700;
+      font-size: 0.97em;
+    }
+    .something {
+      color: #94a3b8;
+      font-weight: 400;
+      position: relative;
+    }
+    .strikethrough {
+      position: absolute;
+      left: -5%;
+      top: 40%;
+      width: 110%;
+      height: 50%;
+    }
+    .strikethrough path {
+      stroke-width: 3;
+      stroke-linecap: round;
+      fill: none;
+    }
+
+    /* Buttons */
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+
+    /* Cards */
+    .card-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .demo-card {
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .demo-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .demo-card-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .demo-card-text {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Badges */
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* Color definitions */
+    .navy { background: #1E3A5F; color: white; }
+    .vermillion { background: #C41E3A; color: white; }
+    .royal-purple { background: #6D28D9; color: white; }
+    .deep-teal { background: #0F766E; color: white; }
+    .sapphire { background: #1E40AF; color: white; }
+    .burgundy { background: #881337; color: white; }
+    .forest { background: #166534; color: white; }
+    .burnt-sienna { background: #9A3412; color: white; }
+
+    .navy-light { background: #1E3A5F15; color: #1E3A5F; }
+    .vermillion-light { background: #C41E3A15; color: #C41E3A; }
+    .royal-purple-light { background: #6D28D915; color: #6D28D9; }
+    .deep-teal-light { background: #0F766E15; color: #0F766E; }
+    .sapphire-light { background: #1E40AF15; color: #1E40AF; }
+    .forest-light { background: #16653415; color: #166534; }
+
+    .text-vermillion { color: #C41E3A; }
+    .text-royal-purple { color: #6D28D9; }
+    .text-deep-teal { color: #0F766E; }
+    .text-sapphire { color: #1E40AF; }
+    .text-forest { color: #166534; }
+    .stroke-vermillion { stroke: #C41E3A; }
+    .stroke-royal-purple { stroke: #6D28D9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Rich Color Palette</h1>
+    <p class="subtitle">Deep, sophisticated accent colors - no neons, no gradients</p>
+
+    <!-- Primary Colors -->
+    <div class="palette-section">
+      <div class="section-title">Primary & Core</div>
+      <div class="palette-grid">
+        <div class="color-card">
+          <div class="color-swatch" style="background: #1E3A5F;"><span>#1E3A5F</span></div>
+          <div class="color-info">
+            <div class="color-name">Navy</div>
+            <div class="color-use">Primary, headers, buttons</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #0F172A;"><span>#0F172A</span></div>
+          <div class="color-info">
+            <div class="color-name">Slate 900</div>
+            <div class="color-use">Text, headings</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #475569; color: white;"><span style="color: #475569;">#475569</span></div>
+          <div class="color-info">
+            <div class="color-name">Slate 600</div>
+            <div class="color-use">Body text, secondary</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accent Colors -->
+    <div class="palette-section">
+      <div class="section-title">Rich Accent Colors</div>
+      <div class="palette-grid">
+        <div class="color-card">
+          <div class="color-swatch" style="background: #C41E3A;"><span>#C41E3A</span></div>
+          <div class="color-info">
+            <div class="color-name">Vermillion</div>
+            <div class="color-use">Highlight, "Everything", CTAs</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #6D28D9;"><span>#6D28D9</span></div>
+          <div class="color-info">
+            <div class="color-name">Royal Purple</div>
+            <div class="color-use">Alternative highlight</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #0F766E;"><span>#0F766E</span></div>
+          <div class="color-info">
+            <div class="color-name">Deep Teal</div>
+            <div class="color-use">Success, positive states</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #1E40AF;"><span>#1E40AF</span></div>
+          <div class="color-info">
+            <div class="color-name">Sapphire</div>
+            <div class="color-use">Links, interactive</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #166534;"><span>#166534</span></div>
+          <div class="color-info">
+            <div class="color-name">Forest</div>
+            <div class="color-use">Completed, success</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #9A3412;"><span>#9A3412</span></div>
+          <div class="color-info">
+            <div class="color-name">Burnt Sienna</div>
+            <div class="color-use">Warnings, attention</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Headline Demo with Vermillion -->
+    <div class="demo-section">
+      <div class="demo-title">Headline with Vermillion</div>
+      <div class="headline-demo">
+        Proove <span class="headline-wrapper">
+          <span class="everything text-vermillion">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path class="stroke-vermillion" d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Headline Demo with Royal Purple -->
+    <div class="demo-section">
+      <div class="demo-title">Headline with Royal Purple</div>
+      <div class="headline-demo">
+        Proove <span class="headline-wrapper">
+          <span class="everything text-royal-purple">Everything</span>
+          <span class="something">Something
+            <svg class="strikethrough" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path class="stroke-royal-purple" d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10" />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Buttons Demo -->
+    <div class="demo-section">
+      <div class="demo-title">Buttons (Solid, No Gradients)</div>
+      <div class="button-row">
+        <button class="btn navy">Primary Navy</button>
+        <button class="btn vermillion">Vermillion CTA</button>
+        <button class="btn royal-purple">Royal Purple</button>
+        <button class="btn deep-teal">Deep Teal</button>
+        <button class="btn sapphire">Sapphire</button>
+        <button class="btn forest">Forest Green</button>
+      </div>
+    </div>
+
+    <!-- Cards Demo -->
+    <div class="demo-section">
+      <div class="demo-title">Feature Cards with Rich Icons</div>
+      <div class="card-row">
+        <div class="demo-card">
+          <div class="demo-card-icon navy-light">✨</div>
+          <div class="demo-card-title">Define</div>
+          <div class="demo-card-text">AI generates protocol</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-card-icon royal-purple-light">👥</div>
+          <div class="demo-card-title">Enroll</div>
+          <div class="demo-card-text">Share a link</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-card-icon deep-teal-light">📋</div>
+          <div class="demo-card-title">Collect</div>
+          <div class="demo-card-text">PRO instruments</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-card-icon vermillion-light">📊</div>
+          <div class="demo-card-title">Analyze</div>
+          <div class="demo-card-text">Real-world evidence</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Badges Demo -->
+    <div class="demo-section">
+      <div class="demo-title">Status Badges</div>
+      <div class="badge-row">
+        <span class="badge forest-light">Active</span>
+        <span class="badge sapphire-light">Enrolling</span>
+        <span class="badge royal-purple-light">In Progress</span>
+        <span class="badge vermillion-light">Urgent</span>
+        <span class="badge deep-teal-light">Completed</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

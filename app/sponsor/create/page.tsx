@@ -70,7 +70,7 @@ export default function CreateStudyPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Decorative elements */}
       <div className="fixed -right-40 top-20 w-96 h-96 bg-[#1E3A5F]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="fixed -left-40 bottom-20 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed -left-40 bottom-20 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative container-base py-8 sm:py-12">
         {/* Back link */}

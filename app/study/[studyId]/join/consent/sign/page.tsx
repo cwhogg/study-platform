@@ -125,15 +125,15 @@ export default function ConsentSignPage() {
           <h3 className="font-medium text-slate-900 mb-2">What happens next:</h3>
           <ul className="text-sm text-slate-600 space-y-2">
             <li className="flex items-start gap-2">
-              <span className="text-amber-600 font-medium">1.</span>
+              <span className="text-orange-700 font-medium">1.</span>
               Quick eligibility check (2 minutes)
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-amber-600 font-medium">2.</span>
+              <span className="text-orange-700 font-medium">2.</span>
               Baseline survey about your current symptoms
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-amber-600 font-medium">3.</span>
+              <span className="text-orange-700 font-medium">3.</span>
               You&apos;re enrolled and ready to go!
             </li>
           </ul>

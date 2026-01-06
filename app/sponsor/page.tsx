@@ -8,7 +8,7 @@ export default function SponsorPage() {
       <section className="relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute -right-40 -top-40 w-96 h-96 bg-[#1E3A5F]/10 rounded-full blur-3xl" />
-        <div className="absolute -left-40 top-1/3 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute -left-40 top-1/3 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
 
         <div className="relative container-wide py-20 sm:py-28">
           <div className="max-w-3xl mx-auto text-center stagger-children">
@@ -159,7 +159,7 @@ export default function SponsorPage() {
             {/* Right: Example study card */}
             <div className="relative">
               {/* Decorative gradient */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E3A5F]/10 via-transparent to-amber-500/10 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E3A5F]/10 via-transparent to-orange-500/10 rounded-3xl blur-2xl" />
 
               <div className="relative bg-white rounded-2xl border border-slate-200 shadow-md p-8">
                 <div className="flex items-center justify-between mb-6">
@@ -193,7 +193,7 @@ export default function SponsorPage() {
                 <div className="pt-6 border-t border-slate-200">
                   <div className="text-xs text-slate-500 mb-3">Generated in</div>
                   <div className="flex items-center gap-2">
-                    <div className="text-3xl font-display text-transparent bg-clip-text bg-gradient-to-r from-[#1E3A5F] to-amber-600">~2 min</div>
+                    <div className="text-3xl font-display text-transparent bg-clip-text bg-gradient-to-r from-[#1E3A5F] to-orange-700">~2 min</div>
                     <div className="text-sm text-slate-500">by AI</div>
                   </div>
                 </div>
@@ -206,7 +206,7 @@ export default function SponsorPage() {
       {/* CTA Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-[#1E3A5F]/5 border-t border-slate-200">
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F]/5 via-transparent to-amber-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F]/5 via-transparent to-orange-500/5" />
 
         <div className="relative container-wide py-16 sm:py-20 text-center">
           <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
