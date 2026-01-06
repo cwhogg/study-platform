@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { FileText, Users, BarChart3, Shield, ArrowRight, Sparkles, Check } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
 
 export default function SponsorPage() {
   return (
@@ -220,12 +221,10 @@ export default function SponsorPage() {
           <p className="text-slate-600 mb-8 max-w-xl mx-auto text-lg">
             Get started in minutes. No protocol writing experience required.
           </p>
-          <Link
-            href="/sponsor/create"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-          >
-            Create Your First Study
-            <ArrowRight className="w-5 h-5" />
+          <Link href="/sponsor/create">
+            <Button size="lg" rightIcon={<ArrowRight className="w-5 h-5" />}>
+              Create Your First Study
+            </Button>
           </Link>
         </div>
       </section>
