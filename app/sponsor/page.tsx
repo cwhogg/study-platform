@@ -6,9 +6,6 @@ export default function SponsorPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute -right-40 -top-40 w-96 h-96 bg-[#1E3A5F]/10 rounded-full blur-3xl" />
-        <div className="absolute -left-40 top-1/3 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
 
         <div className="relative container-wide py-20 sm:py-28">
           <div className="max-w-3xl mx-auto text-center stagger-children">
@@ -33,7 +30,7 @@ export default function SponsorPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/sponsor/create"
-                className="btn btn-primary btn-lg group"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all group"
               >
                 Create a Study
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
@@ -68,38 +65,46 @@ export default function SponsorPage() {
                 step: '01',
                 title: 'Define Intervention',
                 description: 'Enter the treatment or intervention you want to study. Our AI handles the rest.',
+                iconBg: 'bg-[#1E3A5F]',
+                stepColor: 'text-[#1E3A5F]',
               },
               {
                 icon: Shield,
                 step: '02',
                 title: 'AI Generates Protocol',
                 description: 'Our Clinical Protocol Agent designs endpoints, PRO instruments, and safety thresholds.',
+                iconBg: 'bg-[#15803D]',
+                stepColor: 'text-[#15803D]',
               },
               {
                 icon: Users,
                 step: '03',
                 title: 'Invite Participants',
                 description: 'Participants complete consent, screening, and baseline surveys on mobile.',
+                iconBg: 'bg-[#6D28D9]',
+                stepColor: 'text-[#6D28D9]',
               },
               {
                 icon: BarChart3,
                 step: '04',
                 title: 'Collect Data',
                 description: 'Track outcomes with validated PRO instruments and integrate lab results.',
+                iconBg: 'bg-[#0D9488]',
+                stepColor: 'text-[#0D9488]',
               },
             ].map((item) => (
               <div
                 key={item.step}
-                className="group relative p-6 bg-white rounded-2xl border border-slate-200 hover:border-[#1E3A5F]/30 hover:shadow-md transition-all duration-300"
+                className="group relative p-6 bg-white rounded-2xl border border-slate-200 hover:shadow-md transition-all duration-300"
               >
                 {/* Step number */}
-                <div className="absolute -top-3 -right-2 w-10 h-10 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-mono font-semibold text-slate-500">{item.step}</span>
+                <div className="absolute -top-3 -right-2 w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-sm">
+                  <span className={`text-sm font-mono font-bold ${item.stepColor}`}>{item.step}</span>
                 </div>
 
                 {/* Icon */}
-                <div className="w-12 h-12 bg-[#1E3A5F]/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform border border-[#1E3A5F]/20">
-                  <item.icon className="w-6 h-6 text-[#1E3A5F]" />
+                <div className={`w-12 h-12 ${item.iconBg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform shadow-md`}>
+                  <item.icon className="w-6 h-6 text-white" />
                 </div>
 
                 <h3 className="font-semibold text-slate-900 mb-2">{item.title}</h3>
@@ -159,7 +164,7 @@ export default function SponsorPage() {
             {/* Right: Example study card */}
             <div className="relative">
               {/* Decorative gradient */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E3A5F]/10 via-transparent to-orange-500/10 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E3A5F]/10 via-transparent to-[#6D28D9]/10 rounded-3xl blur-2xl" />
 
               <div className="relative bg-white rounded-2xl border border-slate-200 shadow-md p-8">
                 <div className="flex items-center justify-between mb-6">
@@ -193,7 +198,7 @@ export default function SponsorPage() {
                 <div className="pt-6 border-t border-slate-200">
                   <div className="text-xs text-slate-500 mb-3">Generated in</div>
                   <div className="flex items-center gap-2">
-                    <div className="text-3xl font-display text-transparent bg-clip-text bg-gradient-to-r from-[#1E3A5F] to-orange-700">~2 min</div>
+                    <div className="text-3xl font-display text-[#6D28D9]">~2 min</div>
                     <div className="text-sm text-slate-500">by AI</div>
                   </div>
                 </div>
@@ -206,7 +211,7 @@ export default function SponsorPage() {
       {/* CTA Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-[#1E3A5F]/5 border-t border-slate-200">
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F]/5 via-transparent to-orange-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F]/5 via-transparent to-[#6D28D9]/5" />
 
         <div className="relative container-wide py-16 sm:py-20 text-center">
           <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
@@ -217,7 +222,7 @@ export default function SponsorPage() {
           </p>
           <Link
             href="/sponsor/create"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#1E3A5F] to-[#2a4a6f] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             Create Your First Study
             <ArrowRight className="w-5 h-5" />
