@@ -38,9 +38,9 @@ export default function Home() {
               <span className="relative inline-block">
                 {/* "Everything" - purple gradient, bold, above "Anything" */}
                 <span
-                  className="absolute -top-[0.85em] left-0
+                  className="absolute -top-[1em] left-0
                              text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-violet-600
-                             text-[0.75em] font-bold tracking-tight
+                             font-extrabold tracking-tight
                              drop-shadow-[0_0_30px_rgba(139,92,246,0.5)]
                              animate-fade-in-up opacity-0"
                   style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
