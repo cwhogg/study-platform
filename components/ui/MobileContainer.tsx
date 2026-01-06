@@ -92,8 +92,8 @@ export function MobileBottomAction({
         right-0
         z-50
         ${variant === 'blur'
-          ? 'bg-white/80 backdrop-blur-lg border-t border-stone-200/50'
-          : 'bg-white border-t border-stone-100'
+          ? 'bg-slate-900/80 backdrop-blur-lg border-t border-slate-700/50'
+          : 'bg-slate-900 border-t border-slate-800'
         }
         ${className}
       `}
@@ -130,7 +130,7 @@ export function MobileHeader({
         {backHref ? (
           <a
             href={backHref}
-            className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 transition-colors -ml-1"
+            className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200 transition-colors -ml-1"
           >
             <svg
               className="w-4 h-4"
@@ -150,8 +150,8 @@ export function MobileHeader({
       </div>
       {title && (
         <div className="mt-4">
-          <h1 className="text-xl font-semibold text-stone-900">{title}</h1>
-          {subtitle && <p className="text-sm text-stone-500 mt-1">{subtitle}</p>}
+          <h1 className="text-xl font-semibold text-slate-100">{title}</h1>
+          {subtitle && <p className="text-sm text-slate-400 mt-1">{subtitle}</p>}
         </div>
       )}
     </header>
@@ -168,7 +168,7 @@ export function MobileDivider({ className = '' }: { className?: string }) {
         h-px
         bg-gradient-to-r
         from-transparent
-        via-stone-200
+        via-slate-700
         to-transparent
         my-6
         ${className}
@@ -192,7 +192,7 @@ export function MobileSection({
   return (
     <section className={`mb-6 ${className}`}>
       {title && (
-        <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3">
+        <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
           {title}
         </h2>
       )}
@@ -230,18 +230,18 @@ export function MobileListItem({
         flex items-center gap-3
         w-full
         p-3.5
-        bg-white
+        bg-slate-800
         rounded-xl
-        border border-stone-100
+        border border-slate-700
         ${interactive
-          ? 'hover:bg-stone-50 hover:border-stone-200 active:scale-[0.99] transition-all duration-150 cursor-pointer'
+          ? 'hover:bg-slate-700 hover:border-slate-600 active:scale-[0.99] transition-all duration-150 cursor-pointer'
           : ''
         }
         ${className}
       `}
     >
       {leftIcon && (
-        <div className="flex-shrink-0 w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-stone-600">
+        <div className="flex-shrink-0 w-10 h-10 bg-slate-700 rounded-xl flex items-center justify-center text-slate-300">
           {leftIcon}
         </div>
       )}

@@ -83,13 +83,13 @@ export default function StudyDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-slate-700" />
+            <div className="absolute inset-0 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
           </div>
-          <p className="text-stone-500">Loading study...</p>
+          <p className="text-slate-400">Loading study...</p>
         </div>
       </div>
     )
@@ -97,13 +97,13 @@ export default function StudyDashboardPage() {
 
   if (error || !study) {
     return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center animate-fade-in">
-          <div className="w-16 h-16 bg-red-50 border border-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-red-500" />
+          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-400" />
           </div>
-          <h2 className="text-xl font-semibold text-stone-900 mb-2">Study Not Found</h2>
-          <p className="text-stone-500 mb-6">{error || 'Unable to load study data'}</p>
+          <h2 className="text-xl font-semibold text-slate-100 mb-2">Study Not Found</h2>
+          <p className="text-slate-400 mb-6">{error || 'Unable to load study data'}</p>
           <Link href="/sponsor/studies">
             <Button variant="secondary" leftIcon={<ArrowLeft className="w-4 h-4" />}>
               Back to Studies
@@ -119,39 +119,39 @@ export default function StudyDashboardPage() {
       label: 'Total Enrolled',
       value: study.stats.enrolled,
       icon: Users,
-      iconBg: 'bg-teal-50',
-      iconColor: 'text-teal-600',
+      iconBg: 'bg-indigo-500/10',
+      iconColor: 'text-indigo-400',
     },
     {
       label: 'Active',
       value: study.stats.active,
       icon: Clock,
-      iconBg: 'bg-emerald-50',
-      iconColor: 'text-emerald-600',
+      iconBg: 'bg-emerald-500/10',
+      iconColor: 'text-emerald-400',
     },
     {
       label: 'Completed',
       value: study.stats.completed,
       icon: UserCheck,
-      iconBg: 'bg-violet-50',
-      iconColor: 'text-violet-600',
+      iconBg: 'bg-violet-500/10',
+      iconColor: 'text-violet-400',
     },
     {
       label: 'Withdrawn',
       value: study.stats.withdrawn,
       icon: UserX,
-      iconBg: 'bg-stone-100',
-      iconColor: 'text-stone-500',
+      iconBg: 'bg-slate-700',
+      iconColor: 'text-slate-400',
     },
   ]
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen">
       <div className="container-wide py-8 sm:py-12">
         {/* Back Link */}
         <Link
           href="/sponsor/studies"
-          className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors mb-6"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           All Studies
@@ -161,11 +161,11 @@ export default function StudyDashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
           <div className="animate-fade-in">
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="font-display text-2xl sm:text-3xl text-stone-900">{study.name}</h1>
+              <h1 className="font-display text-2xl sm:text-3xl text-slate-100">{study.name}</h1>
               <StatusBadge status={study.status} />
             </div>
-            <p className="text-stone-500">{study.intervention}</p>
-            <div className="flex items-center gap-4 mt-2 text-sm text-stone-400">
+            <p className="text-slate-400">{study.intervention}</p>
+            <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
               <span>{study.duration}</span>
               {study.startDate && (
                 <>
@@ -182,12 +182,12 @@ export default function StudyDashboardPage() {
           {statCards.map((stat) => (
             <Card key={stat.label} variant="default" padding="md">
               <div className="flex items-center gap-3 mb-3">
-                <div className={`w-10 h-10 ${stat.iconBg} rounded-xl flex items-center justify-center`}>
+                <div className={`w-10 h-10 ${stat.iconBg} rounded-xl flex items-center justify-center border border-slate-700`}>
                   <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
                 </div>
               </div>
-              <div className="text-2xl font-semibold text-stone-900 font-mono">{stat.value}</div>
-              <div className="text-sm text-stone-500">{stat.label}</div>
+              <div className="text-2xl font-semibold text-slate-100 font-mono">{stat.value}</div>
+              <div className="text-sm text-slate-400">{stat.label}</div>
             </Card>
           ))}
         </div>
@@ -196,7 +196,7 @@ export default function StudyDashboardPage() {
         <Card variant="default" padding="md" className="mb-8 animate-fade-in-up">
           <CardHeader title="Invitation Link" subtitle="Share this link with eligible participants" />
           <div className="flex items-center gap-2 mt-4">
-            <div className="flex-1 bg-stone-50 rounded-xl px-4 py-3 text-sm text-stone-600 font-mono truncate border border-stone-100">
+            <div className="flex-1 bg-slate-900 rounded-xl px-4 py-3 text-sm text-slate-300 font-mono truncate border border-slate-700">
               {inviteLink}
             </div>
             <Button
@@ -210,7 +210,7 @@ export default function StudyDashboardPage() {
               href={inviteLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-xl transition-colors"
+              className="p-3 text-slate-500 hover:text-slate-300 hover:bg-slate-700 rounded-xl transition-colors"
             >
               <ExternalLink className="w-5 h-5" />
             </a>
@@ -219,39 +219,39 @@ export default function StudyDashboardPage() {
 
         {/* Participants Table */}
         <Card variant="default" padding="none" className="animate-fade-in-up">
-          <div className="p-5 sm:p-6 border-b border-stone-100">
-            <h2 className="text-lg font-semibold text-stone-900">Participants</h2>
+          <div className="p-5 sm:p-6 border-b border-slate-700">
+            <h2 className="text-lg font-semibold text-slate-100">Participants</h2>
           </div>
 
           {study.participants && study.participants.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-stone-50">
+                <thead className="bg-slate-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                       Participant
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                       Enrolled
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                       Progress
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100">
+                <tbody className="divide-y divide-slate-700">
                   {study.participants.map((participant) => (
-                    <tr key={participant.id} className="hover:bg-stone-50 transition-colors">
+                    <tr key={participant.id} className="hover:bg-slate-700/50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-stone-900">{participant.email}</div>
-                        <div className="text-xs text-stone-400 font-mono">
+                        <div className="text-sm font-medium text-slate-100">{participant.email}</div>
+                        <div className="text-xs text-slate-500 font-mono">
                           {participant.id.slice(0, 8)}...
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                         {participant.enrolledAt
                           ? new Date(participant.enrolledAt).toLocaleDateString('en-US', {
                               month: 'short',
@@ -266,7 +266,7 @@ export default function StudyDashboardPage() {
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-stone-900">Week {participant.currentWeek}</div>
+                        <div className="text-sm text-slate-100">Week {participant.currentWeek}</div>
                       </td>
                     </tr>
                   ))}
@@ -275,11 +275,11 @@ export default function StudyDashboardPage() {
             </div>
           ) : (
             <div className="p-12 text-center">
-              <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-stone-400" />
+              <div className="w-16 h-16 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-600">
+                <Users className="w-8 h-8 text-slate-400" />
               </div>
-              <h3 className="text-lg font-medium text-stone-900 mb-2">No participants yet</h3>
-              <p className="text-stone-500 mb-6 max-w-sm mx-auto">
+              <h3 className="text-lg font-medium text-slate-100 mb-2">No participants yet</h3>
+              <p className="text-slate-400 mb-6 max-w-sm mx-auto">
                 Share the invitation link with eligible participants to start enrolling.
               </p>
               <Button onClick={handleCopyLink} leftIcon={<Copy className="w-4 h-4" />}>
