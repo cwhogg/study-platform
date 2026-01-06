@@ -125,16 +125,16 @@ export default function ConsentPage() {
   const section = consentSections[currentSection]
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-slate-900">
       {/* Progress Header */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-gray-100">
+      <div className="flex-shrink-0 px-4 py-3 border-b border-slate-800">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-600">CONSENT</span>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm font-medium text-slate-400">CONSENT</span>
+          <span className="text-sm text-slate-500">
             {currentSection + 1} of {totalSections}
           </span>
         </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-indigo-600 transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
@@ -147,19 +147,19 @@ export default function ConsentPage() {
         ref={contentRef}
         className="flex-1 overflow-y-auto px-4 py-6 pb-32"
       >
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <h2 className="text-xl font-bold text-slate-100 mb-4">
           {section.title}
         </h2>
-        <div className="prose prose-gray max-w-none">
+        <div className="prose prose-invert max-w-none">
           {section.content.split('\n\n').map((paragraph, idx) => (
-            <p key={idx} className="text-gray-700 mb-4 leading-relaxed whitespace-pre-line">
+            <p key={idx} className="text-slate-300 mb-4 leading-relaxed whitespace-pre-line">
               {paragraph}
             </p>
           ))}
         </div>
 
         {/* Section Navigation Dots */}
-        <div className="flex justify-center gap-2 mt-8 pt-4 border-t border-gray-100">
+        <div className="flex justify-center gap-2 mt-8 pt-4 border-t border-slate-800">
           {consentSections.map((_, idx) => (
             <button
               key={idx}
@@ -171,8 +171,8 @@ export default function ConsentPage() {
                 idx === currentSection
                   ? 'bg-indigo-600'
                   : readSections.has(idx)
-                  ? 'bg-indigo-300'
-                  : 'bg-gray-300'
+                  ? 'bg-indigo-400'
+                  : 'bg-slate-600'
               }`}
               style={{ minWidth: '10px', minHeight: '10px' }}
               aria-label={`Go to section ${idx + 1}`}
@@ -187,7 +187,7 @@ export default function ConsentPage() {
           {currentSection > 0 && (
             <button
               onClick={handleBack}
-              className="px-6 py-4 border border-gray-300 text-gray-700 font-semibold rounded-xl active:bg-gray-50 transition-colors"
+              className="px-6 py-4 border border-slate-600 text-slate-300 font-semibold rounded-xl active:bg-slate-800 transition-colors"
               style={{ minHeight: '52px' }}
             >
               Back

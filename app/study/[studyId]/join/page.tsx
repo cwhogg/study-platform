@@ -63,13 +63,13 @@ export default function JoinPage() {
 
   if (isLoading) {
     return (
-      <MobileFullScreen className="flex items-center justify-center">
+      <MobileFullScreen className="flex items-center justify-center bg-slate-900">
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-slate-700" />
+            <div className="absolute inset-0 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
           </div>
-          <p className="text-stone-500">Loading study...</p>
+          <p className="text-slate-400">Loading study...</p>
         </div>
       </MobileFullScreen>
     )
@@ -77,13 +77,13 @@ export default function JoinPage() {
 
   if (error || !study) {
     return (
-      <MobileFullScreen className="flex items-center justify-center">
+      <MobileFullScreen className="flex items-center justify-center bg-slate-900">
         <div className="text-center px-4 animate-fade-in">
-          <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-8 h-8 text-stone-400" />
+          <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-slate-500" />
           </div>
-          <h1 className="text-xl font-semibold text-stone-900 mb-2">Unable to Load Study</h1>
-          <p className="text-stone-500">{error || 'Study not found'}</p>
+          <h1 className="text-xl font-semibold text-slate-100 mb-2">Unable to Load Study</h1>
+          <p className="text-slate-400">{error || 'Study not found'}</p>
         </div>
       </MobileFullScreen>
     )
@@ -94,23 +94,23 @@ export default function JoinPage() {
 
   return (
     <>
-      <MobileFullScreen className="pb-32">
+      <MobileFullScreen className="pb-32 bg-slate-900">
         {/* Hero Section */}
         <div className="text-center pt-8 mb-8 stagger-children">
           {/* Logo/Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-100 rounded-full mb-6">
-            <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-teal-700">Research Study</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-900/50 border border-indigo-700 rounded-full mb-6">
+            <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-indigo-300">Research Study</span>
           </div>
 
           {/* Headline */}
-          <h1 className="font-display text-3xl text-stone-900 mb-3 text-balance">
+          <h1 className="font-display text-3xl text-slate-100 mb-3 text-balance">
             {welcome.headline || study.name}
           </h1>
 
           {/* Subheadline */}
           {welcome.subheadline && (
-            <p className="text-stone-500 text-lg">
+            <p className="text-slate-400 text-lg">
               {welcome.subheadline}
             </p>
           )}
@@ -125,13 +125,13 @@ export default function JoinPage() {
             return (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-stone-100 shadow-sm"
+                className="flex items-start gap-4 p-4 bg-slate-800 rounded-2xl border border-slate-700 shadow-sm"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-6 h-6 text-teal-600" />
+                <div className="w-12 h-12 bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-6 h-6 text-indigo-400" />
                 </div>
                 <div className="flex-1 pt-1">
-                  <p className="font-medium text-stone-900">{bullet}</p>
+                  <p className="font-medium text-slate-100">{bullet}</p>
                 </div>
               </div>
             )
@@ -140,7 +140,7 @@ export default function JoinPage() {
 
         {/* Duration Badge */}
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 text-sm text-stone-500">
+          <div className="inline-flex items-center gap-2 text-sm text-slate-400">
             <Clock className="w-4 h-4" />
             <span>{study.durationWeeks} week study</span>
           </div>
@@ -148,7 +148,7 @@ export default function JoinPage() {
 
         {/* Footer note */}
         {welcome.footerNote && (
-          <p className="text-center text-sm text-stone-400 mt-4">
+          <p className="text-center text-sm text-slate-500 mt-4">
             {welcome.footerNote}
           </p>
         )}
@@ -161,7 +161,7 @@ export default function JoinPage() {
             {welcome.buttonText || 'Get Started'}
           </Button>
         </Link>
-        <p className="text-center text-xs text-stone-400 mt-3">
+        <p className="text-center text-xs text-slate-500 mt-3">
           By continuing, you agree to review the study information
         </p>
       </MobileBottomAction>

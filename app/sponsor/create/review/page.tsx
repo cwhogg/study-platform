@@ -110,17 +110,17 @@ function CollapsibleSection({ title, icon, count, children, onEdit, defaultOpen 
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
   return (
-    <Card variant="default" padding="none" className="overflow-hidden">
+    <Card variant="default" padding="none" className="overflow-hidden bg-slate-800">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 hover:bg-stone-50 transition-colors"
+        className="w-full flex items-center justify-between p-4 hover:bg-slate-700 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="text-stone-400">{icon}</div>
-          <span className="font-medium text-stone-900">{title}</span>
+          <div className="text-slate-400">{icon}</div>
+          <span className="font-medium text-slate-100">{title}</span>
           {count !== undefined && (
-            <span className="text-sm text-stone-500">({count})</span>
+            <span className="text-sm text-slate-400">({count})</span>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -130,21 +130,21 @@ function CollapsibleSection({ title, icon, count, children, onEdit, defaultOpen 
                 e.stopPropagation()
                 onEdit()
               }}
-              className="text-sm text-teal-600 hover:text-teal-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-teal-50"
+              className="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-indigo-900/30"
             >
               <Pencil className="w-3.5 h-3.5" />
               Edit
             </span>
           )}
           {isOpen ? (
-            <ChevronUp className="w-5 h-5 text-stone-400" />
+            <ChevronUp className="w-5 h-5 text-slate-400" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-stone-400" />
+            <ChevronDown className="w-5 h-5 text-slate-400" />
           )}
         </div>
       </button>
       {isOpen && (
-        <div className="px-4 pb-4 border-t border-stone-100">
+        <div className="px-4 pb-4 border-t border-slate-700">
           <div className="pt-4">{children}</div>
         </div>
       )}
@@ -284,10 +284,10 @@ function ReviewProtocolContent() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-slate-700" />
+            <div className="absolute inset-0 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
           </div>
-          <p className="text-stone-500">Loading protocol...</p>
+          <p className="text-slate-400">Loading protocol...</p>
         </div>
       </div>
     )
@@ -323,30 +323,30 @@ function ReviewProtocolContent() {
       <div className="mb-8 animate-fade-in">
         <Link
           href={`/sponsor/create/configure?intervention=${encodeURIComponent(intervention)}`}
-          className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors mb-4"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
         </Link>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-100 rounded-full text-xs font-medium text-teal-700 mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-900/30 border border-indigo-700 rounded-full text-xs font-medium text-indigo-300 mb-3">
           <Sparkles className="w-3.5 h-3.5" />
           Generated Protocol
         </div>
-        <h1 className="font-display text-2xl sm:text-3xl text-stone-900">{intervention} Study</h1>
+        <h1 className="font-display text-2xl sm:text-3xl text-slate-100">{intervention} Study</h1>
       </div>
 
       {/* AI-generated indicator */}
-      <div className="mb-6 p-4 bg-teal-50 border border-teal-100 rounded-xl text-teal-700 text-sm flex items-center gap-3 animate-fade-in">
-        <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Info className="w-4 h-4 text-teal-600" />
+      <div className="mb-6 p-4 bg-indigo-900/30 border border-indigo-700 rounded-xl text-indigo-300 text-sm flex items-center gap-3 animate-fade-in">
+        <div className="w-8 h-8 bg-indigo-800 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Info className="w-4 h-4 text-indigo-400" />
         </div>
         <span>This protocol was generated by AI. Review and edit as needed before finalizing.</span>
       </div>
 
       {/* Summary */}
-      <Card variant="default" padding="md" className="mb-6 bg-gradient-to-br from-teal-50 to-white border-teal-100 animate-fade-in-up">
-        <h2 className="font-semibold text-stone-900 mb-2">Summary</h2>
-        <p className="text-stone-600">{protocol.summary}</p>
+      <Card variant="default" padding="md" className="mb-6 bg-gradient-to-br from-indigo-900/40 to-slate-800 border-indigo-700 animate-fade-in-up">
+        <h2 className="font-semibold text-slate-100 mb-2">Summary</h2>
+        <p className="text-slate-300">{protocol.summary}</p>
       </Card>
 
       {/* Collapsible Sections */}
@@ -361,16 +361,16 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-3">
             {protocol.inclusionCriteria?.map((criterion, index) => (
-              <div key={index} className="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-                <div className="flex items-start gap-2 text-stone-900 font-medium">
-                  <span className="text-emerald-500 mt-0.5">•</span>
+              <div key={index} className="p-3 bg-emerald-900/30 rounded-xl border border-emerald-700/50">
+                <div className="flex items-start gap-2 text-slate-100 font-medium">
+                  <span className="text-emerald-400 mt-0.5">•</span>
                   {criterion.criterion}
                 </div>
                 {criterion.rationale && (
-                  <p className="text-sm text-stone-500 mt-1 ml-4">{criterion.rationale}</p>
+                  <p className="text-sm text-slate-400 mt-1 ml-4">{criterion.rationale}</p>
                 )}
                 {criterion.assessmentMethod && (
-                  <p className="text-xs text-stone-400 mt-1 ml-4">
+                  <p className="text-xs text-slate-500 mt-1 ml-4">
                     Assessment: {criterion.assessmentMethod}
                   </p>
                 )}
@@ -388,16 +388,16 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-3">
             {protocol.exclusionCriteria?.map((criterion, index) => (
-              <div key={index} className="p-3 bg-red-50 rounded-xl border border-red-100">
-                <div className="flex items-start gap-2 text-stone-900 font-medium">
-                  <span className="text-red-500 mt-0.5">•</span>
+              <div key={index} className="p-3 bg-red-900/30 rounded-xl border border-red-700/50">
+                <div className="flex items-start gap-2 text-slate-100 font-medium">
+                  <span className="text-red-400 mt-0.5">•</span>
                   {criterion.criterion}
                 </div>
                 {criterion.rationale && (
-                  <p className="text-sm text-stone-500 mt-1 ml-4">{criterion.rationale}</p>
+                  <p className="text-sm text-slate-400 mt-1 ml-4">{criterion.rationale}</p>
                 )}
                 {criterion.assessmentMethod && (
-                  <p className="text-xs text-stone-400 mt-1 ml-4">
+                  <p className="text-xs text-slate-500 mt-1 ml-4">
                     Assessment: {criterion.assessmentMethod}
                   </p>
                 )}
@@ -418,24 +418,24 @@ function ReviewProtocolContent() {
               <div
                 key={instrument.id || index}
                 className={`p-3 rounded-xl border ${
-                  index === 0 ? 'border-teal-200 bg-teal-50' : 'border-stone-100 bg-stone-50'
+                  index === 0 ? 'border-indigo-600 bg-indigo-900/30' : 'border-slate-700 bg-slate-700/50'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-stone-900">
+                  <span className="font-medium text-slate-100">
                     {instrument.name}
                     {index === 0 && primaryInstrument && (
-                      <span className="ml-2 text-xs bg-teal-600 text-white px-2 py-0.5 rounded-full">
+                      <span className="ml-2 text-xs bg-indigo-600 text-white px-2 py-0.5 rounded-full">
                         Primary
                       </span>
                     )}
                   </span>
-                  <span className="text-sm text-stone-500">
+                  <span className="text-sm text-slate-400">
                     {instrument.questions?.length || 0} questions
                     {instrument.estimatedMinutes && ` • ~${instrument.estimatedMinutes} min`}
                   </span>
                 </div>
-                <p className="text-sm text-stone-500">{instrument.description}</p>
+                <p className="text-sm text-slate-400">{instrument.description}</p>
               </div>
             ))}
           </div>
@@ -449,12 +449,12 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-medium text-stone-700 mb-2">Assessment Timepoints</h4>
+              <h4 className="text-sm font-medium text-slate-200 mb-2">Assessment Timepoints</h4>
               <div className="flex flex-wrap gap-2">
                 {assessmentTimepoints.map((timepoint, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1.5 bg-stone-100 text-stone-700 rounded-full text-sm font-medium"
+                    className="px-3 py-1.5 bg-slate-700 text-slate-200 rounded-full text-sm font-medium"
                   >
                     {timepoint}
                   </span>
@@ -463,12 +463,12 @@ function ReviewProtocolContent() {
             </div>
             {labTimepoints.length > 0 && (
               <div>
-                <h4 className="text-sm font-medium text-stone-700 mb-2">Lab Collection</h4>
+                <h4 className="text-sm font-medium text-slate-200 mb-2">Lab Collection</h4>
                 <div className="flex flex-wrap gap-2">
                   {labTimepoints.map((timepoint, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1.5 bg-violet-100 text-violet-700 rounded-full text-sm font-medium"
+                      className="px-3 py-1.5 bg-violet-900/50 text-violet-300 rounded-full text-sm font-medium"
                     >
                       {timepoint}
                     </span>
@@ -478,20 +478,20 @@ function ReviewProtocolContent() {
             )}
 
             {/* Detailed schedule */}
-            <div className="mt-4 border-t border-stone-100 pt-4">
-              <h4 className="text-sm font-medium text-stone-700 mb-3">Detailed Schedule</h4>
+            <div className="mt-4 border-t border-slate-700 pt-4">
+              <h4 className="text-sm font-medium text-slate-200 mb-3">Detailed Schedule</h4>
               <div className="space-y-2">
                 {protocol.schedule?.map((timepoint, index) => (
-                  <div key={index} className="flex items-start gap-3 text-sm p-2 bg-stone-50 rounded-lg">
-                    <span className="font-medium text-stone-900 w-20 flex-shrink-0">
+                  <div key={index} className="flex items-start gap-3 text-sm p-2 bg-slate-700/50 rounded-lg">
+                    <span className="font-medium text-slate-100 w-20 flex-shrink-0">
                       {timepoint.week === 0 ? 'Baseline' : `Week ${timepoint.week}`}
                     </span>
                     <div className="flex-1">
-                      <span className="text-stone-600">
+                      <span className="text-slate-300">
                         {timepoint.instruments?.join(', ')}
                       </span>
                       {timepoint.labs && timepoint.labs.length > 0 && (
-                        <span className="text-violet-600 ml-2">
+                        <span className="text-violet-400 ml-2">
                           + Labs: {timepoint.labs.join(', ')}
                         </span>
                       )}
@@ -512,19 +512,19 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-3">
             {safetyRules.map((rule, index) => (
-              <div key={index} className="p-3 rounded-xl border border-amber-200 bg-amber-50">
+              <div key={index} className="p-3 rounded-xl border border-amber-700/50 bg-amber-900/30">
                 <div className="text-sm">
-                  <span className="font-medium text-stone-900">If:</span>{' '}
-                  <span className="text-stone-700">{rule.trigger}</span>
+                  <span className="font-medium text-slate-100">If:</span>{' '}
+                  <span className="text-slate-200">{rule.trigger}</span>
                 </div>
                 <div className="text-sm mt-1">
-                  <span className="font-medium text-stone-900">Then:</span>{' '}
-                  <span className="text-stone-700">{rule.action}</span>
+                  <span className="font-medium text-slate-100">Then:</span>{' '}
+                  <span className="text-slate-200">{rule.action}</span>
                 </div>
               </div>
             ))}
             {safetyRules.length === 0 && (
-              <p className="text-sm text-stone-500">No safety rules defined.</p>
+              <p className="text-sm text-slate-400">No safety rules defined.</p>
             )}
           </div>
         </CollapsibleSection>
@@ -540,28 +540,28 @@ function ReviewProtocolContent() {
               {/* FDA Status */}
               <div className={`p-4 rounded-xl ${
                 riskAssessment.fdaApprovalStatus?.approved
-                  ? 'bg-emerald-50 border border-emerald-200'
-                  : 'bg-red-50 border border-red-200'
+                  ? 'bg-emerald-900/30 border border-emerald-700/50'
+                  : 'bg-red-900/30 border border-red-700/50'
               }`}>
-                <div className="font-medium text-stone-900 mb-1">
+                <div className="font-medium text-slate-100 mb-1">
                   {riskAssessment.fdaApprovalStatus?.approved
                     ? '✓ FDA Approved'
                     : '⚠️ NOT FDA Approved'}
                 </div>
                 {!riskAssessment.fdaApprovalStatus?.approved && riskAssessment.regulatoryDisclaimer && (
-                  <p className="text-sm text-red-700">{riskAssessment.regulatoryDisclaimer}</p>
+                  <p className="text-sm text-red-300">{riskAssessment.regulatoryDisclaimer}</p>
                 )}
               </div>
 
               {/* Risk Summary */}
-              <div className="p-4 bg-stone-50 rounded-xl">
-                <div className="font-medium text-stone-900 mb-1">Risk Summary</div>
-                <p className="text-sm text-stone-600">{riskAssessment.riskSummary}</p>
+              <div className="p-4 bg-slate-700/50 rounded-xl">
+                <div className="font-medium text-slate-100 mb-1">Risk Summary</div>
+                <p className="text-sm text-slate-300">{riskAssessment.riskSummary}</p>
                 <div className="mt-2">
                   <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
-                    riskAssessment.overallRiskLevel === 'high' ? 'bg-red-100 text-red-700' :
-                    riskAssessment.overallRiskLevel === 'moderate' ? 'bg-amber-100 text-amber-700' :
-                    'bg-emerald-100 text-emerald-700'
+                    riskAssessment.overallRiskLevel === 'high' ? 'bg-red-900/50 text-red-300' :
+                    riskAssessment.overallRiskLevel === 'moderate' ? 'bg-amber-900/50 text-amber-300' :
+                    'bg-emerald-900/50 text-emerald-300'
                   }`}>
                     Overall Risk: {riskAssessment.overallRiskLevel}
                   </span>
@@ -571,7 +571,7 @@ function ReviewProtocolContent() {
               {/* Known Risks */}
               {riskAssessment.knownRisks && riskAssessment.knownRisks.length > 0 && (
                 <div>
-                  <div className="font-medium text-stone-900 mb-2">Known Risks</div>
+                  <div className="font-medium text-slate-100 mb-2">Known Risks</div>
                   <div className="space-y-2">
                     {riskAssessment.knownRisks.map((risk, index) => (
                       <div key={index} className="flex items-start gap-2 text-sm">
@@ -579,7 +579,7 @@ function ReviewProtocolContent() {
                           risk.severity === 'high' ? 'bg-red-500' :
                           risk.severity === 'moderate' ? 'bg-amber-500' : 'bg-emerald-500'
                         }`} />
-                        <span className="text-stone-600">
+                        <span className="text-slate-300">
                           <strong>{risk.risk}</strong>
                           {risk.frequency && ` (${risk.frequency})`}
                         </span>
@@ -592,7 +592,7 @@ function ReviewProtocolContent() {
               {/* Community-Reported Risks */}
               {riskAssessment.communityReportedRisks && riskAssessment.communityReportedRisks.length > 0 && (
                 <div>
-                  <div className="font-medium text-stone-900 mb-2">Community-Reported Risks</div>
+                  <div className="font-medium text-slate-100 mb-2">Community-Reported Risks</div>
                   <div className="space-y-2">
                     {riskAssessment.communityReportedRisks.map((risk, index) => (
                       <div key={index} className="flex items-start gap-2 text-sm">
@@ -600,7 +600,7 @@ function ReviewProtocolContent() {
                           risk.severity === 'high' ? 'bg-red-500' :
                           risk.severity === 'moderate' ? 'bg-amber-500' : 'bg-emerald-500'
                         }`} />
-                        <span className="text-stone-600">
+                        <span className="text-slate-300">
                           <strong>{risk.risk}</strong>
                           {risk.frequency && ` (${risk.frequency})`}
                         </span>
@@ -613,8 +613,8 @@ function ReviewProtocolContent() {
               {/* Contraindications */}
               {riskAssessment.contraindications && riskAssessment.contraindications.length > 0 && (
                 <div>
-                  <div className="font-medium text-stone-900 mb-2">Contraindications</div>
-                  <ul className="list-disc list-inside text-sm text-stone-600 space-y-1">
+                  <div className="font-medium text-slate-100 mb-2">Contraindications</div>
+                  <ul className="list-disc list-inside text-sm text-slate-300 space-y-1">
                     {riskAssessment.contraindications.map((item, index) => (
                       <li key={index}>{item}</li>
                     ))}
@@ -624,7 +624,7 @@ function ReviewProtocolContent() {
 
               {/* Data Sources */}
               {riskAssessment.dataSources && riskAssessment.dataSources.length > 0 && (
-                <div className="text-xs text-stone-400 pt-2 border-t border-stone-100">
+                <div className="text-xs text-slate-500 pt-2 border-t border-slate-700">
                   Sources: {riskAssessment.dataSources.join(', ')}
                 </div>
               )}
@@ -635,7 +635,7 @@ function ReviewProtocolContent() {
 
       {/* Error Message */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm mb-6 animate-fade-in">
+        <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-xl text-red-300 text-sm mb-6 animate-fade-in">
           {error}
         </div>
       )}
@@ -671,10 +671,10 @@ export default function ReviewProtocolPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-slate-700" />
+            <div className="absolute inset-0 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
           </div>
-          <p className="text-stone-500">Loading...</p>
+          <p className="text-slate-400">Loading...</p>
         </div>
       </div>
     }>

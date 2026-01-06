@@ -18,14 +18,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-stone-700 mb-1.5"
+            className="block text-sm font-medium text-slate-200 mb-1.5"
           >
             {label}
           </label>
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
               {leftIcon}
             </div>
           )}
@@ -35,15 +35,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             className={`
               w-full
               px-4 py-3
-              text-base text-stone-900
-              placeholder:text-stone-400
-              bg-white
+              text-base text-slate-100
+              placeholder:text-slate-500
+              bg-slate-800
               border-[1.5px] rounded-xl
               transition-all duration-150
               focus:outline-none
               ${error
-                ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-stone-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20'
+                ? 'border-red-500/50 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                : 'border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
               }
               ${leftIcon ? 'pl-11' : ''}
               ${rightIcon ? 'pr-11' : ''}
@@ -52,13 +52,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400">
+            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500">
               {rightIcon}
             </div>
           )}
         </div>
         {(error || hint) && (
-          <p className={`mt-1.5 text-sm ${error ? 'text-red-600' : 'text-stone-500'}`}>
+          <p className={`mt-1.5 text-sm ${error ? 'text-red-400' : 'text-slate-500'}`}>
             {error || hint}
           </p>
         )}
@@ -85,7 +85,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label
             htmlFor={textareaId}
-            className="block text-sm font-medium text-stone-700 mb-1.5"
+            className="block text-sm font-medium text-slate-200 mb-1.5"
           >
             {label}
           </label>
@@ -96,23 +96,23 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           className={`
             w-full
             px-4 py-3
-            text-base text-stone-900
-            placeholder:text-stone-400
-            bg-white
+            text-base text-slate-100
+            placeholder:text-slate-500
+            bg-slate-800
             border-[1.5px] rounded-xl
             transition-all duration-150
             resize-y min-h-[120px]
             focus:outline-none
             ${error
-              ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-stone-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20'
+              ? 'border-red-500/50 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+              : 'border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
             }
             ${className}
           `}
           {...props}
         />
         {(error || hint) && (
-          <p className={`mt-1.5 text-sm ${error ? 'text-red-600' : 'text-stone-500'}`}>
+          <p className={`mt-1.5 text-sm ${error ? 'text-red-400' : 'text-slate-500'}`}>
             {error || hint}
           </p>
         )}

@@ -194,14 +194,14 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <MobileContainer className="pt-8">
+      <MobileContainer className="pt-8 bg-slate-900">
         <div className="flex items-center justify-center py-16">
           <div className="text-center animate-fade-in">
             <div className="w-12 h-12 mx-auto mb-4 relative">
-              <div className="absolute inset-0 rounded-full border-2 border-stone-200" />
-              <div className="absolute inset-0 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-slate-700" />
+              <div className="absolute inset-0 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
             </div>
-            <p className="text-stone-500">Loading your dashboard...</p>
+            <p className="text-slate-400">Loading your dashboard...</p>
           </div>
         </div>
       </MobileContainer>
@@ -210,13 +210,13 @@ export default function DashboardPage() {
 
   if (notEnrolled) {
     return (
-      <MobileContainer className="pt-8">
+      <MobileContainer className="pt-8 bg-slate-900">
         <div className="text-center py-12 animate-fade-in">
-          <div className="w-16 h-16 bg-amber-50 border border-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Clock className="w-8 h-8 text-amber-500" />
+          <div className="w-16 h-16 bg-amber-900/50 border border-amber-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Clock className="w-8 h-8 text-amber-400" />
           </div>
-          <h2 className="text-xl font-semibold text-stone-900 mb-2">Complete Your Enrollment</h2>
-          <p className="text-stone-500 mb-6 max-w-xs mx-auto">
+          <h2 className="text-xl font-semibold text-slate-100 mb-2">Complete Your Enrollment</h2>
+          <p className="text-slate-400 mb-6 max-w-xs mx-auto">
             You&apos;re almost there! Complete the enrollment process to start your study journey.
           </p>
           <Link href={`/study/${studyId}/join/overview`}>
@@ -231,12 +231,12 @@ export default function DashboardPage() {
   }
 
   return (
-    <MobileContainer className="pt-6 pb-8">
+    <MobileContainer className="pt-6 pb-8 bg-slate-900">
       {/* Header with Progress Ring */}
       <div className="flex items-center justify-between mb-6 animate-fade-in">
         <div>
-          <h1 className="text-xl font-semibold text-stone-900">Your Study</h1>
-          <p className="text-sm text-stone-500">Week {currentWeek} of {totalWeeks}</p>
+          <h1 className="text-xl font-semibold text-slate-100">Your Study</h1>
+          <p className="text-sm text-slate-400">Week {currentWeek} of {totalWeeks}</p>
         </div>
         <ProgressRing
           value={progress}
@@ -255,7 +255,7 @@ export default function DashboardPage() {
           className="mb-6 animate-fade-in-up relative overflow-hidden"
         >
           {/* Decorative gradient */}
-          <div className="absolute -right-8 -top-8 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl" />
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl" />
 
           <div className="relative">
             <div className="flex items-center gap-2 mb-3">
@@ -268,10 +268,10 @@ export default function DashboardPage() {
               </Badge>
             </div>
 
-            <h3 className="text-lg font-semibold text-stone-900 mb-1">
+            <h3 className="text-lg font-semibold text-slate-100 mb-1">
               {dueAssessment.timepoint} Check-in
             </h3>
-            <p className="text-stone-500 text-sm mb-4">
+            <p className="text-slate-400 text-sm mb-4">
               Quick survey · ~5 minutes
             </p>
 
@@ -289,11 +289,11 @@ export default function DashboardPage() {
       {!dueAssessment && completedAssessments.length > 0 && (
         <Card variant="default" padding="md" className="mb-6 animate-fade-in-up">
           <div className="text-center py-4">
-            <div className="w-14 h-14 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
-              <Sparkles className="w-7 h-7 text-emerald-500" />
+            <div className="w-14 h-14 bg-emerald-900/50 border border-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <Sparkles className="w-7 h-7 text-emerald-400" />
             </div>
-            <h3 className="font-semibold text-stone-900 mb-1">You&apos;re all caught up!</h3>
-            <p className="text-sm text-stone-500">
+            <h3 className="font-semibold text-slate-100 mb-1">You&apos;re all caught up!</h3>
+            <p className="text-sm text-slate-400">
               {upcomingAssessments.length > 0
                 ? `Next check-in: ${upcomingAssessments[0].timepoint}`
                 : 'No more assessments scheduled'}
@@ -311,23 +311,23 @@ export default function DashboardPage() {
             {completedAssessments.map((assessment) => (
               <div
                 key={assessment.id}
-                className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-stone-100"
+                className="flex items-center justify-between p-3.5 bg-slate-800 rounded-xl border border-slate-700"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-emerald-50 rounded-lg flex items-center justify-center">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                  <div className="w-9 h-9 bg-emerald-900/50 rounded-lg flex items-center justify-center border border-emerald-700">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div>
-                    <span className="font-medium text-stone-900 text-sm">{assessment.timepoint}</span>
+                    <span className="font-medium text-slate-100 text-sm">{assessment.timepoint}</span>
                     {assessment.hasLabs && assessment.labsReceived && (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <FlaskConical className="w-3 h-3 text-emerald-500" />
-                        <span className="text-xs text-emerald-600">Labs received</span>
+                        <FlaskConical className="w-3 h-3 text-emerald-400" />
+                        <span className="text-xs text-emerald-400">Labs received</span>
                       </div>
                     )}
                   </div>
                 </div>
-                <span className="text-xs text-stone-400 font-mono">{assessment.completedDate}</span>
+                <span className="text-xs text-slate-500 font-mono">{assessment.completedDate}</span>
               </div>
             ))}
           </div>
@@ -341,23 +341,23 @@ export default function DashboardPage() {
             {upcomingAssessments.slice(0, 4).map((assessment) => (
               <div
                 key={assessment.id}
-                className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-stone-100"
+                className="flex items-center justify-between p-3.5 bg-slate-800 rounded-xl border border-slate-700"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-stone-50 rounded-lg flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-stone-400" />
+                  <div className="w-9 h-9 bg-slate-700 rounded-lg flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-slate-500" />
                   </div>
                   <div>
-                    <span className="font-medium text-stone-700 text-sm">{assessment.timepoint}</span>
+                    <span className="font-medium text-slate-300 text-sm">{assessment.timepoint}</span>
                     {assessment.hasLabs && (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <FlaskConical className="w-3 h-3 text-stone-400" />
-                        <span className="text-xs text-stone-500">Labs scheduled</span>
+                        <FlaskConical className="w-3 h-3 text-slate-500" />
+                        <span className="text-xs text-slate-500">Labs scheduled</span>
                       </div>
                     )}
                   </div>
                 </div>
-                <span className="text-xs text-stone-400 font-mono">{assessment.dueDate}</span>
+                <span className="text-xs text-slate-500 font-mono">{assessment.dueDate}</span>
               </div>
             ))}
           </div>
@@ -366,9 +366,9 @@ export default function DashboardPage() {
 
       {/* Help Link */}
       <div className="mt-8 text-center">
-        <p className="text-sm text-stone-400">
+        <p className="text-sm text-slate-500">
           Questions?{' '}
-          <a href="mailto:research@example.com" className="text-teal-600 font-medium hover:text-teal-700">
+          <a href="mailto:research@example.com" className="text-indigo-400 font-medium hover:text-indigo-300">
             Contact support
           </a>
         </p>

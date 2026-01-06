@@ -65,13 +65,13 @@ export default async function StudiesPage() {
   const studies = await getStudies()
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen">
       <div className="container-wide py-8 sm:py-12">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="font-display text-2xl sm:text-3xl text-stone-900">Your Studies</h1>
-            <p className="text-stone-500 mt-1">Manage and monitor your research studies</p>
+            <h1 className="font-display text-2xl sm:text-3xl text-slate-100">Your Studies</h1>
+            <p className="text-slate-400 mt-1">Manage and monitor your research studies</p>
           </div>
           <Link href="/sponsor/create">
             <Button leftIcon={<Plus className="w-5 h-5" />}>
@@ -94,7 +94,7 @@ export default async function StudiesPage() {
                     <div className="flex-1 min-w-0">
                       {/* Title and status */}
                       <div className="flex items-center gap-3 mb-2">
-                        <h2 className="text-lg font-semibold text-stone-900 truncate">
+                        <h2 className="text-lg font-semibold text-slate-100 truncate">
                           {study.name}
                         </h2>
                         <StatusBadge
@@ -103,25 +103,25 @@ export default async function StudiesPage() {
                       </div>
 
                       {/* Intervention */}
-                      <p className="text-stone-500 text-sm mb-4 truncate">
+                      <p className="text-slate-400 text-sm mb-4 truncate">
                         {study.intervention}
                       </p>
 
                       {/* Stats row */}
                       <div className="flex items-center gap-6 text-sm">
-                        <div className="flex items-center gap-2 text-stone-500">
+                        <div className="flex items-center gap-2 text-slate-400">
                           <Users className="w-4 h-4" />
                           <span>
-                            <span className="font-semibold text-stone-900">{study.enrolled}</span>
-                            <span className="text-stone-400"> / {study.targetEnrollment}</span>
+                            <span className="font-semibold text-slate-100">{study.enrolled}</span>
+                            <span className="text-slate-500"> / {study.targetEnrollment}</span>
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-stone-500">
+                        <div className="flex items-center gap-2 text-slate-400">
                           <Calendar className="w-4 h-4" />
                           <span>{study.duration}</span>
                         </div>
                         {study.startDate && (
-                          <span className="text-stone-400 hidden sm:block">
+                          <span className="text-slate-500 hidden sm:block">
                             Started {study.startDate}
                           </span>
                         )}
@@ -139,7 +139,7 @@ export default async function StudiesPage() {
                       )}
                     </div>
 
-                    <ChevronRight className="w-5 h-5 text-stone-300 flex-shrink-0 mt-1" />
+                    <ChevronRight className="w-5 h-5 text-slate-600 flex-shrink-0 mt-1" />
                   </div>
                 </Card>
               </Link>
@@ -149,11 +149,11 @@ export default async function StudiesPage() {
           /* Empty State */
           <Card variant="default" padding="lg" className="text-center">
             <div className="py-8">
-              <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FolderOpen className="w-8 h-8 text-stone-400" />
+              <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-700">
+                <FolderOpen className="w-8 h-8 text-slate-500" />
               </div>
-              <h2 className="text-xl font-semibold text-stone-900 mb-2">No studies yet</h2>
-              <p className="text-stone-500 mb-6 max-w-sm mx-auto">
+              <h2 className="text-xl font-semibold text-slate-100 mb-2">No studies yet</h2>
+              <p className="text-slate-400 mb-6 max-w-sm mx-auto">
                 Create your first study to get started with AI-powered clinical research.
               </p>
               <Link href="/sponsor/create">

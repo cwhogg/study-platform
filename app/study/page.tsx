@@ -76,34 +76,34 @@ export default function StudyPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
         <PageSpinner label="Loading studies..." />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-900">
       <div className="max-w-lg mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <ClipboardList className="w-8 h-8 text-indigo-600" />
+          <div className="w-16 h-16 bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-4">
+            <ClipboardList className="w-8 h-8 text-indigo-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Join a Study</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-bold text-slate-100 mb-2">Join a Study</h1>
+          <p className="text-slate-400">
             Enter your study code or select from available studies below
           </p>
         </div>
 
         {/* Study Code Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <label htmlFor="studyCode" className="block text-sm font-medium text-gray-700 mb-2">
+        <form onSubmit={handleSubmit} className="bg-slate-800 rounded-xl shadow-sm border border-slate-700 p-6 mb-6">
+          <label htmlFor="studyCode" className="block text-sm font-medium text-slate-300 mb-2">
             Study Code
           </label>
           <div className="flex gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
               <input
                 id="studyCode"
                 type="text"
@@ -113,32 +113,32 @@ export default function StudyPage() {
                   if (error) setError('')
                 }}
                 placeholder="Enter study code or ID"
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full pl-10 pr-4 py-3 border border-slate-600 bg-slate-700 text-slate-100 placeholder-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:bg-gray-300 transition-colors"
+              className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:bg-slate-600 transition-colors"
             >
               {isSubmitting ? 'Checking...' : 'Go'}
             </button>
           </div>
           {error && (
-            <p className="mt-2 text-sm text-red-600">{error}</p>
+            <p className="mt-2 text-sm text-red-400">{error}</p>
           )}
-          <p className="mt-2 text-xs text-gray-500">
+          <p className="mt-2 text-xs text-slate-500">
             You should have received a study code or invitation link from your provider
           </p>
         </form>
 
         {/* API Error */}
         {error && studies.length === 0 && !studyCode && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-            <p className="text-red-700 text-sm">{error}</p>
+          <div className="bg-red-900/50 border border-red-700 rounded-xl p-4 mb-6">
+            <p className="text-red-300 text-sm">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-2 text-sm text-red-600 underline hover:text-red-800"
+              className="mt-2 text-sm text-red-400 underline hover:text-red-300"
             >
               Retry
             </button>
@@ -148,7 +148,7 @@ export default function StudyPage() {
         {/* Available Studies */}
         {studies.length > 0 && (
           <div>
-            <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+            <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wide mb-3">
               Available Studies
             </h2>
             <div className="space-y-3">
@@ -156,16 +156,16 @@ export default function StudyPage() {
                 <Link
                   key={study.id}
                   href={`/study/${study.id}/join`}
-                  className="block bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:border-indigo-300 hover:shadow-md transition-all group"
+                  className="block bg-slate-800 rounded-xl shadow-sm border border-slate-700 p-4 hover:border-indigo-500 hover:shadow-md transition-all group"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                      <h3 className="font-semibold text-slate-100 group-hover:text-indigo-400 transition-colors">
                         {study.name}
                       </h3>
-                      <p className="text-sm text-gray-500">{study.intervention}</p>
+                      <p className="text-sm text-slate-400">{study.intervention}</p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" />
+                    <ArrowRight className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors" />
                   </div>
                 </Link>
               ))}
@@ -175,7 +175,7 @@ export default function StudyPage() {
 
         {/* No studies message */}
         {studies.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-slate-500 py-8">
             <p>No studies are currently open for enrollment.</p>
             <p className="text-sm mt-1">If you have an invitation link, use it directly or enter the study code above.</p>
           </div>
@@ -183,7 +183,7 @@ export default function StudyPage() {
 
         {/* Back link */}
         <div className="text-center mt-8">
-          <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+          <Link href="/" className="text-sm text-slate-500 hover:text-slate-300">
             &larr; Back to home
           </Link>
         </div>

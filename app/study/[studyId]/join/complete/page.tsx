@@ -10,7 +10,7 @@ import type { EnrollmentCopy } from '@/lib/db/types'
 // Default copy if none generated
 const DEFAULT_ENROLLMENT_COMPLETE = {
   headline: 'You\'re Enrolled!',
-  celebration: '🎉',
+  celebration: '',
   body: 'Thank you for joining. Your participation helps improve treatment for future patients.',
   nextSteps: {
     headline: 'What\'s Next',
@@ -112,67 +112,67 @@ function CompletePageContent() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-8">
+      <MobileContainer withBottomPadding className="pt-8 bg-slate-900">
         {/* Success Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle2 className="w-10 h-10 text-green-600" />
+          <div className="w-20 h-20 bg-emerald-900/50 rounded-full flex items-center justify-center border border-emerald-700">
+            <CheckCircle2 className="w-10 h-10 text-emerald-400" />
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
+        <h1 className="text-2xl font-bold text-slate-100 text-center mb-2">
           {copy.headline || DEFAULT_ENROLLMENT_COMPLETE.headline}
         </h1>
-        <p className="text-gray-600 text-center mb-8">
+        <p className="text-slate-400 text-center mb-8">
           {body}
         </p>
 
         {/* Divider */}
-        <div className="border-t border-gray-100 my-6" />
+        <div className="border-t border-slate-800 my-6" />
 
         {/* What's Next Section */}
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <h2 className="text-lg font-semibold text-slate-100 mb-4">
           {copy.nextSteps?.headline || 'What\'s Next'}
         </h2>
 
         <div className="space-y-4">
           {/* Next Check-in */}
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-5 h-5 text-indigo-600" />
+          <div className="flex items-start gap-4 p-4 bg-slate-800 rounded-xl border border-slate-700">
+            <div className="w-10 h-10 bg-indigo-900 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5 text-indigo-400" />
             </div>
             <div>
-              <div className="font-medium text-gray-900">Next check-in</div>
-              <div className="text-gray-600 text-sm">
+              <div className="font-medium text-slate-100">Next check-in</div>
+              <div className="text-slate-400 text-sm">
                 {nextCheckInDate} (Week 2)
               </div>
-              <div className="text-gray-500 text-sm mt-1">
+              <div className="text-slate-500 text-sm mt-1">
                 We&apos;ll send you a reminder
               </div>
             </div>
           </div>
 
           {/* Baseline Labs */}
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <FlaskConical className="w-5 h-5 text-indigo-600" />
+          <div className="flex items-start gap-4 p-4 bg-slate-800 rounded-xl border border-slate-700">
+            <div className="w-10 h-10 bg-indigo-900 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FlaskConical className="w-5 h-5 text-indigo-400" />
             </div>
             <div>
-              <div className="font-medium text-gray-900">Baseline labs</div>
-              <div className="text-gray-600 text-sm">
+              <div className="font-medium text-slate-100">Baseline labs</div>
+              <div className="text-slate-400 text-sm">
                 Your doctor will order these as part of your normal care
               </div>
             </div>
           </div>
 
           {/* Email Confirmation */}
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Mail className="w-5 h-5 text-indigo-600" />
+          <div className="flex items-start gap-4 p-4 bg-slate-800 rounded-xl border border-slate-700">
+            <div className="w-10 h-10 bg-indigo-900 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Mail className="w-5 h-5 text-indigo-400" />
             </div>
             <div>
-              <div className="font-medium text-gray-900">Check your email</div>
-              <div className="text-gray-600 text-sm">
+              <div className="font-medium text-slate-100">Check your email</div>
+              <div className="text-slate-400 text-sm">
                 We&apos;ve sent a copy of your signed consent
               </div>
             </div>
@@ -180,10 +180,10 @@ function CompletePageContent() {
         </div>
 
         {/* Support Note */}
-        <div className="mt-8 p-4 border border-gray-200 rounded-xl">
-          <p className="text-sm text-gray-600 text-center">
+        <div className="mt-8 p-4 border border-slate-700 rounded-xl bg-slate-800">
+          <p className="text-sm text-slate-400 text-center">
             Questions? Contact us at{' '}
-            <span className="font-medium text-gray-900">research@example.com</span>
+            <span className="font-medium text-slate-100">research@example.com</span>
           </p>
         </div>
       </MobileContainer>
@@ -205,10 +205,10 @@ function CompletePageContent() {
 export default function CompletePage() {
   return (
     <Suspense fallback={
-      <MobileContainer centered>
+      <MobileContainer centered className="bg-slate-900">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-slate-400">Loading...</p>
         </div>
       </MobileContainer>
     }>

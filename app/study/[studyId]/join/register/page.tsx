@@ -126,18 +126,18 @@ export default function RegisterPage() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-8">
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
+      <MobileContainer withBottomPadding className="pt-8 bg-slate-900">
+        <h1 className="text-2xl font-bold text-slate-100 text-center mb-2">
           {copy.headline || 'Create Your Account'}
         </h1>
-        <p className="text-gray-600 text-center mb-8">
+        <p className="text-slate-400 text-center mb-8">
           Enter your details to join the study
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
               {copy.emailLabel || 'Email'}
             </label>
             <input
@@ -146,18 +146,18 @@ export default function RegisterPage() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-4 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+              className="w-full px-4 py-4 border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
               placeholder="you@example.com"
               style={{ minHeight: '52px' }}
             />
             {copy.emailHelp && (
-              <p className="mt-1 text-xs text-gray-500">{copy.emailHelp}</p>
+              <p className="mt-1 text-xs text-slate-500">{copy.emailHelp}</p>
             )}
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
               {copy.passwordLabel || 'Password'}
             </label>
             <div className="relative">
@@ -167,14 +167,14 @@ export default function RegisterPage() {
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-4 pr-12 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+                className="w-full px-4 py-4 pr-12 border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
                 placeholder={copy.passwordHelp || 'At least 8 characters'}
                 style={{ minHeight: '52px' }}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 p-1"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 p-1"
                 style={{ minWidth: '44px', minHeight: '44px' }}
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -184,7 +184,7 @@ export default function RegisterPage() {
 
           {/* Confirm Password */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300 mb-2">
               {copy.confirmPasswordLabel || 'Confirm Password'}
             </label>
             <div className="relative">
@@ -194,14 +194,14 @@ export default function RegisterPage() {
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-4 pr-12 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+                className="w-full px-4 py-4 pr-12 border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
                 placeholder="Confirm your password"
                 style={{ minHeight: '52px' }}
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 p-1"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 p-1"
                 style={{ minWidth: '44px', minHeight: '44px' }}
               >
                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -211,7 +211,7 @@ export default function RegisterPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+            <div className="p-3 bg-red-900/50 border border-red-700 rounded-xl text-red-300 text-sm">
               {error}
             </div>
           )}
@@ -223,7 +223,7 @@ export default function RegisterPage() {
         <button
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isSubmitting ? 'Creating Account...' : (copy.buttonText || 'Continue')}

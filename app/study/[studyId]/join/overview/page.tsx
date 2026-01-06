@@ -72,19 +72,19 @@ export default function OverviewPage() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-6">
+      <MobileContainer withBottomPadding className="pt-6 bg-slate-900">
         {/* Success Badge */}
         <div className="flex justify-center mb-6">
-          <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full">
+          <div className="flex items-center gap-2 bg-emerald-900/50 text-emerald-300 px-4 py-2 rounded-full border border-emerald-700">
             <CheckCircle2 className="w-5 h-5" />
             <span className="font-medium text-sm">Account Created</span>
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
+        <h1 className="text-2xl font-bold text-slate-100 text-center mb-2">
           {copy.headline || DEFAULT_PRE_CONSENT.headline}
         </h1>
-        <p className="text-gray-600 text-center mb-8">
+        <p className="text-slate-400 text-center mb-8">
           A quick overview of what participating involves
         </p>
 
@@ -93,13 +93,13 @@ export default function OverviewPage() {
           {sections.slice(0, 4).map((section, index) => {
             const Icon = getIcon(section.icon)
             return (
-              <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-5 h-5 text-indigo-600" />
+              <div key={index} className="flex items-start gap-4 p-4 bg-slate-800 rounded-xl border border-slate-700">
+                <div className="w-10 h-10 bg-indigo-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5 text-indigo-400" />
                 </div>
                 <div className="flex-1">
-                  <div className="font-semibold text-gray-900 mb-1">{section.title}</div>
-                  <div className="text-gray-600 text-sm">
+                  <div className="font-semibold text-slate-100 mb-1">{section.title}</div>
+                  <div className="text-slate-400 text-sm">
                     {section.body}
                   </div>
                 </div>
@@ -109,9 +109,9 @@ export default function OverviewPage() {
         </div>
 
         {/* Privacy Note */}
-        <div className="mt-6 p-4 border border-gray-200 rounded-xl">
-          <p className="text-sm text-gray-600 text-center">
-            <span className="font-medium text-gray-900">Your privacy matters.</span>{' '}
+        <div className="mt-6 p-4 border border-slate-700 rounded-xl bg-slate-800">
+          <p className="text-sm text-slate-400 text-center">
+            <span className="font-medium text-slate-100">Your privacy matters.</span>{' '}
             All data is encrypted and de-identified before analysis.
           </p>
         </div>
@@ -122,7 +122,7 @@ export default function OverviewPage() {
         <button
           onClick={handleContinue}
           disabled={isLoading}
-          className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isLoading ? 'Loading...' : (copy.buttonText || DEFAULT_PRE_CONSENT.buttonText)}

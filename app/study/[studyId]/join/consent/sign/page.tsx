@@ -42,18 +42,18 @@ export default function ConsentSignPage() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-6">
+      <MobileContainer withBottomPadding className="pt-6 bg-slate-900">
         {/* Header */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
-            <FileCheck className="w-8 h-8 text-indigo-600" />
+          <div className="w-16 h-16 bg-indigo-900 rounded-full flex items-center justify-center">
+            <FileCheck className="w-8 h-8 text-indigo-400" />
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
+        <h1 className="text-2xl font-bold text-slate-100 text-center mb-2">
           Sign to Join
         </h1>
-        <p className="text-gray-600 text-center mb-8">
+        <p className="text-slate-400 text-center mb-8">
           By signing, you agree to participate in this research study.
         </p>
 
@@ -61,7 +61,7 @@ export default function ConsentSignPage() {
         <div className="space-y-6">
           {/* Full Name Input */}
           <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="fullName" className="block text-sm font-medium text-slate-300 mb-2">
               Type your full legal name
             </label>
             <input
@@ -70,12 +70,12 @@ export default function ConsentSignPage() {
               autoComplete="name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-4 py-4 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+              className="w-full px-4 py-4 border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
               placeholder="Your full name"
               style={{ minHeight: '52px' }}
             />
             {fullName && (
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-slate-500">
                 This serves as your electronic signature.
               </p>
             )}
@@ -90,7 +90,7 @@ export default function ConsentSignPage() {
                 className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
                   agreed
                     ? 'bg-indigo-600 border-indigo-600'
-                    : 'bg-white border-gray-300'
+                    : 'bg-slate-800 border-slate-600'
                 }`}
                 style={{ minWidth: '24px', minHeight: '24px' }}
                 aria-checked={agreed}
@@ -105,35 +105,35 @@ export default function ConsentSignPage() {
             </div>
             <label
               onClick={() => setAgreed(!agreed)}
-              className="text-gray-700 text-sm leading-relaxed cursor-pointer select-none"
+              className="text-slate-300 text-sm leading-relaxed cursor-pointer select-none"
             >
               I have read and understood the informed consent document. I voluntarily agree to participate in this research study.
             </label>
           </div>
 
           {/* Date (Auto-filled) */}
-          <div className="pt-4 border-t border-gray-100">
+          <div className="pt-4 border-t border-slate-800">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">Date</span>
-              <span className="text-sm font-medium text-gray-900">{currentDate}</span>
+              <span className="text-sm text-slate-500">Date</span>
+              <span className="text-sm font-medium text-slate-100">{currentDate}</span>
             </div>
           </div>
         </div>
 
         {/* Summary Box */}
-        <div className="mt-8 p-4 bg-gray-50 rounded-xl">
-          <h3 className="font-medium text-gray-900 mb-2">What happens next:</h3>
-          <ul className="text-sm text-gray-600 space-y-2">
+        <div className="mt-8 p-4 bg-slate-800 rounded-xl border border-slate-700">
+          <h3 className="font-medium text-slate-100 mb-2">What happens next:</h3>
+          <ul className="text-sm text-slate-400 space-y-2">
             <li className="flex items-start gap-2">
-              <span className="text-indigo-600 font-medium">1.</span>
+              <span className="text-indigo-400 font-medium">1.</span>
               Quick eligibility check (2 minutes)
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-indigo-600 font-medium">2.</span>
+              <span className="text-indigo-400 font-medium">2.</span>
               Baseline survey about your current symptoms
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-indigo-600 font-medium">3.</span>
+              <span className="text-indigo-400 font-medium">3.</span>
               You&apos;re enrolled and ready to go!
             </li>
           </ul>
@@ -145,7 +145,7 @@ export default function ConsentSignPage() {
         <button
           onClick={handleSubmit}
           disabled={!canSubmit}
-          className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isSubmitting ? 'Signing...' : 'Sign & Continue'}

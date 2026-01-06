@@ -240,30 +240,30 @@ export default function BaselinePage() {
 
   if (isCompleting) {
     return (
-      <MobileContainer centered>
+      <MobileContainer centered className="bg-slate-900">
         <div className="text-center">
-          <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="w-16 h-16 bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse border border-indigo-700">
+            <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Saving your responses...</h2>
+          <h2 className="text-xl font-bold text-slate-100 mb-2">Saving your responses...</h2>
         </div>
       </MobileContainer>
     )
   }
 
   return (
-    <MobileContainer withBottomPadding className="pt-6">
+    <MobileContainer withBottomPadding className="pt-6 bg-slate-900">
       {/* Progress Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-600">BASELINE</span>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm font-medium text-slate-400">BASELINE</span>
+          <span className="text-sm text-slate-500">
             {currentQuestion + 1} of {totalQuestions}
           </span>
         </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-indigo-600 transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
@@ -273,12 +273,12 @@ export default function BaselinePage() {
 
       {/* Instructions (shown for new instruments) */}
       {showInstructions && isNewInstrument && (
-        <div className="mb-6 p-4 bg-indigo-50 rounded-xl">
-          <p className="text-sm font-medium text-indigo-900 mb-1">{question.instrumentName}</p>
-          <p className="text-sm text-indigo-700">{question.instructions}</p>
+        <div className="mb-6 p-4 bg-indigo-900/50 rounded-xl border border-indigo-700">
+          <p className="text-sm font-medium text-indigo-200 mb-1">{question.instrumentName}</p>
+          <p className="text-sm text-indigo-300">{question.instructions}</p>
           <button
             onClick={handleDismissInstructions}
-            className="mt-3 text-sm font-medium text-indigo-600 active:text-indigo-800"
+            className="mt-3 text-sm font-medium text-indigo-400 active:text-indigo-300"
           >
             Got it
           </button>
@@ -289,7 +289,7 @@ export default function BaselinePage() {
       <div
         className={`transition-opacity duration-200 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}
       >
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">
+        <h2 className="text-lg font-semibold text-slate-100 mb-6">
           {question.text}
         </h2>
 
@@ -305,12 +305,12 @@ export default function BaselinePage() {
                 disabled={isTransitioning}
                 className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
                   isSelected
-                    ? 'border-indigo-500 bg-indigo-50 scale-[0.98]'
-                    : 'border-gray-200 bg-white active:bg-gray-50 active:scale-[0.98]'
+                    ? 'border-indigo-500 bg-indigo-900/50 scale-[0.98]'
+                    : 'border-slate-700 bg-slate-800 active:bg-slate-700 active:scale-[0.98]'
                 }`}
                 style={{ minHeight: '56px' }}
               >
-                <span className={`font-medium ${isSelected ? 'text-indigo-700' : 'text-gray-900'}`}>
+                <span className={`font-medium ${isSelected ? 'text-indigo-300' : 'text-slate-100'}`}>
                   {option.label}
                 </span>
               </button>
@@ -320,7 +320,7 @@ export default function BaselinePage() {
       </div>
 
       {/* Subtle hint */}
-      <p className="text-center text-xs text-gray-400 mt-8">
+      <p className="text-center text-xs text-slate-500 mt-8">
         Tap an answer to continue
       </p>
     </MobileContainer>

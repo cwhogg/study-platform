@@ -50,29 +50,29 @@ export default function IneligiblePage() {
 
   return (
     <>
-      <MobileContainer centered>
+      <MobileContainer centered className="bg-slate-900">
         {/* Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-            <Heart className="w-8 h-8 text-gray-400" />
+          <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700">
+            <Heart className="w-8 h-8 text-slate-500" />
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-4">
+        <h1 className="text-2xl font-bold text-slate-100 text-center mb-4">
           {copy.headline || DEFAULT_INELIGIBLE.headline}
         </h1>
 
-        <p className="text-gray-600 text-center mb-6">
+        <p className="text-slate-400 text-center mb-6">
           {copy.body || DEFAULT_INELIGIBLE.body}
         </p>
 
-        <div className="bg-gray-50 rounded-xl p-4 mb-6">
-          <p className="text-gray-600 text-sm text-center">
+        <div className="bg-slate-800 rounded-xl p-4 mb-6 border border-slate-700">
+          <p className="text-slate-400 text-sm text-center">
             {copy.reassurance || DEFAULT_INELIGIBLE.reassurance}
           </p>
         </div>
 
-        <p className="text-gray-600 text-center text-sm">
+        <p className="text-slate-400 text-center text-sm">
           {nextSteps} Thank you for your interest in helping advance research.
         </p>
       </MobileContainer>
