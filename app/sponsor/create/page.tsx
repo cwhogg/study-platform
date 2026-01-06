@@ -104,7 +104,7 @@ export default function CreateStudyPage() {
               <Textarea
                 value={intervention}
                 onChange={(e) => setIntervention(e.target.value)}
-                placeholder="e.g., Testosterone replacement therapy for men with hypogonadism..."
+                placeholder="e.g., Testosterone replacement therapy for men with low T..."
                 className="text-lg min-h-[140px]"
                 autoFocus
               />
