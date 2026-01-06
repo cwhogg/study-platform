@@ -553,9 +553,16 @@ body::before {
   transform-origin: left;
 }
 
-/* Hero "Everything" text glow */
+/* Hand-drawn strikethrough line animation */
+@keyframes draw-strike {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Hero "Everything" text glow - violet */
 .hero-everything {
-  text-shadow: 0 0 40px rgba(34, 211, 238, 0.4);
+  text-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
 }
 
 /* Number count up - use with JS */

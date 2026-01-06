@@ -33,26 +33,49 @@ export default function Home() {
               <span className="text-sm font-medium text-indigo-300">AI-Powered Clinical Research</span>
             </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-100 mb-6 text-balance leading-tight">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-100 mb-6 text-balance leading-tight tracking-tight">
               Proove{' '}
               <span className="relative inline-block">
-                {/* "Everything" - floating directly above "Anything" */}
+                {/* "Everything" - purple gradient, bold, above "Anything" */}
                 <span
-                  className="hero-everything absolute -top-[1.1em] left-0
-                             text-cyan-400 text-[0.45em] font-medium tracking-tight
-                             drop-shadow-[0_0_25px_rgba(34,211,238,0.5)]
+                  className="absolute -top-[0.85em] left-0
+                             text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-violet-600
+                             text-[0.75em] font-bold tracking-tight
+                             drop-shadow-[0_0_30px_rgba(139,92,246,0.5)]
                              animate-fade-in-up opacity-0"
                   style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
                 >
                   Everything
                 </span>
-                {/* "Anything" - inline with strikethrough */}
-                <span className="relative text-slate-500">
+                {/* "Anything" - white, lighter weight, with red hand-drawn strikethrough */}
+                <span className="relative text-white/90 font-normal">
                   Anything
-                  {/* Animated strikethrough line */}
-                  <span
-                    className="absolute left-0 right-0 top-1/2 h-[3px] bg-gradient-to-r from-slate-500 to-slate-600 animate-strike -rotate-6"
-                  />
+                  {/* Hand-drawn red strikethrough - primary line */}
+                  <svg
+                    className="absolute -left-[5%] top-[40%] w-[110%] h-[50%] overflow-visible animate-strike"
+                    viewBox="0 0 100 20"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10"
+                      fill="none"
+                      stroke="#ef4444"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      className="origin-left"
+                      style={{ strokeDasharray: 200, strokeDashoffset: 200, animation: 'draw-strike 0.6s ease-out 0.1s forwards' }}
+                    />
+                    {/* Secondary thinner line for hand-drawn effect */}
+                    <path
+                      d="M 5 15 Q 30 12, 50 15 Q 75 18, 95 13"
+                      fill="none"
+                      stroke="#ef4444"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      opacity="0.4"
+                      style={{ strokeDasharray: 200, strokeDashoffset: 200, animation: 'draw-strike 0.5s ease-out 0.2s forwards' }}
+                    />
+                  </svg>
                 </span>
               </span>
             </h1>
