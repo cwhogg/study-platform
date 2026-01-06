@@ -28,7 +28,7 @@ export default function Home() {
         <div className="relative container-wide py-20 sm:py-28">
           <div className="text-center max-w-3xl mx-auto stagger-children">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-12">
               <Sparkles className="w-4 h-4 text-indigo-400" />
               <span className="text-sm font-medium text-indigo-300">AI-Powered Clinical Research</span>
             </div>
