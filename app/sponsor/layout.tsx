@@ -17,13 +17,7 @@ export default function SponsorLayout({
               <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="font-semibold text-slate-100">
-                Proove{' '}
-                <span className="relative inline-block">
-                  <span className="absolute -top-3 left-0 text-xs text-cyan-400 font-medium">Everything</span>
-                  <span className="line-through decoration-2 decoration-slate-500 text-slate-500">Anything</span>
-                </span>
-              </span>
+              <span className="font-semibold text-slate-100">Proove Platform</span>
             </Link>
 
             {/* Navigation */}

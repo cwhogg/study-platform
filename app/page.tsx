@@ -12,13 +12,7 @@ export default function Home() {
               <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="font-semibold text-slate-100">
-                Proove{' '}
-                <span className="relative inline-block">
-                  <span className="absolute -top-3 left-0 text-xs text-cyan-400 font-medium">Everything</span>
-                  <span className="line-through decoration-2 decoration-slate-500 text-slate-500">Anything</span>
-                </span>
-              </span>
+              <span className="font-semibold text-slate-100">Proove Platform</span>
             </div>
             <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">Demo Mode</div>
           </div>
@@ -41,8 +35,11 @@ export default function Home() {
             </div>
 
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-100 mb-6 text-balance">
-              Observational Studies,{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Simplified</span>
+              Proove{' '}
+              <span className="relative inline-block">
+                <span className="absolute -top-4 sm:-top-5 left-0 text-lg sm:text-xl lg:text-2xl text-cyan-400 font-medium">Everything</span>
+                <span className="line-through decoration-2 decoration-slate-500 text-slate-500">Anything</span>
+              </span>
             </h1>
             <p className="text-lg sm:text-xl text-slate-400 mb-12 max-w-2xl mx-auto text-balance leading-relaxed">
               Launch clinical observational studies in minutes with AI-powered protocol generation.
