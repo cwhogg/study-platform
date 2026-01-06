@@ -18,11 +18,11 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       default: 'border border-slate-200 shadow-sm',
       elevated: 'border border-slate-200 shadow-lg',
       outlined: 'border border-slate-200 shadow-none',
-      glow: 'border border-[#3B82F6]/20 shadow-lg shadow-[#3B82F6]/5',
+      glow: 'border border-[#1E40AF]/20 shadow-lg shadow-[#1E40AF]/5',
       interactive: `
         border border-slate-200
         shadow-sm
-        hover:shadow-lg hover:border-[#3B82F6]/30 hover:-translate-y-0.5
+        hover:shadow-lg hover:border-[#1E40AF]/30 hover:-translate-y-0.5
         cursor-pointer
       `,
     }

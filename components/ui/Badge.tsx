@@ -26,7 +26,7 @@ export function Badge({
   `
 
   const variants = {
-    primary: 'bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20',
+    primary: 'bg-[#1E40AF]/10 text-[#1E40AF] border border-[#1E40AF]/20',
     success: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
     warning: 'bg-orange-100 text-orange-800 border border-orange-200',
     danger: 'bg-red-100 text-red-700 border border-red-200',
@@ -40,7 +40,7 @@ export function Badge({
   }
 
   const dotColors = {
-    primary: 'bg-[#3B82F6]',
+    primary: 'bg-[#1E40AF]',
     success: 'bg-emerald-500',
     warning: 'bg-orange-500',
     danger: 'bg-red-500',

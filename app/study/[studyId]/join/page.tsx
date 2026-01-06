@@ -67,7 +67,7 @@ export default function JoinPage() {
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
             <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-[#3B82F6] border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
           </div>
           <p className="text-slate-600">Loading study...</p>
         </div>
@@ -98,9 +98,9 @@ export default function JoinPage() {
         {/* Hero Section */}
         <div className="text-center pt-8 mb-8 stagger-children">
           {/* Logo/Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#3B82F6]/10 border border-[#3B82F6]/30 rounded-full mb-6">
-            <div className="w-2 h-2 bg-[#3B82F6] rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-[#3B82F6]">Research Study</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/30 rounded-full mb-6">
+            <div className="w-2 h-2 bg-[#1E40AF] rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-[#1E40AF]">Research Study</span>
           </div>
 
           {/* Headline */}
@@ -127,7 +127,7 @@ export default function JoinPage() {
                 key={index}
                 className="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-[#3B82F6] to-[#2563EB] rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#1E40AF] to-[#1E40AF] rounded-xl flex items-center justify-center flex-shrink-0">
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1 pt-1">

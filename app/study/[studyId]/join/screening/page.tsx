@@ -164,13 +164,13 @@ export default function ScreeningPage() {
               type="date"
               value={typeof currentAnswer === 'string' ? currentAnswer : ''}
               onChange={(e) => setAnswers({ ...answers, [question.id]: e.target.value })}
-              className="w-full px-4 py-4 border border-slate-200 bg-white text-slate-900 rounded-xl text-base focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-shadow"
+              className="w-full px-4 py-4 border border-slate-200 bg-white text-slate-900 rounded-xl text-base focus:ring-2 focus:ring-[#1E40AF] focus:border-[#1E40AF] transition-shadow"
               style={{ minHeight: '52px' }}
             />
             {hasAnswer && (
               <button
                 onClick={() => handleAnswer(currentAnswer)}
-                className="w-full py-4 bg-[#3B82F6] text-white font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
+                className="w-full py-4 bg-[#1E40AF] text-white font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
                 style={{ minHeight: '52px' }}
               >
                 Continue
@@ -186,7 +186,7 @@ export default function ScreeningPage() {
               onClick={() => handleAnswer(true)}
               className={`w-full p-4 text-left rounded-xl border-2 transition-all ${
                 currentAnswer === true
-                  ? 'border-[#3B82F6] bg-[#3B82F6]/10'
+                  ? 'border-[#1E40AF] bg-[#1E40AF]/10'
                   : 'border-slate-200 bg-white active:bg-slate-50'
               }`}
               style={{ minHeight: '56px' }}
@@ -197,7 +197,7 @@ export default function ScreeningPage() {
               onClick={() => handleAnswer(false)}
               className={`w-full p-4 text-left rounded-xl border-2 transition-all ${
                 currentAnswer === false
-                  ? 'border-[#3B82F6] bg-[#3B82F6]/10'
+                  ? 'border-[#1E40AF] bg-[#1E40AF]/10'
                   : 'border-slate-200 bg-white active:bg-slate-50'
               }`}
               style={{ minHeight: '56px' }}
@@ -216,7 +216,7 @@ export default function ScreeningPage() {
                 onClick={() => handleAnswer(option)}
                 className={`w-full p-4 text-left rounded-xl border-2 transition-all ${
                   currentAnswer === option
-                    ? 'border-[#3B82F6] bg-[#3B82F6]/10'
+                    ? 'border-[#1E40AF] bg-[#1E40AF]/10'
                     : 'border-slate-200 bg-white active:bg-slate-50'
                 }`}
                 style={{ minHeight: '56px' }}
@@ -263,7 +263,7 @@ export default function ScreeningPage() {
         </div>
         <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#3B82F6] transition-all duration-300 ease-out"
+            className="h-full bg-[#1E40AF] transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>

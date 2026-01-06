@@ -242,7 +242,7 @@ export default function CreateStudyPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Decorative elements */}
-      <div className="fixed -right-40 top-20 w-96 h-96 bg-[#3B82F6]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed -right-40 top-20 w-96 h-96 bg-[#1E40AF]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="fixed -left-40 bottom-20 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative container-base py-8 sm:py-12">
@@ -257,9 +257,9 @@ export default function CreateStudyPage() {
 
         {/* Header */}
         <div className="text-center mb-10 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#3B82F6]/10 border border-[#3B82F6]/20 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-[#3B82F6]" />
-            <span className="text-xs font-medium text-[#3B82F6]">New Study</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-[#1E40AF]" />
+            <span className="text-xs font-medium text-[#1E40AF]">New Study</span>
           </div>
 
           <h1 className="font-display text-3xl sm:text-4xl text-slate-900 mb-3">
@@ -340,7 +340,7 @@ export default function CreateStudyPage() {
                     className={`
                       px-3 py-1.5 text-sm rounded-full border transition-all duration-150
                       ${intervention === example
-                        ? 'bg-[#3B82F6]/10 border-[#3B82F6]/30 text-[#3B82F6]'
+                        ? 'bg-[#1E40AF]/10 border-[#1E40AF]/30 text-[#1E40AF]'
                         : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
                       }
                     `}

@@ -160,7 +160,7 @@ export default function AdminPage() {
       paused: 'bg-orange-100 text-orange-800 border border-orange-200',
       completed: 'bg-violet-100 text-violet-700 border border-violet-200',
       enrolled: 'bg-orange-100 text-orange-800 border border-orange-200',
-      consented: 'bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20',
+      consented: 'bg-[#1E40AF]/10 text-[#1E40AF] border border-[#1E40AF]/20',
       screening: 'bg-orange-100 text-orange-700 border border-orange-200',
       withdrawn: 'bg-red-100 text-red-700 border border-red-200',
       ineligible: 'bg-red-100 text-red-700 border border-red-200',
@@ -222,7 +222,7 @@ export default function AdminPage() {
         <div className="bg-white rounded-xl border border-slate-200 mb-8">
           <div className="p-6 border-b border-slate-200">
             <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#3B82F6]" />
+              <Calendar className="w-5 h-5 text-[#1E40AF]" />
               Studies ({studies.length})
             </h2>
           </div>
@@ -370,7 +370,7 @@ export default function AdminPage() {
         <div className="bg-white rounded-xl border border-slate-200">
           <div className="p-6 border-b border-slate-200">
             <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#3B82F6]" />
+              <Users className="w-5 h-5 text-[#1E40AF]" />
               All Participants ({participants.length})
             </h2>
           </div>

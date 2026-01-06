@@ -138,7 +138,7 @@ export function PageError({
         {onRetry && (
           <button
             onClick={onRetry}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#3B82F6] text-white font-medium rounded-lg hover:bg-[#2563EB] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E40AF] text-white font-medium rounded-lg hover:bg-[#1E40AF] transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Try again

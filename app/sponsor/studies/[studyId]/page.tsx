@@ -87,7 +87,7 @@ export default function StudyDashboardPage() {
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
             <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-[#3B82F6] border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
           </div>
           <p className="text-slate-600">Loading study...</p>
         </div>
@@ -119,8 +119,8 @@ export default function StudyDashboardPage() {
       label: 'Total Enrolled',
       value: study.stats.enrolled,
       icon: Users,
-      iconBg: 'bg-[#3B82F6]/10',
-      iconColor: 'text-[#3B82F6]',
+      iconBg: 'bg-[#1E40AF]/10',
+      iconColor: 'text-[#1E40AF]',
     },
     {
       label: 'Active',

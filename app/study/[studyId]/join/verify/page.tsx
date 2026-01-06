@@ -167,8 +167,8 @@ function VerifyContent() {
       <MobileContainer withBottomPadding className="pt-8 bg-white">
         {/* Email Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-[#3B82F6]/10 rounded-full flex items-center justify-center">
-            <Mail className="w-8 h-8 text-[#3B82F6]" />
+          <div className="w-16 h-16 bg-[#1E40AF]/10 rounded-full flex items-center justify-center">
+            <Mail className="w-8 h-8 text-[#1E40AF]" />
           </div>
         </div>
 
@@ -199,7 +199,7 @@ function VerifyContent() {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`w-12 h-14 text-center text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-shadow bg-white text-slate-900 ${
+              className={`w-12 h-14 text-center text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-[#1E40AF] focus:border-[#1E40AF] transition-shadow bg-white text-slate-900 ${
                 error ? 'border-red-500 bg-red-50' : 'border-slate-200'
               }`}
               style={{ minWidth: '44px', minHeight: '52px' }}
@@ -228,7 +228,7 @@ function VerifyContent() {
           <button
             onClick={handleResend}
             disabled={isResending}
-            className="text-[#3B82F6] font-medium text-sm py-2 px-4 rounded-lg active:bg-slate-50 disabled:text-slate-400 transition-colors"
+            className="text-[#1E40AF] font-medium text-sm py-2 px-4 rounded-lg active:bg-slate-50 disabled:text-slate-400 transition-colors"
             style={{ minHeight: '44px' }}
           >
             {isResending ? 'Sending...' : 'Resend Code'}
@@ -241,7 +241,7 @@ function VerifyContent() {
         <button
           onClick={() => handleSubmit()}
           disabled={isSubmitting || code.some(d => !d)}
-          className="w-full py-4 bg-[#3B82F6] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-[#1E40AF] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isSubmitting ? 'Verifying...' : 'Verify'}

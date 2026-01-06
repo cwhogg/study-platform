@@ -40,7 +40,7 @@ export function ProgressBar({
         <div
           className={`
             ${sizes[size]}
-            bg-gradient-to-r from-[#3B82F6] to-[#EA580C]
+            bg-gradient-to-r from-[#1E40AF] to-[#EA580C]
             rounded-full
             transition-all duration-700 ease-out
           `}
@@ -110,7 +110,7 @@ export function ProgressRing({
         {/* Gradient definition */}
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="0%" stopColor="#1E40AF" />
             <stop offset="100%" stopColor="#EA580C" />
           </linearGradient>
         </defs>
@@ -153,9 +153,9 @@ export function StepProgress({ steps, currentStep, className = '' }: StepProgres
                   text-sm font-medium
                   transition-all duration-300
                   ${index < currentStep
-                    ? 'bg-[#3B82F6] text-white'
+                    ? 'bg-[#1E40AF] text-white'
                     : index === currentStep
-                      ? 'bg-[#3B82F6] text-white ring-4 ring-[#3B82F6]/20'
+                      ? 'bg-[#1E40AF] text-white ring-4 ring-[#1E40AF]/20'
                       : 'bg-slate-200 text-slate-500'
                   }
                 `}
@@ -183,7 +183,7 @@ export function StepProgress({ steps, currentStep, className = '' }: StepProgres
                 className={`
                   flex-1 h-0.5 mx-2 -mt-6
                   transition-colors duration-300
-                  ${index < currentStep ? 'bg-[#3B82F6]' : 'bg-slate-200'}
+                  ${index < currentStep ? 'bg-[#1E40AF]' : 'bg-slate-200'}
                 `}
               />
             )}

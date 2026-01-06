@@ -242,8 +242,8 @@ export default function BaselinePage() {
     return (
       <MobileContainer centered className="bg-white">
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#3B82F6]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse border border-[#3B82F6]/20">
-            <svg className="w-8 h-8 text-[#3B82F6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="w-16 h-16 bg-[#1E40AF]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse border border-[#1E40AF]/20">
+            <svg className="w-8 h-8 text-[#1E40AF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -265,7 +265,7 @@ export default function BaselinePage() {
         </div>
         <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#3B82F6] transition-all duration-500 ease-out"
+            className="h-full bg-[#1E40AF] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -305,12 +305,12 @@ export default function BaselinePage() {
                 disabled={isTransitioning}
                 className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
                   isSelected
-                    ? 'border-[#3B82F6] bg-[#3B82F6]/10 scale-[0.98]'
+                    ? 'border-[#1E40AF] bg-[#1E40AF]/10 scale-[0.98]'
                     : 'border-slate-200 bg-white active:bg-slate-50 active:scale-[0.98]'
                 }`}
                 style={{ minHeight: '56px' }}
               >
-                <span className={`font-medium ${isSelected ? 'text-[#3B82F6]' : 'text-slate-900'}`}>
+                <span className={`font-medium ${isSelected ? 'text-[#1E40AF]' : 'text-slate-900'}`}>
                   {option.label}
                 </span>
               </button>

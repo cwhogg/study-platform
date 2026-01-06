@@ -21,16 +21,16 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-slate-50">
         {/* Decorative elements */}
-        <div className="absolute -right-40 -top-40 w-96 h-96 bg-[#3B82F6]/5 rounded-full blur-3xl" />
+        <div className="absolute -right-40 -top-40 w-96 h-96 bg-[#1E40AF]/5 rounded-full blur-3xl" />
         <div className="absolute -left-40 top-1/2 w-96 h-96 bg-orange-600/5 rounded-full blur-3xl" />
         <div className="absolute right-1/4 bottom-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
 
         <div className="relative container-wide pt-12 sm:pt-16 pb-20 sm:pb-28">
           <div className="text-center max-w-3xl mx-auto stagger-children">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#3B82F6]/5 border border-[#3B82F6]/10 rounded-full mb-12">
-              <Sparkles className="w-4 h-4 text-[#3B82F6]" />
-              <span className="text-sm font-medium text-[#3B82F6]">AI-Powered Clinical Research</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E40AF]/5 border border-[#1E40AF]/10 rounded-full mb-12">
+              <Sparkles className="w-4 h-4 text-[#1E40AF]" />
+              <span className="text-sm font-medium text-[#1E40AF]">AI-Powered Clinical Research</span>
             </div>
 
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-6 text-balance leading-tight tracking-tight">
@@ -88,16 +88,16 @@ export default function Home() {
               {/* Sponsor Path */}
               <Link
                 href="/sponsor"
-                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#1D4ED8]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
+                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#1E40AF]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
               >
-                <div className="w-14 h-14 bg-[#1D4ED8] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
+                <div className="w-14 h-14 bg-[#1E40AF] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
                   <FileText className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-lg font-semibold text-slate-900 mb-2">Create a Study</h2>
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
                   Design and launch an observational study with AI-generated protocols.
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-[#1D4ED8] font-medium text-sm group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[#1E40AF] font-medium text-sm group-hover:gap-2.5 transition-all">
                   Sponsor Demo
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -140,10 +140,10 @@ export default function Home() {
                 title: 'Define Intervention',
                 description: 'Enter what you\'re studying. AI analyzes the clinical context.',
                 icon: Sparkles,
-                iconBg: 'bg-[#3B82F6]',
+                iconBg: 'bg-[#1E40AF]',
                 iconColor: 'text-white',
-                stepColor: 'text-[#3B82F6]',
-                hoverBorder: 'hover:border-[#3B82F6]/40',
+                stepColor: 'text-[#1E40AF]',
+                hoverBorder: 'hover:border-[#1E40AF]/40',
               },
               {
                 step: '02',
@@ -213,7 +213,7 @@ export default function Home() {
         <div className="container-wide py-20 sm:py-24">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-700 mb-6 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-[#3B82F6]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#1E40AF]" />
               AI Agents
             </div>
             <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
@@ -225,8 +225,8 @@ export default function Home() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#3B82F6]/40 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 bg-[#3B82F6] rounded-xl flex items-center justify-center mb-4 shadow-md">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#1E40AF]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#1E40AF] rounded-xl flex items-center justify-center mb-4 shadow-md">
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Protocol Agent</h3>
@@ -387,7 +387,7 @@ export default function Home() {
               <div className="bg-slate-50 rounded-2xl border border-slate-200 p-8">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-[#3B82F6] rounded-lg flex items-center justify-center shadow-sm">
+                    <div className="w-10 h-10 bg-[#1E40AF] rounded-lg flex items-center justify-center shadow-sm">
                       <FileText className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
