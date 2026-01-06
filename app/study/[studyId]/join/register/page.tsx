@@ -146,7 +146,7 @@ export default function RegisterPage() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-4 border border-slate-200 bg-white text-slate-900 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-[#1E3A5F] focus:border-[#1E3A5F] transition-shadow"
+              className="w-full px-4 py-4 border border-slate-200 bg-white text-slate-900 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-shadow"
               placeholder="you@example.com"
               style={{ minHeight: '52px' }}
             />
@@ -167,7 +167,7 @@ export default function RegisterPage() {
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-4 pr-12 border border-slate-200 bg-white text-slate-900 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-[#1E3A5F] focus:border-[#1E3A5F] transition-shadow"
+                className="w-full px-4 py-4 pr-12 border border-slate-200 bg-white text-slate-900 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-shadow"
                 placeholder={copy.passwordHelp || 'At least 8 characters'}
                 style={{ minHeight: '52px' }}
               />
@@ -194,7 +194,7 @@ export default function RegisterPage() {
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-4 pr-12 border border-slate-200 bg-white text-slate-900 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-[#1E3A5F] focus:border-[#1E3A5F] transition-shadow"
+                className="w-full px-4 py-4 pr-12 border border-slate-200 bg-white text-slate-900 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-shadow"
                 placeholder="Confirm your password"
                 style={{ minHeight: '52px' }}
               />
@@ -223,7 +223,7 @@ export default function RegisterPage() {
         <button
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="w-full py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-[#3B82F6] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isSubmitting ? 'Creating Account...' : (copy.buttonText || 'Continue')}

@@ -10,9 +10,9 @@ export default function SponsorPage() {
         <div className="relative container-wide py-20 sm:py-28">
           <div className="max-w-3xl mx-auto text-center stagger-children">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E3A5F]/10 border border-[#1E3A5F]/20 rounded-full mb-8">
-              <Sparkles className="w-4 h-4 text-[#1E3A5F]" />
-              <span className="text-sm font-medium text-[#1E3A5F]">AI-Powered Research Platform</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#3B82F6]/10 border border-[#3B82F6]/20 rounded-full mb-8">
+              <Sparkles className="w-4 h-4 text-[#3B82F6]" />
+              <span className="text-sm font-medium text-[#3B82F6]">AI-Powered Research Platform</span>
             </div>
 
             {/* Headline */}
@@ -65,8 +65,8 @@ export default function SponsorPage() {
                 step: '01',
                 title: 'Define Intervention',
                 description: 'Enter the treatment or intervention you want to study. Our AI handles the rest.',
-                iconBg: 'bg-[#1E3A5F]',
-                stepColor: 'text-[#1E3A5F]',
+                iconBg: 'bg-[#3B82F6]',
+                stepColor: 'text-[#3B82F6]',
               },
               {
                 icon: Shield,
@@ -164,7 +164,7 @@ export default function SponsorPage() {
             {/* Right: Example study card */}
             <div className="relative">
               {/* Decorative gradient */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E3A5F]/10 via-transparent to-[#6D28D9]/10 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-gradient-to-br from-[#3B82F6]/10 via-transparent to-[#6D28D9]/10 rounded-3xl blur-2xl" />
 
               <div className="relative bg-white rounded-2xl border border-slate-200 shadow-md p-8">
                 <div className="flex items-center justify-between mb-6">
@@ -209,9 +209,9 @@ export default function SponsorPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-[#1E3A5F]/5 border-t border-slate-200">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-[#3B82F6]/5 border-t border-slate-200">
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F]/5 via-transparent to-[#6D28D9]/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/5 via-transparent to-[#6D28D9]/5" />
 
         <div className="relative container-wide py-16 sm:py-20 text-center">
           <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">

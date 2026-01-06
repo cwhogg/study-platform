@@ -43,7 +43,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               focus:outline-none
               ${error
                 ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-slate-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10'
+                : 'border-slate-200 focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/10'
               }
               ${leftIcon ? 'pl-11' : ''}
               ${rightIcon ? 'pr-11' : ''}
@@ -105,7 +105,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             focus:outline-none
             ${error
               ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-slate-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10'
+              : 'border-slate-200 focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/10'
             }
             ${className}
           `}

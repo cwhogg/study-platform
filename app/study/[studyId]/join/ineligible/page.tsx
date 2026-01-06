@@ -81,7 +81,7 @@ export default function IneligiblePage() {
       <MobileBottomAction>
         <a
           href="/"
-          className="block w-full py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
+          className="block w-full py-4 bg-[#3B82F6] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
           style={{ minHeight: '52px' }}
         >
           {buttonText}

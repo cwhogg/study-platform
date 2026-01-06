@@ -21,16 +21,16 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-slate-50">
         {/* Decorative elements */}
-        <div className="absolute -right-40 -top-40 w-96 h-96 bg-[#1E3A5F]/5 rounded-full blur-3xl" />
+        <div className="absolute -right-40 -top-40 w-96 h-96 bg-[#3B82F6]/5 rounded-full blur-3xl" />
         <div className="absolute -left-40 top-1/2 w-96 h-96 bg-orange-600/5 rounded-full blur-3xl" />
         <div className="absolute right-1/4 bottom-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
 
         <div className="relative container-wide pt-12 sm:pt-16 pb-20 sm:pb-28">
           <div className="text-center max-w-3xl mx-auto stagger-children">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E3A5F]/5 border border-[#1E3A5F]/10 rounded-full mb-12">
-              <Sparkles className="w-4 h-4 text-[#1E3A5F]" />
-              <span className="text-sm font-medium text-[#1E3A5F]">AI-Powered Clinical Research</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#3B82F6]/5 border border-[#3B82F6]/10 rounded-full mb-12">
+              <Sparkles className="w-4 h-4 text-[#3B82F6]" />
+              <span className="text-sm font-medium text-[#3B82F6]">AI-Powered Clinical Research</span>
             </div>
 
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-6 text-balance leading-tight tracking-tight">
@@ -140,10 +140,10 @@ export default function Home() {
                 title: 'Define Intervention',
                 description: 'Enter what you\'re studying. AI generates the complete protocol.',
                 icon: Sparkles,
-                iconBg: 'bg-[#1E3A5F]',
+                iconBg: 'bg-[#3B82F6]',
                 iconColor: 'text-white',
-                stepColor: 'text-[#1E3A5F]',
-                hoverBorder: 'hover:border-[#1E3A5F]/40',
+                stepColor: 'text-[#3B82F6]',
+                hoverBorder: 'hover:border-[#3B82F6]/40',
               },
               {
                 step: '02',
@@ -203,7 +203,7 @@ export default function Home() {
         <div className="container-wide py-20 sm:py-24">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-700 mb-6 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-[#1E3A5F]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#3B82F6]" />
               AI Agents
             </div>
             <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
@@ -215,8 +215,8 @@ export default function Home() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#1E3A5F]/40 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 bg-[#1E3A5F] rounded-xl flex items-center justify-center mb-4 shadow-md">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#3B82F6]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#3B82F6] rounded-xl flex items-center justify-center mb-4 shadow-md">
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Protocol Agent</h3>
@@ -259,7 +259,7 @@ export default function Home() {
       </section>
 
       {/* Demo Case Study */}
-      <section className="relative overflow-hidden bg-[#1E3A5F] border-t border-slate-200">
+      <section className="relative overflow-hidden bg-[#3B82F6] border-t border-slate-200">
 
         <div className="relative container-wide py-20 sm:py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -367,7 +367,7 @@ export default function Home() {
               <div className="bg-slate-50 rounded-2xl border border-slate-200 p-8">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-[#1E3A5F] rounded-lg flex items-center justify-center shadow-sm">
+                    <div className="w-10 h-10 bg-[#3B82F6] rounded-lg flex items-center justify-center shadow-sm">
                       <FileText className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">

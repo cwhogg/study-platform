@@ -123,7 +123,7 @@ export default function ConsentQuizPage() {
     return (
       <MobileContainer withBottomPadding className="pt-6 bg-white">
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
-          <Loader2 className="w-8 h-8 text-[#1E3A5F] animate-spin mb-4" />
+          <Loader2 className="w-8 h-8 text-[#3B82F6] animate-spin mb-4" />
           <p className="text-slate-600">Loading questions...</p>
         </div>
       </MobileContainer>
@@ -138,7 +138,7 @@ export default function ConsentQuizPage() {
           <p className="text-slate-600 mb-4">No questions available.</p>
           <button
             onClick={() => router.push(`/study/${studyId}/join/consent/sign`)}
-            className="px-6 py-3 bg-[#1E3A5F] text-white rounded-xl"
+            className="px-6 py-3 bg-[#3B82F6] text-white rounded-xl"
           >
             Continue to Sign
           </button>
@@ -188,7 +188,7 @@ export default function ConsentQuizPage() {
               }
             } else {
               buttonClasses += isSelected
-                ? ' border-[#1E3A5F] bg-[#1E3A5F]/10'
+                ? ' border-[#3B82F6] bg-[#3B82F6]/10'
                 : ' border-slate-200 bg-slate-50 active:bg-slate-100'
             }
 
@@ -253,7 +253,7 @@ export default function ConsentQuizPage() {
         <button
           onClick={handleContinue}
           disabled={!showFeedback}
-          className="w-full py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-[#3B82F6] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isLastQuestion ? 'Continue to Sign' : 'Next Question'}

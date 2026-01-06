@@ -138,8 +138,8 @@ function CompletePageContent() {
         <div className="space-y-4">
           {/* Next Check-in */}
           <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-10 h-10 bg-[#1E3A5F]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-5 h-5 text-[#1E3A5F]" />
+            <div className="w-10 h-10 bg-[#3B82F6]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5 text-[#3B82F6]" />
             </div>
             <div>
               <div className="font-medium text-slate-900">Next check-in</div>
@@ -154,8 +154,8 @@ function CompletePageContent() {
 
           {/* Baseline Labs */}
           <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-10 h-10 bg-[#1E3A5F]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <FlaskConical className="w-5 h-5 text-[#1E3A5F]" />
+            <div className="w-10 h-10 bg-[#3B82F6]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FlaskConical className="w-5 h-5 text-[#3B82F6]" />
             </div>
             <div>
               <div className="font-medium text-slate-900">Baseline labs</div>
@@ -167,8 +167,8 @@ function CompletePageContent() {
 
           {/* Email Confirmation */}
           <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-10 h-10 bg-[#1E3A5F]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Mail className="w-5 h-5 text-[#1E3A5F]" />
+            <div className="w-10 h-10 bg-[#3B82F6]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Mail className="w-5 h-5 text-[#3B82F6]" />
             </div>
             <div>
               <div className="font-medium text-slate-900">Check your email</div>
@@ -192,7 +192,7 @@ function CompletePageContent() {
       <MobileBottomAction>
         <Link
           href={`/study/${studyId}/dashboard`}
-          className="block w-full py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
+          className="block w-full py-4 bg-[#3B82F6] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
           style={{ minHeight: '52px' }}
         >
           {copy.buttonText || DEFAULT_ENROLLMENT_COMPLETE.buttonText}
@@ -207,7 +207,7 @@ export default function CompletePage() {
     <Suspense fallback={
       <MobileContainer centered className="bg-white">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-[#1E3A5F] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-8 h-8 border-2 border-[#3B82F6] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-slate-600">Loading...</p>
         </div>
       </MobileContainer>

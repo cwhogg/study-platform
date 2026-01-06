@@ -142,7 +142,7 @@ export default function ConsentPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col h-full bg-white items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#1E3A5F] animate-spin mb-4" />
+        <Loader2 className="w-8 h-8 text-[#3B82F6] animate-spin mb-4" />
         <p className="text-slate-600">Loading consent document...</p>
       </div>
     )
@@ -155,7 +155,7 @@ export default function ConsentPage() {
         <p className="text-slate-600 mb-4">Consent document not available.</p>
         <button
           onClick={() => router.push(`/study/${studyId}/join/consent/quiz`)}
-          className="px-6 py-3 bg-[#1E3A5F] text-white rounded-xl"
+          className="px-6 py-3 bg-[#3B82F6] text-white rounded-xl"
         >
           Continue
         </button>
@@ -194,7 +194,7 @@ export default function ConsentPage() {
         </div>
         <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#1E3A5F] transition-all duration-300 ease-out"
+            className="h-full bg-[#3B82F6] transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -221,9 +221,9 @@ export default function ConsentPage() {
               }}
               className={`w-2.5 h-2.5 rounded-full transition-colors ${
                 idx === currentSection
-                  ? 'bg-[#1E3A5F]'
+                  ? 'bg-[#3B82F6]'
                   : readSections.has(idx)
-                  ? 'bg-[#1E3A5F]/60'
+                  ? 'bg-[#3B82F6]/60'
                   : 'bg-slate-300'
               }`}
               style={{ minWidth: '10px', minHeight: '10px' }}
@@ -247,7 +247,7 @@ export default function ConsentPage() {
           )}
           <button
             onClick={handleContinue}
-            className="flex-1 py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
+            className="flex-1 py-4 bg-[#3B82F6] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
             style={{ minHeight: '52px' }}
           >
             {isLastSection ? 'Continue to Quiz' : 'Continue'}

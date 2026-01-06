@@ -199,7 +199,7 @@ export default function DashboardPage() {
           <div className="text-center animate-fade-in">
             <div className="w-12 h-12 mx-auto mb-4 relative">
               <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-              <div className="absolute inset-0 rounded-full border-2 border-[#1E3A5F] border-t-transparent animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-[#3B82F6] border-t-transparent animate-spin" />
             </div>
             <p className="text-slate-600">Loading your dashboard...</p>
           </div>
@@ -255,7 +255,7 @@ export default function DashboardPage() {
           className="mb-6 animate-fade-in-up relative overflow-hidden"
         >
           {/* Decorative gradient */}
-          <div className="absolute -right-8 -top-8 w-32 h-32 bg-[#1E3A5F]/10 rounded-full blur-2xl" />
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-[#3B82F6]/10 rounded-full blur-2xl" />
 
           <div className="relative">
             <div className="flex items-center gap-2 mb-3">

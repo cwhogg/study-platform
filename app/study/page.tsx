@@ -87,8 +87,8 @@ export default function StudyPage() {
       <div className="max-w-lg mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-[#1E3A5F]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <ClipboardList className="w-8 h-8 text-[#1E3A5F]" />
+          <div className="w-16 h-16 bg-[#3B82F6]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <ClipboardList className="w-8 h-8 text-[#3B82F6]" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mb-2">Join a Study</h1>
           <p className="text-slate-600">
@@ -113,13 +113,13 @@ export default function StudyPage() {
                   if (error) setError('')
                 }}
                 placeholder="Enter study code or ID"
-                className="w-full pl-10 pr-4 py-3 border border-slate-200 bg-white text-slate-900 placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-[#1E3A5F] focus:border-[#1E3A5F]"
+                className="w-full pl-10 pr-4 py-3 border border-slate-200 bg-white text-slate-900 placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6]"
               />
             </div>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-[#1E3A5F] text-white font-medium rounded-lg hover:bg-[#152a45] disabled:bg-slate-300 transition-colors"
+              className="px-6 py-3 bg-[#3B82F6] text-white font-medium rounded-lg hover:bg-[#152a45] disabled:bg-slate-300 transition-colors"
             >
               {isSubmitting ? 'Checking...' : 'Go'}
             </button>
@@ -156,16 +156,16 @@ export default function StudyPage() {
                 <Link
                   key={study.id}
                   href={`/study/${study.id}/join`}
-                  className="block bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-4 hover:border-[#1E3A5F] hover:shadow-md transition-all group"
+                  className="block bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-4 hover:border-[#3B82F6] hover:shadow-md transition-all group"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold text-slate-900 group-hover:text-[#1E3A5F] transition-colors">
+                      <h3 className="font-semibold text-slate-900 group-hover:text-[#3B82F6] transition-colors">
                         {study.name}
                       </h3>
                       <p className="text-sm text-slate-600">{study.intervention}</p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-slate-600 group-hover:text-[#1E3A5F] transition-colors" />
+                    <ArrowRight className="w-5 h-5 text-slate-600 group-hover:text-[#3B82F6] transition-colors" />
                   </div>
                 </Link>
               ))}

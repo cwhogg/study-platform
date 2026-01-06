@@ -339,7 +339,7 @@ export default function AssessmentPage() {
         </div>
         <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#1E3A5F] transition-all duration-500 ease-out"
+            className="h-full bg-[#3B82F6] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -379,12 +379,12 @@ export default function AssessmentPage() {
                 disabled={isTransitioning}
                 className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
                   isSelected
-                    ? 'border-[#1E3A5F] bg-[#1E3A5F]/10 scale-[0.98]'
+                    ? 'border-[#3B82F6] bg-[#3B82F6]/10 scale-[0.98]'
                     : 'border-slate-200 bg-white active:bg-slate-50 active:scale-[0.98]'
                 }`}
                 style={{ minHeight: '56px' }}
               >
-                <span className={`font-medium ${isSelected ? 'text-[#1E3A5F]' : 'text-slate-900'}`}>
+                <span className={`font-medium ${isSelected ? 'text-[#3B82F6]' : 'text-slate-900'}`}>
                   {option.label}
                 </span>
               </button>

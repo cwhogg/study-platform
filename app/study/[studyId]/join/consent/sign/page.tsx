@@ -45,7 +45,7 @@ export default function ConsentSignPage() {
       <MobileContainer withBottomPadding className="pt-6 bg-white">
         {/* Header */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-[#1E3A5F] rounded-full flex items-center justify-center">
+          <div className="w-16 h-16 bg-[#3B82F6] rounded-full flex items-center justify-center">
             <FileCheck className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function ConsentSignPage() {
               autoComplete="name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-4 py-4 border border-slate-200 bg-white text-slate-900 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-[#1E3A5F] focus:border-[#1E3A5F] transition-shadow"
+              className="w-full px-4 py-4 border border-slate-200 bg-white text-slate-900 placeholder-slate-400 rounded-xl text-base focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-shadow"
               placeholder="Your full name"
               style={{ minHeight: '52px' }}
             />
@@ -89,7 +89,7 @@ export default function ConsentSignPage() {
                 onClick={() => setAgreed(!agreed)}
                 className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
                   agreed
-                    ? 'bg-[#1E3A5F] border-[#1E3A5F]'
+                    ? 'bg-[#3B82F6] border-[#3B82F6]'
                     : 'bg-white border-slate-200'
                 }`}
                 style={{ minWidth: '24px', minHeight: '24px' }}
@@ -145,7 +145,7 @@ export default function ConsentSignPage() {
         <button
           onClick={handleSubmit}
           disabled={!canSubmit}
-          className="w-full py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-[#3B82F6] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isSubmitting ? 'Signing...' : 'Sign & Continue'}
