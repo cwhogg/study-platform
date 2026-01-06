@@ -35,25 +35,24 @@ export default function Home() {
 
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-100 mb-6 text-balance leading-tight">
               Proove{' '}
-              <span className="relative inline-flex flex-col items-start align-baseline">
-                {/* "Everything" - prominent correction with glow */}
+              <span className="relative inline-block">
+                {/* "Everything" - floating above */}
                 <span
-                  className="hero-everything text-cyan-400 text-[0.75em] font-medium tracking-tight
+                  className="hero-everything absolute -top-6 sm:-top-8 lg:-top-10 left-0
+                             text-cyan-400 text-lg sm:text-xl lg:text-2xl font-medium tracking-tight
                              drop-shadow-[0_0_25px_rgba(34,211,238,0.5)]
                              animate-fade-in-up opacity-0"
                   style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
                 >
                   Everything
                 </span>
-                {/* "Anything" - smaller, muted, with animated strikethrough */}
-                <span className="relative text-slate-600 text-[0.5em] -mt-2 sm:-mt-3">
-                  <span className="relative">
-                    Anything
-                    {/* Animated strikethrough line */}
-                    <span
-                      className="absolute left-0 right-0 top-1/2 h-0.5 bg-gradient-to-r from-slate-500 to-slate-600 animate-strike"
-                    />
-                  </span>
+                {/* "Anything" - inline with strikethrough */}
+                <span className="relative text-slate-500">
+                  Anything
+                  {/* Animated strikethrough line */}
+                  <span
+                    className="absolute left-0 right-0 top-1/2 h-[3px] bg-gradient-to-r from-slate-500 to-slate-600 animate-strike -rotate-6"
+                  />
                 </span>
               </span>
             </h1>
