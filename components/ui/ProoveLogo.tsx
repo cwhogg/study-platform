@@ -17,10 +17,10 @@ export function ProoveLogo({ className = '', size = 36 }: ProoveLogoProps) {
       className={className}
     >
       <defs>
-        {/* Primary brand gradient - teal */}
+        {/* Primary brand gradient - deep vibrant blue */}
         <linearGradient id="proove-brand-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#14B8A6" />
-          <stop offset="100%" stopColor="#0891B2" />
+          <stop offset="0%" stopColor="#3B82F6" />
+          <stop offset="100%" stopColor="#2563EB" />
         </linearGradient>
 
         {/* Glow effect */}
