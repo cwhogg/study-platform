@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { ConsentContent } from '@/components/participant/ConsentContent'
 import { toTitleCase } from '@/lib/utils'
 
 // Types for AI-generated consent
@@ -430,23 +431,8 @@ function ConsentReviewContent() {
                 )}
               </button>
               {expandedSections.has(section.id) && (
-                <div className="px-4 pb-4 prose prose-sm prose-slate max-w-none">
-                  {section.content.split('\n').map((paragraph, index) => {
-                    if (paragraph.startsWith('- ')) {
-                      return (
-                        <li key={index} className="text-slate-700 ml-4">
-                          {paragraph.replace('- ', '')}
-                        </li>
-                      )
-                    } else if (paragraph.trim()) {
-                      return (
-                        <p key={index} className="text-slate-700 mb-2">
-                          {paragraph}
-                        </p>
-                      )
-                    }
-                    return null
-                  })}
+                <div className="px-4 pb-4">
+                  <ConsentContent content={section.content} />
                 </div>
               )}
             </div>

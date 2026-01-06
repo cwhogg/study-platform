@@ -500,24 +500,22 @@ function ConfigureStudyContent() {
                   value={option.name}
                   checked={primaryEndpoint === option.name}
                   onChange={(e) => setPrimaryEndpoint(e.target.value)}
-                  className="w-4 h-4 mt-0.5 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                  className="w-4 h-4 mt-1.5 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
                 />
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-slate-900 font-medium">{option.name}</span>
-                    {option.suggestedInstrument && (
-                      <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
-                        {option.suggestedInstrument}
-                      </span>
-                    )}
-                  </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-slate-900">{option.name}</div>
+                  {option.confidence === 'high' && (
+                    <span className="inline-flex text-emerald-600 text-xs font-medium bg-emerald-100 px-2 py-1 rounded-full border border-emerald-200 mt-2">High confidence</span>
+                  )}
+                  {option.suggestedInstrument && (
+                    <div className="bg-slate-100 rounded-lg px-3 py-2 text-sm text-slate-600 mt-2">
+                      {option.suggestedInstrument}
+                    </div>
+                  )}
                   {option.rationale && (
-                    <p className="text-sm text-slate-600 mt-0.5">{option.rationale}</p>
+                    <p className="text-sm text-slate-600 mt-2">{option.rationale}</p>
                   )}
                 </div>
-                {option.confidence === 'high' && (
-                  <span className="text-emerald-600 text-xs font-medium bg-emerald-100 px-2 py-1 rounded-full whitespace-nowrap border border-emerald-200">High confidence</span>
-                )}
               </label>
             ))}
           </div>
@@ -543,19 +541,20 @@ function ConfigureStudyContent() {
                     type="checkbox"
                     checked={secondaryEndpoints.includes(option.name)}
                     onChange={(e) => handleSecondaryEndpointChange(option.name, e.target.checked)}
-                    className="w-4 h-4 mt-0.5 text-[#1E40AF] border-slate-300 bg-white rounded focus:ring-[#1E40AF]"
+                    className="w-4 h-4 mt-1.5 text-[#1E40AF] border-slate-300 bg-white rounded focus:ring-[#1E40AF]"
                   />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-slate-900 font-medium">{option.name}</span>
-                      {option.suggestedInstrument && (
-                        <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
-                          {option.suggestedInstrument}
-                        </span>
-                      )}
-                    </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-slate-900">{option.name}</div>
+                    {option.confidence === 'high' && (
+                      <span className="inline-flex text-emerald-600 text-xs font-medium bg-emerald-100 px-2 py-1 rounded-full border border-emerald-200 mt-2">High confidence</span>
+                    )}
+                    {option.suggestedInstrument && (
+                      <div className="bg-slate-100 rounded-lg px-3 py-2 text-sm text-slate-600 mt-2">
+                        {option.suggestedInstrument}
+                      </div>
+                    )}
                     {option.rationale && (
-                      <p className="text-sm text-slate-600 mt-0.5">{option.rationale}</p>
+                      <p className="text-sm text-slate-600 mt-2">{option.rationale}</p>
                     )}
                   </div>
                 </label>
