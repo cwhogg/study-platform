@@ -336,7 +336,7 @@ function ReviewProtocolContent() {
           <ArrowLeft className="w-4 h-4" />
           Back
         </Link>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full text-xs font-medium text-[#1E40AF] mb-4">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full text-xs font-medium text-[#1E40AF] mb-4 w-fit">
           <Sparkles className="w-3.5 h-3.5" />
           Generated Protocol
         </div>
