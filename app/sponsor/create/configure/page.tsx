@@ -6,6 +6,7 @@ import { ArrowRight, ArrowLeft, Info, Sparkles, Loader2, AlertTriangle } from 'l
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { toTitleCase } from '@/lib/utils'
 
 // Types for AI discovery response
 interface EndpointOption {
@@ -381,7 +382,7 @@ function ConfigureStudyContent() {
       <div className="mb-8 animate-fade-in">
         <Link
           href="/sponsor/create"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-4"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-4 block w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -390,7 +391,7 @@ function ConfigureStudyContent() {
           <Sparkles className="w-3.5 h-3.5" />
           Configure Study
         </div>
-        <h1 className="font-display text-2xl sm:text-3xl text-slate-900">{intervention}</h1>
+        <h1 className="font-display text-2xl sm:text-3xl text-slate-900">{toTitleCase(intervention)}</h1>
         {discoveryData?.summary && (
           <p className="mt-2 text-slate-600">{discoveryData.summary}</p>
         )}
