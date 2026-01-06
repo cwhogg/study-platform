@@ -31,38 +31,38 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       font-medium
       rounded-2xl
       transition-all duration-200
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white
       disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
       active:scale-[0.98]
     `
 
     const variants = {
       primary: `
-        bg-gradient-to-br from-indigo-600 to-indigo-500
+        bg-[#1E3A5F]
         text-white
-        shadow-lg shadow-indigo-500/25
-        hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5
-        focus-visible:ring-indigo-500
+        shadow-md
+        hover:bg-[#2D4A6F] hover:shadow-lg hover:-translate-y-0.5
+        focus-visible:ring-[#1E3A5F]
       `,
       secondary: `
-        bg-slate-800
-        text-slate-200
-        border border-slate-700
+        bg-white
+        text-slate-700
+        border border-slate-200
         shadow-sm
-        hover:bg-slate-700 hover:border-slate-600 hover:shadow-md
+        hover:bg-slate-50 hover:border-slate-300 hover:shadow-md
         focus-visible:ring-slate-400
       `,
       ghost: `
         bg-transparent
-        text-slate-400
-        hover:bg-slate-800 hover:text-slate-200
+        text-slate-600
+        hover:bg-slate-100 hover:text-slate-900
         focus-visible:ring-slate-400
       `,
       danger: `
-        bg-gradient-to-br from-red-600 to-red-500
+        bg-red-600
         text-white
-        shadow-lg shadow-red-500/25
-        hover:shadow-xl hover:shadow-red-500/30 hover:-translate-y-0.5
+        shadow-md
+        hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5
         focus-visible:ring-red-500
       `,
     }

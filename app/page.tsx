@@ -36,20 +36,20 @@ export default function Home() {
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-6 text-balance leading-tight tracking-tight">
               Proove{' '}
               <span className="relative inline-block">
-                {/* "Everything" - amber gradient, bold, above "Anything" */}
+                {/* "Everything" - amber gradient, bold, above "Something" */}
                 <span
                   className="absolute -top-[0.9em] left-0
                              text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-600
-                             text-[0.79em] font-bold tracking-tight
+                             text-[0.9em] font-bold tracking-tight
                              drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]
                              animate-fade-in-up opacity-0"
                   style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
                 >
                   Everything
                 </span>
-                {/* "Anything" - muted, lighter weight, with amber hand-drawn strikethrough */}
+                {/* "Something" - muted, lighter weight, with amber hand-drawn strikethrough */}
                 <span className="relative text-slate-400 font-normal">
-                  Anything
+                  Something
                   {/* Hand-drawn amber strikethrough - primary line */}
                   <svg
                     className="absolute -left-[5%] top-[40%] w-[110%] h-[50%] overflow-visible animate-strike"

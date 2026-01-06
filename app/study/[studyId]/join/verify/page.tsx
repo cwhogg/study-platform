@@ -164,25 +164,25 @@ function VerifyContent() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-8 bg-slate-900">
+      <MobileContainer withBottomPadding className="pt-8 bg-white">
         {/* Email Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-indigo-900 rounded-full flex items-center justify-center">
-            <Mail className="w-8 h-8 text-indigo-400" />
+          <div className="w-16 h-16 bg-[#1E3A5F]/10 rounded-full flex items-center justify-center">
+            <Mail className="w-8 h-8 text-[#1E3A5F]" />
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-slate-100 text-center mb-2">
+        <h1 className="text-2xl font-bold text-slate-900 text-center mb-2">
           Check Your Email
         </h1>
-        <p className="text-slate-400 text-center mb-8">
+        <p className="text-slate-600 text-center mb-8">
           We sent a verification code to<br />
-          <span className="font-medium text-slate-100">{email}</span>
+          <span className="font-medium text-slate-900">{email}</span>
         </p>
 
         {/* Demo Mode Hint */}
         {isDemo && (
-          <div className="mb-6 p-3 bg-amber-900/50 border border-amber-700 rounded-xl text-amber-300 text-sm text-center">
+          <div className="mb-6 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm text-center">
             Demo mode: Enter any 6-digit code to continue
           </div>
         )}
@@ -199,8 +199,8 @@ function VerifyContent() {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`w-12 h-14 text-center text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow bg-slate-800 text-slate-100 ${
-                error ? 'border-red-500 bg-red-900/50' : 'border-slate-600'
+              className={`w-12 h-14 text-center text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-[#1E3A5F] focus:border-[#1E3A5F] transition-shadow bg-white text-slate-900 ${
+                error ? 'border-red-500 bg-red-50' : 'border-slate-200'
               }`}
               style={{ minWidth: '44px', minHeight: '52px' }}
             />
@@ -209,14 +209,14 @@ function VerifyContent() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-xl text-red-300 text-sm text-center">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm text-center">
             {error}
           </div>
         )}
 
         {/* Success Message */}
         {resendSuccess && (
-          <div className="mb-4 p-3 bg-emerald-900/50 border border-emerald-700 rounded-xl text-emerald-300 text-sm text-center flex items-center justify-center gap-2">
+          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-sm text-center flex items-center justify-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             Verification code sent!
           </div>
@@ -224,11 +224,11 @@ function VerifyContent() {
 
         {/* Resend Link */}
         <div className="text-center">
-          <p className="text-slate-400 text-sm mb-2">Didn&apos;t receive the code?</p>
+          <p className="text-slate-600 text-sm mb-2">Didn&apos;t receive the code?</p>
           <button
             onClick={handleResend}
             disabled={isResending}
-            className="text-indigo-400 font-medium text-sm py-2 px-4 rounded-lg active:bg-slate-800 disabled:text-slate-500 transition-colors"
+            className="text-[#1E3A5F] font-medium text-sm py-2 px-4 rounded-lg active:bg-slate-50 disabled:text-slate-400 transition-colors"
             style={{ minHeight: '44px' }}
           >
             {isResending ? 'Sending...' : 'Resend Code'}
@@ -241,7 +241,7 @@ function VerifyContent() {
         <button
           onClick={() => handleSubmit()}
           disabled={isSubmitting || code.some(d => !d)}
-          className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isSubmitting ? 'Verifying...' : 'Verify'}
@@ -253,7 +253,7 @@ function VerifyContent() {
 
 export default function VerifyPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-slate-900 text-slate-400">Loading...</div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-white text-slate-600">Loading...</div>}>
       <VerifyContent />
     </Suspense>
   )

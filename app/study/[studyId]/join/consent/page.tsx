@@ -125,18 +125,18 @@ export default function ConsentPage() {
   const section = consentSections[currentSection]
 
   return (
-    <div className="flex flex-col h-full bg-slate-900">
+    <div className="flex flex-col h-full bg-white">
       {/* Progress Header */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-slate-800">
+      <div className="flex-shrink-0 px-4 py-3 border-b border-slate-200">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-400">CONSENT</span>
-          <span className="text-sm text-slate-500">
+          <span className="text-sm font-medium text-slate-600">CONSENT</span>
+          <span className="text-sm text-slate-600">
             {currentSection + 1} of {totalSections}
           </span>
         </div>
-        <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-indigo-600 transition-all duration-300 ease-out"
+            className="h-full bg-[#1E3A5F] transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -147,19 +147,19 @@ export default function ConsentPage() {
         ref={contentRef}
         className="flex-1 overflow-y-auto px-4 py-6 pb-32"
       >
-        <h2 className="text-xl font-bold text-slate-100 mb-4">
+        <h2 className="text-xl font-bold text-slate-900 mb-4">
           {section.title}
         </h2>
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none">
           {section.content.split('\n\n').map((paragraph, idx) => (
-            <p key={idx} className="text-slate-300 mb-4 leading-relaxed whitespace-pre-line">
+            <p key={idx} className="text-slate-700 mb-4 leading-relaxed whitespace-pre-line">
               {paragraph}
             </p>
           ))}
         </div>
 
         {/* Section Navigation Dots */}
-        <div className="flex justify-center gap-2 mt-8 pt-4 border-t border-slate-800">
+        <div className="flex justify-center gap-2 mt-8 pt-4 border-t border-slate-200">
           {consentSections.map((_, idx) => (
             <button
               key={idx}
@@ -169,10 +169,10 @@ export default function ConsentPage() {
               }}
               className={`w-2.5 h-2.5 rounded-full transition-colors ${
                 idx === currentSection
-                  ? 'bg-indigo-600'
+                  ? 'bg-[#1E3A5F]'
                   : readSections.has(idx)
-                  ? 'bg-indigo-400'
-                  : 'bg-slate-600'
+                  ? 'bg-[#1E3A5F]/60'
+                  : 'bg-slate-300'
               }`}
               style={{ minWidth: '10px', minHeight: '10px' }}
               aria-label={`Go to section ${idx + 1}`}
@@ -187,7 +187,7 @@ export default function ConsentPage() {
           {currentSection > 0 && (
             <button
               onClick={handleBack}
-              className="px-6 py-4 border border-slate-600 text-slate-300 font-semibold rounded-xl active:bg-slate-800 transition-colors"
+              className="px-6 py-4 border border-slate-200 text-slate-700 font-semibold rounded-xl active:bg-slate-50 transition-colors"
               style={{ minHeight: '52px' }}
             >
               Back
@@ -195,7 +195,7 @@ export default function ConsentPage() {
           )}
           <button
             onClick={handleContinue}
-            className="flex-1 py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 transition-colors"
+            className="flex-1 py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
             style={{ minHeight: '52px' }}
           >
             {isLastSection ? 'Continue to Quiz' : 'Continue'}

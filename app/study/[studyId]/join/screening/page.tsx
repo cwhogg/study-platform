@@ -164,13 +164,13 @@ export default function ScreeningPage() {
               type="date"
               value={typeof currentAnswer === 'string' ? currentAnswer : ''}
               onChange={(e) => setAnswers({ ...answers, [question.id]: e.target.value })}
-              className="w-full px-4 py-4 border border-slate-600 bg-slate-800 text-slate-100 rounded-xl text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+              className="w-full px-4 py-4 border border-slate-200 bg-white text-slate-900 rounded-xl text-base focus:ring-2 focus:ring-[#1E3A5F] focus:border-[#1E3A5F] transition-shadow"
               style={{ minHeight: '52px' }}
             />
             {hasAnswer && (
               <button
                 onClick={() => handleAnswer(currentAnswer)}
-                className="w-full py-4 bg-indigo-600 text-white font-semibold rounded-xl active:bg-indigo-700 transition-colors"
+                className="w-full py-4 bg-[#1E3A5F] text-white font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
                 style={{ minHeight: '52px' }}
               >
                 Continue
@@ -186,23 +186,23 @@ export default function ScreeningPage() {
               onClick={() => handleAnswer(true)}
               className={`w-full p-4 text-left rounded-xl border-2 transition-all ${
                 currentAnswer === true
-                  ? 'border-indigo-500 bg-indigo-900/50'
-                  : 'border-slate-700 bg-slate-800 active:bg-slate-700'
+                  ? 'border-[#1E3A5F] bg-[#1E3A5F]/10'
+                  : 'border-slate-200 bg-white active:bg-slate-50'
               }`}
               style={{ minHeight: '56px' }}
             >
-              <span className="font-medium text-slate-100">Yes</span>
+              <span className="font-medium text-slate-900">Yes</span>
             </button>
             <button
               onClick={() => handleAnswer(false)}
               className={`w-full p-4 text-left rounded-xl border-2 transition-all ${
                 currentAnswer === false
-                  ? 'border-indigo-500 bg-indigo-900/50'
-                  : 'border-slate-700 bg-slate-800 active:bg-slate-700'
+                  ? 'border-[#1E3A5F] bg-[#1E3A5F]/10'
+                  : 'border-slate-200 bg-white active:bg-slate-50'
               }`}
               style={{ minHeight: '56px' }}
             >
-              <span className="font-medium text-slate-100">No</span>
+              <span className="font-medium text-slate-900">No</span>
             </button>
           </div>
         )
@@ -216,12 +216,12 @@ export default function ScreeningPage() {
                 onClick={() => handleAnswer(option)}
                 className={`w-full p-4 text-left rounded-xl border-2 transition-all ${
                   currentAnswer === option
-                    ? 'border-indigo-500 bg-indigo-900/50'
-                    : 'border-slate-700 bg-slate-800 active:bg-slate-700'
+                    ? 'border-[#1E3A5F] bg-[#1E3A5F]/10'
+                    : 'border-slate-200 bg-white active:bg-slate-50'
                 }`}
                 style={{ minHeight: '56px' }}
               >
-                <span className="font-medium text-slate-100">{option}</span>
+                <span className="font-medium text-slate-900">{option}</span>
               </button>
             ))}
           </div>
@@ -234,17 +234,17 @@ export default function ScreeningPage() {
 
   if (isSubmitting) {
     return (
-      <MobileContainer centered className="bg-slate-900">
+      <MobileContainer centered className="bg-white">
         <div className="text-center">
-          <div className="w-16 h-16 bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-700">
-            <svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+            <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-slate-100 mb-2">{eligibleCopy.headline}</h2>
-          <p className="text-slate-400">{eligibleCopy.body}</p>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">{eligibleCopy.headline}</h2>
+          <p className="text-slate-600">{eligibleCopy.body}</p>
           {eligibleCopy.estimatedTime && (
-            <p className="text-slate-500 text-sm mt-2">{eligibleCopy.estimatedTime}</p>
+            <p className="text-slate-600 text-sm mt-2">{eligibleCopy.estimatedTime}</p>
           )}
         </div>
       </MobileContainer>
@@ -252,18 +252,18 @@ export default function ScreeningPage() {
   }
 
   return (
-    <MobileContainer withBottomPadding className="pt-6 bg-slate-900">
+    <MobileContainer withBottomPadding className="pt-6 bg-white">
       {/* Progress Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-400">ELIGIBILITY</span>
-          <span className="text-sm text-slate-500">
+          <span className="text-sm font-medium text-slate-600">ELIGIBILITY</span>
+          <span className="text-sm text-slate-600">
             {currentQuestion + 1} of {totalQuestions}
           </span>
         </div>
-        <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-indigo-600 transition-all duration-300 ease-out"
+            className="h-full bg-[#1E3A5F] transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -271,7 +271,7 @@ export default function ScreeningPage() {
 
       {/* Question */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-slate-100 mb-6">
+        <h2 className="text-xl font-semibold text-slate-900 mb-6">
           {question.question}
         </h2>
         {renderQuestion()}

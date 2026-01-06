@@ -30,20 +30,19 @@ export function ProgressBar({
     <div className={`w-full ${className}`} {...props}>
       {(showLabel || label) && (
         <div className="flex items-center justify-between mb-2">
-          {label && <span className="text-sm font-medium text-slate-300">{label}</span>}
+          {label && <span className="text-sm font-medium text-slate-700">{label}</span>}
           {showLabel && (
-            <span className="text-sm font-mono text-slate-400">{Math.round(percentage)}%</span>
+            <span className="text-sm font-mono text-slate-500">{Math.round(percentage)}%</span>
           )}
         </div>
       )}
-      <div className={`w-full bg-slate-700 rounded-full overflow-hidden ${sizes[size]}`}>
+      <div className={`w-full bg-slate-200 rounded-full overflow-hidden ${sizes[size]}`}>
         <div
           className={`
             ${sizes[size]}
-            bg-gradient-to-r from-indigo-600 to-cyan-500
+            bg-gradient-to-r from-[#1E3A5F] to-amber-500
             rounded-full
             transition-all duration-700 ease-out
-            shadow-[0_0_10px_rgba(99,102,241,0.4)]
           `}
           style={{ width: `${percentage}%` }}
         />
@@ -93,7 +92,7 @@ export function ProgressRing({
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-slate-700"
+          className="text-slate-200"
         />
         {/* Progress fill */}
         <circle
@@ -111,8 +110,8 @@ export function ProgressRing({
         {/* Gradient definition */}
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#6366F1" />
-            <stop offset="100%" stopColor="#22D3EE" />
+            <stop offset="0%" stopColor="#1E3A5F" />
+            <stop offset="100%" stopColor="#F59E0B" />
           </linearGradient>
         </defs>
       </svg>
@@ -120,12 +119,12 @@ export function ProgressRing({
       {(showValue || label) && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {showValue && (
-            <span className="text-2xl font-semibold text-slate-100 font-mono">
+            <span className="text-2xl font-semibold text-slate-900 font-mono">
               {Math.round(percentage)}%
             </span>
           )}
           {label && (
-            <span className="text-xs text-slate-400 mt-0.5">{label}</span>
+            <span className="text-xs text-slate-500 mt-0.5">{label}</span>
           )}
         </div>
       )}
@@ -154,10 +153,10 @@ export function StepProgress({ steps, currentStep, className = '' }: StepProgres
                   text-sm font-medium
                   transition-all duration-300
                   ${index < currentStep
-                    ? 'bg-indigo-600 text-white'
+                    ? 'bg-[#1E3A5F] text-white'
                     : index === currentStep
-                      ? 'bg-indigo-600 text-white ring-4 ring-indigo-500/30'
-                      : 'bg-slate-700 text-slate-500'
+                      ? 'bg-[#1E3A5F] text-white ring-4 ring-[#1E3A5F]/20'
+                      : 'bg-slate-200 text-slate-500'
                   }
                 `}
               >
@@ -172,7 +171,7 @@ export function StepProgress({ steps, currentStep, className = '' }: StepProgres
               <span
                 className={`
                   mt-2 text-xs font-medium
-                  ${index <= currentStep ? 'text-slate-100' : 'text-slate-500'}
+                  ${index <= currentStep ? 'text-slate-900' : 'text-slate-500'}
                 `}
               >
                 {step}
@@ -184,7 +183,7 @@ export function StepProgress({ steps, currentStep, className = '' }: StepProgres
                 className={`
                   flex-1 h-0.5 mx-2 -mt-6
                   transition-colors duration-300
-                  ${index < currentStep ? 'bg-indigo-600' : 'bg-slate-700'}
+                  ${index < currentStep ? 'bg-[#1E3A5F]' : 'bg-slate-200'}
                 `}
               />
             )}

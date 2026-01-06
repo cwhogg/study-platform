@@ -301,15 +301,15 @@ export default function AssessmentPage() {
 
   if (isCompleting) {
     return (
-      <MobileContainer centered className="bg-slate-900">
+      <MobileContainer centered className="bg-white">
         <div className="text-center">
-          <div className="w-16 h-16 bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-700">
-            <svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+            <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-slate-100 mb-2">Assessment Complete!</h2>
-          <p className="text-slate-400">Returning to dashboard...</p>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Assessment Complete!</h2>
+          <p className="text-slate-600">Returning to dashboard...</p>
         </div>
       </MobileContainer>
     )
@@ -317,29 +317,29 @@ export default function AssessmentPage() {
 
   if (!question) {
     return (
-      <MobileContainer centered className="bg-slate-900">
+      <MobileContainer centered className="bg-white">
         <div className="text-center">
-          <p className="text-slate-400">No questions found for this timepoint.</p>
+          <p className="text-slate-600">No questions found for this timepoint.</p>
         </div>
       </MobileContainer>
     )
   }
 
   return (
-    <MobileContainer withBottomPadding className="pt-6 bg-slate-900">
+    <MobileContainer withBottomPadding className="pt-6 bg-white">
       {/* Progress Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-400">
+          <span className="text-sm font-medium text-slate-600">
             {getTimepointLabel(timepoint)} CHECK-IN
           </span>
-          <span className="text-sm text-slate-500">
+          <span className="text-sm text-slate-600">
             {currentQuestion + 1} of {totalQuestions}
           </span>
         </div>
-        <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-indigo-600 transition-all duration-500 ease-out"
+            className="h-full bg-[#1E3A5F] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -347,12 +347,12 @@ export default function AssessmentPage() {
 
       {/* Instructions (shown for new instruments) */}
       {showInstructions && isNewInstrument && (
-        <div className="mb-6 p-4 bg-indigo-900/50 rounded-xl border border-indigo-700">
-          <p className="text-sm font-medium text-indigo-200 mb-1">{question.instrumentName}</p>
-          <p className="text-sm text-indigo-300">{question.instructions}</p>
+        <div className="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
+          <p className="text-sm font-medium text-amber-800 mb-1">{question.instrumentName}</p>
+          <p className="text-sm text-amber-700">{question.instructions}</p>
           <button
             onClick={handleDismissInstructions}
-            className="mt-3 text-sm font-medium text-indigo-400 active:text-indigo-300"
+            className="mt-3 text-sm font-medium text-amber-600 active:text-amber-500"
           >
             Got it
           </button>
@@ -363,7 +363,7 @@ export default function AssessmentPage() {
       <div
         className={`transition-opacity duration-200 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}
       >
-        <h2 className="text-lg font-semibold text-slate-100 mb-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-6">
           {question.text}
         </h2>
 
@@ -379,12 +379,12 @@ export default function AssessmentPage() {
                 disabled={isTransitioning}
                 className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
                   isSelected
-                    ? 'border-indigo-500 bg-indigo-900/50 scale-[0.98]'
-                    : 'border-slate-700 bg-slate-800 active:bg-slate-700 active:scale-[0.98]'
+                    ? 'border-[#1E3A5F] bg-[#1E3A5F]/10 scale-[0.98]'
+                    : 'border-slate-200 bg-white active:bg-slate-50 active:scale-[0.98]'
                 }`}
                 style={{ minHeight: '56px' }}
               >
-                <span className={`font-medium ${isSelected ? 'text-indigo-300' : 'text-slate-100'}`}>
+                <span className={`font-medium ${isSelected ? 'text-[#1E3A5F]' : 'text-slate-900'}`}>
                   {option.label}
                 </span>
               </button>
@@ -394,7 +394,7 @@ export default function AssessmentPage() {
       </div>
 
       {/* Subtle hint */}
-      <p className="text-center text-xs text-slate-500 mt-8">
+      <p className="text-center text-xs text-slate-600 mt-8">
         Tap an answer to continue
       </p>
     </MobileContainer>

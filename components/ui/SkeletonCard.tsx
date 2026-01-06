@@ -8,7 +8,7 @@ interface SkeletonProps {
 export function Skeleton({ className = '' }: SkeletonProps) {
   return (
     <div
-      className={`animate-pulse bg-slate-700 rounded ${className}`}
+      className={`animate-pulse bg-slate-200 rounded ${className}`}
       aria-hidden="true"
     />
   )
@@ -21,7 +21,7 @@ export function Skeleton({ className = '' }: SkeletonProps) {
 export function SkeletonCard({ className = '' }: SkeletonProps) {
   return (
     <div
-      className={`bg-slate-800 rounded-xl border border-slate-700 p-6 ${className}`}
+      className={`bg-white rounded-xl border border-slate-200 p-6 ${className}`}
       aria-busy="true"
       aria-label="Loading"
     >
@@ -38,7 +38,7 @@ export function SkeletonCard({ className = '' }: SkeletonProps) {
 export function SkeletonProtocolCard({ className = '' }: SkeletonProps) {
   return (
     <div
-      className={`bg-slate-800 rounded-xl border border-slate-700 p-6 ${className}`}
+      className={`bg-white rounded-xl border border-slate-200 p-6 ${className}`}
       aria-busy="true"
       aria-label="Generating protocol"
     >
@@ -61,7 +61,7 @@ export function SkeletonProtocolCard({ className = '' }: SkeletonProps) {
 export function SkeletonListItem({ className = '' }: SkeletonProps) {
   return (
     <div
-      className={`bg-slate-800 rounded-xl border border-slate-700 p-4 flex items-center gap-4 ${className}`}
+      className={`bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4 ${className}`}
       aria-busy="true"
     >
       <Skeleton className="h-12 w-12 rounded-full" />
@@ -97,7 +97,7 @@ export function SkeletonQuestion({ className = '' }: SkeletonProps) {
 export function SkeletonMetric({ className = '' }: SkeletonProps) {
   return (
     <div
-      className={`bg-slate-800 rounded-xl border border-slate-700 p-4 ${className}`}
+      className={`bg-white rounded-xl border border-slate-200 p-4 ${className}`}
       aria-busy="true"
     >
       <Skeleton className="h-3 w-20 mb-2" />

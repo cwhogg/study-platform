@@ -79,23 +79,23 @@ export default function ConsentQuizPage() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-6 bg-slate-900">
+      <MobileContainer withBottomPadding className="pt-6 bg-white">
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="text-sm text-slate-500 mb-2">
+          <p className="text-sm text-slate-600 mb-2">
             Question {currentQuestion + 1} of {totalQuestions}
           </p>
-          <h1 className="text-xl font-bold text-slate-100">
+          <h1 className="text-xl font-bold text-slate-900">
             Quick Check
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-slate-600 text-sm mt-1">
             Let&apos;s make sure you understand the key points
           </p>
         </div>
 
         {/* Question */}
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-slate-100 text-center">
+          <h2 className="text-lg font-semibold text-slate-900 text-center">
             {question.question}
           </h2>
         </div>
@@ -110,16 +110,16 @@ export default function ConsentQuizPage() {
 
             if (showFeedback) {
               if (isCorrectAnswer) {
-                buttonClasses += ' border-emerald-500 bg-emerald-900/50'
+                buttonClasses += ' border-emerald-500 bg-emerald-50'
               } else if (isSelected && !isCorrectAnswer) {
-                buttonClasses += ' border-red-500 bg-red-900/50'
+                buttonClasses += ' border-red-500 bg-red-50'
               } else {
-                buttonClasses += ' border-slate-700 bg-slate-800 opacity-60'
+                buttonClasses += ' border-slate-200 bg-slate-50 opacity-60'
               }
             } else {
               buttonClasses += isSelected
-                ? ' border-indigo-500 bg-indigo-900/50'
-                : ' border-slate-700 bg-slate-800 active:bg-slate-700'
+                ? ' border-[#1E3A5F] bg-[#1E3A5F]/10'
+                : ' border-slate-200 bg-slate-50 active:bg-slate-100'
             }
 
             return (
@@ -133,18 +133,18 @@ export default function ConsentQuizPage() {
                 <div className="flex items-center justify-between">
                   <span className={`font-medium ${
                     showFeedback && isCorrectAnswer
-                      ? 'text-emerald-300'
+                      ? 'text-emerald-700'
                       : showFeedback && isSelected && !isCorrectAnswer
-                      ? 'text-red-300'
-                      : 'text-slate-100'
+                      ? 'text-red-700'
+                      : 'text-slate-900'
                   }`}>
                     {option}
                   </span>
                   {showFeedback && isCorrectAnswer && (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                   )}
                   {showFeedback && isSelected && !isCorrectAnswer && (
-                    <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                    <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
                   )}
                 </div>
               </button>
@@ -155,21 +155,21 @@ export default function ConsentQuizPage() {
         {/* Feedback */}
         {showFeedback && (
           <div className={`mt-6 p-4 rounded-xl ${
-            isCorrect ? 'bg-emerald-900/50 border border-emerald-700' : 'bg-amber-900/50 border border-amber-700'
+            isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-amber-50 border border-amber-200'
           }`}>
             <div className="flex items-start gap-3">
               {isCorrect ? (
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
               ) : (
                 <div className="w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-amber-400 font-bold">!</span>
+                  <span className="text-amber-600 font-bold">!</span>
                 </div>
               )}
               <div>
-                <p className={`font-medium ${isCorrect ? 'text-emerald-300' : 'text-amber-300'}`}>
+                <p className={`font-medium ${isCorrect ? 'text-emerald-700' : 'text-amber-700'}`}>
                   {isCorrect ? 'Correct!' : 'Not quite'}
                 </p>
-                <p className={`text-sm mt-1 ${isCorrect ? 'text-emerald-400' : 'text-amber-400'}`}>
+                <p className={`text-sm mt-1 ${isCorrect ? 'text-emerald-600' : 'text-amber-600'}`}>
                   {question.explanation}
                 </p>
               </div>
@@ -183,7 +183,7 @@ export default function ConsentQuizPage() {
         <button
           onClick={handleContinue}
           disabled={!showFeedback}
-          className="w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
           style={{ minHeight: '52px' }}
         >
           {isLastQuestion ? 'Continue to Sign' : 'Next Question'}

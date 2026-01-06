@@ -18,9 +18,9 @@ const sizeClasses = {
 }
 
 const colorClasses = {
-  primary: 'border-indigo-600 border-t-transparent',
+  primary: 'border-[#1E3A5F] border-t-transparent',
   white: 'border-white border-t-transparent',
-  gray: 'border-gray-400 border-t-transparent',
+  gray: 'border-slate-400 border-t-transparent',
 }
 
 /**

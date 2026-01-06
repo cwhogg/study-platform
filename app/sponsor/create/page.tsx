@@ -67,16 +67,16 @@ export default function CreateStudyPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-50">
       {/* Decorative elements */}
-      <div className="fixed -right-40 top-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="fixed -left-40 bottom-20 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed -right-40 top-20 w-96 h-96 bg-[#1E3A5F]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed -left-40 bottom-20 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative container-base py-8 sm:py-12">
         {/* Back link */}
         <Link
           href="/sponsor"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors mb-8"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -84,15 +84,15 @@ export default function CreateStudyPage() {
 
         {/* Header */}
         <div className="text-center mb-10 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-indigo-400" />
-            <span className="text-xs font-medium text-indigo-300">New Study</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1E3A5F]/10 border border-[#1E3A5F]/20 rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-[#1E3A5F]" />
+            <span className="text-xs font-medium text-[#1E3A5F]">New Study</span>
           </div>
 
-          <h1 className="font-display text-3xl sm:text-4xl text-slate-100 mb-3">
+          <h1 className="font-display text-3xl sm:text-4xl text-slate-900 mb-3">
             What do you want to study?
           </h1>
-          <p className="text-slate-400 max-w-md mx-auto">
+          <p className="text-slate-600 max-w-md mx-auto">
             Describe the treatment or intervention, and our AI will design a complete study protocol.
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function CreateStudyPage() {
 
             {/* Examples */}
             <div className="mb-6">
-              <div className="text-sm text-slate-400 mb-3">Try an example:</div>
+              <div className="text-sm text-slate-600 mb-3">Try an example:</div>
               <div className="flex flex-wrap gap-2">
                 {EXAMPLES.map((example) => (
                   <button
@@ -122,8 +122,8 @@ export default function CreateStudyPage() {
                     className={`
                       px-3 py-1.5 text-sm rounded-full border transition-all duration-150
                       ${intervention === example
-                        ? 'bg-indigo-500/20 border-indigo-500/30 text-indigo-300'
-                        : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600 hover:bg-slate-700'
+                        ? 'bg-[#1E3A5F]/10 border-[#1E3A5F]/30 text-[#1E3A5F]'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
                       }
                     `}
                   >
@@ -135,8 +135,8 @@ export default function CreateStudyPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl animate-fade-in">
-                <p className="text-sm text-red-400">{error}</p>
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-fade-in">
+                <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
 

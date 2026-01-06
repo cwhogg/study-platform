@@ -3,28 +3,28 @@ import { FileText, Users, BarChart3, Shield, ArrowRight, Sparkles, Check } from 
 
 export default function SponsorPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Decorative elements */}
-        <div className="absolute -right-40 -top-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
-        <div className="absolute -left-40 top-1/3 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+        <div className="absolute -right-40 -top-40 w-96 h-96 bg-[#1E3A5F]/10 rounded-full blur-3xl" />
+        <div className="absolute -left-40 top-1/3 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
 
         <div className="relative container-wide py-20 sm:py-28">
           <div className="max-w-3xl mx-auto text-center stagger-children">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-8">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              <span className="text-sm font-medium text-indigo-300">AI-Powered Research Platform</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E3A5F]/10 border border-[#1E3A5F]/20 rounded-full mb-8">
+              <Sparkles className="w-4 h-4 text-[#1E3A5F]" />
+              <span className="text-sm font-medium text-[#1E3A5F]">AI-Powered Research Platform</span>
             </div>
 
             {/* Headline */}
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-100 mb-6 text-balance">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-6 text-balance">
               Launch Clinical Studies in Minutes
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg sm:text-xl text-slate-400 mb-10 max-w-2xl mx-auto text-balance leading-relaxed">
+            <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-2xl mx-auto text-balance leading-relaxed">
               Our AI agents generate complete study protocols, informed consent documents,
               and patient communications — tailored to your specific intervention.
             </p>
@@ -50,13 +50,13 @@ export default function SponsorPage() {
       </section>
 
       {/* How It Works */}
-      <section className="border-t border-slate-800">
+      <section className="border-t border-slate-200">
         <div className="container-wide py-20 sm:py-24">
           <div className="text-center mb-16">
-            <h2 className="font-display text-3xl sm:text-4xl text-slate-100 mb-4">
+            <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
               How It Works
             </h2>
-            <p className="text-slate-400 text-lg max-w-xl mx-auto">
+            <p className="text-slate-600 text-lg max-w-xl mx-auto">
               From intervention to live study in four simple steps
             </p>
           </div>
@@ -90,20 +90,20 @@ export default function SponsorPage() {
             ].map((item) => (
               <div
                 key={item.step}
-                className="group relative p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-indigo-500/30 hover:bg-slate-800 transition-all duration-300"
+                className="group relative p-6 bg-white rounded-2xl border border-slate-200 hover:border-[#1E3A5F]/30 hover:shadow-md transition-all duration-300"
               >
                 {/* Step number */}
-                <div className="absolute -top-3 -right-2 w-10 h-10 bg-slate-900 border border-slate-700 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-mono font-semibold text-slate-400">{item.step}</span>
+                <div className="absolute -top-3 -right-2 w-10 h-10 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-mono font-semibold text-slate-500">{item.step}</span>
                 </div>
 
                 {/* Icon */}
-                <div className="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform border border-indigo-500/20">
-                  <item.icon className="w-6 h-6 text-indigo-400" />
+                <div className="w-12 h-12 bg-[#1E3A5F]/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform border border-[#1E3A5F]/20">
+                  <item.icon className="w-6 h-6 text-[#1E3A5F]" />
                 </div>
 
-                <h3 className="font-semibold text-slate-100 mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{item.description}</p>
+                <h3 className="font-semibold text-slate-900 mb-2">{item.title}</h3>
+                <p className="text-sm text-slate-600 leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
@@ -111,16 +111,16 @@ export default function SponsorPage() {
       </section>
 
       {/* Features */}
-      <section className="bg-slate-800/30 border-t border-slate-800">
+      <section className="bg-white border-t border-slate-200">
         <div className="container-wide py-20 sm:py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left: Feature list */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-full text-xs font-medium text-slate-300 mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-xs font-medium text-slate-600 mb-6">
                 Features
               </div>
 
-              <h2 className="font-display text-3xl sm:text-4xl text-slate-100 mb-8">
+              <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-8">
                 AI-Powered Study Design
               </h2>
 
@@ -144,12 +144,12 @@ export default function SponsorPage() {
                   },
                 ].map((feature) => (
                   <li key={feature.title} className="flex gap-4">
-                    <div className="flex-shrink-0 w-6 h-6 bg-emerald-500/20 rounded-full flex items-center justify-center mt-0.5 border border-emerald-500/30">
-                      <Check className="w-4 h-4 text-emerald-400" strokeWidth={2.5} />
+                    <div className="flex-shrink-0 w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center mt-0.5 border border-emerald-200">
+                      <Check className="w-4 h-4 text-emerald-600" strokeWidth={2.5} />
                     </div>
                     <div>
-                      <h4 className="font-medium text-slate-100">{feature.title}</h4>
-                      <p className="text-sm text-slate-400 mt-1 leading-relaxed">{feature.description}</p>
+                      <h4 className="font-medium text-slate-900">{feature.title}</h4>
+                      <p className="text-sm text-slate-600 mt-1 leading-relaxed">{feature.description}</p>
                     </div>
                   </li>
                 ))}
@@ -159,20 +159,20 @@ export default function SponsorPage() {
             {/* Right: Example study card */}
             <div className="relative">
               {/* Decorative gradient */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-indigo-500/10 via-transparent to-cyan-500/10 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E3A5F]/10 via-transparent to-amber-500/10 rounded-3xl blur-2xl" />
 
-              <div className="relative bg-slate-800 rounded-2xl border border-slate-700 shadow-xl shadow-black/30 p-8">
+              <div className="relative bg-white rounded-2xl border border-slate-200 shadow-md p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Example Study
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-emerald-400 rounded-full" />
-                    <span className="text-xs font-medium text-emerald-400">Active</span>
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+                    <span className="text-xs font-medium text-emerald-600">Active</span>
                   </div>
                 </div>
 
-                <h3 className="font-display text-2xl text-slate-100 mb-6">
+                <h3 className="font-display text-2xl text-slate-900 mb-6">
                   TRT Outcomes Study
                 </h3>
 
@@ -183,17 +183,17 @@ export default function SponsorPage() {
                     { label: 'Lab Markers', value: '3 tracked' },
                     { label: 'PRO Schedule', value: '9 timepoints' },
                   ].map((stat) => (
-                    <div key={stat.label} className="p-3 bg-slate-900 rounded-xl border border-slate-700">
+                    <div key={stat.label} className="p-3 bg-slate-50 rounded-xl border border-slate-200">
                       <div className="text-xs text-slate-500 mb-1">{stat.label}</div>
-                      <div className="font-semibold text-slate-100">{stat.value}</div>
+                      <div className="font-semibold text-slate-900">{stat.value}</div>
                     </div>
                   ))}
                 </div>
 
-                <div className="pt-6 border-t border-slate-700">
+                <div className="pt-6 border-t border-slate-200">
                   <div className="text-xs text-slate-500 mb-3">Generated in</div>
                   <div className="flex items-center gap-2">
-                    <div className="text-3xl font-display text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">~2 min</div>
+                    <div className="text-3xl font-display text-transparent bg-clip-text bg-gradient-to-r from-[#1E3A5F] to-amber-600">~2 min</div>
                     <div className="text-sm text-slate-500">by AI</div>
                   </div>
                 </div>
@@ -204,20 +204,20 @@ export default function SponsorPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 border-t border-slate-800">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-[#1E3A5F]/5 border-t border-slate-200">
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-cyan-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F]/5 via-transparent to-amber-500/5" />
 
         <div className="relative container-wide py-16 sm:py-20 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl text-slate-100 mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
             Ready to launch your study?
           </h2>
-          <p className="text-slate-400 mb-8 max-w-xl mx-auto text-lg">
+          <p className="text-slate-600 mb-8 max-w-xl mx-auto text-lg">
             Get started in minutes. No protocol writing experience required.
           </p>
           <Link
             href="/sponsor/create"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-medium rounded-2xl shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:scale-[1.02] transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#1E3A5F] to-[#2a4a6f] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             Create Your First Study
             <ArrowRight className="w-5 h-5" />

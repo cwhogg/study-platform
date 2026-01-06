@@ -32,13 +32,13 @@ export function DemoBadge() {
 
   return (
     <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
-      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 text-amber-300 text-sm font-medium rounded-full border border-amber-500/30">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-700 text-sm font-medium rounded-full border border-amber-200">
         <Beaker className="w-4 h-4" />
         Demo Mode
       </span>
       <Link
         href="/admin"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 text-slate-200 text-sm font-medium rounded-full hover:bg-slate-700 transition-colors border border-slate-700"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-700 text-sm font-medium rounded-full hover:bg-slate-50 transition-colors border border-slate-200"
       >
         <Settings className="w-4 h-4" />
         Admin
@@ -68,7 +68,7 @@ export function DemoControlsPanel({
     return (
       <button
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-4 right-4 z-50 p-3 bg-slate-800 text-slate-200 rounded-full shadow-lg hover:bg-slate-700 transition-colors border border-slate-700"
+        className="fixed bottom-4 right-4 z-50 p-3 bg-white text-slate-700 rounded-full shadow-lg hover:bg-slate-50 transition-colors border border-slate-200"
         title="Show Demo Controls"
       >
         <Beaker className="w-5 h-5" />
@@ -82,7 +82,7 @@ export function DemoControlsPanel({
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-4 py-3 bg-slate-800 text-slate-200 rounded-full shadow-lg hover:bg-slate-700 transition-colors border border-slate-700"
+          className="flex items-center gap-2 px-4 py-3 bg-white text-slate-700 rounded-full shadow-lg hover:bg-slate-50 transition-colors border border-slate-200"
         >
           <Beaker className="w-5 h-5" />
           <span className="font-medium">Demo Controls</span>
@@ -92,24 +92,24 @@ export function DemoControlsPanel({
 
       {/* Controls Panel */}
       {isOpen && (
-        <div className="bg-slate-800 rounded-xl shadow-2xl border border-slate-700 w-72">
+        <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-72">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-slate-700">
+          <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <div className="flex items-center gap-2">
-              <Beaker className="w-5 h-5 text-amber-400" />
-              <span className="font-semibold text-slate-100">Demo Controls</span>
+              <Beaker className="w-5 h-5 text-amber-500" />
+              <span className="font-semibold text-slate-900">Demo Controls</span>
             </div>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setIsMinimized(true)}
-                className="p-1.5 text-slate-500 hover:text-slate-300 rounded"
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded"
                 title="Minimize"
               >
                 <ChevronDown className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 text-slate-500 hover:text-slate-300 rounded"
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded"
                 title="Close"
               >
                 <X className="w-4 h-4" />
@@ -118,9 +118,9 @@ export function DemoControlsPanel({
           </div>
 
           {/* Current State */}
-          <div className="p-4 bg-slate-900 border-b border-slate-700">
-            <div className="text-sm text-slate-400">Current Week</div>
-            <div className="text-2xl font-bold text-slate-100">Week {currentWeek}</div>
+          <div className="p-4 bg-slate-50 border-b border-slate-200">
+            <div className="text-sm text-slate-600">Current Week</div>
+            <div className="text-2xl font-bold text-slate-900">Week {currentWeek}</div>
           </div>
 
           {/* Actions */}
@@ -128,11 +128,11 @@ export function DemoControlsPanel({
             {/* Advance Week */}
             {onAdvanceWeek && (
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
                   Advance to Week
                 </label>
                 <select
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700"
                   onChange={(e) => {
                     if (e.target.value) {
                       onAdvanceWeek(parseInt(e.target.value))
@@ -154,7 +154,7 @@ export function DemoControlsPanel({
             {onSimulateLabs && (
               <button
                 onClick={onSimulateLabs}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-violet-500/20 text-violet-300 font-medium rounded-lg hover:bg-violet-500/30 transition-colors border border-violet-500/30"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-violet-100 text-violet-700 font-medium rounded-lg hover:bg-violet-200 transition-colors border border-violet-200"
               >
                 <TestTube className="w-4 h-4" />
                 Simulate Lab Results
@@ -165,7 +165,7 @@ export function DemoControlsPanel({
             {onTriggerReminder && (
               <button
                 onClick={onTriggerReminder}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-cyan-500/20 text-cyan-300 font-medium rounded-lg hover:bg-cyan-500/30 transition-colors border border-cyan-500/30"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 font-medium rounded-lg hover:bg-amber-200 transition-colors border border-amber-200"
               >
                 <Bell className="w-4 h-4" />
                 Send Reminder
@@ -175,7 +175,7 @@ export function DemoControlsPanel({
             {/* Admin Link */}
             <Link
               href="/admin"
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-700 text-slate-200 font-medium rounded-lg hover:bg-slate-600 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors"
             >
               <Settings className="w-4 h-4" />
               Open Admin Dashboard
@@ -202,18 +202,18 @@ export function DemoControlsInline({
   if (!isDemoMode || !participantId) return null
 
   return (
-    <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 mb-6">
+    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
       <div className="flex items-center gap-2 mb-3">
-        <Beaker className="w-4 h-4 text-amber-400" />
-        <span className="text-sm font-medium text-amber-300">Demo Controls</span>
-        <span className="text-xs text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded">
+        <Beaker className="w-4 h-4 text-amber-600" />
+        <span className="text-sm font-medium text-amber-700">Demo Controls</span>
+        <span className="text-xs text-amber-700 bg-amber-100 px-2 py-0.5 rounded">
           Week {currentWeek}
         </span>
       </div>
       <div className="flex flex-wrap gap-2">
         {onAdvanceWeek && (
           <select
-            className="appearance-none bg-slate-800 border border-amber-500/30 rounded px-3 py-1.5 text-sm text-amber-300 cursor-pointer hover:border-amber-500/50"
+            className="appearance-none bg-white border border-amber-200 rounded px-3 py-1.5 text-sm text-amber-700 cursor-pointer hover:border-amber-300"
             onChange={(e) => {
               if (e.target.value) {
                 onAdvanceWeek(parseInt(e.target.value))
@@ -232,7 +232,7 @@ export function DemoControlsInline({
         {onSimulateLabs && (
           <button
             onClick={onSimulateLabs}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 border border-amber-500/30 rounded text-sm text-amber-300 hover:border-amber-500/50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-amber-200 rounded text-sm text-amber-700 hover:border-amber-300"
           >
             <TestTube className="w-3.5 h-3.5" />
             Simulate Labs
@@ -241,7 +241,7 @@ export function DemoControlsInline({
         {onTriggerReminder && (
           <button
             onClick={onTriggerReminder}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 border border-amber-500/30 rounded text-sm text-amber-300 hover:border-amber-500/50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-amber-200 rounded text-sm text-amber-700 hover:border-amber-300"
           >
             <Bell className="w-3.5 h-3.5" />
             Send Reminder

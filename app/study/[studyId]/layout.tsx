@@ -13,11 +13,11 @@ export default async function StudyLayout({ children, params }: StudyLayoutProps
   const studyName = 'TRT Outcomes Study'
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Minimal Header */}
-      <header className="flex-shrink-0 border-b border-slate-800">
+      <header className="flex-shrink-0 border-b border-slate-200">
         <div className="px-4 py-3">
-          <h1 className="text-sm font-medium text-slate-100 text-center">
+          <h1 className="text-sm font-medium text-slate-900 text-center">
             {studyName}
           </h1>
         </div>

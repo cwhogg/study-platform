@@ -50,29 +50,29 @@ export default function IneligiblePage() {
 
   return (
     <>
-      <MobileContainer centered className="bg-slate-900">
+      <MobileContainer centered className="bg-white">
         {/* Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700">
-            <Heart className="w-8 h-8 text-slate-500" />
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center border border-slate-200">
+            <Heart className="w-8 h-8 text-slate-400" />
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-slate-100 text-center mb-4">
+        <h1 className="text-2xl font-bold text-slate-900 text-center mb-4">
           {copy.headline || DEFAULT_INELIGIBLE.headline}
         </h1>
 
-        <p className="text-slate-400 text-center mb-6">
+        <p className="text-slate-600 text-center mb-6">
           {copy.body || DEFAULT_INELIGIBLE.body}
         </p>
 
-        <div className="bg-slate-800 rounded-xl p-4 mb-6 border border-slate-700">
-          <p className="text-slate-400 text-sm text-center">
+        <div className="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200">
+          <p className="text-slate-600 text-sm text-center">
             {copy.reassurance || DEFAULT_INELIGIBLE.reassurance}
           </p>
         </div>
 
-        <p className="text-slate-400 text-center text-sm">
+        <p className="text-slate-600 text-center text-sm">
           {nextSteps} Thank you for your interest in helping advance research.
         </p>
       </MobileContainer>
@@ -81,7 +81,7 @@ export default function IneligiblePage() {
       <MobileBottomAction>
         <a
           href="/"
-          className="block w-full py-4 bg-indigo-600 text-white text-center font-semibold rounded-xl active:bg-indigo-700 transition-colors"
+          className="block w-full py-4 bg-[#1E3A5F] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
           style={{ minHeight: '52px' }}
         >
           {buttonText}
