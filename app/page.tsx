@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FileText, Users, BarChart3, Shield, Clipboard, Bell, ArrowRight, Sparkles, Check } from 'lucide-react'
+import { FileText, Users, BarChart3, Shield, Clipboard, Bell, ArrowRight, Sparkles, Check, ShieldAlert, ClipboardList } from 'lucide-react'
 import { ProoveLogo } from '@/components/ui/ProoveLogo'
 
 export default function Home() {
@@ -130,15 +130,15 @@ export default function Home() {
         <div className="container-wide py-20 sm:py-24">
           <div className="text-center mb-16">
             <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">How It Works</h2>
-            <p className="text-slate-600 text-lg">From intervention to insights in four steps</p>
+            <p className="text-slate-600 text-lg">From intervention to insights in five steps</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5 lg:gap-6">
             {[
               {
                 step: '01',
                 title: 'Define Intervention',
-                description: 'Enter what you\'re studying. AI generates the complete protocol.',
+                description: 'Enter what you\'re studying. AI analyzes the clinical context.',
                 icon: Sparkles,
                 iconBg: 'bg-[#3B82F6]',
                 iconColor: 'text-white',
@@ -147,8 +147,18 @@ export default function Home() {
               },
               {
                 step: '02',
+                title: 'Design Protocol',
+                description: 'AI generates endpoints, PRO instruments, consent, and safety rules.',
+                icon: ClipboardList,
+                iconBg: 'bg-[#0891B2]',
+                iconColor: 'text-white',
+                stepColor: 'text-[#0891B2]',
+                hoverBorder: 'hover:border-[#0891B2]/40',
+              },
+              {
+                step: '03',
                 title: 'Enroll Participants',
-                description: 'Share a link. Participants complete consent and screening on mobile.',
+                description: 'Share a link. Participants consent and screen on mobile.',
                 icon: Users,
                 iconBg: 'bg-[#6D28D9]',
                 iconColor: 'text-white',
@@ -156,9 +166,9 @@ export default function Home() {
                 hoverBorder: 'hover:border-[#6D28D9]/40',
               },
               {
-                step: '03',
+                step: '04',
                 title: 'Collect Outcomes',
-                description: 'Validated PRO instruments with automated reminders and safety monitoring.',
+                description: 'Validated PROs with automated reminders and safety monitoring.',
                 icon: Clipboard,
                 iconBg: 'bg-[#C2410C]',
                 iconColor: 'text-white',
@@ -166,9 +176,9 @@ export default function Home() {
                 hoverBorder: 'hover:border-[#C2410C]/40',
               },
               {
-                step: '04',
+                step: '05',
                 title: 'Analyze Results',
-                description: 'Real-world evidence from patient-reported outcomes and lab data.',
+                description: 'Real-world evidence from patient outcomes and lab data.',
                 icon: BarChart3,
                 iconBg: 'bg-[#0D9488]',
                 iconColor: 'text-white',
@@ -207,21 +217,31 @@ export default function Home() {
               AI Agents
             </div>
             <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
-              Four Specialized Agents
+              Five Specialized Agents
             </h2>
             <p className="text-slate-600 text-lg max-w-xl mx-auto">
               Working together to design, launch, and run your study
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
             <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#3B82F6]/40 hover:shadow-lg transition-all duration-300">
               <div className="w-12 h-12 bg-[#3B82F6] rounded-xl flex items-center justify-center mb-4 shadow-md">
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Protocol Agent</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Designs study endpoints, inclusion/exclusion criteria, PRO instruments, and safety thresholds.
+                Designs study endpoints, inclusion/exclusion criteria, and PRO instruments.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#DC2626]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#DC2626] rounded-xl flex items-center justify-center mb-4 shadow-md">
+                <ShieldAlert className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">Safety Agent</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Creates intervention-specific safety rules, alert thresholds, and monitoring protocols.
               </p>
             </div>
 
