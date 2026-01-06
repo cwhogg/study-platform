@@ -11,7 +11,7 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2.5">
               <ProoveLogo size={36} className="shadow-md rounded-full" />
-              <span className="font-semibold text-slate-900">Proove Platform</span>
+              <span className="font-semibold text-slate-900">The Proove Platform</span>
             </div>
             <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">Demo Mode</div>
           </div>

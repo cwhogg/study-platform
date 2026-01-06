@@ -15,7 +15,7 @@ export default function SponsorLayout({
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5">
               <ProoveLogo size={36} className="shadow-md rounded-full" />
-              <span className="font-semibold text-slate-900">Proove Platform</span>
+              <span className="font-semibold text-slate-900">The Proove Platform</span>
             </Link>
 
             {/* Navigation */}

@@ -4,7 +4,7 @@ interface ProoveLogoProps {
 }
 
 /**
- * Proove Platform logo icon
+ * The Proove Platform logo icon
  * Checkmark with data dots representing evidence-based verification
  */
 export function ProoveLogo({ className = '', size = 36 }: ProoveLogoProps) {
