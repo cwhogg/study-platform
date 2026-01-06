@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, ArrowLeft, Sparkles, Loader2 } from 'lucide-react'
@@ -8,12 +8,141 @@ import { Button } from '@/components/ui/Button'
 import { Textarea } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
 
-const EXAMPLES = [
-  'GLP-1 medications',
-  'Testosterone replacement therapy',
-  'Ketamine therapy',
-  'BPC-157',
-  'Virtual CBT',
+interface InterventionOption {
+  name: string
+  category: 'pharmacological' | 'behavioral' | 'device' | 'lifestyle' | 'supplement'
+}
+
+const INTERVENTIONS: InterventionOption[] = [
+  // Pharmacological - Hormone Therapies
+  { name: 'Testosterone replacement therapy (TRT)', category: 'pharmacological' },
+  { name: 'Estrogen replacement therapy', category: 'pharmacological' },
+  { name: 'Growth hormone therapy', category: 'pharmacological' },
+  { name: 'Thyroid hormone replacement', category: 'pharmacological' },
+  { name: 'DHEA supplementation', category: 'pharmacological' },
+
+  // Pharmacological - Weight Management
+  { name: 'GLP-1 agonists (semaglutide, tirzepatide)', category: 'pharmacological' },
+  { name: 'Phentermine', category: 'pharmacological' },
+  { name: 'Metformin for weight loss', category: 'pharmacological' },
+  { name: 'Orlistat', category: 'pharmacological' },
+
+  // Pharmacological - Mental Health
+  { name: 'Ketamine therapy', category: 'pharmacological' },
+  { name: 'Psilocybin-assisted therapy', category: 'pharmacological' },
+  { name: 'MDMA-assisted therapy', category: 'pharmacological' },
+  { name: 'SSRIs for depression', category: 'pharmacological' },
+  { name: 'Bupropion', category: 'pharmacological' },
+  { name: 'Esketamine (Spravato)', category: 'pharmacological' },
+
+  // Pharmacological - Performance/Peptides
+  { name: 'BPC-157', category: 'pharmacological' },
+  { name: 'TB-500', category: 'pharmacological' },
+  { name: 'PT-141 (Bremelanotide)', category: 'pharmacological' },
+  { name: 'Ipamorelin', category: 'pharmacological' },
+  { name: 'CJC-1295', category: 'pharmacological' },
+  { name: 'NAD+ infusions', category: 'pharmacological' },
+
+  // Pharmacological - Sexual Health
+  { name: 'Sildenafil (Viagra)', category: 'pharmacological' },
+  { name: 'Tadalafil (Cialis)', category: 'pharmacological' },
+  { name: 'Clomiphene citrate', category: 'pharmacological' },
+
+  // Pharmacological - Hair Loss
+  { name: 'Finasteride for hair loss', category: 'pharmacological' },
+  { name: 'Minoxidil', category: 'pharmacological' },
+  { name: 'Dutasteride', category: 'pharmacological' },
+
+  // Pharmacological - Other
+  { name: 'Low-dose naltrexone (LDN)', category: 'pharmacological' },
+  { name: 'Rapamycin for longevity', category: 'pharmacological' },
+  { name: 'Modafinil', category: 'pharmacological' },
+
+  // Behavioral - Therapy
+  { name: 'Cognitive behavioral therapy (CBT)', category: 'behavioral' },
+  { name: 'Virtual CBT', category: 'behavioral' },
+  { name: 'Dialectical behavior therapy (DBT)', category: 'behavioral' },
+  { name: 'Acceptance and commitment therapy (ACT)', category: 'behavioral' },
+  { name: 'Exposure therapy', category: 'behavioral' },
+  { name: 'EMDR therapy', category: 'behavioral' },
+  { name: 'Group therapy', category: 'behavioral' },
+
+  // Behavioral - Coaching
+  { name: 'Health coaching', category: 'behavioral' },
+  { name: 'Sleep coaching', category: 'behavioral' },
+  { name: 'Nutrition coaching', category: 'behavioral' },
+  { name: 'Stress management coaching', category: 'behavioral' },
+
+  // Behavioral - Digital
+  { name: 'Digital therapeutics for anxiety', category: 'behavioral' },
+  { name: 'Mobile app for depression', category: 'behavioral' },
+  { name: 'Guided meditation app', category: 'behavioral' },
+  { name: 'Biofeedback training', category: 'behavioral' },
+
+  // Lifestyle - Diet
+  { name: 'Intermittent fasting', category: 'lifestyle' },
+  { name: 'Ketogenic diet', category: 'lifestyle' },
+  { name: 'Mediterranean diet', category: 'lifestyle' },
+  { name: 'Time-restricted eating', category: 'lifestyle' },
+  { name: 'Plant-based diet', category: 'lifestyle' },
+  { name: 'Elimination diet', category: 'lifestyle' },
+
+  // Lifestyle - Exercise
+  { name: 'High-intensity interval training (HIIT)', category: 'lifestyle' },
+  { name: 'Resistance training program', category: 'lifestyle' },
+  { name: 'Yoga program', category: 'lifestyle' },
+  { name: 'Walking program', category: 'lifestyle' },
+  { name: 'Zone 2 cardio training', category: 'lifestyle' },
+
+  // Lifestyle - Sleep
+  { name: 'Sleep hygiene intervention', category: 'lifestyle' },
+  { name: 'Sleep restriction therapy', category: 'lifestyle' },
+  { name: 'Blue light blocking', category: 'lifestyle' },
+
+  // Lifestyle - Other
+  { name: 'Cold exposure/cold plunge', category: 'lifestyle' },
+  { name: 'Sauna therapy', category: 'lifestyle' },
+  { name: 'Breathwork program', category: 'lifestyle' },
+  { name: 'Red light therapy', category: 'lifestyle' },
+  { name: 'Grounding/earthing', category: 'lifestyle' },
+
+  // Devices
+  { name: 'Continuous glucose monitor (CGM)', category: 'device' },
+  { name: 'CPAP therapy', category: 'device' },
+  { name: 'Wearable activity tracker', category: 'device' },
+  { name: 'Transcranial direct current stimulation (tDCS)', category: 'device' },
+  { name: 'Transcranial magnetic stimulation (TMS)', category: 'device' },
+  { name: 'Vagus nerve stimulation', category: 'device' },
+  { name: 'TENS unit for pain', category: 'device' },
+  { name: 'Oura ring for sleep tracking', category: 'device' },
+
+  // Supplements
+  { name: 'Vitamin D supplementation', category: 'supplement' },
+  { name: 'Omega-3 fish oil', category: 'supplement' },
+  { name: 'Magnesium supplementation', category: 'supplement' },
+  { name: 'Creatine monohydrate', category: 'supplement' },
+  { name: 'Ashwagandha', category: 'supplement' },
+  { name: 'Lion\'s mane mushroom', category: 'supplement' },
+  { name: 'Berberine', category: 'supplement' },
+  { name: 'CoQ10', category: 'supplement' },
+  { name: 'Probiotics', category: 'supplement' },
+  { name: 'Collagen peptides', category: 'supplement' },
+]
+
+const CATEGORY_LABELS: Record<InterventionOption['category'], string> = {
+  pharmacological: 'Pharmacological',
+  behavioral: 'Behavioral',
+  lifestyle: 'Lifestyle',
+  device: 'Devices',
+  supplement: 'Supplements',
+}
+
+const CATEGORY_ORDER: InterventionOption['category'][] = [
+  'pharmacological',
+  'behavioral',
+  'lifestyle',
+  'device',
+  'supplement',
 ]
 
 export default function CreateStudyPage() {
@@ -21,6 +150,82 @@ export default function CreateStudyPage() {
   const [intervention, setIntervention] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const suggestionsRef = useRef<HTMLDivElement>(null)
+
+  // Filter interventions based on input
+  const filteredInterventions = intervention.trim().length > 0
+    ? INTERVENTIONS.filter(item =>
+        item.name.toLowerCase().includes(intervention.toLowerCase())
+      )
+    : INTERVENTIONS
+
+  // Group filtered interventions by category
+  const groupedSuggestions = CATEGORY_ORDER
+    .map(category => ({
+      category,
+      label: CATEGORY_LABELS[category],
+      items: filteredInterventions.filter(item => item.category === category),
+    }))
+    .filter(group => group.items.length > 0)
+
+  // Flatten for keyboard navigation
+  const flattenedSuggestions = groupedSuggestions.flatMap(group => group.items)
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleSelectSuggestion = (name: string) => {
+    setIntervention(name)
+    setShowSuggestions(false)
+    setHighlightedIndex(-1)
+    inputRef.current?.focus()
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!showSuggestions) return
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault()
+        setHighlightedIndex(prev =>
+          prev < flattenedSuggestions.length - 1 ? prev + 1 : 0
+        )
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        setHighlightedIndex(prev =>
+          prev > 0 ? prev - 1 : flattenedSuggestions.length - 1
+        )
+        break
+      case 'Enter':
+        if (highlightedIndex >= 0 && flattenedSuggestions[highlightedIndex]) {
+          e.preventDefault()
+          handleSelectSuggestion(flattenedSuggestions[highlightedIndex].name)
+        }
+        break
+      case 'Escape':
+        setShowSuggestions(false)
+        setHighlightedIndex(-1)
+        break
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -62,10 +267,6 @@ export default function CreateStudyPage() {
     }
   }
 
-  const handleExampleClick = (example: string) => {
-    setIntervention(example)
-  }
-
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Decorative elements */}
@@ -100,25 +301,91 @@ export default function CreateStudyPage() {
         {/* Form Card */}
         <Card variant="elevated" padding="lg" className="max-w-xl mx-auto animate-fade-in-up">
           <form onSubmit={handleSubmit}>
-            <div className="mb-6">
+            {/* Autocomplete Input */}
+            <div className="mb-6 relative">
               <Textarea
+                ref={inputRef}
                 value={intervention}
-                onChange={(e) => setIntervention(e.target.value)}
-                placeholder="e.g., Testosterone replacement therapy for men with low T..."
-                className="text-lg min-h-[140px]"
+                onChange={(e) => {
+                  setIntervention(e.target.value)
+                  setShowSuggestions(true)
+                  setHighlightedIndex(-1)
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onKeyDown={handleKeyDown}
+                placeholder="Start typing or select an intervention..."
+                className="text-lg min-h-[100px]"
                 autoFocus
               />
+
+              {/* Autocomplete Dropdown */}
+              {showSuggestions && flattenedSuggestions.length > 0 && (
+                <div
+                  ref={suggestionsRef}
+                  className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-[320px] overflow-y-auto"
+                >
+                  {groupedSuggestions.map((group, groupIndex) => {
+                    // Calculate the starting index for this group in the flattened list
+                    const startIndex = groupedSuggestions
+                      .slice(0, groupIndex)
+                      .reduce((acc, g) => acc + g.items.length, 0)
+
+                    return (
+                      <div key={group.category}>
+                        {/* Category Header */}
+                        <div className="sticky top-0 px-4 py-2 bg-slate-50 border-b border-slate-100">
+                          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                            {group.label}
+                          </span>
+                        </div>
+
+                        {/* Items */}
+                        {group.items.map((item, itemIndex) => {
+                          const flatIndex = startIndex + itemIndex
+                          const isHighlighted = flatIndex === highlightedIndex
+
+                          return (
+                            <button
+                              key={item.name}
+                              type="button"
+                              onClick={() => handleSelectSuggestion(item.name)}
+                              className={`
+                                w-full text-left px-4 py-3 text-sm transition-colors
+                                ${isHighlighted
+                                  ? 'bg-[#3B82F6]/10 text-[#3B82F6]'
+                                  : 'text-slate-700 hover:bg-slate-50'
+                                }
+                              `}
+                            >
+                              {item.name}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* No results message */}
+              {showSuggestions && intervention.trim().length > 0 && flattenedSuggestions.length === 0 && (
+                <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl p-4">
+                  <p className="text-sm text-slate-500 text-center">
+                    No matching interventions. You can still continue with your custom input.
+                  </p>
+                </div>
+              )}
             </div>
 
-            {/* Examples */}
+            {/* Quick picks */}
             <div className="mb-6">
-              <div className="text-sm text-slate-600 mb-3">Try an example:</div>
+              <div className="text-sm text-slate-600 mb-3">Popular choices:</div>
               <div className="flex flex-wrap gap-2">
-                {EXAMPLES.map((example) => (
+                {['GLP-1 agonists (semaglutide, tirzepatide)', 'Testosterone replacement therapy (TRT)', 'Ketamine therapy', 'Intermittent fasting', 'Virtual CBT'].map((example) => (
                   <button
                     key={example}
                     type="button"
-                    onClick={() => handleExampleClick(example)}
+                    onClick={() => handleSelectSuggestion(example)}
                     className={`
                       px-3 py-1.5 text-sm rounded-full border transition-all duration-150
                       ${intervention === example
@@ -127,7 +394,7 @@ export default function CreateStudyPage() {
                       }
                     `}
                   >
-                    {example}
+                    {example.length > 30 ? example.slice(0, 30) + '...' : example}
                   </button>
                 ))}
               </div>
