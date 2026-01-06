@@ -39,7 +39,7 @@ export default function Home() {
                 {/* "Everything" - burnt orange, bold, above "Something" */}
                 <span
                   className="absolute -top-[0.9em] left-0
-                             text-[#9A3412]
+                             text-[#C2410C]
                              text-[0.97em] font-bold tracking-tight
                              animate-fade-in-up opacity-0"
                   style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
@@ -58,7 +58,7 @@ export default function Home() {
                     <path
                       d="M 0 12 Q 20 8, 40 12 Q 60 16, 80 10 Q 95 6, 100 10"
                       fill="none"
-                      stroke="#9A3412"
+                      stroke="#C2410C"
                       strokeWidth="3"
                       strokeLinecap="round"
                       className="origin-left"
@@ -68,7 +68,7 @@ export default function Home() {
                     <path
                       d="M 5 15 Q 30 12, 50 15 Q 75 18, 95 13"
                       fill="none"
-                      stroke="#9A3412"
+                      stroke="#C2410C"
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       opacity="0.4"
@@ -88,16 +88,16 @@ export default function Home() {
               {/* Sponsor Path */}
               <Link
                 href="/sponsor"
-                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#4C1D95]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
+                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#6D28D9]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
               >
-                <div className="w-14 h-14 bg-[#4C1D95] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
+                <div className="w-14 h-14 bg-[#6D28D9] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
                   <FileText className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-lg font-semibold text-slate-900 mb-2">Create a Study</h2>
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
                   Design and launch an observational study with AI-generated protocols.
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-[#4C1D95] font-medium text-sm group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[#6D28D9] font-medium text-sm group-hover:gap-2.5 transition-all">
                   Sponsor Demo
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -106,16 +106,16 @@ export default function Home() {
               {/* Participant Path */}
               <Link
                 href="/study"
-                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#9A3412]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
+                className="group bg-white p-7 rounded-2xl border border-slate-200 hover:border-[#C2410C]/30 transition-all duration-300 shadow-sm hover:shadow-lg text-left"
               >
-                <div className="w-14 h-14 bg-[#9A3412] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
+                <div className="w-14 h-14 bg-[#C2410C] rounded-xl flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-md">
                   <Clipboard className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-lg font-semibold text-slate-900 mb-2">Join a Study</h2>
                 <p className="text-slate-600 text-sm mb-4 leading-relaxed">
                   Experience the participant flow: consent, screening, and PRO surveys.
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-[#9A3412] font-medium text-sm group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[#C2410C] font-medium text-sm group-hover:gap-2.5 transition-all">
                   Participant Demo
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -150,30 +150,30 @@ export default function Home() {
                 title: 'Enroll Participants',
                 description: 'Share a link. Participants complete consent and screening on mobile.',
                 icon: Users,
-                iconBg: 'bg-[#4C1D95]',
+                iconBg: 'bg-[#6D28D9]',
                 iconColor: 'text-white',
-                stepColor: 'text-[#4C1D95]',
-                hoverBorder: 'hover:border-[#4C1D95]/40',
+                stepColor: 'text-[#6D28D9]',
+                hoverBorder: 'hover:border-[#6D28D9]/40',
               },
               {
                 step: '03',
                 title: 'Collect Outcomes',
                 description: 'Validated PRO instruments with automated reminders and safety monitoring.',
                 icon: Clipboard,
-                iconBg: 'bg-[#9A3412]',
+                iconBg: 'bg-[#C2410C]',
                 iconColor: 'text-white',
-                stepColor: 'text-[#9A3412]',
-                hoverBorder: 'hover:border-[#9A3412]/40',
+                stepColor: 'text-[#C2410C]',
+                hoverBorder: 'hover:border-[#C2410C]/40',
               },
               {
                 step: '04',
                 title: 'Analyze Results',
                 description: 'Real-world evidence from patient-reported outcomes and lab data.',
                 icon: BarChart3,
-                iconBg: 'bg-[#0F766E]',
+                iconBg: 'bg-[#0D9488]',
                 iconColor: 'text-white',
-                stepColor: 'text-[#0F766E]',
-                hoverBorder: 'hover:border-[#0F766E]/40',
+                stepColor: 'text-[#0D9488]',
+                hoverBorder: 'hover:border-[#0D9488]/40',
               },
             ].map((item) => (
               <div
@@ -225,8 +225,8 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#166534]/40 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 bg-[#166534] rounded-xl flex items-center justify-center mb-4 shadow-md">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#15803D]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#15803D] rounded-xl flex items-center justify-center mb-4 shadow-md">
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Consent Agent</h3>
@@ -235,8 +235,8 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#4C1D95]/40 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 bg-[#4C1D95] rounded-xl flex items-center justify-center mb-4 shadow-md">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#6D28D9]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#6D28D9] rounded-xl flex items-center justify-center mb-4 shadow-md">
                 <Users className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Enrollment Agent</h3>
@@ -245,8 +245,8 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#9A3412]/40 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 bg-[#9A3412] rounded-xl flex items-center justify-center mb-4 shadow-md">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#C2410C]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#C2410C] rounded-xl flex items-center justify-center mb-4 shadow-md">
                 <Bell className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Engagement Agent</h3>
@@ -309,7 +309,7 @@ export default function Home() {
                 <div className="mt-6 pt-6 border-t border-white/10">
                   <div className="text-xs text-white/50 mb-2">Generated in</div>
                   <div className="flex items-center gap-2">
-                    <span className="text-3xl font-display text-[#9A3412]">~2 min</span>
+                    <span className="text-3xl font-display text-[#C2410C]">~2 min</span>
                     <span className="text-white/50">by AI</span>
                   </div>
                 </div>
@@ -350,7 +350,7 @@ export default function Home() {
                   },
                 ].map((feature) => (
                   <li key={feature.title} className="flex gap-4">
-                    <div className="flex-shrink-0 w-6 h-6 bg-[#166534] rounded-full flex items-center justify-center mt-0.5 shadow-sm">
+                    <div className="flex-shrink-0 w-6 h-6 bg-[#15803D] rounded-full flex items-center justify-center mt-0.5 shadow-sm">
                       <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
                     </div>
                     <div>
@@ -376,7 +376,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-[#166534] rounded-lg flex items-center justify-center shadow-sm">
+                    <div className="w-10 h-10 bg-[#15803D] rounded-lg flex items-center justify-center shadow-sm">
                       <Shield className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
@@ -385,7 +385,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-[#4C1D95] rounded-lg flex items-center justify-center shadow-sm">
+                    <div className="w-10 h-10 bg-[#6D28D9] rounded-lg flex items-center justify-center shadow-sm">
                       <Users className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">

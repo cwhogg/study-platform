@@ -15,32 +15,32 @@
   --color-primary-100: rgba(30, 58, 95, 0.15);
   --color-primary-900: #0A1929;
 
-  /* Accent - Burnt Sienna (warm, earthy energy) */
-  --color-accent: #9A3412;
-  --color-accent-light: #C2410C;
-  --color-accent-dark: #7C2D12;
-  --color-accent-50: rgba(154, 52, 18, 0.1);
+  /* Accent - Warm Orange (energy, highlights) */
+  --color-accent: #C2410C;
+  --color-accent-light: #EA580C;
+  --color-accent-dark: #9A3412;
+  --color-accent-50: rgba(194, 65, 12, 0.1);
 
   /* Rich Accent Palette */
-  --color-purple: #4C1D95;
-  --color-purple-light: #5B21B6;
-  --color-purple-dark: #3B0764;
-  --color-purple-50: rgba(76, 29, 149, 0.1);
+  --color-purple: #6D28D9;
+  --color-purple-light: #7C3AED;
+  --color-purple-dark: #5B21B6;
+  --color-purple-50: rgba(109, 40, 217, 0.1);
 
-  --color-teal: #0F766E;
+  --color-teal: #0D9488;
   --color-teal-light: #14B8A6;
-  --color-teal-dark: #115E59;
-  --color-teal-50: rgba(15, 118, 110, 0.1);
+  --color-teal-dark: #0F766E;
+  --color-teal-50: rgba(13, 148, 136, 0.1);
 
-  --color-sapphire: #1E40AF;
+  --color-sapphire: #2563EB;
   --color-sapphire-light: #3B82F6;
-  --color-sapphire-dark: #1E3A8A;
-  --color-sapphire-50: rgba(30, 64, 175, 0.1);
+  --color-sapphire-dark: #1E40AF;
+  --color-sapphire-50: rgba(37, 99, 235, 0.1);
 
-  --color-forest: #166534;
+  --color-forest: #15803D;
   --color-forest-light: #22C55E;
-  --color-forest-dark: #14532D;
-  --color-forest-50: rgba(22, 101, 52, 0.1);
+  --color-forest-dark: #166534;
+  --color-forest-50: rgba(21, 128, 61, 0.1);
 
   --color-wine: #881337;
   --color-wine-light: #BE123C;
