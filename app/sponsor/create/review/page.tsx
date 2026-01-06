@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { toTitleCase } from '@/lib/utils'
 
 // Types for AI-generated protocol
 interface InclusionCriterion {
@@ -228,7 +229,7 @@ function ReviewProtocolContent() {
       // Call consent generation API
       const consentRequest = {
         protocol,
-        studyName: `${intervention} Outcomes Study`,
+        studyName: `${toTitleCase(intervention)} Outcomes Study`,
         intervention,
         durationWeeks: duration,
         riskAssessment,  // Pass risk assessment from discovery

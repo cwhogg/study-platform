@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { toTitleCase } from '@/lib/utils'
 
 // Types for AI-generated consent
 interface ConsentSection {
@@ -163,7 +164,7 @@ function ConsentReviewContent() {
       const storedProtocol = sessionStorage.getItem('generatedProtocol')
       const protocol = storedProtocol ? JSON.parse(storedProtocol) : null
 
-      const studyName = `${intervention} Outcomes Study`
+      const studyName = `${toTitleCase(intervention)} Outcomes Study`
       const durationWeeks = parseInt(duration) || 26
 
       // Extract lab information from protocol schedule

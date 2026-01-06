@@ -5,6 +5,7 @@ import type {
   ConsentGenerationOutput,
   ProtocolGenerationOutput,
 } from '@/lib/agents/types'
+import { toTitleCase } from '@/lib/utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
       ? durationWeeks
       : parseInt(durationWeeks) || 26
 
-    const name = studyName || `${intervention} Outcomes Study`
+    const name = studyName || `${toTitleCase(intervention)} Outcomes Study`
 
     console.log(`[Consent Generation] Starting for: ${name}`)
     console.log(`[Consent Generation] Risk Assessment:`, JSON.stringify(riskAssessment, null, 2))

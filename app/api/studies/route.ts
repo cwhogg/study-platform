@@ -1,7 +1,7 @@
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import type { StudyProtocol, ComprehensionQuestion, StudyConfig } from '@/lib/db/types'
-import { getBaseUrl } from '@/lib/utils'
+import { getBaseUrl, toTitleCase } from '@/lib/utils'
 
 // Demo sponsor ID - consistent across all demo studies
 const DEMO_SPONSOR_ID = '00000000-0000-0000-0000-000000000001'
@@ -186,8 +186,8 @@ export async function POST(request: NextRequest) {
       ? secondaryEndpoints.split(',').filter(Boolean)
       : (secondaryEndpoints || [])
 
-    // Generate study name
-    const studyName = `${intervention} Outcomes Study`
+    // Generate study name (title case for proper formatting)
+    const studyName = `${toTitleCase(intervention)} Outcomes Study`
 
     // Generate protocol
     const protocol = generateProtocol({
