@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowRight, ArrowLeft, Info, Sparkles, Loader2 } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Info, Sparkles, Loader2, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -88,6 +88,11 @@ function ConfigureStudyContent() {
   const [duration, setDuration] = useState(26)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submissionPhase, setSubmissionPhase] = useState<'protocol' | 'safety' | null>(null)
+  const [safetyWarning, setSafetyWarning] = useState<{ show: boolean; error: string; protocol: Record<string, unknown> | null }>({
+    show: false,
+    error: '',
+    protocol: null,
+  })
 
   // Load discovery data from sessionStorage
   useEffect(() => {
@@ -226,20 +231,28 @@ function ConfigureStudyContent() {
       const safetyData = await safetyResponse.json()
       console.log('[Safety] Response status:', safetyResponse.status)
 
-      // Safety Agent failure is non-fatal - continue with empty safety rules
-      let safetyMonitoring = { proAlerts: [], labThresholds: [] }
-      if (safetyResponse.ok && safetyData.data) {
-        safetyMonitoring = {
-          proAlerts: safetyData.data.proAlerts || [],
-          labThresholds: safetyData.data.labThresholds || [],
-        }
-        console.log('[Safety] Generated:', {
-          proAlerts: safetyMonitoring.proAlerts.length,
-          labThresholds: safetyMonitoring.labThresholds.length,
+      // Check if Safety Agent succeeded
+      if (!safetyResponse.ok || !safetyData.data) {
+        // Safety Agent failed - show warning and ask for confirmation
+        console.warn('[Safety] Failed to generate safety rules:', safetyData.error)
+        setIsSubmitting(false)
+        setSubmissionPhase(null)
+        setSafetyWarning({
+          show: true,
+          error: safetyData.error || 'Unknown error',
+          protocol: protocol,
         })
-      } else {
-        console.warn('[Safety] Failed to generate safety rules, using empty defaults:', safetyData.error)
+        return // Don't continue - wait for user decision
       }
+
+      const safetyMonitoring = {
+        proAlerts: safetyData.data.proAlerts || [],
+        labThresholds: safetyData.data.labThresholds || [],
+      }
+      console.log('[Safety] Generated:', {
+        proAlerts: safetyMonitoring.proAlerts.length,
+        labThresholds: safetyMonitoring.labThresholds.length,
+      })
 
       // Step 3: Merge safety into protocol
       const completeProtocol = {
@@ -270,6 +283,39 @@ function ConfigureStudyContent() {
     }
   }
 
+  // Handler for proceeding without safety rules (user confirmed)
+  const handleProceedWithoutSafety = () => {
+    if (!safetyWarning.protocol) return
+
+    console.warn('[Safety] User chose to proceed without safety rules')
+
+    // Create protocol with empty safety monitoring
+    const completeProtocol = {
+      ...safetyWarning.protocol,
+      safetyMonitoring: { proAlerts: [], labThresholds: [] },
+    }
+
+    // Store and navigate
+    sessionStorage.setItem('generatedProtocol', JSON.stringify(completeProtocol))
+
+    const params = new URLSearchParams({
+      intervention,
+      population,
+      treatmentStage,
+      primaryEndpoint,
+      secondaryEndpoints: secondaryEndpoints.join(','),
+      duration: duration.toString(),
+    })
+
+    setSafetyWarning({ show: false, error: '', protocol: null })
+    router.push(`/sponsor/create/review?${params.toString()}`)
+  }
+
+  // Handler for canceling (go back to fix/retry)
+  const handleCancelSafetyWarning = () => {
+    setSafetyWarning({ show: false, error: '', protocol: null })
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -286,6 +332,51 @@ function ConfigureStudyContent() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+      {/* Safety Warning Dialog */}
+      {safetyWarning.show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-slide-up">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-6 h-6 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="font-display text-lg text-slate-900">Safety Rules Failed</h3>
+                <p className="text-sm text-slate-500">Unable to generate safety monitoring</p>
+              </div>
+            </div>
+
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+              <p className="font-medium mb-1">Error:</p>
+              <p className="text-amber-700">{safetyWarning.error}</p>
+            </div>
+
+            <p className="text-sm text-slate-600 mb-6">
+              <strong className="text-slate-900">Warning:</strong> Proceeding without safety rules means
+              this study will have <strong>no automated safety monitoring</strong> for participant responses
+              or lab values. This could miss critical safety signals.
+            </p>
+
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                onClick={handleCancelSafetyWarning}
+                className="flex-1"
+              >
+                Go Back
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={handleProceedWithoutSafety}
+                className="flex-1 !text-amber-700 hover:!bg-amber-50"
+              >
+                Proceed Anyway
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-8 animate-fade-in">
         <Link
