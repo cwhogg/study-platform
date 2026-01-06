@@ -545,21 +545,23 @@ function ReviewProtocolContent() {
             defaultOpen
           >
             <div className="space-y-4">
-              {/* FDA Status */}
-              <div className={`p-4 rounded-xl ${
-                riskAssessment.fdaApprovalStatus?.approved
-                  ? 'bg-emerald-50 border border-emerald-200'
-                  : 'bg-red-50 border border-red-200'
-              }`}>
-                <div className="font-medium text-slate-900 mb-1">
-                  {riskAssessment.fdaApprovalStatus?.approved
-                    ? '✓ FDA Approved'
-                    : '⚠ NOT FDA Approved'}
+              {/* FDA Status - only show for pharmacological interventions */}
+              {riskAssessment.interventionCategory === 'pharmacological' && (
+                <div className={`p-4 rounded-xl ${
+                  riskAssessment.fdaApprovalStatus?.approved
+                    ? 'bg-emerald-50 border border-emerald-200'
+                    : 'bg-red-50 border border-red-200'
+                }`}>
+                  <div className="font-medium text-slate-900 mb-1">
+                    {riskAssessment.fdaApprovalStatus?.approved
+                      ? '✓ FDA Approved'
+                      : '⚠ NOT FDA Approved'}
+                  </div>
+                  {!riskAssessment.fdaApprovalStatus?.approved && riskAssessment.regulatoryDisclaimer && (
+                    <p className="text-sm text-red-700">{riskAssessment.regulatoryDisclaimer}</p>
+                  )}
                 </div>
-                {!riskAssessment.fdaApprovalStatus?.approved && riskAssessment.regulatoryDisclaimer && (
-                  <p className="text-sm text-red-700">{riskAssessment.regulatoryDisclaimer}</p>
-                )}
-              </div>
+              )}
 
               {/* Risk Summary */}
               <div className="p-4 bg-slate-50 rounded-xl">
