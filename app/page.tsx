@@ -160,10 +160,10 @@ export default function Home() {
                 title: 'Enroll Participants',
                 description: 'Share a link. Participants consent and screen on mobile.',
                 icon: Users,
-                iconBg: 'bg-[#6D28D9]',
+                iconBg: 'bg-[#1E40AF]',
                 iconColor: 'text-white',
-                stepColor: 'text-[#6D28D9]',
-                hoverBorder: 'hover:border-[#6D28D9]/40',
+                stepColor: 'text-[#1E40AF]',
+                hoverBorder: 'hover:border-[#1E40AF]/40',
               },
               {
                 step: '04',
@@ -255,8 +255,8 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#6D28D9]/40 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 bg-[#6D28D9] rounded-xl flex items-center justify-center mb-4 shadow-md">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-[#1E40AF]/40 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-[#1E40AF] rounded-xl flex items-center justify-center mb-4 shadow-md">
                 <Users className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Enrollment Agent</h3>
@@ -405,7 +405,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-[#6D28D9] rounded-lg flex items-center justify-center shadow-sm">
+                    <div className="w-10 h-10 bg-[#1E40AF] rounded-lg flex items-center justify-center shadow-sm">
                       <Users className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
