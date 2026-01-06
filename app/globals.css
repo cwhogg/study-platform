@@ -256,19 +256,26 @@ body::before {
 }
 
 .btn-primary {
-  background: linear-gradient(to bottom, var(--color-primary-light), var(--color-primary));
+  background: #1E40AF;
   color: white;
-  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.25);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(to bottom, #818CF8, var(--color-primary-light));
-  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+  background: #1D4ED8;
+  box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.3);
   transform: translateY(-1px);
 }
 
 .btn-primary:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
+}
+
+.btn-primary:disabled {
+  background: #E2E8F0;
+  color: #94A3B8;
+  box-shadow: none;
+  border: 1px solid #CBD5E1;
 }
 
 .btn-secondary {

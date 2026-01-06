@@ -38,12 +38,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary: `
-        bg-gradient-to-b from-[#6366F1] to-[#4F46E5]
+        bg-[#1E40AF]
         text-white
-        shadow-md shadow-indigo-500/25
-        hover:from-[#818CF8] hover:to-[#6366F1] hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5
-        focus-visible:ring-indigo-500
-        disabled:from-slate-300 disabled:to-slate-400 disabled:text-slate-500 disabled:shadow-none
+        shadow-md shadow-[#1E40AF]/25
+        hover:bg-[#1D4ED8] hover:shadow-lg hover:shadow-[#1E40AF]/30 hover:-translate-y-0.5
+        focus-visible:ring-[#1E40AF]
+        disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:border disabled:border-slate-300
       `,
       secondary: `
         bg-white
