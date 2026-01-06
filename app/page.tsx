@@ -25,7 +25,7 @@ export default function Home() {
         <div className="absolute -left-40 top-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
         <div className="absolute right-1/4 bottom-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
 
-        <div className="relative container-wide py-20 sm:py-28">
+        <div className="relative container-wide pt-12 sm:pt-16 pb-20 sm:pb-28">
           <div className="text-center max-w-3xl mx-auto stagger-children">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-12">
