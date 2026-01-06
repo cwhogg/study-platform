@@ -279,7 +279,7 @@ export default function Home() {
       </section>
 
       {/* Demo Case Study */}
-      <section className="relative overflow-hidden bg-[#15803D] border-t border-slate-200">
+      <section className="relative overflow-hidden bg-[#0891B2] border-t border-slate-200">
 
         <div className="relative container-wide py-20 sm:py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
