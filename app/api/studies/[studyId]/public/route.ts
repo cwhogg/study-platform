@@ -31,7 +31,7 @@ export async function GET(
 
     const { data: study, error: studyError } = await supabase
       .from('sp_studies')
-      .select('id, name, intervention, status, enrollment_copy, config')
+      .select('id, name, intervention, status, enrollment_copy, config, comprehension_questions, consent_document')
       .eq('id', studyId)
       .single()
 
@@ -57,6 +57,8 @@ export async function GET(
       intervention: study.intervention,
       enrollmentCopy: study.enrollment_copy,
       durationWeeks: study.config?.duration_weeks || 26,
+      comprehensionQuestions: study.comprehension_questions,
+      consentDocument: study.consent_document,
     })
 
   } catch (error) {

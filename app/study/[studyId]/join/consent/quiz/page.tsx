@@ -1,45 +1,56 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
-import { CheckCircle2, XCircle } from 'lucide-react'
+import { CheckCircle2, XCircle, Loader2 } from 'lucide-react'
 
-interface Question {
+// Types matching the agent-generated format
+interface ComprehensionQuestionOption {
+  text: string
+  correct: boolean
+}
+
+interface ComprehensionQuestion {
   id: string
   question: string
-  options: string[]
-  correctIndex: number
+  options: ComprehensionQuestionOption[]
   explanation: string
 }
 
-const questions: Question[] = [
-  {
-    id: 'duration',
-    question: 'How long is this study?',
-    options: ['2 weeks', '3 months', '6 months', '1 year'],
-    correctIndex: 2,
-    explanation: 'The study lasts 6 months (26 weeks) total.'
-  },
+// Fallback questions (used only if study has no generated questions)
+const FALLBACK_QUESTIONS: ComprehensionQuestion[] = [
   {
     id: 'withdraw',
     question: 'Can you stop participating at any time?',
-    options: ['No, you must complete the full study', 'Yes, but only with your doctor\'s approval', 'Yes, at any time for any reason', 'Only if you have a medical emergency'],
-    correctIndex: 2,
+    options: [
+      { text: 'No, you must complete the full study', correct: false },
+      { text: 'Yes, but only with your doctor\'s approval', correct: false },
+      { text: 'Yes, at any time for any reason', correct: true },
+      { text: 'Only if you have a medical emergency', correct: false },
+    ],
     explanation: 'Participation is voluntary. You can withdraw at any time, for any reason, without affecting your care.'
   },
   {
     id: 'activities',
     question: 'What will you be asked to do?',
-    options: ['Take experimental medications', 'Complete surveys and have regular lab work', 'Attend weekly in-person visits', 'Change your current treatment plan'],
-    correctIndex: 1,
+    options: [
+      { text: 'Take experimental medications', correct: false },
+      { text: 'Complete surveys and have regular lab work', correct: true },
+      { text: 'Attend weekly in-person visits', correct: false },
+      { text: 'Change your current treatment plan', correct: false },
+    ],
     explanation: 'You\'ll answer short surveys every 2-4 weeks and have blood draws at scheduled intervals.'
   },
   {
     id: 'privacy',
     question: 'Who will see your personal health data?',
-    options: ['Anyone interested in the study', 'Your employer and insurance company', 'Only authorized research staff', 'Data will be posted publicly'],
-    correctIndex: 2,
+    options: [
+      { text: 'Anyone interested in the study', correct: false },
+      { text: 'Your employer and insurance company', correct: false },
+      { text: 'Only authorized research staff', correct: true },
+      { text: 'Data will be posted publicly', correct: false },
+    ],
     explanation: 'Only authorized research staff can access your identifiable information. Results are reported only in aggregate.'
   }
 ]
@@ -49,21 +60,51 @@ export default function ConsentQuizPage() {
   const params = useParams()
   const studyId = params.studyId as string
 
+  const [questions, setQuestions] = useState<ComprehensionQuestion[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
 
+  // Fetch comprehension questions from study
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await fetch(`/api/studies/${studyId}/public`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.comprehensionQuestions && data.comprehensionQuestions.length > 0) {
+            setQuestions(data.comprehensionQuestions)
+          } else {
+            setQuestions(FALLBACK_QUESTIONS)
+          }
+        } else {
+          setQuestions(FALLBACK_QUESTIONS)
+        }
+      } catch (error) {
+        console.error('Failed to fetch comprehension questions:', error)
+        setQuestions(FALLBACK_QUESTIONS)
+      }
+      setIsLoading(false)
+    }
+
+    fetchQuestions()
+  }, [studyId])
+
   const question = questions[currentQuestion]
   const totalQuestions = questions.length
   const isLastQuestion = currentQuestion === totalQuestions - 1
+
+  // Find the correct answer index
+  const correctIndex = question?.options?.findIndex(opt => opt.correct) ?? -1
 
   const handleSelectAnswer = (index: number) => {
     if (showFeedback) return // Prevent changing answer after submission
 
     setSelectedAnswer(index)
     setShowFeedback(true)
-    setIsCorrect(index === question.correctIndex)
+    setIsCorrect(index === correctIndex)
   }
 
   const handleContinue = () => {
@@ -75,6 +116,35 @@ export default function ConsentQuizPage() {
       setShowFeedback(false)
       setIsCorrect(false)
     }
+  }
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <MobileContainer withBottomPadding className="pt-6 bg-white">
+        <div className="flex flex-col items-center justify-center min-h-[50vh]">
+          <Loader2 className="w-8 h-8 text-[#1E3A5F] animate-spin mb-4" />
+          <p className="text-slate-600">Loading questions...</p>
+        </div>
+      </MobileContainer>
+    )
+  }
+
+  // No questions available
+  if (!question) {
+    return (
+      <MobileContainer withBottomPadding className="pt-6 bg-white">
+        <div className="flex flex-col items-center justify-center min-h-[50vh]">
+          <p className="text-slate-600 mb-4">No questions available.</p>
+          <button
+            onClick={() => router.push(`/study/${studyId}/join/consent/sign`)}
+            className="px-6 py-3 bg-[#1E3A5F] text-white rounded-xl"
+          >
+            Continue to Sign
+          </button>
+        </div>
+      </MobileContainer>
+    )
   }
 
   return (
@@ -104,7 +174,7 @@ export default function ConsentQuizPage() {
         <div className="space-y-3">
           {question.options.map((option, index) => {
             const isSelected = selectedAnswer === index
-            const isCorrectAnswer = index === question.correctIndex
+            const isCorrectAnswer = option.correct
 
             let buttonClasses = 'w-full p-4 text-left rounded-xl border-2 transition-all'
 
@@ -138,7 +208,7 @@ export default function ConsentQuizPage() {
                       ? 'text-red-700'
                       : 'text-slate-900'
                   }`}>
-                    {option}
+                    {option.text}
                   </span>
                   {showFeedback && isCorrectAnswer && (
                     <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />

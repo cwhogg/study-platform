@@ -3,80 +3,86 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileBottomAction } from '@/components/ui/MobileContainer'
+import { Loader2 } from 'lucide-react'
 
-// Placeholder consent sections
-const consentSections = [
+// Types for consent sections
+interface ConsentSection {
+  id?: string
+  title: string
+  content: string
+}
+
+// Fallback consent sections (used if no generated content)
+const FALLBACK_SECTIONS: ConsentSection[] = [
   {
+    id: 'purpose',
     title: 'Purpose of the Study',
-    content: `This observational study aims to better understand how testosterone replacement therapy (TRT) affects symptoms, quality of life, and overall health in men with low testosterone.
+    content: `This observational study aims to better understand how this intervention affects symptoms, quality of life, and overall health.
 
-By participating, you'll help us learn how TRT works in real-world settings, which can improve care for future patients.
+By participating, you'll help us learn how this treatment works in real-world settings, which can improve care for future patients.
 
 Your treatment will not change based on your participation - you'll receive the same care whether or not you join the study.`
   },
   {
+    id: 'procedures',
     title: 'What You\'ll Do',
-    content: `Questionnaires
-You'll answer short questions about your symptoms, mood, energy, and quality of life. These take about 5 minutes and happen every 2-4 weeks.
+    content: `You'll complete questionnaires at regular intervals throughout the study.
 
-Lab Work
-Blood draws at the start, 6 weeks, 12 weeks, and 26 weeks. Your Hone doctor orders these as part of your normal TRT care.
-
-Timeline
-The study lasts 6 months (26 weeks) total.`
+These questionnaires ask about your symptoms, mood, energy, and quality of life. They take about 5 minutes each.`
   },
   {
+    id: 'risks',
     title: 'Risks and Discomforts',
     content: `This is an observational study - we're only collecting information, not changing your treatment. There are no additional medical risks from participating.
 
-Possible discomforts:
-• Time spent completing questionnaires (~5 minutes every 2-4 weeks)
-• Blood draws (same as your regular TRT monitoring)
-
-Some questions ask about sensitive topics like mood and sexual function. You can skip any question you're not comfortable answering.`
+Some questions ask about sensitive topics. You can skip any question you're not comfortable answering.`
   },
   {
+    id: 'benefits',
     title: 'Benefits',
-    content: `Direct Benefits
-• Track your symptom changes over time
-• Receive a summary of your progress at the end of the study
+    content: `Direct Benefits:
+• Track your changes over time
+• Receive a summary of your progress
 
-Indirect Benefits
-• Help improve understanding of TRT outcomes
-• Contribute to better care for future patients with low testosterone`
+Indirect Benefits:
+• Help improve understanding of treatment outcomes
+• Contribute to better care for future patients`
   },
   {
+    id: 'privacy',
     title: 'Privacy and Confidentiality',
     content: `Your information is protected:
 
 • All data is encrypted and stored securely
 • Your identity is separated from your health data
-• Results are reported only in aggregate (grouped with other participants)
+• Results are reported only in aggregate
 • We never share your individual data with third parties
 
 Only authorized research staff can access your identifiable information.`
   },
   {
+    id: 'voluntary',
     title: 'Voluntary Participation',
     content: `Joining this study is completely voluntary.
 
 • You can withdraw at any time, for any reason
-• Withdrawing will not affect your Hone treatment or care
+• Withdrawing will not affect your treatment or care
 • If you withdraw, data already collected may still be used (in de-identified form)
 
 To withdraw, simply contact us or stop completing surveys.`
   },
   {
+    id: 'compensation',
     title: 'Compensation',
     content: `There is no monetary compensation for participating in this study.
 
-You will not be charged any fees for participating. Your regular TRT treatment costs remain the same.`
+You will not be charged any fees for participating.`
   },
   {
+    id: 'contact',
     title: 'Contact Information',
     content: `Questions about the study:
 Email: research@example.com
-Phone: 1-800-XXX-XXXX
 
 Questions about your rights as a participant:
 Institutional Review Board
@@ -91,19 +97,70 @@ export default function ConsentPage() {
   const params = useParams()
   const studyId = params.studyId as string
 
+  const [consentSections, setConsentSections] = useState<ConsentSection[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [currentSection, setCurrentSection] = useState(0)
   const [readSections, setReadSections] = useState<Set<number>>(new Set([0]))
   const contentRef = useRef<HTMLDivElement>(null)
 
+  // Fetch consent document from study
+  useEffect(() => {
+    const fetchConsent = async () => {
+      try {
+        const response = await fetch(`/api/studies/${studyId}/public`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.consentDocument?.sections && data.consentDocument.sections.length > 0) {
+            setConsentSections(data.consentDocument.sections)
+          } else {
+            setConsentSections(FALLBACK_SECTIONS)
+          }
+        } else {
+          setConsentSections(FALLBACK_SECTIONS)
+        }
+      } catch (error) {
+        console.error('Failed to fetch consent document:', error)
+        setConsentSections(FALLBACK_SECTIONS)
+      }
+      setIsLoading(false)
+    }
+
+    fetchConsent()
+  }, [studyId])
+
   const totalSections = consentSections.length
-  const progress = ((currentSection + 1) / totalSections) * 100
+  const progress = totalSections > 0 ? ((currentSection + 1) / totalSections) * 100 : 0
   const isLastSection = currentSection === totalSections - 1
-  const allSectionsRead = readSections.size === totalSections
 
   // Scroll to top when section changes
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }, [currentSection])
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex flex-col h-full bg-white items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#1E3A5F] animate-spin mb-4" />
+        <p className="text-slate-600">Loading consent document...</p>
+      </div>
+    )
+  }
+
+  // No sections available
+  if (consentSections.length === 0) {
+    return (
+      <div className="flex flex-col h-full bg-white items-center justify-center p-4">
+        <p className="text-slate-600 mb-4">Consent document not available.</p>
+        <button
+          onClick={() => router.push(`/study/${studyId}/join/consent/quiz`)}
+          className="px-6 py-3 bg-[#1E3A5F] text-white rounded-xl"
+        >
+          Continue
+        </button>
+      </div>
+    )
+  }
 
   const handleContinue = () => {
     if (isLastSection) {

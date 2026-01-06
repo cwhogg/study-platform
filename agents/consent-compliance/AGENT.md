@@ -46,14 +46,24 @@ Produce consent materials that:
   },
   "comprehensionQuestions": [
     {
-      "id": "q1",
+      "id": "duration",
       "question": "How long is this study?",
       "options": [
-        { "text": "2 weeks", "correct": false },
-        { "text": "6 months", "correct": true },
-        { "text": "1 year", "correct": false }
+        { "text": "[shorter than actual]", "correct": false },
+        { "text": "[actual duration from durationWeeks input]", "correct": true },
+        { "text": "[longer than actual]", "correct": false }
       ],
-      "explanation": "Shown if answered incorrectly"
+      "explanation": "The study lasts [actual duration] total."
+    },
+    {
+      "id": "voluntary",
+      "question": "Can you stop participating at any time?",
+      "options": [
+        { "text": "No, you must complete the study", "correct": false },
+        { "text": "Yes, at any time for any reason", "correct": true },
+        { "text": "Only with your doctor's permission", "correct": false }
+      ],
+      "explanation": "Participation is voluntary. You can withdraw at any time."
     }
   ],
   "summary": {
@@ -195,11 +205,33 @@ The document must include these sections (FDA 21 CFR 50.25):
 - Allow retry after explanation
 
 ### Required Topics to Cover
-1. Study duration
+1. **Study duration** - MUST use the actual `durationWeeks` from input to generate correct answer
 2. What they'll be asked to do
 3. Voluntary nature / right to withdraw
 4. Who will see their data
 5. (Optional) Key risk or procedure specific to this study
+
+### Duration Question Requirements
+**CRITICAL:** The duration question MUST use the actual study duration from the input:
+- If `durationWeeks` is 12, correct answer is "3 months" or "12 weeks"
+- If `durationWeeks` is 26, correct answer is "6 months" or "26 weeks"
+- If `durationWeeks` is 52, correct answer is "1 year" or "12 months"
+- Always generate plausible wrong answers that are clearly different (e.g., "2 weeks", "3 months" if study is 1 year)
+
+Example for a 52-week (1 year) study:
+```json
+{
+  "id": "duration",
+  "question": "How long is this study?",
+  "options": [
+    { "text": "3 months", "correct": false },
+    { "text": "6 months", "correct": false },
+    { "text": "1 year", "correct": true },
+    { "text": "2 years", "correct": false }
+  ],
+  "explanation": "The study lasts 1 year (52 weeks) total."
+}
+```
 
 ### Example Question
 ```json

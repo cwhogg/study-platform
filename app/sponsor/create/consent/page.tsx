@@ -166,6 +166,32 @@ function ConsentReviewContent() {
       const studyName = `${intervention} Outcomes Study`
       const durationWeeks = parseInt(duration) || 26
 
+      // Extract lab information from protocol schedule
+      let proceduresSummary = `Short surveys every 2-4 weeks for ${Math.round(durationWeeks / 4)} months`
+
+      if (protocol?.schedule) {
+        // Find timepoints with labs
+        const labTimepoints = protocol.schedule.filter(
+          (tp: { labs?: string[] }) => tp.labs && tp.labs.length > 0
+        )
+
+        if (labTimepoints.length > 0) {
+          // Get unique lab markers
+          const allLabs = new Set<string>()
+          labTimepoints.forEach((tp: { labs?: string[] }) => {
+            tp.labs?.forEach((lab: string) => allLabs.add(lab))
+          })
+
+          // Build lab description
+          const labMarkers = Array.from(allLabs).slice(0, 3) // Show first 3 markers
+          const labDescription = labMarkers.length > 0
+            ? labMarkers.join(', ') + (allLabs.size > 3 ? ', and more' : '')
+            : 'standard labs'
+
+          proceduresSummary = `Short surveys every 2-4 weeks, plus ${labTimepoints.length} blood draws (${labDescription}) over ${Math.round(durationWeeks / 4)} months`
+        }
+      }
+
       // Generate enrollment copy
       let enrollmentCopy = null
       try {
@@ -177,7 +203,7 @@ function ConsentReviewContent() {
             intervention,
             sponsor: 'Study Sponsor', // Could be customizable
             durationWeeks,
-            proceduresSummary: `Short surveys every 2-4 weeks for ${Math.round(durationWeeks / 4)} months`,
+            proceduresSummary,
             estimatedTimePerAssessment: '5 minutes',
             primaryBenefit: `Help improve ${intervention} treatment for future patients`,
           }),
