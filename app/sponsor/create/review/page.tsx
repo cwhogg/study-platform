@@ -331,12 +331,12 @@ function ReviewProtocolContent() {
       <div className="mb-8 animate-fade-in">
         <Link
           href={`/sponsor/create/configure?intervention=${encodeURIComponent(intervention)}`}
-          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-4 block w-fit"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-6 block w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
         </Link>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full text-xs font-medium text-[#1E40AF] mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full text-xs font-medium text-[#1E40AF] mb-4">
           <Sparkles className="w-3.5 h-3.5" />
           Generated Protocol
         </div>
