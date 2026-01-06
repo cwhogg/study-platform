@@ -7,28 +7,28 @@ export default function SponsorLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-slate-800">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200">
         <div className="container-wide">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5">
-              <ProoveLogo size={36} className="shadow-lg shadow-indigo-500/25 rounded-full" />
-              <span className="font-semibold text-slate-100">Proove Platform</span>
+              <ProoveLogo size={36} className="shadow-md rounded-full" />
+              <span className="font-semibold text-slate-900">Proove Platform</span>
             </Link>
 
             {/* Navigation */}
             <nav className="hidden sm:flex items-center gap-6">
               <Link
                 href="/sponsor"
-                className="text-sm text-slate-400 hover:text-slate-100 transition-colors"
+                className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
               >
                 Dashboard
               </Link>
               <Link
                 href="/sponsor/studies"
-                className="text-sm text-slate-400 hover:text-slate-100 transition-colors"
+                className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
               >
                 Studies
               </Link>
@@ -36,7 +36,7 @@ export default function SponsorLayout({
 
             {/* User menu placeholder */}
             <div className="flex items-center gap-4">
-              <button className="text-sm text-slate-400 hover:text-slate-100 transition-colors">
+              <button className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
                 Sign Out
               </button>
             </div>
