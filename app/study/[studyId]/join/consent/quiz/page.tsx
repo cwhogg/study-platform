@@ -74,9 +74,15 @@ export default function ConsentQuizPage() {
         const response = await fetch(`/api/studies/${studyId}/public`)
         if (response.ok) {
           const data = await response.json()
-          if (data.comprehensionQuestions && data.comprehensionQuestions.length > 0) {
-            setQuestions(data.comprehensionQuestions)
+          // Check if questions exist and have the correct format (with options array)
+          const questions = data.comprehensionQuestions
+          if (questions &&
+              questions.length > 0 &&
+              questions[0].options &&
+              Array.isArray(questions[0].options)) {
+            setQuestions(questions)
           } else {
+            // Old format or missing - use fallback
             setQuestions(FALLBACK_QUESTIONS)
           }
         } else {
