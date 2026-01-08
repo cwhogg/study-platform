@@ -228,6 +228,15 @@ export default function RegisterPage() {
         >
           {isSubmitting ? 'Creating Account...' : (copy.buttonText || 'Continue')}
         </button>
+        <p className="text-center text-sm text-slate-600 mt-3">
+          Already have an account?{' '}
+          <a
+            href={`/study/${studyId}/join/login`}
+            className="text-[#1E40AF] font-medium hover:underline"
+          >
+            Sign in
+          </a>
+        </p>
       </MobileBottomAction>
     </>
   )

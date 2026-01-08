@@ -288,17 +288,46 @@ export async function POST(request: NextRequest) {
               )
             }
           } else if (authUser?.user) {
-            // New user created - profile should be auto-created by trigger
-            // But let's make sure it has sponsor role
+            // New user created - ensure profile exists
             sponsorId = authUser.user.id
 
-            // Give the trigger a moment to run, then update role
+            // Give the trigger a moment to run
             await new Promise(resolve => setTimeout(resolve, 500))
 
-            await serviceClient
+            // Check if profile was created by trigger
+            const { data: triggerProfile } = await serviceClient
               .from('sp_profiles')
-              .update({ role: 'sponsor', first_name: 'Demo', last_name: 'Sponsor' })
+              .select('id')
               .eq('id', sponsorId)
+              .single()
+
+            if (!triggerProfile) {
+              // Trigger didn't create profile - create it manually
+              console.log('[Studies] Creating profile manually for new demo user')
+              const { error: createProfileError } = await serviceClient
+                .from('sp_profiles')
+                .insert({
+                  id: sponsorId,
+                  email: DEMO_SPONSOR_EMAIL,
+                  role: 'sponsor',
+                  first_name: 'Demo',
+                  last_name: 'Sponsor',
+                })
+
+              if (createProfileError) {
+                console.error('[Studies] Failed to create demo profile:', createProfileError)
+                return NextResponse.json(
+                  { error: 'Failed to set up demo mode' },
+                  { status: 500 }
+                )
+              }
+            } else {
+              // Profile exists - just update the role
+              await serviceClient
+                .from('sp_profiles')
+                .update({ role: 'sponsor', first_name: 'Demo', last_name: 'Sponsor' })
+                .eq('id', sponsorId)
+            }
           } else {
             return NextResponse.json(
               { error: 'Failed to create demo user' },
