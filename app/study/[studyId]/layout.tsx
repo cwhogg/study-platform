@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { getStudy } from '@/lib/db/studies'
 
 interface StudyLayoutProps {
   children: ReactNode
@@ -8,9 +9,9 @@ interface StudyLayoutProps {
 export default async function StudyLayout({ children, params }: StudyLayoutProps) {
   const { studyId } = await params
 
-  // In production, fetch study name from database
-  // For now, use placeholder
-  const studyName = 'TRT Outcomes Study'
+  // Fetch actual study name from database
+  const study = await getStudy(studyId)
+  const studyName = study?.name || 'Research Study'
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
