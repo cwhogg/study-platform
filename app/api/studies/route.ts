@@ -167,6 +167,9 @@ export async function POST(request: NextRequest) {
       secondaryEndpoints,
       duration,
       enrollmentCopy,
+      protocol: aiProtocol,
+      consentDocument: aiConsentDocument,
+      comprehensionQuestions: aiComprehensionQuestions,
     } = body
 
     if (!intervention) {
@@ -189,8 +192,8 @@ export async function POST(request: NextRequest) {
     // Generate study name (title case for proper formatting)
     const studyName = `${toTitleCase(intervention)} Outcomes Study`
 
-    // Generate protocol
-    const protocol = generateProtocol({
+    // Use AI-generated content when available, fall back to hardcoded templates
+    const protocol = aiProtocol || generateProtocol({
       intervention,
       population: population || 'new_hypogonadal',
       treatmentStage: treatmentStage || 'initiation',
@@ -199,11 +202,11 @@ export async function POST(request: NextRequest) {
       durationWeeks,
     })
 
-    // Generate consent document
-    const consentDocument = generateConsentDocument(studyName, intervention, durationWeeks)
+    // Use AI-generated consent document when available
+    const consentDocument = aiConsentDocument || generateConsentDocument(studyName, intervention, durationWeeks)
 
-    // Generate comprehension questions
-    const comprehensionQuestions = generateComprehensionQuestions(durationWeeks)
+    // Use AI-generated comprehension questions when available
+    const comprehensionQuestions = aiComprehensionQuestions || generateComprehensionQuestions(durationWeeks)
 
     // Create study config
     const config: StudyConfig = {
