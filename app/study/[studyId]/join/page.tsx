@@ -83,7 +83,13 @@ export default function JoinPage() {
             <Shield className="w-8 h-8 text-slate-600" />
           </div>
           <h1 className="text-xl font-semibold text-slate-900 mb-2">Unable to Load Study</h1>
-          <p className="text-slate-600">{error || 'Study not found'}</p>
+          <p className="text-slate-600 mb-6">{error || 'Study not found'}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-[#1E40AF] text-white font-medium rounded-xl hover:bg-[#1E40AF]/90 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </MobileFullScreen>
     )

@@ -35,8 +35,22 @@ export async function GET(
       .eq('id', studyId)
       .single()
 
-    if (studyError || !study) {
-      console.error('Failed to get study:', studyError)
+    if (studyError) {
+      console.error('[Public Study API] Database error:', studyError)
+      // Check if it's a "not found" error vs other database errors
+      if (studyError.code === 'PGRST116') {
+        return NextResponse.json(
+          { error: 'Study not found' },
+          { status: 404 }
+        )
+      }
+      return NextResponse.json(
+        { error: 'Unable to load study. Please try again.' },
+        { status: 500 }
+      )
+    }
+
+    if (!study) {
       return NextResponse.json(
         { error: 'Study not found' },
         { status: 404 }
