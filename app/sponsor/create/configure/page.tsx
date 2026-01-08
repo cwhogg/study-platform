@@ -88,6 +88,11 @@ function ConfigureStudyContent() {
   const [secondaryEndpoints, setSecondaryEndpoints] = useState<string[]>([])
   const [duration, setDuration] = useState(26)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Custom option state
+  const [customPopulation, setCustomPopulation] = useState('')
+  const [customTreatmentStage, setCustomTreatmentStage] = useState('')
+  const [customDuration, setCustomDuration] = useState('')
   const [submissionPhase, setSubmissionPhase] = useState<'protocol' | 'safety' | null>(null)
   const [safetyWarning, setSafetyWarning] = useState<{ show: boolean; error: string; protocol: Record<string, unknown> | null }>({
     show: false,
@@ -417,7 +422,7 @@ function ConfigureStudyContent() {
               <label
                 key={option.name}
                 className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
-                  population === option.name
+                  population === option.name && !customPopulation
                     ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
@@ -426,8 +431,11 @@ function ConfigureStudyContent() {
                   type="radio"
                   name="population"
                   value={option.name}
-                  checked={population === option.name}
-                  onChange={(e) => setPopulation(e.target.value)}
+                  checked={population === option.name && !customPopulation}
+                  onChange={(e) => {
+                    setPopulation(e.target.value)
+                    setCustomPopulation('')
+                  }}
                   className="w-4 h-4 mt-0.5 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
                 />
                 <div className="flex-1">
@@ -441,6 +449,35 @@ function ConfigureStudyContent() {
                 )}
               </label>
             ))}
+            {/* Custom option */}
+            <label
+              className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+                customPopulation
+                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
+                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <input
+                type="radio"
+                name="population"
+                checked={!!customPopulation}
+                onChange={() => {}}
+                className="w-4 h-4 mt-2 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+              />
+              <input
+                type="text"
+                value={customPopulation}
+                onChange={(e) => {
+                  setCustomPopulation(e.target.value)
+                  if (e.target.value) setPopulation(e.target.value)
+                }}
+                onFocus={() => {
+                  if (customPopulation) setPopulation(customPopulation)
+                }}
+                placeholder="Or tell me what population you want to study"
+                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+              />
+            </label>
           </div>
         </Card>
 
@@ -453,7 +490,7 @@ function ConfigureStudyContent() {
               <label
                 key={option.name}
                 className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
-                  treatmentStage === option.name
+                  treatmentStage === option.name && !customTreatmentStage
                     ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
@@ -462,8 +499,11 @@ function ConfigureStudyContent() {
                   type="radio"
                   name="treatmentStage"
                   value={option.name}
-                  checked={treatmentStage === option.name}
-                  onChange={(e) => setTreatmentStage(e.target.value)}
+                  checked={treatmentStage === option.name && !customTreatmentStage}
+                  onChange={(e) => {
+                    setTreatmentStage(e.target.value)
+                    setCustomTreatmentStage('')
+                  }}
                   className="w-4 h-4 mt-0.5 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
                 />
                 <div className="flex-1">
@@ -477,6 +517,35 @@ function ConfigureStudyContent() {
                 )}
               </label>
             ))}
+            {/* Custom option */}
+            <label
+              className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+                customTreatmentStage
+                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
+                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <input
+                type="radio"
+                name="treatmentStage"
+                checked={!!customTreatmentStage}
+                onChange={() => {}}
+                className="w-4 h-4 mt-2 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+              />
+              <input
+                type="text"
+                value={customTreatmentStage}
+                onChange={(e) => {
+                  setCustomTreatmentStage(e.target.value)
+                  if (e.target.value) setTreatmentStage(e.target.value)
+                }}
+                onFocus={() => {
+                  if (customTreatmentStage) setTreatmentStage(customTreatmentStage)
+                }}
+                placeholder="Or describe the treatment stage"
+                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+              />
+            </label>
           </div>
         </Card>
 
@@ -571,7 +640,7 @@ function ConfigureStudyContent() {
               <label
                 key={option.weeks}
                 className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
-                  duration === option.weeks
+                  duration === option.weeks && !customDuration
                     ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
@@ -580,8 +649,11 @@ function ConfigureStudyContent() {
                   type="radio"
                   name="duration"
                   value={option.weeks}
-                  checked={duration === option.weeks}
-                  onChange={(e) => setDuration(parseInt(e.target.value))}
+                  checked={duration === option.weeks && !customDuration}
+                  onChange={(e) => {
+                    setDuration(parseInt(e.target.value))
+                    setCustomDuration('')
+                  }}
                   className="w-4 h-4 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
                 />
                 <span className="flex-1 text-slate-900 font-medium">{option.label}</span>
@@ -590,6 +662,33 @@ function ConfigureStudyContent() {
                 )}
               </label>
             ))}
+            {/* Custom option */}
+            <label
+              className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+                customDuration
+                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
+                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <input
+                type="radio"
+                name="duration"
+                checked={!!customDuration}
+                onChange={() => {}}
+                className="w-4 h-4 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+              />
+              <input
+                type="text"
+                value={customDuration}
+                onChange={(e) => {
+                  setCustomDuration(e.target.value)
+                  const weeks = parseInt(e.target.value)
+                  if (!isNaN(weeks) && weeks > 0) setDuration(weeks)
+                }}
+                placeholder="Or enter duration in weeks (e.g., 16)"
+                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+              />
+            </label>
           </div>
 
           {/* Duration info */}
