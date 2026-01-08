@@ -60,6 +60,45 @@ const FALLBACK_TREATMENT_STAGES = [
   { name: 'Maintenance', description: 'Long-term stable treatment' },
 ]
 
+// Generate a default schedule if AI doesn't return one
+function generateDefaultSchedule(durationWeeks: number, instrumentIds: string[]) {
+  const schedule = [
+    { timepoint: 'baseline', week: 0, instruments: instrumentIds, windowDays: 3 },
+  ]
+
+  // Add timepoints at reasonable intervals based on duration
+  if (durationWeeks >= 4) {
+    schedule.push({ timepoint: 'week_2', week: 2, instruments: instrumentIds.slice(0, 2), windowDays: 3 })
+  }
+  if (durationWeeks >= 8) {
+    schedule.push({ timepoint: 'week_4', week: 4, instruments: instrumentIds, windowDays: 5 })
+  }
+  if (durationWeeks >= 12) {
+    schedule.push({ timepoint: 'week_8', week: 8, instruments: instrumentIds, windowDays: 5 })
+  }
+  if (durationWeeks >= 16) {
+    schedule.push({ timepoint: 'week_12', week: 12, instruments: instrumentIds, windowDays: 7 })
+  }
+  if (durationWeeks >= 20) {
+    schedule.push({ timepoint: 'week_16', week: 16, instruments: instrumentIds, windowDays: 7 })
+  }
+  if (durationWeeks >= 26) {
+    schedule.push({ timepoint: 'week_20', week: 20, instruments: instrumentIds, windowDays: 7 })
+  }
+
+  // Final timepoint at the end of study
+  if (durationWeeks > 4) {
+    schedule.push({
+      timepoint: `week_${durationWeeks}`,
+      week: durationWeeks,
+      instruments: instrumentIds,
+      windowDays: 7
+    })
+  }
+
+  return schedule
+}
+
 const FALLBACK_ENDPOINTS = [
   { name: 'Symptom improvement', domain: 'physical', suggestedInstrument: 'Custom questionnaire', confidence: 'moderate' as const, rationale: 'Common primary outcome' },
   { name: 'Quality of life', domain: 'general', suggestedInstrument: 'SF-36', confidence: 'high' as const, rationale: 'Validated general measure' },
@@ -202,6 +241,19 @@ function ConfigureStudyContent() {
       console.log('[Protocol] Summary:', protocol.summary)
       console.log('[Protocol] Instruments:', protocol.instruments?.length || 0)
       console.log('[Protocol] Schedule timepoints:', protocol.schedule?.length || 0)
+
+      // Ensure schedule exists - generate default if missing
+      if (!protocol.schedule || protocol.schedule.length === 0) {
+        console.warn('[Protocol] No schedule returned, generating default')
+        const instrumentIds = protocol.instruments?.map((i: { id: string }) => i.id) || ['phq-2']
+        protocol.schedule = generateDefaultSchedule(duration, instrumentIds)
+      }
+
+      // Ensure instruments array exists
+      if (!protocol.instruments || protocol.instruments.length === 0) {
+        console.warn('[Protocol] No instruments returned')
+        protocol.instruments = []
+      }
 
       // Step 2: Call Safety Agent with protocol context
       setSubmissionPhase('safety')
