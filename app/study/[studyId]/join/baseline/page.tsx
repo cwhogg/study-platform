@@ -150,17 +150,32 @@ export default function BaselinePage() {
               tp => tp.timepoint === 'baseline' || tp.week === 0
             )
 
+            let candidateInstruments = data.protocol.instruments
+
             if (baselineTimepoint?.instruments) {
               // Get only instruments scheduled for baseline
-              studyInstruments = data.protocol.instruments.filter(
+              candidateInstruments = data.protocol.instruments.filter(
                 inst => baselineTimepoint.instruments.includes(inst.id)
               )
             }
 
-            // If no baseline-specific instruments found, use all instruments
-            if (studyInstruments.length === 0) {
-              studyInstruments = data.protocol.instruments
-            }
+            // Filter to only instruments that have valid questions
+            // Valid = has questions array with at least one question that has id, text, and type
+            studyInstruments = candidateInstruments.filter(inst => {
+              if (!inst.questions || !Array.isArray(inst.questions) || inst.questions.length === 0) {
+                console.log(`[Baseline] Skipping ${inst.id} - no questions array`)
+                return false
+              }
+              // Check if questions have required fields
+              const hasValidQuestions = inst.questions.every(q =>
+                q && typeof q === 'object' && q.id && q.text && q.type
+              )
+              if (!hasValidQuestions) {
+                console.log(`[Baseline] Skipping ${inst.id} - questions missing required fields`)
+                return false
+              }
+              return true
+            })
           }
 
           // Use protocol instruments or fallback
@@ -168,7 +183,7 @@ export default function BaselinePage() {
             console.log('[Baseline] Using protocol instruments:', studyInstruments.map(i => i.id))
             setInstruments(studyInstruments)
           } else {
-            console.log('[Baseline] No protocol instruments, using fallback')
+            console.log('[Baseline] No valid protocol instruments, using fallback')
             setInstruments(FALLBACK_INSTRUMENTS)
           }
         } else {
