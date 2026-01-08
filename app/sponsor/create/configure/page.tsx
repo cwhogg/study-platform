@@ -93,6 +93,8 @@ function ConfigureStudyContent() {
   const [customPopulation, setCustomPopulation] = useState('')
   const [customTreatmentStage, setCustomTreatmentStage] = useState('')
   const [customDuration, setCustomDuration] = useState('')
+  const [customPrimaryEndpoint, setCustomPrimaryEndpoint] = useState('')
+  const [customSecondaryEndpoint, setCustomSecondaryEndpoint] = useState('')
   const [submissionPhase, setSubmissionPhase] = useState<'protocol' | 'safety' | null>(null)
   const [safetyWarning, setSafetyWarning] = useState<{ show: boolean; error: string; protocol: Record<string, unknown> | null }>({
     show: false,
@@ -558,7 +560,7 @@ function ConfigureStudyContent() {
               <label
                 key={option.name}
                 className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
-                  primaryEndpoint === option.name
+                  primaryEndpoint === option.name && !customPrimaryEndpoint
                     ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
@@ -567,8 +569,11 @@ function ConfigureStudyContent() {
                   type="radio"
                   name="primaryEndpoint"
                   value={option.name}
-                  checked={primaryEndpoint === option.name}
-                  onChange={(e) => setPrimaryEndpoint(e.target.value)}
+                  checked={primaryEndpoint === option.name && !customPrimaryEndpoint}
+                  onChange={(e) => {
+                    setPrimaryEndpoint(e.target.value)
+                    setCustomPrimaryEndpoint('')
+                  }}
                   className="w-4 h-4 mt-1.5 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
                 />
                 <div className="flex-1 min-w-0">
@@ -587,6 +592,35 @@ function ConfigureStudyContent() {
                 </div>
               </label>
             ))}
+            {/* Custom option */}
+            <label
+              className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+                customPrimaryEndpoint
+                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
+                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <input
+                type="radio"
+                name="primaryEndpoint"
+                checked={!!customPrimaryEndpoint}
+                onChange={() => {}}
+                className="w-4 h-4 mt-2 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+              />
+              <input
+                type="text"
+                value={customPrimaryEndpoint}
+                onChange={(e) => {
+                  setCustomPrimaryEndpoint(e.target.value)
+                  if (e.target.value) setPrimaryEndpoint(e.target.value)
+                }}
+                onFocus={() => {
+                  if (customPrimaryEndpoint) setPrimaryEndpoint(customPrimaryEndpoint)
+                }}
+                placeholder="Or describe the primary outcome you want to measure"
+                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+              />
+            </label>
           </div>
         </Card>
 
@@ -596,7 +630,8 @@ function ConfigureStudyContent() {
           <p className="text-sm text-slate-600 mb-4">What else do you want to track?</p>
           <div className="space-y-3">
             {endpoints
-              .filter(e => e.name !== primaryEndpoint)
+              .filter(e => e.name !== primaryEndpoint || customPrimaryEndpoint)
+              .filter(e => customPrimaryEndpoint ? true : e.name !== primaryEndpoint)
               .map((option) => (
                 <label
                   key={option.name}
@@ -628,6 +663,71 @@ function ConfigureStudyContent() {
                   </div>
                 </label>
               ))}
+            {/* Custom secondary endpoints that have been added */}
+            {secondaryEndpoints
+              .filter(e => !endpoints.some(ep => ep.name === e))
+              .map((customEndpoint) => (
+                <label
+                  key={customEndpoint}
+                  className="flex items-start gap-3 p-4 rounded-xl border border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF] cursor-pointer transition-all duration-200"
+                >
+                  <input
+                    type="checkbox"
+                    checked={true}
+                    onChange={() => handleSecondaryEndpointChange(customEndpoint, false)}
+                    className="w-4 h-4 mt-1.5 text-[#1E40AF] border-slate-300 bg-white rounded focus:ring-[#1E40AF]"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-slate-900">{customEndpoint}</div>
+                    <span className="inline-flex text-slate-500 text-xs font-medium bg-slate-100 px-2 py-1 rounded-full border border-slate-200 mt-2">Custom endpoint</span>
+                  </div>
+                </label>
+              ))}
+            {/* Custom option input */}
+            <div
+              className={`flex items-start gap-3 p-4 rounded-xl border transition-all duration-200 ${
+                customSecondaryEndpoint
+                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
+                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={false}
+                disabled
+                className="w-4 h-4 mt-2 text-[#1E40AF] border-slate-300 bg-white rounded focus:ring-[#1E40AF] opacity-50"
+              />
+              <input
+                type="text"
+                value={customSecondaryEndpoint}
+                onChange={(e) => setCustomSecondaryEndpoint(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && customSecondaryEndpoint.trim()) {
+                    e.preventDefault()
+                    if (!secondaryEndpoints.includes(customSecondaryEndpoint.trim())) {
+                      setSecondaryEndpoints([...secondaryEndpoints, customSecondaryEndpoint.trim()])
+                    }
+                    setCustomSecondaryEndpoint('')
+                  }
+                }}
+                placeholder="Or describe another outcome (press Enter to add)"
+                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+              />
+              {customSecondaryEndpoint.trim() && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!secondaryEndpoints.includes(customSecondaryEndpoint.trim())) {
+                      setSecondaryEndpoints([...secondaryEndpoints, customSecondaryEndpoint.trim()])
+                    }
+                    setCustomSecondaryEndpoint('')
+                  }}
+                  className="text-xs font-medium text-[#1E40AF] hover:underline"
+                >
+                  Add
+                </button>
+              )}
+            </div>
           </div>
         </Card>
 
