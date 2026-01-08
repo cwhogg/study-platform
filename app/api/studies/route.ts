@@ -223,7 +223,46 @@ export async function POST(request: NextRequest) {
     if (user) {
       // Use authenticated user
       sponsorId = user.id
-      dbClient = supabase
+
+      // Check if user has a profile - create one if not
+      const { data: userProfile } = await supabase
+        .from('sp_profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single()
+
+      if (!userProfile) {
+        // Profile doesn't exist - need service client to create it
+        console.log('[Studies] User profile not found, creating one')
+        try {
+          const serviceClient = createServiceClient()
+          const { error: profileError } = await serviceClient
+            .from('sp_profiles')
+            .insert({
+              id: user.id,
+              email: user.email || '',
+              role: 'sponsor',
+            })
+
+          if (profileError) {
+            console.error('[Studies] Failed to create user profile:', profileError)
+            return NextResponse.json(
+              { error: 'Failed to create user profile. Please try again.' },
+              { status: 500 }
+            )
+          }
+          // Use service client for the study creation too since we just created the profile
+          dbClient = serviceClient
+        } catch (err) {
+          console.error('[Studies] Service client error:', err)
+          return NextResponse.json(
+            { error: 'Unable to create user profile' },
+            { status: 500 }
+          )
+        }
+      } else {
+        dbClient = supabase
+      }
     } else {
       // Demo mode: use service client to bypass RLS
       console.log('[Studies] No authenticated user, using demo mode')
