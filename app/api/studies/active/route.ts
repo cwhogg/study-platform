@@ -15,7 +15,7 @@ export async function GET() {
 
     const { data: studies, error: studiesError } = await supabase
       .from('sp_studies')
-      .select('id, name, intervention')
+      .select('id, name, intervention, config')
       .eq('status', 'active')
       .order('created_at', { ascending: false })
       .limit(10)

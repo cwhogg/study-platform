@@ -161,6 +161,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const {
       intervention,
+      studyName: aiStudyName,
+      studyDescription,
       population,
       treatmentStage,
       primaryEndpoint,
@@ -189,8 +191,8 @@ export async function POST(request: NextRequest) {
       ? secondaryEndpoints.split(',').filter(Boolean)
       : (secondaryEndpoints || [])
 
-    // Generate study name (title case for proper formatting)
-    const studyName = `${toTitleCase(intervention)} Outcomes Study`
+    // Use AI-generated study name if provided, otherwise generate default
+    const studyName = aiStudyName || `${toTitleCase(intervention)} Outcomes Study`
 
     // Use AI-generated content when available, fall back to hardcoded templates
     const protocol = aiProtocol || generateProtocol({
@@ -208,10 +210,11 @@ export async function POST(request: NextRequest) {
     // Use AI-generated comprehension questions when available
     const comprehensionQuestions = aiComprehensionQuestions || generateComprehensionQuestions(durationWeeks)
 
-    // Create study config
+    // Create study config (includes description for display)
     const config: StudyConfig = {
       duration_weeks: durationWeeks,
       target_enrollment: 100,
+      description: studyDescription || null,
     }
 
     let sponsorId: string

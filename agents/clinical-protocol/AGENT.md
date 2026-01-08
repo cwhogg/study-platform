@@ -43,6 +43,8 @@ Produce a complete, actionable study protocol that:
 ```json
 {
   "intervention": "string",
+  "suggestedStudyName": "A specific, descriptive study name (NOT just '[Intervention] Outcomes Study'). Examples: 'Real-World Testosterone Therapy Outcomes in Men with Hypogonadism', 'Patient-Reported Outcomes in GLP-1 Treatment for Weight Management'",
+  "studyDescription": "A 1-2 sentence description of the study purpose and what it measures. Example: 'Tracking symptom improvement, energy levels, and quality of life in patients initiating testosterone replacement therapy.'",
   "summary": "Brief description of the intervention and typical use",
   "endpoints": [
     {

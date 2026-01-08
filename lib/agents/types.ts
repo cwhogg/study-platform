@@ -115,6 +115,8 @@ export interface RiskAssessment {
 
 export interface DiscoveryOutput {
   intervention: string
+  suggestedStudyName?: string  // AI-generated specific study name
+  studyDescription?: string     // 1-2 sentence description of study purpose
   summary: string
   endpoints: EndpointOption[]
   populations: PopulationOption[]

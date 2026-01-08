@@ -161,11 +161,15 @@ function ConsentReviewContent() {
     setError('')
 
     try {
-      // Get the protocol from sessionStorage
+      // Get the protocol and discovery data from sessionStorage
       const storedProtocol = sessionStorage.getItem('generatedProtocol')
+      const storedDiscovery = sessionStorage.getItem('studyDiscovery')
       const protocol = storedProtocol ? JSON.parse(storedProtocol) : null
+      const discovery = storedDiscovery ? JSON.parse(storedDiscovery) : null
 
-      const studyName = `${toTitleCase(intervention)} Outcomes Study`
+      // Use AI-generated name if available, otherwise fall back to generic
+      const studyName = discovery?.suggestedStudyName || `${toTitleCase(intervention)} Outcomes Study`
+      const studyDescription = discovery?.studyDescription || discovery?.summary || null
       const durationWeeks = parseInt(duration) || 26
 
       // Extract lab information from protocol schedule
@@ -228,6 +232,8 @@ function ConsentReviewContent() {
         },
         body: JSON.stringify({
           intervention,
+          studyName,
+          studyDescription,
           population,
           treatmentStage,
           primaryEndpoint,

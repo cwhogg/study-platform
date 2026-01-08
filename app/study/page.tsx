@@ -10,6 +10,9 @@ interface Study {
   id: string
   name: string
   intervention: string
+  config?: {
+    description?: string
+  }
 }
 
 export default function StudyPage() {
@@ -158,14 +161,16 @@ export default function StudyPage() {
                   href={`/study/${study.id}/join`}
                   className="block bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-4 hover:border-[#1E40AF] hover:shadow-md transition-all group"
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-slate-900 group-hover:text-[#1E40AF] transition-colors">
                         {study.name}
                       </h3>
-                      <p className="text-sm text-slate-600">{study.intervention}</p>
+                      <p className="text-sm text-slate-600 mt-1">
+                        {study.config?.description || `Observational study of ${study.intervention.toLowerCase()} treatment outcomes.`}
+                      </p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-slate-600 group-hover:text-[#1E40AF] transition-colors" />
+                    <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-[#1E40AF] transition-colors flex-shrink-0 mt-1" />
                   </div>
                 </Link>
               ))}
