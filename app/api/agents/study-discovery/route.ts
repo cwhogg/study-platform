@@ -30,9 +30,12 @@ const DEFAULT_DISCOVERY: DiscoveryOutput = {
   riskAssessment: {
     interventionCategory: 'pharmacological',
     fdaApprovalStatus: {
-      approved: true,
-      indications: ['Various conditions - specific indications depend on intervention'],
+      approved: false,
+      approvedForStudiedIndication: false,
+      indications: [],
+      studiedIndication: 'the condition being studied',
     },
+    regulatoryDisclaimer: 'FDA approval status could not be determined. Please verify regulatory status before proceeding.',
     knownRisks: [
       { risk: 'Side effects may occur', severity: 'moderate', frequency: 'varies by individual' },
       { risk: 'Drug interactions possible', severity: 'moderate', mitigation: 'Review with healthcare provider' },

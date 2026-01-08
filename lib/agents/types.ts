@@ -100,10 +100,12 @@ export interface RiskAssessment {
   // For pharmacological interventions: FDA approval status
   fdaApprovalStatus?: {
     approved: boolean
-    indications?: string[]  // What it's approved for (if FDA-approved)
+    approvedForStudiedIndication: boolean  // Is it approved for the SPECIFIC condition being studied?
+    indications?: string[]  // What it's FDA-approved for (may differ from studied use)
+    studiedIndication?: string  // The condition/use being studied
     approvalYear?: number
   }
-  regulatoryDisclaimer?: string  // Required for non-FDA-approved pharmacological interventions
+  regulatoryDisclaimer?: string  // Required for non-FDA-approved or off-label pharmacological interventions
   knownRisks: RiskItem[]
   contraindications?: string[]
   warnings?: string[]  // For FDA-approved: boxed warnings, key label warnings

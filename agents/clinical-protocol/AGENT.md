@@ -419,14 +419,29 @@ Any substance that is ingested, injected, applied transdermally, inhaled nasally
 
 **Required in output:**
 - `interventionCategory`: "pharmacological"
-- `fdaApprovalStatus.approved`: true or false
-- If FDA-approved:
-  - `fdaApprovalStatus.indications`: List what it's approved for
+- `fdaApprovalStatus.approved`: true or false (is it FDA-approved for ANY indication?)
+- `fdaApprovalStatus.approvedForStudiedIndication`: true or false (CRITICAL: is it approved for the SPECIFIC condition/use being studied?)
+- `fdaApprovalStatus.studiedIndication`: The condition/use being studied (e.g., "depression", "weight loss", "longevity")
+- `fdaApprovalStatus.indications`: List what the drug IS FDA-approved for (may differ from studied use)
+
+**CRITICAL: Off-label use detection**
+Many drugs are FDA-approved for one indication but studied for another. Examples:
+- Ketamine: FDA-approved as anesthetic, NOT for depression (off-label)
+- Metformin: FDA-approved for diabetes, NOT for weight loss or longevity (off-label)
+- Rapamycin: FDA-approved as immunosuppressant, NOT for longevity (off-label)
+- Low-dose naltrexone: FDA-approved for addiction at 50mg, NOT at low doses for autoimmune (off-label)
+
+For off-label use, set:
+- `fdaApprovalStatus.approved`: true (it IS FDA-approved)
+- `fdaApprovalStatus.approvedForStudiedIndication`: false (NOT for this use)
+- `regulatoryDisclaimer`: **REQUIRED** - "While [drug] is FDA-approved for [approved uses], its use for [studied indication] is off-label and has not been specifically evaluated by the FDA for this purpose."
+
+- If FDA-approved FOR THE STUDIED INDICATION:
   - `warnings`: Include boxed warnings (if any), major label warnings
   - `contraindications`: From the FDA label
   - `knownRisks`: From FDA label adverse events section
   - `dataSources`: Must include "FDA prescribing information"
-- If NOT FDA-approved:
+- If NOT FDA-approved at all:
   - `regulatoryDisclaimer`: **REQUIRED** - "This intervention is NOT approved by the U.S. Food and Drug Administration (FDA). Its safety and efficacy have not been established through FDA review."
   - `communityReportedRisks`: **REQUIRED** - Search patient forums, Reddit, online communities
   - `dataSources`: Must explicitly list community sources searched

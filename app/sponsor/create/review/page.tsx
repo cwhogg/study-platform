@@ -166,7 +166,9 @@ interface RiskAssessment {
   interventionCategory: 'pharmacological' | 'non_pharmacological'
   fdaApprovalStatus?: {
     approved: boolean
+    approvedForStudiedIndication?: boolean
     indications?: string[]
+    studiedIndication?: string
     approvalYear?: number
   }
   regulatoryDisclaimer?: string
@@ -568,17 +570,35 @@ function ReviewProtocolContent() {
               {/* FDA Status - only show for pharmacological interventions */}
               {riskAssessment.interventionCategory === 'pharmacological' && (
                 <div className={`p-4 rounded-xl ${
-                  riskAssessment.fdaApprovalStatus?.approved
+                  riskAssessment.fdaApprovalStatus?.approvedForStudiedIndication
                     ? 'bg-emerald-50 border border-emerald-200'
+                    : riskAssessment.fdaApprovalStatus?.approved
+                    ? 'bg-amber-50 border border-amber-200'
                     : 'bg-red-50 border border-red-200'
                 }`}>
                   <div className="font-medium text-slate-900 mb-1">
-                    {riskAssessment.fdaApprovalStatus?.approved
-                      ? '✓ FDA Approved'
+                    {riskAssessment.fdaApprovalStatus?.approvedForStudiedIndication
+                      ? `✓ FDA Approved${riskAssessment.fdaApprovalStatus?.studiedIndication ? ` for ${riskAssessment.fdaApprovalStatus.studiedIndication}` : ''}`
+                      : riskAssessment.fdaApprovalStatus?.approved
+                      ? '⚠ Off-Label Use'
                       : '⚠ NOT FDA Approved'}
                   </div>
-                  {!riskAssessment.fdaApprovalStatus?.approved && riskAssessment.regulatoryDisclaimer && (
-                    <p className="text-sm text-red-700">{riskAssessment.regulatoryDisclaimer}</p>
+                  {/* Show approved indications for off-label use */}
+                  {riskAssessment.fdaApprovalStatus?.approved && !riskAssessment.fdaApprovalStatus?.approvedForStudiedIndication && (
+                    <p className="text-sm text-amber-700 mb-1">
+                      FDA-approved for: {riskAssessment.fdaApprovalStatus?.indications?.join(', ') || 'other indications'}
+                      {riskAssessment.fdaApprovalStatus?.studiedIndication && (
+                        <> — not for {riskAssessment.fdaApprovalStatus.studiedIndication}</>
+                      )}
+                    </p>
+                  )}
+                  {/* Show regulatory disclaimer for off-label or non-approved */}
+                  {riskAssessment.regulatoryDisclaimer && (
+                    <p className={`text-sm ${
+                      riskAssessment.fdaApprovalStatus?.approved ? 'text-amber-700' : 'text-red-700'
+                    }`}>
+                      {riskAssessment.regulatoryDisclaimer}
+                    </p>
                   )}
                 </div>
               )}
