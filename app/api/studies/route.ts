@@ -59,39 +59,107 @@ function generateProtocol(config: {
   }
 }
 
-// Hardcoded consent document template
-function generateConsentDocument(studyName: string, intervention: string, durationWeeks: number): string {
-  return `# Informed Consent for Research Participation
+// Hardcoded consent document template - returns object with sections to match AI format
+interface ConsentDocumentSection {
+  id: string
+  title: string
+  content: string
+}
 
-## ${studyName}
+interface ConsentDocumentFormat {
+  title: string
+  version: string
+  sections: ConsentDocumentSection[]
+}
 
-### Purpose of the Study
-You are being invited to participate in a research study about ${intervention}. The purpose of this study is to understand how ${intervention} affects symptoms like energy, mood, and quality of life over time.
+function generateConsentDocument(studyName: string, intervention: string, durationWeeks: number): ConsentDocumentFormat {
+  const months = Math.round(durationWeeks / 4)
+  return {
+    title: `Informed Consent: ${studyName}`,
+    version: '1.0',
+    sections: [
+      {
+        id: 'purpose',
+        title: 'Purpose of the Study',
+        content: `You are being invited to participate in a research study about ${intervention}. The purpose of this study is to understand how ${intervention} affects symptoms like energy, mood, and quality of life over time.
 
-### What You Will Be Asked To Do
-If you agree to participate, you will:
+By participating, you'll help us learn how this treatment works in real-world settings, which can improve care for future patients.
+
+Your treatment will not change based on your participation - you'll receive the same care whether or not you join the study.`
+      },
+      {
+        id: 'procedures',
+        title: 'What You\'ll Do',
+        content: `If you agree to participate, you will:
+
 - Complete short questionnaires about your symptoms every 2-4 weeks
 - Have blood work done at baseline, 6 weeks, 12 weeks, and ${durationWeeks} weeks (same labs your doctor would order anyway)
-- The study lasts ${Math.round(durationWeeks / 4)} months total
+- The study lasts ${months} months total
 
-### Time Commitment
-- Questionnaires take about 5 minutes each
-- You'll complete 9 questionnaires over ${Math.round(durationWeeks / 4)} months
+Questionnaires take about 5 minutes each. You'll complete approximately 9 questionnaires over ${months} months.`
+      },
+      {
+        id: 'risks',
+        title: 'Risks and Discomforts',
+        content: `This is an observational study - we're only collecting information, not changing your treatment. There are no additional medical risks from participating.
 
-### Risks
-This is an observational study. Your treatment does not change based on participation. The main risk is the time required to complete questionnaires.
+The main risk is the time required to complete questionnaires. Some questions ask about sensitive topics. You can skip any question you're not comfortable answering.`
+      },
+      {
+        id: 'benefits',
+        title: 'Benefits',
+        content: `**Direct Benefits:**
+- Track your progress over time
+- Receive a summary of your changes throughout the study
 
-### Benefits
-You may not benefit directly, but your participation will help improve ${intervention} treatment for future patients.
+**Indirect Benefits:**
+- Help improve understanding of ${intervention} outcomes
+- Contribute to better care for future patients`
+      },
+      {
+        id: 'privacy',
+        title: 'Privacy and Confidentiality',
+        content: `Your information is protected:
 
-### Confidentiality
-Your responses are kept confidential. Data is stored securely and only study staff can access it. Results are reported in aggregate only.
+- All data is encrypted and stored securely
+- Your identity is separated from your health data
+- Results are reported only in aggregate
+- We never share your individual data with third parties
 
-### Voluntary Participation
-Participation is voluntary. You can withdraw at any time without affecting your medical care.
+Only authorized research staff can access your identifiable information.`
+      },
+      {
+        id: 'voluntary',
+        title: 'Voluntary Participation',
+        content: `Joining this study is completely voluntary.
 
-### Questions
-Contact the study coordinator at study@example.com with any questions.`
+- You can withdraw at any time, for any reason
+- Withdrawing will not affect your treatment or care
+- If you withdraw, data already collected may still be used (in de-identified form)
+
+To withdraw, simply contact us or stop completing surveys.`
+      },
+      {
+        id: 'compensation',
+        title: 'Compensation',
+        content: `There is no monetary compensation for participating in this study.
+
+You will not be charged any fees for participating.`
+      },
+      {
+        id: 'contact',
+        title: 'Contact Information',
+        content: `**Questions about the study:**
+Email: research@example.com
+
+**Questions about your rights as a participant:**
+Institutional Review Board
+Email: irb@example.com
+
+For medical emergencies, contact your healthcare provider or call 911.`
+      }
+    ]
+  }
 }
 
 // Hardcoded comprehension questions
@@ -205,9 +273,13 @@ export async function POST(request: NextRequest) {
     })
 
     // Use AI-generated consent document when available
+    console.log('[Studies] AI consent document provided:', !!aiConsentDocument)
+    console.log('[Studies] AI consent has sections:', aiConsentDocument?.sections?.length ?? 'N/A')
     const consentDocument = aiConsentDocument || generateConsentDocument(studyName, intervention, durationWeeks)
+    console.log('[Studies] Final consent document has sections:', consentDocument?.sections?.length ?? 'N/A')
 
     // Use AI-generated comprehension questions when available
+    console.log('[Studies] AI comprehension questions provided:', !!aiComprehensionQuestions)
     const comprehensionQuestions = aiComprehensionQuestions || generateComprehensionQuestions(durationWeeks)
 
     // Create study config (includes description for display)
