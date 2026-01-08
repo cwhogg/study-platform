@@ -307,7 +307,8 @@ export async function POST(request: NextRequest) {
 
               if (!profile) {
                 // Create profile for existing auth user
-                await serviceClient
+                console.log('[Studies] Creating profile for existing demo user:', demoUser.id)
+                const { error: profileCreateError } = await serviceClient
                   .from('sp_profiles')
                   .insert({
                     id: demoUser.id,
@@ -316,6 +317,14 @@ export async function POST(request: NextRequest) {
                     first_name: 'Demo',
                     last_name: 'Sponsor',
                   })
+
+                if (profileCreateError) {
+                  console.error('[Studies] Failed to create demo profile:', profileCreateError)
+                  return NextResponse.json(
+                    { error: 'Failed to create demo sponsor profile' },
+                    { status: 500 }
+                  )
+                }
               }
 
               sponsorId = demoUser.id
