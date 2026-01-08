@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { CriteriaEditModal } from '@/components/sponsor/CriteriaEditModal'
 import { toTitleCase } from '@/lib/utils'
 
 // Types for AI-generated protocol
@@ -188,6 +189,7 @@ function ReviewProtocolContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [editingCriteria, setEditingCriteria] = useState<'inclusion' | 'exclusion' | null>(null)
 
   // Load protocol and discovery data from sessionStorage
   useEffect(() => {
@@ -216,8 +218,26 @@ function ReviewProtocolContent() {
   }, [])
 
   const handleEdit = (section: string) => {
-    // For now, just log - will implement edit modals later
-    console.log(`Edit ${section}`)
+    if (section === 'inclusion' || section === 'exclusion') {
+      setEditingCriteria(section)
+    } else {
+      // Other sections - will implement later
+      console.log(`Edit ${section}`)
+    }
+  }
+
+  const handleSaveCriteria = (type: 'inclusion' | 'exclusion', criteria: InclusionCriterion[] | ExclusionCriterion[]) => {
+    if (!protocol) return
+
+    const updatedProtocol = {
+      ...protocol,
+      [type === 'inclusion' ? 'inclusionCriteria' : 'exclusionCriteria']: criteria,
+    }
+
+    setProtocol(updatedProtocol)
+    // Persist to sessionStorage
+    sessionStorage.setItem('generatedProtocol', JSON.stringify(updatedProtocol))
+    setEditingCriteria(null)
   }
 
   const handleSubmit = async () => {
@@ -671,6 +691,17 @@ function ReviewProtocolContent() {
           </>
         )}
       </Button>
+
+      {/* Criteria Edit Modal */}
+      {editingCriteria && protocol && (
+        <CriteriaEditModal
+          type={editingCriteria}
+          criteria={editingCriteria === 'inclusion' ? protocol.inclusionCriteria : protocol.exclusionCriteria}
+          intervention={intervention}
+          onSave={(criteria) => handleSaveCriteria(editingCriteria, criteria)}
+          onClose={() => setEditingCriteria(null)}
+        />
+      )}
     </div>
   )
 }

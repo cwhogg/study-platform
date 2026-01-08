@@ -21,16 +21,16 @@ export default function SponsorLayout({
             {/* Navigation */}
             <nav className="hidden sm:flex items-center gap-6">
               <Link
-                href="/sponsor"
+                href="/sponsor/studies"
                 className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
               >
                 Dashboard
               </Link>
               <Link
-                href="/sponsor/studies"
+                href="/sponsor/create"
                 className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
               >
-                Studies
+                Create Study
               </Link>
             </nav>
 
