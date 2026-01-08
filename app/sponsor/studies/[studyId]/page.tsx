@@ -24,6 +24,7 @@ interface StudyData {
   name: string
   status: 'active' | 'enrolling' | 'draft' | 'completed'
   intervention: string
+  description: string | null
   duration: string
   startDate: string | null
   stats: {
@@ -164,7 +165,10 @@ export default function StudyDashboardPage() {
               <h1 className="font-display text-2xl sm:text-3xl text-slate-900">{study.name}</h1>
               <StatusBadge status={study.status} />
             </div>
-            <p className="text-slate-600">{study.intervention}</p>
+            {study.description && (
+              <p className="text-slate-600 mb-2">{study.description}</p>
+            )}
+            <p className="text-sm text-slate-500">{study.intervention}</p>
             <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
               <span>{study.duration}</span>
               {study.startDate && (

@@ -83,6 +83,7 @@ export async function GET(
       id: study.id,
       name: study.name,
       intervention: study.intervention,
+      description: study.config?.description || null,
       status: study.status,
       duration: `${durationWeeks} weeks`,
       startDate: study.created_at ? new Date(study.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null,
