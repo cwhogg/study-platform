@@ -264,3 +264,5 @@ export function calculateCurrentWeek(enrolledAt: Date, now: Date = new Date()): 
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
   return Math.floor(diffDays / 7)
 }
+
+// Note: generateDefaultSchedule has been moved to @/lib/study/schedule for client-side compatibility

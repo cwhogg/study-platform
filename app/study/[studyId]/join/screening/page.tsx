@@ -5,33 +5,13 @@ import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer } from '@/components/ui/MobileContainer'
 import { Loader2 } from 'lucide-react'
 import type { EnrollmentCopy } from '@/lib/db/types'
-
-// Types for screening
-interface ScreeningQuestion {
-  id: string
-  question: string
-  type: 'date' | 'yes_no' | 'select'
-  options?: string[]
-  disqualifyingAnswer?: string | boolean
-  source: 'inclusion' | 'exclusion' | 'general'
-}
-
-interface InclusionCriterion {
-  criterion: string
-  rationale: string
-  assessmentMethod: string
-}
-
-interface ExclusionCriterion {
-  criterion: string
-  rationale: string
-  assessmentMethod: string
-}
-
-interface Protocol {
-  inclusionCriteria?: InclusionCriterion[]
-  exclusionCriteria?: ExclusionCriterion[]
-}
+import {
+  buildScreeningQuestions,
+  checkEligibility,
+  getFallbackQuestions,
+  type ScreeningQuestion,
+  type Protocol,
+} from '@/lib/study/screening'
 
 interface StudyData {
   name: string
@@ -48,77 +28,6 @@ const DEFAULT_ELIGIBLE = {
   subtext: 'This baseline helps us measure your progress.',
   buttonText: 'Start Baseline Survey',
   estimatedTime: 'About 5 minutes',
-}
-
-// Convert inclusion criterion to screening question
-function inclusionToQuestion(criterion: InclusionCriterion, index: number): ScreeningQuestion | null {
-  const text = criterion.criterion.toLowerCase()
-
-  // Skip criteria that can't be self-assessed
-  if (criterion.assessmentMethod.toLowerCase().includes('lab')) {
-    return null
-  }
-
-  // Try to convert to a yes/no question
-  return {
-    id: `inclusion_${index}`,
-    question: `Do you meet this requirement: ${criterion.criterion}?`,
-    type: 'yes_no',
-    disqualifyingAnswer: false, // "No" disqualifies for inclusion criteria
-    source: 'inclusion',
-  }
-}
-
-// Convert exclusion criterion to screening question
-function exclusionToQuestion(criterion: ExclusionCriterion, index: number): ScreeningQuestion | null {
-  const text = criterion.criterion.toLowerCase()
-
-  // Skip criteria that can't be self-assessed
-  if (criterion.assessmentMethod.toLowerCase().includes('lab')) {
-    return null
-  }
-
-  // Exclusion criteria are things that would disqualify someone
-  return {
-    id: `exclusion_${index}`,
-    question: criterion.criterion.includes('?')
-      ? criterion.criterion
-      : `Do you have: ${criterion.criterion}?`,
-    type: 'yes_no',
-    disqualifyingAnswer: true, // "Yes" disqualifies for exclusion criteria
-    source: 'exclusion',
-  }
-}
-
-// Generate general study participation question
-function generateParticipationQuestion(durationWeeks: number): ScreeningQuestion {
-  const months = Math.round(durationWeeks / 4)
-  return {
-    id: 'willing_to_participate',
-    question: `Are you willing to complete short surveys every 2-4 weeks for ${months} months?`,
-    type: 'yes_no',
-    disqualifyingAnswer: false, // "No" disqualifies
-    source: 'general',
-  }
-}
-
-// Fallback questions if no protocol criteria
-function getFallbackQuestions(): ScreeningQuestion[] {
-  return [
-    {
-      id: 'dob',
-      question: 'What is your date of birth?',
-      type: 'date',
-      source: 'general',
-    },
-    {
-      id: 'willing_to_participate',
-      question: 'Are you willing to complete short surveys every 2-4 weeks for 6 months?',
-      type: 'yes_no',
-      disqualifyingAnswer: false,
-      source: 'general',
-    }
-  ]
 }
 
 export default function ScreeningPage() {
@@ -142,51 +51,13 @@ export default function ScreeningPage() {
           const data: StudyData = await response.json()
           setStudy(data)
 
-          // Build screening questions from protocol
-          const questions: ScreeningQuestion[] = []
-
-          // Add date of birth question first
-          questions.push({
-            id: 'dob',
-            question: 'What is your date of birth?',
-            type: 'date',
-            source: 'general',
-          })
-
-          if (data.protocol?.inclusionCriteria || data.protocol?.exclusionCriteria) {
-            // Convert exclusion criteria first (these are disqualifiers)
-            if (data.protocol.exclusionCriteria) {
-              for (let i = 0; i < data.protocol.exclusionCriteria.length; i++) {
-                const q = exclusionToQuestion(data.protocol.exclusionCriteria[i], i)
-                if (q) questions.push(q)
-              }
-            }
-
-            // Convert key inclusion criteria (limit to avoid too many questions)
-            if (data.protocol.inclusionCriteria) {
-              let added = 0
-              for (let i = 0; i < data.protocol.inclusionCriteria.length && added < 3; i++) {
-                const criterion = data.protocol.inclusionCriteria[i]
-                // Only add self-reportable criteria
-                if (!criterion.assessmentMethod.toLowerCase().includes('lab')) {
-                  const q = inclusionToQuestion(criterion, i)
-                  if (q) {
-                    questions.push(q)
-                    added++
-                  }
-                }
-              }
-            }
-
-            console.log('[Screening] Generated questions from protocol:', questions.length)
-          } else {
-            console.log('[Screening] No protocol criteria, using fallback')
-          }
-
-          // Always add participation willingness question at the end
-          questions.push(generateParticipationQuestion(data.durationWeeks || 26))
-
-          setScreeningQuestions(questions.length > 1 ? questions : getFallbackQuestions())
+          // Build screening questions from protocol using lib function
+          const questions = buildScreeningQuestions(
+            data.protocol,
+            data.durationWeeks || 26
+          )
+          console.log('[Screening] Generated questions:', questions.length)
+          setScreeningQuestions(questions)
         } else {
           console.error('[Screening] Failed to fetch study')
           setScreeningQuestions(getFallbackQuestions())
@@ -210,33 +81,14 @@ export default function ScreeningPage() {
   const currentAnswer = question ? answers[question.id] : undefined
   const hasAnswer = currentAnswer !== undefined && currentAnswer !== ''
 
-  const checkEligibility = (questionId: string, answer: string | boolean): boolean => {
-    const q = screeningQuestions.find(sq => sq.id === questionId)
-    if (!q || q.disqualifyingAnswer === undefined) return true
-
-    // For date of birth, check age (must be 18+)
-    if (questionId === 'dob' && typeof answer === 'string') {
-      const birthDate = new Date(answer)
-      const today = new Date()
-      let age = today.getFullYear() - birthDate.getFullYear()
-      const monthDiff = today.getMonth() - birthDate.getMonth()
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--
-      }
-      return age >= 18
-    }
-
-    return answer !== q.disqualifyingAnswer
-  }
-
   const handleAnswer = (answer: string | boolean) => {
     if (!question) return
 
     const newAnswers = { ...answers, [question.id]: answer }
     setAnswers(newAnswers)
 
-    // Check eligibility for this answer
-    const isEligible = checkEligibility(question.id, answer)
+    // Check eligibility for this answer using lib function
+    const isEligible = checkEligibility(question.id, answer, screeningQuestions)
 
     if (!isEligible) {
       // Immediately redirect to ineligible page

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { toTitleCase } from '@/lib/utils'
+import { generateDefaultSchedule } from '@/lib/study/schedule'
 
 // Types for AI discovery response
 interface EndpointOption {
@@ -60,45 +61,6 @@ const FALLBACK_TREATMENT_STAGES = [
   { name: 'Dose optimization', description: 'Adjusting to optimal dosing' },
   { name: 'Maintenance', description: 'Long-term stable treatment' },
 ]
-
-// Generate a default schedule if AI doesn't return one
-function generateDefaultSchedule(durationWeeks: number, instrumentIds: string[]) {
-  const schedule = [
-    { timepoint: 'baseline', week: 0, instruments: instrumentIds, windowDays: 3 },
-  ]
-
-  // Add timepoints at reasonable intervals based on duration
-  if (durationWeeks >= 4) {
-    schedule.push({ timepoint: 'week_2', week: 2, instruments: instrumentIds.slice(0, 2), windowDays: 3 })
-  }
-  if (durationWeeks >= 8) {
-    schedule.push({ timepoint: 'week_4', week: 4, instruments: instrumentIds, windowDays: 5 })
-  }
-  if (durationWeeks >= 12) {
-    schedule.push({ timepoint: 'week_8', week: 8, instruments: instrumentIds, windowDays: 5 })
-  }
-  if (durationWeeks >= 16) {
-    schedule.push({ timepoint: 'week_12', week: 12, instruments: instrumentIds, windowDays: 7 })
-  }
-  if (durationWeeks >= 20) {
-    schedule.push({ timepoint: 'week_16', week: 16, instruments: instrumentIds, windowDays: 7 })
-  }
-  if (durationWeeks >= 26) {
-    schedule.push({ timepoint: 'week_20', week: 20, instruments: instrumentIds, windowDays: 7 })
-  }
-
-  // Final timepoint at the end of study
-  if (durationWeeks > 4) {
-    schedule.push({
-      timepoint: `week_${durationWeeks}`,
-      week: durationWeeks,
-      instruments: instrumentIds,
-      windowDays: 7
-    })
-  }
-
-  return schedule
-}
 
 const FALLBACK_ENDPOINTS = [
   { name: 'Symptom improvement', domain: 'physical', suggestedInstrument: 'Custom questionnaire', confidence: 'moderate' as const, rationale: 'Common primary outcome' },

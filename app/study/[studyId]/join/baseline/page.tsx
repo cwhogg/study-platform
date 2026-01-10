@@ -5,107 +5,19 @@ import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer } from '@/components/ui/MobileContainer'
 import { createClient } from '@/lib/supabase/client'
 import { Loader2 } from 'lucide-react'
-
-// Types matching the agent output schema
-interface Option {
-  value: number
-  label: string
-}
-
-interface Question {
-  id: string
-  text: string
-  type: 'single_choice' | 'numeric_scale' | 'text'
-  options?: Option[]
-  scale?: {
-    min: number
-    max: number
-    minLabel: string
-    maxLabel: string
-  }
-  required: boolean
-}
-
-interface Instrument {
-  id: string
-  name: string
-  description?: string
-  instructions: string
-  estimatedMinutes?: number
-  questions: Question[]
-}
-
-interface ScheduleTimepoint {
-  timepoint: string
-  week: number
-  instruments: string[]
-}
-
-interface Protocol {
-  instruments?: Instrument[]
-  schedule?: ScheduleTimepoint[]
-}
+import {
+  getBaselineInstruments,
+  groupAnswersByInstrument,
+  FALLBACK_INSTRUMENTS,
+  type Instrument,
+  type Protocol,
+} from '@/lib/study/instruments'
 
 interface StudyData {
   name: string
   intervention: string
   protocol?: Protocol
 }
-
-// Fallback instruments if none in protocol
-const FALLBACK_INSTRUMENTS: Instrument[] = [
-  {
-    id: 'phq-2',
-    name: 'PHQ-2',
-    instructions: 'Over the last 2 weeks, how often have you been bothered by the following problems?',
-    questions: [
-      {
-        id: 'phq2_q1',
-        text: 'Little interest or pleasure in doing things',
-        type: 'single_choice',
-        options: [
-          { value: 0, label: 'Not at all' },
-          { value: 1, label: 'Several days' },
-          { value: 2, label: 'More than half the days' },
-          { value: 3, label: 'Nearly every day' }
-        ],
-        required: true
-      },
-      {
-        id: 'phq2_q2',
-        text: 'Feeling down, depressed, or hopeless',
-        type: 'single_choice',
-        options: [
-          { value: 0, label: 'Not at all' },
-          { value: 1, label: 'Several days' },
-          { value: 2, label: 'More than half the days' },
-          { value: 3, label: 'Nearly every day' }
-        ],
-        required: true
-      }
-    ]
-  },
-  {
-    id: 'qol',
-    name: 'Quality of Life',
-    instructions: 'Please answer the following question about your overall quality of life.',
-    questions: [
-      {
-        id: 'qol_q1',
-        text: 'In general, how would you rate your overall quality of life?',
-        type: 'single_choice',
-        options: [
-          { value: 1, label: 'Very poor' },
-          { value: 2, label: 'Poor' },
-          { value: 3, label: 'Fair' },
-          { value: 4, label: 'Good' },
-          { value: 5, label: 'Excellent' }
-        ],
-        required: true
-      }
-    ]
-  }
-]
 
 export default function BaselinePage() {
   const router = useRouter()
@@ -141,44 +53,9 @@ export default function BaselinePage() {
         if (response.ok) {
           const data: StudyData = await response.json()
 
-          // Get instruments from protocol
-          let studyInstruments: Instrument[] = []
+          // Get baseline instruments using lib function
+          const studyInstruments = getBaselineInstruments(data.protocol)
 
-          if (data.protocol?.instruments && data.protocol.instruments.length > 0) {
-            // Find baseline timepoint to know which instruments to use
-            const baselineTimepoint = data.protocol.schedule?.find(
-              tp => tp.timepoint === 'baseline' || tp.week === 0
-            )
-
-            let candidateInstruments = data.protocol.instruments
-
-            if (baselineTimepoint?.instruments) {
-              // Get only instruments scheduled for baseline
-              candidateInstruments = data.protocol.instruments.filter(
-                inst => baselineTimepoint.instruments.includes(inst.id)
-              )
-            }
-
-            // Filter to only instruments that have valid questions
-            // Valid = has questions array with at least one question that has id, text, and type
-            studyInstruments = candidateInstruments.filter(inst => {
-              if (!inst.questions || !Array.isArray(inst.questions) || inst.questions.length === 0) {
-                console.log(`[Baseline] Skipping ${inst.id} - no questions array`)
-                return false
-              }
-              // Check if questions have required fields
-              const hasValidQuestions = inst.questions.every(q =>
-                q && typeof q === 'object' && q.id && q.text && q.type
-              )
-              if (!hasValidQuestions) {
-                console.log(`[Baseline] Skipping ${inst.id} - questions missing required fields`)
-                return false
-              }
-              return true
-            })
-          }
-
-          // Use protocol instruments or fallback
           if (studyInstruments.length > 0) {
             console.log('[Baseline] Using protocol instruments:', studyInstruments.map(i => i.id))
             setInstruments(studyInstruments)
@@ -240,21 +117,8 @@ export default function BaselinePage() {
 
     const durationSeconds = Math.floor((Date.now() - startTime) / 1000)
 
-    // Group answers by instrument
-    const answersByInstrument = new Map<string, { questionId: string; value: number }[]>()
-
-    for (const q of allQuestions) {
-      const value = finalAnswers[q.id]
-      if (value !== undefined) {
-        if (!answersByInstrument.has(q.instrumentId)) {
-          answersByInstrument.set(q.instrumentId, [])
-        }
-        answersByInstrument.get(q.instrumentId)!.push({
-          questionId: q.id,
-          value
-        })
-      }
-    }
+    // Group answers by instrument using lib function
+    const answersByInstrument = groupAnswersByInstrument(finalAnswers, allQuestions)
 
     // Submit each instrument
     for (const [instrumentId, responses] of answersByInstrument) {
