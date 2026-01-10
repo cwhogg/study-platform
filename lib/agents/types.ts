@@ -67,6 +67,7 @@ export interface Instrument {
 export interface DiscoveryInput {
   task: 'discover'
   intervention: string
+  goal?: string  // What they want to study/prove/impact (e.g., "weight loss", "ankle injury recovery")
 }
 
 export interface EndpointOption {
@@ -117,6 +118,7 @@ export interface RiskAssessment {
 
 export interface DiscoveryOutput {
   intervention: string
+  goal?: string  // What they want to study/prove/impact
   suggestedStudyName?: string  // AI-generated specific study name
   studyDescription?: string     // 1-2 sentence description of study purpose
   summary: string
