@@ -14,14 +14,14 @@ export default function Home() {
           <Link href="#how-it-works" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
             How it works
           </Link>
-          <Link href="/protocols" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
+          <Link href="/study" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
             Protocols
           </Link>
-          <Link href="/enterprise" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
+          <Link href="/sponsor" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
             Enterprise
           </Link>
           <Link
-            href="/study"
+            href="/sponsor/create"
             className="px-5 py-2.5 bg-[var(--primary)] text-[#0A0A0A] rounded-lg font-semibold text-sm hover:bg-[var(--primary-light)] hover:-translate-y-0.5 transition-all"
           >
             Start your protocol
@@ -79,14 +79,14 @@ export default function Home() {
             {/* CTAs */}
             <div className="flex gap-4 mb-16">
               <Link
-                href="/study"
+                href="/sponsor/create"
                 className="group inline-flex items-center gap-2.5 px-7 py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold text-base shadow-[0_0_0_0_rgba(234,88,12,0.4)] hover:bg-[var(--primary-light)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(234,88,12,0.4)] transition-all duration-200"
               >
                 Start your protocol
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
-                href="/protocols"
+                href="/study"
                 className="inline-flex items-center gap-2.5 px-7 py-4 bg-[var(--glass-bg)] text-white rounded-xl font-medium text-base border border-[var(--glass-border)] backdrop-blur-sm hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.15)] transition-all"
               >
                 Browse protocols
@@ -314,7 +314,7 @@ export default function Home() {
           Start your first N of 1 study today. No cost, no commitment.
         </p>
         <Link
-          href="/study"
+          href="/sponsor/create"
           className="inline-flex items-center gap-2.5 px-8 py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold shadow-lg shadow-[var(--primary)]/25 hover:bg-[var(--primary-light)] hover:-translate-y-0.5 transition-all"
         >
           Start Your Protocol
@@ -328,7 +328,7 @@ export default function Home() {
           <NofOneLogo size={24} />
           <div className="text-sm text-[#6B7280]">Personal science with collective insight.</div>
           <div className="flex items-center gap-6 text-sm text-[#6B7280]">
-            <Link href="/enterprise" className="hover:text-[#9CA3AF] transition-colors">Enterprise</Link>
+            <Link href="/sponsor" className="hover:text-[#9CA3AF] transition-colors">Enterprise</Link>
             <Link href="/admin" className="hover:text-[#9CA3AF] transition-colors">Admin</Link>
           </div>
         </div>
