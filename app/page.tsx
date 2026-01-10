@@ -250,7 +250,7 @@ export default function Home() {
               <span className="w-1.5 h-1.5 bg-[var(--primary)] rounded-full" />
               <span className="text-sm font-medium text-[#D1D5DB]">Featured Protocol</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">Testosterone Replacement Treatment Study</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">Testosterone Replacement Therapy Study</h2>
             <p className="text-lg text-[#9CA3AF] max-w-2xl mx-auto">
               Track your response to testosterone replacement therapy with validated instruments
             </p>
