@@ -319,11 +319,13 @@ STACK: ${error instanceof Error ? error.stack : 'N/A'}
  * Call the Clinical Protocol Agent for study discovery
  */
 export async function discoverStudy(
-  intervention: string
+  intervention: string,
+  goal?: string
 ): Promise<AgentResult<DiscoveryOutput>> {
   const input: DiscoveryInput = {
     task: 'discover',
     intervention,
+    ...(goal && { goal }),
   }
   return callAgent<DiscoveryInput, DiscoveryOutput>('clinical-protocol', input, {
     model: 'gpt-4o',

@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, ArrowLeft, Sparkles, Loader2 } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Sparkles, Loader2, Pill, Target } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Textarea } from '@/components/ui/Input'
+import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
 
 interface InterventionOption {
@@ -132,11 +132,13 @@ const INTERVENTIONS: InterventionOption[] = [
 export default function CreateStudyPage() {
   const router = useRouter()
   const [intervention, setIntervention] = useState('')
+  const [goal, setGoal] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
-  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const goalInputRef = useRef<HTMLInputElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
   // Filter interventions based on input - limit to top 8 matches
@@ -167,7 +169,8 @@ export default function CreateStudyPage() {
     setIntervention(name)
     setShowSuggestions(false)
     setHighlightedIndex(-1)
-    inputRef.current?.focus()
+    // Focus the goal input after selecting an intervention
+    goalInputRef.current?.focus()
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -201,18 +204,21 @@ export default function CreateStudyPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!intervention.trim()) return
+    if (!intervention.trim() || !goal.trim()) return
 
     setIsSubmitting(true)
     setError('')
 
     try {
       // Call study discovery API
-      console.log('[StudyDiscovery] Sending request for intervention:', intervention.trim())
+      console.log('[StudyDiscovery] Sending request for intervention:', intervention.trim(), 'goal:', goal.trim())
       const response = await fetch('/api/agents/study-discovery', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intervention: intervention.trim() }),
+        body: JSON.stringify({
+          intervention: intervention.trim(),
+          goal: goal.trim(),
+        }),
       })
 
       const data = await response.json()
@@ -229,7 +235,10 @@ export default function CreateStudyPage() {
       sessionStorage.setItem('studyDiscovery', JSON.stringify(data.data))
 
       // Navigate to configure page
-      const params = new URLSearchParams({ intervention: intervention.trim() })
+      const params = new URLSearchParams({
+        intervention: intervention.trim(),
+        goal: goal.trim(),
+      })
       router.push(`/sponsor/create/configure?${params.toString()}`)
 
     } catch (err) {
@@ -273,87 +282,150 @@ export default function CreateStudyPage() {
         {/* Form Card */}
         <Card variant="elevated" padding="lg" className="max-w-xl mx-auto animate-fade-in-up">
           <form onSubmit={handleSubmit}>
-            {/* Autocomplete Input */}
-            <div className="mb-6 relative">
-              <Textarea
-                ref={inputRef}
-                value={intervention}
-                onChange={(e) => {
-                  setIntervention(e.target.value)
-                  setShowSuggestions(e.target.value.trim().length > 0)
-                  setHighlightedIndex(-1)
-                }}
-                onKeyDown={handleKeyDown}
-                placeholder="Start typing to search interventions..."
-                className="text-lg min-h-[100px]"
-                autoFocus
-              />
-
-              {/* Autocomplete Dropdown - only show when typing */}
-              {showSuggestions && filteredSuggestions.length > 0 && (
-                <div
-                  ref={suggestionsRef}
-                  className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden"
-                >
-                  {filteredSuggestions.map((item, index) => {
-                    const isHighlighted = index === highlightedIndex
-
-                    return (
-                      <button
-                        key={item.name}
-                        type="button"
-                        onClick={() => handleSelectSuggestion(item.name)}
-                        className={`
-                          w-full text-left px-4 py-3 text-sm transition-colors border-b border-slate-100 last:border-b-0
-                          ${isHighlighted
-                            ? 'bg-indigo-50 text-indigo-600'
-                            : 'text-slate-700 hover:bg-slate-50'
-                          }
-                        `}
-                      >
-                        {item.name}
-                      </button>
-                    )
-                  })}
+            {/* Two-field layout with visual connection */}
+            <div className="space-y-6">
+              {/* Intervention Input */}
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-[#1E40AF]/10 rounded-lg">
+                    <Pill className="w-4 h-4 text-[#1E40AF]" />
+                  </div>
+                  <label className="text-sm font-semibold text-slate-900">
+                    Intervention
+                  </label>
                 </div>
-              )}
-
-              {/* No results message */}
-              {showSuggestions && intervention.trim().length > 0 && filteredSuggestions.length === 0 && (
-                <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl p-4">
-                  <p className="text-sm text-slate-500 text-center">
-                    No matching interventions found. You can still continue with your custom input.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Quick picks */}
-            <div className="mb-6">
-              <div className="text-sm text-slate-600 mb-3">Popular choices:</div>
-              <div className="flex flex-wrap gap-2">
-                {['GLP-1 agonists (semaglutide, tirzepatide)', 'Testosterone replacement therapy (TRT)', 'Ketamine therapy', 'Intermittent fasting', 'Virtual CBT'].map((example) => (
-                  <button
-                    key={example}
-                    type="button"
-                    onClick={() => handleSelectSuggestion(example)}
-                    className={`
-                      px-3 py-1.5 text-sm rounded-full border transition-all duration-150
-                      ${intervention === example
-                        ? 'bg-[#1E40AF]/10 border-[#1E40AF]/30 text-[#1E40AF]'
-                        : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                <div className="relative">
+                  <Input
+                    ref={inputRef}
+                    value={intervention}
+                    onChange={(e) => {
+                      setIntervention(e.target.value)
+                      setShowSuggestions(e.target.value.trim().length > 0)
+                      setHighlightedIndex(-1)
+                    }}
+                    onKeyDown={handleKeyDown}
+                    onFocus={() => {
+                      if (intervention.trim().length > 0) {
+                        setShowSuggestions(true)
                       }
-                    `}
-                  >
-                    {example.length > 30 ? example.slice(0, 30) + '...' : example}
-                  </button>
-                ))}
+                    }}
+                    placeholder="e.g., GLP-1s, TRT, BPC-157, Ketamine..."
+                    className="text-lg"
+                    autoFocus
+                  />
+
+                  {/* Autocomplete Dropdown - only show when typing */}
+                  {showSuggestions && filteredSuggestions.length > 0 && (
+                    <div
+                      ref={suggestionsRef}
+                      className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden"
+                    >
+                      {filteredSuggestions.map((item, index) => {
+                        const isHighlighted = index === highlightedIndex
+
+                        return (
+                          <button
+                            key={item.name}
+                            type="button"
+                            onClick={() => handleSelectSuggestion(item.name)}
+                            className={`
+                              w-full text-left px-4 py-3 text-sm transition-colors border-b border-slate-100 last:border-b-0
+                              ${isHighlighted
+                                ? 'bg-indigo-50 text-indigo-600'
+                                : 'text-slate-700 hover:bg-slate-50'
+                              }
+                            `}
+                          >
+                            {item.name}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {/* No results message */}
+                  {showSuggestions && intervention.trim().length > 0 && filteredSuggestions.length === 0 && (
+                    <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl p-4">
+                      <p className="text-sm text-slate-500 text-center">
+                        No matching interventions found. You can still continue with your custom input.
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <p className="mt-2 text-xs text-slate-500">
+                  The treatment, therapy, or approach being studied
+                </p>
+              </div>
+
+              {/* Visual connector */}
+              <div className="flex items-center justify-center gap-3 py-2">
+                <div className="h-px bg-slate-200 flex-1" />
+                <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">for</span>
+                <div className="h-px bg-slate-200 flex-1" />
+              </div>
+
+              {/* Goal Input */}
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-orange-500/10 rounded-lg">
+                    <Target className="w-4 h-4 text-orange-600" />
+                  </div>
+                  <label className="text-sm font-semibold text-slate-900">
+                    Goal
+                  </label>
+                </div>
+                <Input
+                  ref={goalInputRef}
+                  value={goal}
+                  onChange={(e) => setGoal(e.target.value)}
+                  placeholder="e.g., weight loss, injury recovery, depression..."
+                  className="text-lg"
+                />
+                <p className="mt-2 text-xs text-slate-500">
+                  What you want to study, prove, or measure the impact on
+                </p>
+              </div>
+
+              {/* Example combinations */}
+              <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                <div className="text-xs font-medium text-slate-500 mb-3 uppercase tracking-wide">Example combinations</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {[
+                    { intervention: 'GLP-1 agonists (semaglutide, tirzepatide)', goal: 'weight loss' },
+                    { intervention: 'Testosterone replacement therapy (TRT)', goal: 'low energy and mood' },
+                    { intervention: 'BPC-157', goal: 'injury recovery' },
+                    { intervention: 'Ketamine therapy', goal: 'treatment-resistant depression' },
+                  ].map((example) => (
+                    <button
+                      key={`${example.intervention}-${example.goal}`}
+                      type="button"
+                      onClick={() => {
+                        setIntervention(example.intervention)
+                        setGoal(example.goal)
+                        setShowSuggestions(false)
+                      }}
+                      className={`
+                        text-left p-3 rounded-lg border transition-all duration-150 text-sm
+                        ${intervention === example.intervention && goal === example.goal
+                          ? 'bg-[#1E40AF]/5 border-[#1E40AF]/30'
+                          : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-white'
+                        }
+                      `}
+                    >
+                      <span className="font-medium text-slate-700">
+                        {example.intervention.length > 25 ? example.intervention.slice(0, 25) + '...' : example.intervention}
+                      </span>
+                      <span className="text-slate-400 mx-1">for</span>
+                      <span className="text-orange-600 font-medium">{example.goal}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-fade-in">
+              <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-fade-in">
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
@@ -363,13 +435,14 @@ export default function CreateStudyPage() {
               type="submit"
               size="lg"
               fullWidth
-              disabled={!intervention.trim()}
+              disabled={!intervention.trim() || !goal.trim()}
               isLoading={isSubmitting}
+              className="mt-6"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Analyzing Intervention...
+                  Analyzing Study...
                 </>
               ) : (
                 <>
@@ -383,7 +456,7 @@ export default function CreateStudyPage() {
 
         {/* Info */}
         <p className="mt-8 text-center text-sm text-slate-500 max-w-md mx-auto animate-fade-in">
-          Our AI will analyze your intervention and generate a complete study protocol
+          Our AI will analyze your intervention and goal to generate a complete study protocol
           including endpoints, PRO instruments, and safety monitoring.
         </p>
       </div>

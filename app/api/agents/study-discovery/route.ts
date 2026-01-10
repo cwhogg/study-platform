@@ -56,7 +56,7 @@ const DEFAULT_DISCOVERY: DiscoveryOutput = {
 
 export async function POST(request: NextRequest) {
   try {
-    const { intervention } = await request.json()
+    const { intervention, goal } = await request.json()
 
     if (!intervention || typeof intervention !== 'string') {
       return NextResponse.json(
@@ -65,16 +65,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log(`[Study Discovery] Starting discovery for: ${intervention}`)
+    console.log(`[Study Discovery] Starting discovery for: ${intervention}${goal ? ` (goal: ${goal})` : ''}`)
 
     // Call the clinical-protocol agent with discover task
-    const result = await discoverStudy(intervention)
+    const result = await discoverStudy(intervention, goal)
 
     if (!result.success) {
       console.error('[Study Discovery] Agent call failed:', result.error)
       // Return fallback data instead of error so user can still proceed
       console.log('[Study Discovery] Using fallback data')
-      const fallbackData = { ...DEFAULT_DISCOVERY, intervention }
+      const fallbackData = { ...DEFAULT_DISCOVERY, intervention, ...(goal && { goal }) }
       return NextResponse.json({
         success: true,
         data: fallbackData,
@@ -86,6 +86,7 @@ export async function POST(request: NextRequest) {
     const data = (result.data || {}) as Partial<DiscoveryOutput>
     const mergedData: DiscoveryOutput = {
       intervention: data.intervention || intervention,
+      goal: data.goal || goal,
       summary: data.summary || DEFAULT_DISCOVERY.summary,
       endpoints: Array.isArray(data.endpoints) && data.endpoints.length > 0
         ? data.endpoints
@@ -123,8 +124,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[Study Discovery] Unexpected error:', error)
     // Return fallback data instead of error
-    const { intervention } = await request.clone().json().catch(() => ({ intervention: 'Unknown' }))
-    const fallbackData = { ...DEFAULT_DISCOVERY, intervention: intervention || 'Unknown' }
+    const { intervention, goal } = await request.clone().json().catch(() => ({ intervention: 'Unknown', goal: undefined }))
+    const fallbackData = { ...DEFAULT_DISCOVERY, intervention: intervention || 'Unknown', ...(goal && { goal }) }
     return NextResponse.json({
       success: true,
       data: fallbackData,
