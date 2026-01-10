@@ -188,7 +188,7 @@ export default function Home() {
               className="absolute bottom-16 right-0 w-64 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-6 hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.12)] hover:-translate-y-1 transition-all animate-fade-in-up"
               style={{ animation: 'fade-in-up 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards, float 6s ease-in-out infinite -4s' }}
             >
-              <div className="font-semibold text-[15px] text-white mb-1">TRT Outcomes Study</div>
+              <div className="font-semibold text-[15px] text-white mb-1">Testosterone Replacement Therapy Study</div>
               <div className="text-xs text-[#6B7280] mb-4">12-week protocol</div>
               <div className="h-1 bg-[var(--glass-border)] rounded-full overflow-hidden mb-2">
                 <div className="h-full w-[67%] bg-[var(--primary)] rounded-full" />
@@ -338,7 +338,7 @@ export default function Home() {
                 <ul className="space-y-3">
                   {[
                     'Your trajectory vs. baseline',
-                    'How you compare to others on TRT',
+                    'How you compare to others',
                     'Which outcomes improve fastest',
                     'Personalized response timeline',
                   ].map((item) => (
@@ -356,7 +356,7 @@ export default function Home() {
                   href="/protocols"
                   className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold text-sm hover:bg-[var(--primary-light)] transition-all"
                 >
-                  Join TRT Protocol
+                  Join This Protocol
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
