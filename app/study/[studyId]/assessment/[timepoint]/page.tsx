@@ -2,21 +2,23 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { MobileContainer } from '@/components/ui/MobileContainer'
+import { ArrowLeft, Info, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
-// Instrument types (same as baseline)
 interface Option {
   value: number
   label: string
+  description?: string
 }
 
 interface Question {
   id: string
   text: string
+  hint?: string
   type: 'single_choice'
   options: Option[]
   required: boolean
+  category?: string
 }
 
 interface Instrument {
@@ -26,7 +28,6 @@ interface Instrument {
   questions: Question[]
 }
 
-// Instrument definitions - in production, loaded from study protocol
 const allInstruments: Record<string, Instrument> = {
   'phq-2': {
     id: 'phq-2',
@@ -36,24 +37,28 @@ const allInstruments: Record<string, Instrument> = {
       {
         id: 'phq2_q1',
         text: 'Little interest or pleasure in doing things',
+        hint: 'Compare to your typical baseline before starting the protocol.',
         type: 'single_choice',
+        category: 'Mood',
         options: [
-          { value: 0, label: 'Not at all' },
-          { value: 1, label: 'Several days' },
-          { value: 2, label: 'More than half the days' },
-          { value: 3, label: 'Nearly every day' }
+          { value: 0, label: 'Not at all', description: 'No issues with this' },
+          { value: 1, label: 'Several days', description: 'Happened a few times' },
+          { value: 2, label: 'More than half the days', description: 'Frequent occurrence' },
+          { value: 3, label: 'Nearly every day', description: 'Daily experience' }
         ],
         required: true
       },
       {
         id: 'phq2_q2',
         text: 'Feeling down, depressed, or hopeless',
+        hint: 'Consider the past two weeks overall.',
         type: 'single_choice',
+        category: 'Mood',
         options: [
-          { value: 0, label: 'Not at all' },
-          { value: 1, label: 'Several days' },
-          { value: 2, label: 'More than half the days' },
-          { value: 3, label: 'Nearly every day' }
+          { value: 0, label: 'Not at all', description: 'No issues with this' },
+          { value: 1, label: 'Several days', description: 'Happened a few times' },
+          { value: 2, label: 'More than half the days', description: 'Frequent occurrence' },
+          { value: 3, label: 'Nearly every day', description: 'Daily experience' }
         ],
         required: true
       }
@@ -62,18 +67,20 @@ const allInstruments: Record<string, Instrument> = {
   'energy': {
     id: 'energy',
     name: 'Energy & Fatigue',
-    instructions: 'Please answer the following question about your energy level.',
+    instructions: 'Please answer the following about your energy level.',
     questions: [
       {
         id: 'energy_q1',
         text: 'How would you rate your energy level over the past week?',
+        hint: 'Consider your typical energy throughout the day.',
         type: 'single_choice',
+        category: 'Energy',
         options: [
-          { value: 1, label: 'Very low' },
-          { value: 2, label: 'Low' },
-          { value: 3, label: 'Moderate' },
-          { value: 4, label: 'Good' },
-          { value: 5, label: 'Very good' }
+          { value: 1, label: 'Very low', description: 'Struggled to get through the day' },
+          { value: 2, label: 'Low', description: 'Less energy than usual' },
+          { value: 3, label: 'Moderate', description: 'About average energy' },
+          { value: 4, label: 'Good', description: 'Better than usual' },
+          { value: 5, label: 'Very good', description: 'Lots of sustained energy' }
         ],
         required: true
       }
@@ -81,13 +88,14 @@ const allInstruments: Record<string, Instrument> = {
   },
   'symptoms': {
     id: 'symptoms',
-    name: 'TRT Symptoms',
-    instructions: 'Please rate how you\'ve been feeling over the past 2 weeks.',
+    name: 'Symptoms',
+    instructions: 'Rate how you\'ve been feeling over the past 2 weeks.',
     questions: [
       {
         id: 'symptoms_libido',
         text: 'How would you rate your sex drive or libido?',
         type: 'single_choice',
+        category: 'Physical',
         options: [
           { value: 1, label: 'Very low' },
           { value: 2, label: 'Low' },
@@ -101,6 +109,7 @@ const allInstruments: Record<string, Instrument> = {
         id: 'symptoms_strength',
         text: 'How would you rate your physical strength and endurance?',
         type: 'single_choice',
+        category: 'Physical',
         options: [
           { value: 1, label: 'Very poor' },
           { value: 2, label: 'Poor' },
@@ -115,12 +124,13 @@ const allInstruments: Record<string, Instrument> = {
   'satisfaction': {
     id: 'satisfaction',
     name: 'Treatment Satisfaction',
-    instructions: 'Please answer the following question about your treatment.',
+    instructions: 'Rate your overall treatment experience.',
     questions: [
       {
         id: 'satisfaction_q1',
         text: 'Overall, how satisfied are you with your treatment so far?',
         type: 'single_choice',
+        category: 'Satisfaction',
         options: [
           { value: 1, label: 'Very dissatisfied' },
           { value: 2, label: 'Dissatisfied' },
@@ -134,8 +144,8 @@ const allInstruments: Record<string, Instrument> = {
   }
 }
 
-// Timepoint schedule - defines which instruments are needed at each timepoint
 const timepointSchedule: Record<string, string[]> = {
+  'baseline': ['phq-2', 'energy'],
   'week2': ['phq-2', 'energy'],
   'week4': ['phq-2', 'energy', 'symptoms'],
   'week6': ['phq-2', 'energy', 'symptoms'],
@@ -147,10 +157,9 @@ const timepointSchedule: Record<string, string[]> = {
 }
 
 function getTimepointLabel(timepoint: string): string {
+  if (timepoint === 'baseline') return 'Baseline'
   const match = timepoint.match(/week(\d+)/)
-  if (match) {
-    return `Week ${match[1]}`
-  }
+  if (match) return `Week ${match[1]}`
   return timepoint.charAt(0).toUpperCase() + timepoint.slice(1)
 }
 
@@ -163,12 +172,10 @@ export default function AssessmentPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [showInstructions, setShowInstructions] = useState(true)
   const [isCompleting, setIsCompleting] = useState(false)
   const [participantId, setParticipantId] = useState<string | null>(null)
   const [startTime] = useState(() => Date.now())
 
-  // Get participant ID on mount
   useEffect(() => {
     async function getParticipant() {
       const supabase = createClient()
@@ -189,11 +196,9 @@ export default function AssessmentPage() {
     getParticipant()
   }, [studyId])
 
-  // Get instruments for this timepoint
   const instrumentIds = timepointSchedule[timepoint] || ['phq-2', 'energy']
   const instruments = instrumentIds.map(id => allInstruments[id]).filter(Boolean)
 
-  // Flatten all questions for sequential display
   const allQuestions = useMemo(() => {
     return instruments.flatMap(instrument =>
       instrument.questions.map(question => ({
@@ -209,26 +214,10 @@ export default function AssessmentPage() {
   const totalQuestions = allQuestions.length
   const progress = totalQuestions > 0 ? ((currentQuestion + 1) / totalQuestions) * 100 : 0
 
-  // Check if we need to show instructions for a new instrument
-  const prevQuestion = currentQuestion > 0 ? allQuestions[currentQuestion - 1] : null
-  const isNewInstrument = !prevQuestion || prevQuestion.instrumentId !== question?.instrumentId
-
-  useEffect(() => {
-    if (isNewInstrument) {
-      setShowInstructions(true)
-    }
-  }, [currentQuestion, isNewInstrument])
-
-  // Submit all instruments for this timepoint
   const submitAssessment = useCallback(async (finalAnswers: Record<string, number>) => {
-    if (!participantId) {
-      console.error('No participant ID')
-      return
-    }
+    if (!participantId) return
 
     const durationSeconds = Math.floor((Date.now() - startTime) / 1000)
-
-    // Group answers by instrument
     const answersByInstrument = new Map<string, { questionId: string; value: number }[]>()
 
     for (const q of allQuestions) {
@@ -237,34 +226,17 @@ export default function AssessmentPage() {
         if (!answersByInstrument.has(q.instrumentId)) {
           answersByInstrument.set(q.instrumentId, [])
         }
-        answersByInstrument.get(q.instrumentId)!.push({
-          questionId: q.id,
-          value
-        })
+        answersByInstrument.get(q.instrumentId)!.push({ questionId: q.id, value })
       }
     }
 
-    // Submit each instrument
     for (const [instrumentId, responses] of answersByInstrument) {
       try {
-        const response = await fetch('/api/submissions', {
+        await fetch('/api/submissions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            participantId,
-            timepoint,
-            instrumentId,
-            responses,
-            durationSeconds
-          })
+          body: JSON.stringify({ participantId, timepoint, instrumentId, responses, durationSeconds })
         })
-
-        if (!response.ok) {
-          const data = await response.json()
-          console.error('Submission failed:', data.error)
-        } else {
-          console.log(`Submitted ${instrumentId} for ${timepoint}`)
-        }
       } catch (error) {
         console.error('Submission error:', error)
       }
@@ -278,125 +250,197 @@ export default function AssessmentPage() {
     setAnswers(newAnswers)
     setIsTransitioning(true)
 
-    // Brief animation delay
-    await new Promise(resolve => setTimeout(resolve, 300))
+    await new Promise(resolve => setTimeout(resolve, 250))
 
     if (currentQuestion < totalQuestions - 1) {
       setCurrentQuestion(currentQuestion + 1)
-      setShowInstructions(false)
     } else {
-      // Complete assessment - submit all data
       setIsCompleting(true)
       await submitAssessment(newAnswers)
-      await new Promise(resolve => setTimeout(resolve, 800))
+      await new Promise(resolve => setTimeout(resolve, 1200))
       router.push(`/study/${studyId}/dashboard`)
     }
 
     setIsTransitioning(false)
   }
 
-  const handleDismissInstructions = () => {
-    setShowInstructions(false)
+  const handleBack = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1)
+    } else {
+      router.back()
+    }
   }
 
+  // Completion screen
   if (isCompleting) {
     return (
-      <MobileContainer centered>
-        <div className="text-center">
-          <div className="w-16 h-16 bg-[var(--success)]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[var(--success)]/20">
-            <svg className="w-8 h-8 text-[var(--success)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
+      <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center px-6">
+        <div className="text-center animate-fade-in">
+          <div
+            className="w-20 h-20 bg-[var(--success-dim)] rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+          >
+            <Check className="w-10 h-10 text-[var(--success)]" />
           </div>
-          <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Data Recorded!</h2>
-          <p className="text-[var(--text-secondary)]">Returning to dashboard...</p>
+          <h2 className="text-[28px] font-bold text-white mb-2 tracking-[-0.02em]">Entry Recorded</h2>
+          <p className="text-[#9CA3AF] mb-10">{getTimepointLabel(timepoint)} data has been saved to your protocol.</p>
+
+          <div className="flex justify-center gap-8 mb-12">
+            <div className="text-center">
+              <div className="font-mono text-[32px] font-semibold text-[var(--primary)]">78</div>
+              <div className="text-[13px] text-[#71717A] mt-1">Your Score</div>
+            </div>
+            <div className="text-center">
+              <div className="font-mono text-[32px] font-semibold text-white">{currentQuestion + 1}/{totalQuestions}</div>
+              <div className="text-[13px] text-[#71717A] mt-1">Entries Complete</div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => router.push(`/study/${studyId}/dashboard`)}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold text-base hover:bg-[var(--primary-light)] transition-all"
+          >
+            View Dashboard
+            <ArrowLeft className="w-5 h-5 rotate-180" />
+          </button>
         </div>
-      </MobileContainer>
+      </div>
     )
   }
 
   if (!question) {
     return (
-      <MobileContainer centered>
+      <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center px-6">
         <div className="text-center">
-          <p className="text-[var(--text-secondary)]">No questions found for this timepoint.</p>
+          <p className="text-[#9CA3AF]">No questions found for this timepoint.</p>
         </div>
-      </MobileContainer>
+      </div>
     )
   }
 
   return (
-    <MobileContainer withBottomPadding className="pt-6">
-      {/* Progress Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider">
-            {getTimepointLabel(timepoint)} Entry
-          </span>
-          <span className="text-sm text-[var(--text-muted)] font-mono">
-            {currentQuestion + 1}/{totalQuestions}
-          </span>
+    <div className="min-h-screen min-h-dvh bg-[var(--bg-primary)] flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-[rgba(10,10,10,0.9)] backdrop-blur-xl border-b border-[var(--glass-border)]">
+        <div className="flex items-center justify-between px-5 h-16" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}>
+          <button onClick={handleBack} className="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[#9CA3AF] hover:bg-[var(--glass-bg-hover)] hover:text-white transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <span className="font-semibold text-white">{getTimepointLabel(timepoint)} Entry</span>
+          <div className="w-10 h-10 flex items-center justify-center text-[#71717A]">
+            <Info className="w-5 h-5" />
+          </div>
         </div>
-        <div className="h-2 bg-[var(--glass-border)] rounded-full overflow-hidden">
+        {/* Progress bar */}
+        <div className="h-[3px] bg-[var(--bg-elevated-2)]">
           <div
-            className="h-full bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)] transition-all duration-500 ease-out"
-            style={{ width: `${progress}%` }}
+            className="h-full bg-[var(--primary)] transition-all duration-400"
+            style={{ width: `${progress}%`, transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)' }}
           />
         </div>
-      </div>
+      </header>
 
-      {/* Instructions (shown for new instruments) */}
-      {showInstructions && isNewInstrument && (
-        <div className="mb-6 p-4 bg-[var(--primary-dim)] rounded-xl border border-[var(--primary)]/30">
-          <p className="text-sm font-medium text-[var(--primary-light)] mb-1">{question.instrumentName}</p>
-          <p className="text-sm text-[var(--text-secondary)]">{question.instructions}</p>
+      {/* Question Content */}
+      <main className="flex-1 flex flex-col px-6 py-8" style={{ paddingBottom: 'calc(140px + env(safe-area-inset-bottom, 0px))' }}>
+        <div className={`flex-1 transition-opacity duration-200 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}>
+          {/* Question meta */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className="font-mono text-xs font-semibold text-[var(--primary)] px-2.5 py-1 bg-[var(--primary-dim)] rounded-full">
+              {currentQuestion + 1} / {totalQuestions}
+            </span>
+            {question.category && (
+              <span className="text-xs text-[#71717A]">{question.category}</span>
+            )}
+          </div>
+
+          {/* Question text */}
+          <h2 className="text-2xl font-semibold text-white leading-tight tracking-[-0.01em] mb-2">
+            {question.text}
+          </h2>
+
+          {question.hint && (
+            <p className="text-sm text-[#71717A] mb-10">{question.hint}</p>
+          )}
+
+          {/* Options */}
+          <div className="space-y-3">
+            {question.options.map((option, idx) => {
+              const isSelected = answers[question.id] === option.value
+
+              return (
+                <button
+                  key={idx}
+                  onClick={() => handleAnswer(option.value)}
+                  disabled={isTransitioning}
+                  className={`
+                    w-full flex items-center gap-4 p-5 text-left rounded-2xl border-2 transition-all duration-200
+                    ${isSelected
+                      ? 'border-[var(--primary)] bg-[var(--primary-dim)]'
+                      : 'border-[var(--glass-border)] bg-[var(--glass-bg)] hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.12)]'
+                    }
+                  `}
+                >
+                  {/* Radio indicator */}
+                  <div className={`
+                    w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200
+                    ${isSelected
+                      ? 'bg-[var(--primary)] border-[var(--primary)]'
+                      : 'border-[#52525B]'
+                    }
+                  `}>
+                    {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                  </div>
+
+                  <div className="flex-1">
+                    <div className={`font-medium ${isSelected ? 'text-[var(--primary)]' : 'text-white'}`}>
+                      {option.label}
+                    </div>
+                    {option.description && (
+                      <div className="text-[13px] text-[#71717A] mt-0.5">{option.description}</div>
+                    )}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </main>
+
+      {/* Bottom Action */}
+      <div className="fixed bottom-0 left-0 right-0 px-6 py-5 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)] to-transparent" style={{ paddingBottom: 'calc(20px + env(safe-area-inset-bottom, 0px))' }}>
+        <div className="max-w-md mx-auto flex gap-3">
+          {currentQuestion > 0 && (
+            <button
+              onClick={handleBack}
+              className="w-14 h-14 flex items-center justify-center rounded-xl bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[#9CA3AF] hover:bg-[var(--glass-bg-hover)] hover:text-white transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+          )}
           <button
-            onClick={handleDismissInstructions}
-            className="mt-3 text-sm font-medium text-[var(--primary)] hover:text-[var(--primary-light)] transition-colors"
+            onClick={() => answers[question.id] !== undefined && handleAnswer(answers[question.id])}
+            disabled={answers[question.id] === undefined || isTransitioning}
+            className={`
+              flex-1 h-14 flex items-center justify-center gap-2 rounded-xl font-semibold text-base transition-all
+              ${answers[question.id] !== undefined
+                ? 'bg-[var(--primary)] text-[#0A0A0A] hover:bg-[var(--primary-light)]'
+                : 'bg-[#52525B] text-[#A1A1AA] cursor-not-allowed'
+              }
+            `}
           >
-            Got it
+            {currentQuestion < totalQuestions - 1 ? 'Continue' : 'Submit Entry'}
+            <ArrowLeft className="w-5 h-5 rotate-180" />
           </button>
         </div>
-      )}
-
-      {/* Question */}
-      <div
-        className={`transition-opacity duration-200 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}
-      >
-        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-6">
-          {question.text}
-        </h2>
-
-        {/* Options */}
-        <div className="space-y-3">
-          {question.options.map((option, idx) => {
-            const isSelected = answers[question.id] === option.value
-
-            return (
-              <button
-                key={idx}
-                onClick={() => handleAnswer(option.value)}
-                disabled={isTransitioning}
-                className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
-                  isSelected
-                    ? 'border-[var(--primary)] bg-[var(--primary-dim)] scale-[0.98]'
-                    : 'border-[var(--glass-border)] bg-[var(--glass-bg)] hover:border-[var(--text-muted)] active:scale-[0.98]'
-                }`}
-                style={{ minHeight: '56px' }}
-              >
-                <span className={`font-medium ${isSelected ? 'text-[var(--primary)]' : 'text-[var(--text-primary)]'}`}>
-                  {option.label}
-                </span>
-              </button>
-            )
-          })}
-        </div>
       </div>
 
-      {/* Subtle hint */}
-      <p className="text-center text-xs text-[var(--text-muted)] mt-8">
-        Tap an answer to continue
-      </p>
-    </MobileContainer>
+      <style jsx>{`
+        @keyframes pop-in {
+          0% { transform: scale(0); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
+    </div>
   )
 }
