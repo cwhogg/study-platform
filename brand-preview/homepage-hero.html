@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N of One - Homepage Hero Preview</title>
+
+  <!-- Fonts: Using Outfit as geometric sans (similar to Circular/Euclid, available on Google) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Backgrounds */
+      --black: #0A0A0A;
+      --black-elevated: #111111;
+      --bg-surface: #151515;
+
+      /* Primary - Burnt Orange */
+      --primary: #EA580C;
+      --primary-light: #F97316;
+      --primary-dark: #C2410C;
+      --primary-dim: rgba(234, 88, 12, 0.15);
+      --primary-glow: rgba(234, 88, 12, 0.4);
+
+      /* Secondary - Blue */
+      --secondary: #3B82F6;
+
+      /* Text */
+      --text-primary: #FFFFFF;
+      --text-secondary: #A1A1AA;
+      --text-tertiary: #71717A;
+      --text-muted: #52525B;
+
+      /* Glass */
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.06);
+
+      /* Status */
+      --success: #22C55E;
+
+      /* Legacy mappings */
+      --gray-100: #F3F4F6;
+      --gray-300: #D1D5DB;
+      --gray-400: #9CA3AF;
+      --gray-500: #6B7280;
+      --gray-600: #4B5563;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--black);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==================== HEADER ==================== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* N of 1 integrated logo - N transforms into 1 */
+    .logo-mark svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .logo-text {
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: white;
+    }
+
+    .logo-text span {
+      color: var(--gray-400);
+      font-weight: 400;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .header-nav a {
+      color: var(--gray-400);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .header-nav a:hover {
+      color: white;
+    }
+
+    .btn-header {
+      background: var(--primary);
+      color: var(--black);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-header:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    /* ==================== HERO ==================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle grid background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    }
+
+    /* Coral glow accent */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 20%;
+      right: 10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      opacity: 0.15;
+      pointer-events: none;
+      animation: pulse-glow 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.25; transform: scale(1.1); }
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-left {
+      max-width: 560px;
+    }
+
+    /* Eyebrow */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-300);
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Headline */
+    .headline {
+      font-size: clamp(48px, 6vw, 72px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .headline-you {
+      color: var(--primary);
+      position: relative;
+      display: inline-block;
+    }
+
+    .headline-you::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+      opacity: 0.4;
+      border-radius: 2px;
+    }
+
+    /* Subheadline */
+    .subheadline {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--gray-400);
+      margin-bottom: 40px;
+      max-width: 480px;
+    }
+
+    .subheadline strong {
+      color: var(--gray-300);
+      font-weight: 500;
+    }
+
+    /* CTA Buttons */
+    .cta-group {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--primary);
+      color: var(--black);
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 0 0 0 var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px -8px var(--primary-glow);
+    }
+
+    .btn-primary svg {
+      transition: transform 0.2s;
+    }
+
+    .btn-primary:hover svg {
+      transform: translateX(3px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--glass);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 16px;
+      text-decoration: none;
+      border: 1px solid var(--glass-border);
+      transition: all 0.25s;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      background: var(--glass-hover);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 48px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-value .accent {
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ==================== HERO RIGHT - DATA VIZ ==================== */
+    .hero-right {
+      position: relative;
+      height: 500px;
+    }
+
+    .data-card {
+      position: absolute;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+
+    .data-card:hover {
+      background: var(--glass-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-4px);
+    }
+
+    /* Main chart card */
+    .card-chart {
+      top: 40px;
+      left: 0;
+      right: 40px;
+      height: 320px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      color: var(--gray-400);
+      font-weight: 500;
+    }
+
+    .card-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 4px;
+    }
+
+    .card-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(34, 197, 94, 0.15);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #22C55E;
+    }
+
+    /* Chart visualization */
+    .chart-container {
+      height: 180px;
+      position: relative;
+      margin-top: 16px;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Baseline indicator line */
+    .baseline-label {
+      position: absolute;
+      left: 0;
+      top: 65%;
+      font-size: 10px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Your result card */
+    .card-your-result {
+      bottom: 0;
+      left: 20px;
+      width: 200px;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+    }
+
+    .result-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .result-dot.you {
+      background: var(--primary);
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+
+    .result-dot.collective {
+      background: var(--gray-500);
+    }
+
+    .result-info {
+      flex: 1;
+    }
+
+    .result-label {
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+
+    .result-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .result-value.accent {
+      color: var(--primary);
+    }
+
+    /* Protocol card */
+    .card-protocol {
+      bottom: 60px;
+      right: 0;
+      width: 220px;
+    }
+
+    .protocol-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .protocol-meta {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 16px;
+    }
+
+    .protocol-progress {
+      height: 4px;
+      background: var(--glass-border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .protocol-progress-fill {
+      height: 100%;
+      width: 67%;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .protocol-status {
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+
+    .protocol-status span {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .card-chart {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .card-your-result {
+      animation: float 6s ease-in-out infinite;
+      animation-delay: -2s;
+    }
+
+    .card-protocol {
+      animation: float 6s ease-in-out infinite;
+      animation-delay: -4s;
+    }
+
+    /* Entrance animations */
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-left > * {
+      opacity: 0;
+      animation: fade-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    .eyebrow { animation-delay: 0.1s; }
+    .headline { animation-delay: 0.2s; }
+    .subheadline { animation-delay: 0.3s; }
+    .cta-group { animation-delay: 0.4s; }
+    .stats-row { animation-delay: 0.5s; }
+
+    .data-card {
+      opacity: 0;
+      animation: fade-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    .card-chart { animation-delay: 0.4s; }
+    .card-your-result { animation-delay: 0.6s; }
+    .card-protocol { animation-delay: 0.5s; }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 1024px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+
+      .hero-left {
+        max-width: 100%;
+        text-align: center;
+      }
+
+      .subheadline {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-group {
+        justify-content: center;
+      }
+
+      .stats-row {
+        justify-content: center;
+      }
+
+      .hero-right {
+        height: 400px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header-nav {
+        display: none;
+      }
+
+      .headline {
+        font-size: 40px;
+      }
+
+      .cta-group {
+        flex-direction: column;
+      }
+
+      .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .stats-row {
+        gap: 32px;
+      }
+
+      .hero-right {
+        height: 350px;
+      }
+
+      .card-protocol {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-mark">
+        <!-- N of 1 integrated logo: N with a 1 integrated into it -->
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- The N shape with 1 emerging from center -->
+          <path d="M6 28V8L18 22V8" stroke="#EA580C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- The 1 completing the mark -->
+          <path d="M26 8V28" stroke="white" stroke-width="3" stroke-linecap="round"/>
+          <path d="M22 12L26 8" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Data point accent -->
+          <circle cx="30" cy="28" r="2" fill="#EA580C"/>
+        </svg>
+      </div>
+      <div class="logo-text">N <span>of</span> One</div>
+    </div>
+
+    <nav class="header-nav">
+      <a href="#">How it works</a>
+      <a href="#">Protocols</a>
+      <a href="#">Science</a>
+      <a href="#" class="btn-header">Start your protocol</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Personal science, validated
+        </div>
+
+        <h1 class="headline">
+          Study <span class="headline-you">yourself</span>.<br>
+          Measure what matters.
+        </h1>
+
+        <p class="subheadline">
+          Design a protocol. Collect your data. See your results.
+          <strong>Your N of 1 study</strong> joins thousands of others to reveal what actually works.
+        </p>
+
+        <div class="cta-group">
+          <a href="#" class="btn-primary">
+            Start your protocol
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="#" class="btn-secondary">
+            Browse protocols
+          </a>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-value"><span class="accent">12,847</span></div>
+            <div class="stat-label">Active protocols</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">847K</div>
+            <div class="stat-label">Data points collected</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">94%</div>
+            <div class="stat-label">Completion rate</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <!-- Main chart card -->
+        <div class="data-card card-chart">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Your Response Score</div>
+              <div class="card-value">+34%</div>
+            </div>
+            <div class="card-badge">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2 8L5 5L7 7L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Improving
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <span class="baseline-label">Baseline</span>
+            <svg class="chart-svg" viewBox="0 0 400 150" preserveAspectRatio="none">
+              <!-- Grid lines -->
+              <line x1="0" y1="97" x2="400" y2="97" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+              <!-- Collective data area (gray, background) -->
+              <path d="M0,120 Q50,115 100,105 T200,95 T300,85 T400,70 L400,150 L0,150 Z" fill="rgba(107,114,128,0.1)"/>
+              <path d="M0,120 Q50,115 100,105 T200,95 T300,85 T400,70" fill="none" stroke="rgba(107,114,128,0.3)" stroke-width="2"/>
+
+              <!-- Your data line (coral, foreground) -->
+              <path d="M0,110 Q50,105 100,85 T200,60 T300,45 T400,25" fill="none" stroke="#EA580C" stroke-width="3" stroke-linecap="round"/>
+
+              <!-- Your data points -->
+              <circle cx="0" cy="110" r="4" fill="#EA580C"/>
+              <circle cx="100" cy="85" r="4" fill="#EA580C"/>
+              <circle cx="200" cy="60" r="4" fill="#EA580C"/>
+              <circle cx="300" cy="45" r="4" fill="#EA580C"/>
+              <circle cx="400" cy="25" r="6" fill="#EA580C">
+                <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
+              </circle>
+
+              <!-- Current point glow -->
+              <circle cx="400" cy="25" r="12" fill="rgba(255,107,107,0.2)">
+                <animate attributeName="r" values="12;18;12" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Your result card -->
+        <div class="data-card card-your-result">
+          <div class="result-row">
+            <div class="result-dot you"></div>
+            <div class="result-info">
+              <div class="result-label">Your result</div>
+              <div class="result-value accent">Week 8: 78</div>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-dot collective"></div>
+            <div class="result-info">
+              <div class="result-label">Collective avg</div>
+              <div class="result-value">Week 8: 62</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Protocol card -->
+        <div class="data-card card-protocol">
+          <div class="protocol-name">Creatine + Cognition</div>
+          <div class="protocol-meta">12-week protocol</div>
+          <div class="protocol-progress">
+            <div class="protocol-progress-fill"></div>
+          </div>
+          <div class="protocol-status">
+            <span>Week 8</span> of 12
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

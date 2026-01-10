@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N of One - Color Palette</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* ========================================
+         N OF ONE - COLOR SYSTEM
+         ======================================== */
+
+      /* BACKGROUNDS */
+      --bg-primary: #0A0A0A;        /* True black - main background */
+      --bg-elevated: #111111;        /* Slightly lifted surfaces */
+      --bg-elevated-2: #1A1A1A;      /* Higher elevation */
+      --bg-surface: #151515;         /* Card backgrounds */
+
+      /* GLASS (for glassmorphism) */
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-bg-hover: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-hover: rgba(255, 255, 255, 0.12);
+
+      /* PRIMARY ACCENT - Burnt Orange */
+      --primary: #EA580C;
+      --primary-light: #F97316;       /* Hover/lighter variant */
+      --primary-dark: #C2410C;        /* Pressed/darker variant */
+      --primary-dim: rgba(234, 88, 12, 0.15);
+      --primary-glow: rgba(234, 88, 12, 0.4);
+
+      /* SECONDARY ACCENT - Cool contrast to warm primary */
+      --secondary: #3B82F6;           /* Blue - for links, secondary actions */
+      --secondary-light: #60A5FA;
+      --secondary-dark: #2563EB;
+      --secondary-dim: rgba(59, 130, 246, 0.15);
+
+      /* TEXT */
+      --text-primary: #FFFFFF;
+      --text-secondary: #A1A1AA;      /* Zinc 400 */
+      --text-tertiary: #71717A;       /* Zinc 500 */
+      --text-muted: #52525B;          /* Zinc 600 */
+
+      /* BORDERS */
+      --border-default: rgba(255, 255, 255, 0.08);
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-strong: rgba(255, 255, 255, 0.15);
+
+      /* STATUS COLORS */
+      --success: #22C55E;
+      --success-dim: rgba(34, 197, 94, 0.15);
+      --warning: #F59E0B;
+      --warning-dim: rgba(245, 158, 11, 0.15);
+      --error: #EF4444;
+      --error-dim: rgba(239, 68, 68, 0.15);
+      --info: #3B82F6;
+      --info-dim: rgba(59, 130, 246, 0.15);
+
+      /* DATA VISUALIZATION */
+      --data-you: #EA580C;            /* Your data - primary */
+      --data-collective: #52525B;     /* Collective - muted */
+      --data-chart-1: #EA580C;        /* Primary series */
+      --data-chart-2: #3B82F6;        /* Secondary series */
+      --data-chart-3: #8B5CF6;        /* Tertiary series */
+      --data-chart-4: #14B8A6;        /* Quaternary series */
+      --data-chart-5: #F59E0B;        /* Fifth series */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 48px 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin-bottom: 48px;
+    }
+
+    .section {
+      margin-bottom: 56px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-default);
+    }
+
+    /* Color Swatches */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .color-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .color-swatch {
+      height: 80px;
+      position: relative;
+    }
+
+    .color-swatch::after {
+      content: attr(data-contrast);
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+    }
+
+    .color-info {
+      padding: 12px;
+    }
+
+    .color-name {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .color-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .color-hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .color-var {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Wide color bars */
+    .color-bar-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .color-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+    }
+
+    .color-bar-swatch {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .color-bar-info {
+      flex: 1;
+    }
+
+    .color-bar-name {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+
+    .color-bar-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .color-bar-hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      background: var(--bg-elevated);
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    /* Scale display */
+    .color-scale {
+      display: flex;
+      border-radius: 12px;
+      overflow: hidden;
+      height: 64px;
+    }
+
+    .color-scale-item {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    /* Sample UI Components */
+    .sample-components {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .sample-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .sample-card-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 16px;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-hover);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--primary);
+    }
+
+    .btn-ghost:hover {
+      background: var(--primary-dim);
+    }
+
+    /* Badges */
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: var(--success-dim);
+      color: var(--success);
+    }
+
+    .badge-warning {
+      background: var(--warning-dim);
+      color: var(--warning);
+    }
+
+    .badge-error {
+      background: var(--error-dim);
+      color: var(--error);
+    }
+
+    .badge-info {
+      background: var(--info-dim);
+      color: var(--info);
+    }
+
+    .badge-primary {
+      background: var(--primary-dim);
+      color: var(--primary);
+    }
+
+    /* Data comparison */
+    .data-comparison {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .data-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .data-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .data-dot-you {
+      background: var(--data-you);
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+
+    .data-dot-collective {
+      background: var(--data-collective);
+    }
+
+    .data-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    .data-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .data-value-you {
+      color: var(--primary);
+    }
+
+    /* Chart colors */
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .chart-legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    /* Text samples */
+    .text-samples {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .text-sample {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .text-sample-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .text-primary-sample { color: var(--text-primary); }
+    .text-secondary-sample { color: var(--text-secondary); }
+    .text-tertiary-sample { color: var(--text-tertiary); }
+    .text-muted-sample { color: var(--text-muted); }
+
+    /* Code block for export */
+    .code-block {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      overflow-x: auto;
+      color: var(--text-secondary);
+    }
+
+    .code-comment {
+      color: var(--text-muted);
+    }
+
+    .code-property {
+      color: var(--primary);
+    }
+
+    .code-value {
+      color: var(--success);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>N of One</h1>
+    <p class="subtitle">Color System &mdash; Burnt Orange Primary on True Black</p>
+
+    <!-- Primary Accent -->
+    <section class="section">
+      <div class="section-title">Primary Accent</div>
+      <div class="color-grid">
+        <div class="color-card">
+          <div class="color-swatch" style="background: #C2410C;" data-contrast="Dark"></div>
+          <div class="color-info">
+            <div class="color-name">Primary Dark</div>
+            <div class="color-meta">
+              <span class="color-hex">#C2410C</span>
+              <span class="color-var">--primary-dark</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #EA580C;" data-contrast="AA"></div>
+          <div class="color-info">
+            <div class="color-name">Primary</div>
+            <div class="color-meta">
+              <span class="color-hex">#EA580C</span>
+              <span class="color-var">--primary</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #F97316;" data-contrast="AAA"></div>
+          <div class="color-info">
+            <div class="color-name">Primary Light</div>
+            <div class="color-meta">
+              <span class="color-hex">#F97316</span>
+              <span class="color-var">--primary-light</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: rgba(234, 88, 12, 0.15);" data-contrast="Dim"></div>
+          <div class="color-info">
+            <div class="color-name">Primary Dim</div>
+            <div class="color-meta">
+              <span class="color-hex">15% opacity</span>
+              <span class="color-var">--primary-dim</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Secondary Accent -->
+    <section class="section">
+      <div class="section-title">Secondary Accent (Cool Contrast)</div>
+      <div class="color-grid">
+        <div class="color-card">
+          <div class="color-swatch" style="background: #2563EB;" data-contrast="Dark"></div>
+          <div class="color-info">
+            <div class="color-name">Secondary Dark</div>
+            <div class="color-meta">
+              <span class="color-hex">#2563EB</span>
+              <span class="color-var">--secondary-dark</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #3B82F6;" data-contrast="AA"></div>
+          <div class="color-info">
+            <div class="color-name">Secondary</div>
+            <div class="color-meta">
+              <span class="color-hex">#3B82F6</span>
+              <span class="color-var">--secondary</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #60A5FA;" data-contrast="AAA"></div>
+          <div class="color-info">
+            <div class="color-name">Secondary Light</div>
+            <div class="color-meta">
+              <span class="color-hex">#60A5FA</span>
+              <span class="color-var">--secondary-light</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: rgba(59, 130, 246, 0.15);" data-contrast="Dim"></div>
+          <div class="color-info">
+            <div class="color-name">Secondary Dim</div>
+            <div class="color-meta">
+              <span class="color-hex">15% opacity</span>
+              <span class="color-var">--secondary-dim</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Backgrounds -->
+    <section class="section">
+      <div class="section-title">Backgrounds</div>
+      <div class="color-scale" style="border: 1px solid var(--border-default);">
+        <div class="color-scale-item" style="background: #0A0A0A; color: #71717A;">Primary<br>#0A0A0A</div>
+        <div class="color-scale-item" style="background: #111111; color: #71717A;">Elevated<br>#111111</div>
+        <div class="color-scale-item" style="background: #151515; color: #71717A;">Surface<br>#151515</div>
+        <div class="color-scale-item" style="background: #1A1A1A; color: #71717A;">Elevated 2<br>#1A1A1A</div>
+      </div>
+    </section>
+
+    <!-- Text Colors -->
+    <section class="section">
+      <div class="section-title">Text Hierarchy</div>
+      <div class="sample-card" style="max-width: 500px;">
+        <div class="text-samples">
+          <div class="text-sample">
+            <span class="text-primary-sample" style="font-size: 16px; font-weight: 500;">Primary Text - Headlines & Body</span>
+            <span class="text-sample-label">#FFFFFF</span>
+          </div>
+          <div class="text-sample">
+            <span class="text-secondary-sample" style="font-size: 15px;">Secondary Text - Descriptions</span>
+            <span class="text-sample-label">#A1A1AA</span>
+          </div>
+          <div class="text-sample">
+            <span class="text-tertiary-sample" style="font-size: 14px;">Tertiary Text - Labels, Captions</span>
+            <span class="text-sample-label">#71717A</span>
+          </div>
+          <div class="text-sample">
+            <span class="text-muted-sample" style="font-size: 13px;">Muted Text - Disabled, Hints</span>
+            <span class="text-sample-label">#52525B</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status Colors -->
+    <section class="section">
+      <div class="section-title">Status Colors</div>
+      <div class="color-grid">
+        <div class="color-card">
+          <div class="color-swatch" style="background: #22C55E;" data-contrast="Success"></div>
+          <div class="color-info">
+            <div class="color-name">Success</div>
+            <div class="color-meta">
+              <span class="color-hex">#22C55E</span>
+              <span class="color-var">--success</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #F59E0B;" data-contrast="Warning"></div>
+          <div class="color-info">
+            <div class="color-name">Warning</div>
+            <div class="color-meta">
+              <span class="color-hex">#F59E0B</span>
+              <span class="color-var">--warning</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #EF4444;" data-contrast="Error"></div>
+          <div class="color-info">
+            <div class="color-name">Error</div>
+            <div class="color-meta">
+              <span class="color-hex">#EF4444</span>
+              <span class="color-var">--error</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #3B82F6;" data-contrast="Info"></div>
+          <div class="color-info">
+            <div class="color-name">Info</div>
+            <div class="color-meta">
+              <span class="color-hex">#3B82F6</span>
+              <span class="color-var">--info</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Visualization -->
+    <section class="section">
+      <div class="section-title">Data Visualization</div>
+      <div class="sample-components">
+        <div class="sample-card">
+          <div class="sample-card-title">Your Data vs Collective</div>
+          <div class="data-comparison">
+            <div class="data-row">
+              <div class="data-dot data-dot-you"></div>
+              <span class="data-label">Your result</span>
+              <span class="data-value data-value-you">78</span>
+            </div>
+            <div class="data-row">
+              <div class="data-dot data-dot-collective"></div>
+              <span class="data-label">Collective average</span>
+              <span class="data-value">62</span>
+            </div>
+          </div>
+        </div>
+        <div class="sample-card">
+          <div class="sample-card-title">Chart Series Colors</div>
+          <div class="chart-legend">
+            <div class="chart-legend-item">
+              <div class="chart-legend-dot" style="background: #EA580C;"></div>
+              Primary
+            </div>
+            <div class="chart-legend-item">
+              <div class="chart-legend-dot" style="background: #3B82F6;"></div>
+              Secondary
+            </div>
+            <div class="chart-legend-item">
+              <div class="chart-legend-dot" style="background: #8B5CF6;"></div>
+              Tertiary
+            </div>
+            <div class="chart-legend-item">
+              <div class="chart-legend-dot" style="background: #14B8A6;"></div>
+              Quaternary
+            </div>
+            <div class="chart-legend-item">
+              <div class="chart-legend-dot" style="background: #F59E0B;"></div>
+              Fifth
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sample Components -->
+    <section class="section">
+      <div class="section-title">Sample Components</div>
+      <div class="sample-components">
+        <div class="sample-card">
+          <div class="sample-card-title">Buttons</div>
+          <div class="btn-row">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-ghost">Ghost</button>
+          </div>
+        </div>
+        <div class="sample-card">
+          <div class="sample-card-title">Status Badges</div>
+          <div class="badge-row">
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-warning">Warning</span>
+            <span class="badge badge-error">Error</span>
+            <span class="badge badge-info">Info</span>
+            <span class="badge badge-primary">Active</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CSS Variables Export -->
+    <section class="section">
+      <div class="section-title">CSS Variables (Copy to globals.css)</div>
+      <pre class="code-block"><span class="code-comment">/* N OF ONE - COLOR SYSTEM */</span>
+
+<span class="code-comment">/* Backgrounds */</span>
+<span class="code-property">--bg-primary</span>: <span class="code-value">#0A0A0A</span>;
+<span class="code-property">--bg-elevated</span>: <span class="code-value">#111111</span>;
+<span class="code-property">--bg-elevated-2</span>: <span class="code-value">#1A1A1A</span>;
+<span class="code-property">--bg-surface</span>: <span class="code-value">#151515</span>;
+
+<span class="code-comment">/* Glass (Glassmorphism) */</span>
+<span class="code-property">--glass-bg</span>: <span class="code-value">rgba(255, 255, 255, 0.03)</span>;
+<span class="code-property">--glass-bg-hover</span>: <span class="code-value">rgba(255, 255, 255, 0.06)</span>;
+<span class="code-property">--glass-border</span>: <span class="code-value">rgba(255, 255, 255, 0.08)</span>;
+<span class="code-property">--glass-border-hover</span>: <span class="code-value">rgba(255, 255, 255, 0.12)</span>;
+
+<span class="code-comment">/* Primary Accent - Burnt Orange */</span>
+<span class="code-property">--primary</span>: <span class="code-value">#EA580C</span>;
+<span class="code-property">--primary-light</span>: <span class="code-value">#F97316</span>;
+<span class="code-property">--primary-dark</span>: <span class="code-value">#C2410C</span>;
+<span class="code-property">--primary-dim</span>: <span class="code-value">rgba(234, 88, 12, 0.15)</span>;
+<span class="code-property">--primary-glow</span>: <span class="code-value">rgba(234, 88, 12, 0.4)</span>;
+
+<span class="code-comment">/* Secondary Accent - Blue */</span>
+<span class="code-property">--secondary</span>: <span class="code-value">#3B82F6</span>;
+<span class="code-property">--secondary-light</span>: <span class="code-value">#60A5FA</span>;
+<span class="code-property">--secondary-dark</span>: <span class="code-value">#2563EB</span>;
+<span class="code-property">--secondary-dim</span>: <span class="code-value">rgba(59, 130, 246, 0.15)</span>;
+
+<span class="code-comment">/* Text */</span>
+<span class="code-property">--text-primary</span>: <span class="code-value">#FFFFFF</span>;
+<span class="code-property">--text-secondary</span>: <span class="code-value">#A1A1AA</span>;
+<span class="code-property">--text-tertiary</span>: <span class="code-value">#71717A</span>;
+<span class="code-property">--text-muted</span>: <span class="code-value">#52525B</span>;
+
+<span class="code-comment">/* Borders */</span>
+<span class="code-property">--border-default</span>: <span class="code-value">rgba(255, 255, 255, 0.08)</span>;
+<span class="code-property">--border-subtle</span>: <span class="code-value">rgba(255, 255, 255, 0.04)</span>;
+<span class="code-property">--border-strong</span>: <span class="code-value">rgba(255, 255, 255, 0.15)</span>;
+
+<span class="code-comment">/* Status */</span>
+<span class="code-property">--success</span>: <span class="code-value">#22C55E</span>;
+<span class="code-property">--success-dim</span>: <span class="code-value">rgba(34, 197, 94, 0.15)</span>;
+<span class="code-property">--warning</span>: <span class="code-value">#F59E0B</span>;
+<span class="code-property">--warning-dim</span>: <span class="code-value">rgba(245, 158, 11, 0.15)</span>;
+<span class="code-property">--error</span>: <span class="code-value">#EF4444</span>;
+<span class="code-property">--error-dim</span>: <span class="code-value">rgba(239, 68, 68, 0.15)</span>;
+<span class="code-property">--info</span>: <span class="code-value">#3B82F6</span>;
+<span class="code-property">--info-dim</span>: <span class="code-value">rgba(59, 130, 246, 0.15)</span>;
+
+<span class="code-comment">/* Data Visualization */</span>
+<span class="code-property">--data-you</span>: <span class="code-value">#EA580C</span>;
+<span class="code-property">--data-collective</span>: <span class="code-value">#52525B</span>;
+<span class="code-property">--data-chart-1</span>: <span class="code-value">#EA580C</span>;
+<span class="code-property">--data-chart-2</span>: <span class="code-value">#3B82F6</span>;
+<span class="code-property">--data-chart-3</span>: <span class="code-value">#8B5CF6</span>;
+<span class="code-property">--data-chart-4</span>: <span class="code-value">#14B8A6</span>;
+<span class="code-property">--data-chart-5</span>: <span class="code-value">#F59E0B</span>;</pre>
+    </section>
+
+  </div>
+</body>
+</html>

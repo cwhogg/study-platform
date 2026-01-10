@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N of One - Browse Protocols</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #0A0A0A;
+      --bg-elevated: #111111;
+      --bg-surface: #151515;
+      --bg-elevated-2: #1A1A1A;
+
+      --primary: #EA580C;
+      --primary-light: #F97316;
+      --primary-dark: #C2410C;
+      --primary-dim: rgba(234, 88, 12, 0.15);
+      --primary-glow: rgba(234, 88, 12, 0.4);
+
+      --secondary: #3B82F6;
+      --secondary-dim: rgba(59, 130, 246, 0.15);
+
+      --text-primary: #FFFFFF;
+      --text-secondary: #A1A1AA;
+      --text-tertiary: #71717A;
+      --text-muted: #52525B;
+
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-bg-hover: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-hover: rgba(255, 255, 255, 0.12);
+
+      --success: #22C55E;
+      --success-dim: rgba(34, 197, 94, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==================== HEADER ==================== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 0 32px;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+    }
+
+    .logo-text {
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      color: white;
+    }
+
+    .logo-text span {
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .header-nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .header-nav a:hover,
+    .header-nav a.active {
+      color: white;
+    }
+
+    .header-nav a.active {
+      color: var(--primary);
+    }
+
+    .btn-header {
+      background: var(--primary);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-header:hover {
+      background: var(--primary-light);
+    }
+
+    /* ==================== PAGE ==================== */
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+
+    .page-header {
+      margin-bottom: 40px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    /* ==================== SEARCH & FILTERS ==================== */
+    .search-section {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-input-wrap svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--text-muted);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      font-size: 15px;
+      color: var(--text-primary);
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: var(--glass-bg-hover);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      padding: 12px 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .filter-btn:hover {
+      background: var(--glass-bg-hover);
+      color: var(--text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--primary-dim);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* ==================== CATEGORIES ==================== */
+    .categories {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .category-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .category-chip:hover {
+      background: var(--glass-bg-hover);
+      color: var(--text-primary);
+    }
+
+    .category-chip.active {
+      background: var(--primary-dim);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .category-chip svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ==================== PROTOCOL GRID ==================== */
+    .protocols-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    .protocol-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.25s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .protocol-card:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-hover);
+      transform: translateY(-4px);
+    }
+
+    .protocol-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .protocol-card:hover::before {
+      opacity: 1;
+    }
+
+    .protocol-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .protocol-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .protocol-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .protocol-icon.cognitive {
+      background: rgba(139, 92, 246, 0.15);
+      color: #A78BFA;
+    }
+
+    .protocol-icon.fitness {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22C55E;
+    }
+
+    .protocol-icon.sleep {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60A5FA;
+    }
+
+    .protocol-icon.nutrition {
+      background: rgba(234, 88, 12, 0.15);
+      color: #EA580C;
+    }
+
+    .protocol-icon.mood {
+      background: rgba(236, 72, 153, 0.15);
+      color: #F472B6;
+    }
+
+    .protocol-badge {
+      padding: 6px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .protocol-badge.popular {
+      background: var(--primary-dim);
+      color: var(--primary);
+    }
+
+    .protocol-badge.new {
+      background: var(--success-dim);
+      color: var(--success);
+    }
+
+    .protocol-badge.trending {
+      background: var(--secondary-dim);
+      color: var(--secondary);
+    }
+
+    .protocol-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .protocol-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .protocol-meta {
+      display: flex;
+      gap: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .protocol-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    .protocol-meta-item svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0.7;
+    }
+
+    .protocol-meta-item strong {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* ==================== STATS BAR ==================== */
+    .stats-bar {
+      display: flex;
+      gap: 32px;
+      padding: 20px 24px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      margin-bottom: 32px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--bg-elevated-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon svg {
+      width: 20px;
+      height: 20px;
+      color: var(--text-tertiary);
+    }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* ==================== EMPTY STATE ==================== */
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+      color: var(--text-tertiary);
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+      header {
+        padding: 0 16px;
+      }
+
+      .header-nav {
+        display: none;
+      }
+
+      .page {
+        padding: 24px 16px;
+      }
+
+      .search-section {
+        flex-direction: column;
+      }
+
+      .search-input-wrap {
+        min-width: 100%;
+      }
+
+      .filter-group {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .stats-bar {
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .stat-item {
+        flex: 1;
+        min-width: 140px;
+      }
+
+      .protocols-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <svg class="logo-mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 28V8L18 22V8" stroke="#EA580C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M26 8V28" stroke="white" stroke-width="3" stroke-linecap="round"/>
+          <path d="M22 12L26 8" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="30" cy="28" r="2" fill="#EA580C"/>
+        </svg>
+        <div class="logo-text">N <span>of</span> One</div>
+      </a>
+
+      <nav class="header-nav">
+        <a href="#">Dashboard</a>
+        <a href="#" class="active">Browse Protocols</a>
+        <a href="#">N of Many</a>
+        <a href="#">Your Data</a>
+        <a href="#" class="btn-header">Start Protocol</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page -->
+  <main class="page">
+    <div class="page-header">
+      <h1 class="page-title">Browse Protocols</h1>
+      <p class="page-subtitle">Find a protocol to study yourself. Your data contributes to collective insights.</p>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">247</div>
+          <div class="stat-label">Active Protocols</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">18.4K</div>
+          <div class="stat-label">Participants</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">1.2M</div>
+          <div class="stat-label">Data Points</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">94%</div>
+          <div class="stat-label">Completion Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="search-section">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" class="search-input" placeholder="Search protocols (e.g., creatine, sleep, focus...)">
+      </div>
+      <div class="filter-group">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Popular</button>
+        <button class="filter-btn">New</button>
+        <button class="filter-btn">Short (≤4 wk)</button>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="categories">
+      <div class="category-chip active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+        All Categories
+      </div>
+      <div class="category-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Cognitive
+      </div>
+      <div class="category-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        Fitness
+      </div>
+      <div class="category-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+        Sleep
+      </div>
+      <div class="category-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+        Nutrition
+      </div>
+      <div class="category-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        Mood
+      </div>
+      <div class="category-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Longevity
+      </div>
+    </div>
+
+    <!-- Protocols Grid -->
+    <div class="protocols-grid">
+      <!-- Protocol 1 -->
+      <div class="protocol-card">
+        <div class="protocol-card-header">
+          <div class="protocol-icon cognitive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <span class="protocol-badge popular">Popular</span>
+        </div>
+        <h3 class="protocol-name">Creatine + Cognitive Performance</h3>
+        <p class="protocol-description">Measure the effects of creatine supplementation on working memory, reaction time, and mental clarity.</p>
+        <div class="protocol-meta">
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <strong>12</strong> weeks
+          </div>
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <strong>1,247</strong> participants
+          </div>
+        </div>
+      </div>
+
+      <!-- Protocol 2 -->
+      <div class="protocol-card">
+        <div class="protocol-card-header">
+          <div class="protocol-icon sleep">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </div>
+          <span class="protocol-badge new">New</span>
+        </div>
+        <h3 class="protocol-name">Magnesium + Sleep Quality</h3>
+        <p class="protocol-description">Track sleep latency, duration, and subjective quality with magnesium glycinate supplementation.</p>
+        <div class="protocol-meta">
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <strong>8</strong> weeks
+          </div>
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <strong>342</strong> participants
+          </div>
+        </div>
+      </div>
+
+      <!-- Protocol 3 -->
+      <div class="protocol-card">
+        <div class="protocol-card-header">
+          <div class="protocol-icon fitness">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 20V10M12 20V4M6 20v-6"/>
+            </svg>
+          </div>
+          <span class="protocol-badge trending">Trending</span>
+        </div>
+        <h3 class="protocol-name">Zone 2 Cardio + HRV</h3>
+        <p class="protocol-description">Evaluate the impact of structured zone 2 training on heart rate variability and recovery metrics.</p>
+        <div class="protocol-meta">
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <strong>16</strong> weeks
+          </div>
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <strong>891</strong> participants
+          </div>
+        </div>
+      </div>
+
+      <!-- Protocol 4 -->
+      <div class="protocol-card">
+        <div class="protocol-card-header">
+          <div class="protocol-icon nutrition">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="protocol-name">Time-Restricted Eating + Energy</h3>
+        <p class="protocol-description">Assess how 16:8 intermittent fasting affects energy levels, focus, and metabolic markers.</p>
+        <div class="protocol-meta">
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <strong>6</strong> weeks
+          </div>
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <strong>2,156</strong> participants
+          </div>
+        </div>
+      </div>
+
+      <!-- Protocol 5 -->
+      <div class="protocol-card">
+        <div class="protocol-card-header">
+          <div class="protocol-icon mood">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>
+            </svg>
+          </div>
+          <span class="protocol-badge popular">Popular</span>
+        </div>
+        <h3 class="protocol-name">Cold Exposure + Mood</h3>
+        <p class="protocol-description">Track the psychological effects of regular cold water exposure on mood, anxiety, and stress resilience.</p>
+        <div class="protocol-meta">
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <strong>4</strong> weeks
+          </div>
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <strong>3,421</strong> participants
+          </div>
+        </div>
+      </div>
+
+      <!-- Protocol 6 -->
+      <div class="protocol-card">
+        <div class="protocol-card-header">
+          <div class="protocol-icon cognitive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="protocol-name">Lion's Mane + Focus</h3>
+        <p class="protocol-description">Evaluate lion's mane mushroom supplementation on sustained attention, memory, and cognitive clarity.</p>
+        <div class="protocol-meta">
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <strong>8</strong> weeks
+          </div>
+          <div class="protocol-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <strong>567</strong> participants
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

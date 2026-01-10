@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N of One - Color Alternatives</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --black: #0A0A0A;
+      --black-elevated: #111111;
+      --gray-100: #F3F4F6;
+      --gray-300: #D1D5DB;
+      --gray-400: #9CA3AF;
+      --gray-500: #6B7280;
+      --gray-600: #4B5563;
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.06);
+
+      /* Default accent (will be overridden by JS) */
+      --accent: #FF6B6B;
+      --accent-dim: rgba(255, 107, 107, 0.15);
+      --accent-glow: rgba(255, 107, 107, 0.4);
+    }
+
+    /* Color themes */
+    [data-theme="salmon"] {
+      --accent: #FF6B6B;
+      --accent-dim: rgba(255, 107, 107, 0.15);
+      --accent-glow: rgba(255, 107, 107, 0.4);
+    }
+
+    [data-theme="vibrant-red"] {
+      --accent: #EF4444;
+      --accent-dim: rgba(239, 68, 68, 0.15);
+      --accent-glow: rgba(239, 68, 68, 0.4);
+    }
+
+    [data-theme="purple"] {
+      --accent: #A855F7;
+      --accent-dim: rgba(168, 85, 247, 0.15);
+      --accent-glow: rgba(168, 85, 247, 0.4);
+    }
+
+    [data-theme="bright-orange"] {
+      --accent: #F97316;
+      --accent-dim: rgba(249, 115, 22, 0.15);
+      --accent-glow: rgba(249, 115, 22, 0.4);
+    }
+
+    [data-theme="burnt-orange"] {
+      --accent: #EA580C;
+      --accent-dim: rgba(234, 88, 12, 0.15);
+      --accent-glow: rgba(234, 88, 12, 0.4);
+    }
+
+    [data-theme="electric-teal"] {
+      --accent: #14B8A6;
+      --accent-dim: rgba(20, 184, 166, 0.15);
+      --accent-glow: rgba(20, 184, 166, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--black);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==================== COLOR PICKER ==================== */
+    .color-picker {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      display: flex;
+      gap: 12px;
+      padding: 12px 20px;
+      background: rgba(17, 17, 17, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .color-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .color-option:hover {
+      background: var(--glass);
+    }
+
+    .color-option.active {
+      background: var(--glass);
+      border-color: var(--glass-border);
+    }
+
+    .color-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+
+    .color-option.active .color-swatch {
+      border-color: white;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .color-label {
+      font-size: 11px;
+      color: var(--gray-400);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .color-option.active .color-label {
+      color: white;
+    }
+
+    .color-hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--gray-500);
+    }
+
+    /* ==================== HEADER ==================== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-mark svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .logo-mark svg path.accent-stroke {
+      stroke: var(--accent);
+      transition: stroke 0.3s;
+    }
+
+    .logo-mark svg circle.accent-fill {
+      fill: var(--accent);
+      transition: fill 0.3s;
+    }
+
+    .logo-text {
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: white;
+    }
+
+    .logo-text span {
+      color: var(--gray-400);
+      font-weight: 400;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .header-nav a {
+      color: var(--gray-400);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .header-nav a:hover {
+      color: white;
+    }
+
+    .btn-header {
+      background: var(--accent);
+      color: var(--black);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-header:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* ==================== HERO ==================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 160px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 20%;
+      right: 10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      opacity: 0.15;
+      pointer-events: none;
+      transition: background 0.5s;
+      animation: pulse-glow 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.25; transform: scale(1.1); }
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-left {
+      max-width: 560px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-300);
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: blink 2s ease-in-out infinite;
+      transition: background 0.3s;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .headline {
+      font-size: clamp(48px, 6vw, 72px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .headline-you {
+      color: var(--accent);
+      position: relative;
+      display: inline-block;
+      transition: color 0.3s;
+    }
+
+    .headline-you::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.4;
+      border-radius: 2px;
+      transition: background 0.3s;
+    }
+
+    .subheadline {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--gray-400);
+      margin-bottom: 40px;
+      max-width: 480px;
+    }
+
+    .subheadline strong {
+      color: var(--gray-300);
+      font-weight: 500;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: var(--black);
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 0 0 0 var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px -8px var(--accent-glow);
+    }
+
+    .btn-primary svg {
+      transition: transform 0.2s;
+    }
+
+    .btn-primary:hover svg {
+      transform: translateX(3px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--glass);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 16px;
+      text-decoration: none;
+      border: 1px solid var(--glass-border);
+      transition: all 0.25s;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      background: var(--glass-hover);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 48px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-value .accent {
+      color: var(--accent);
+      transition: color 0.3s;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ==================== HERO RIGHT ==================== */
+    .hero-right {
+      position: relative;
+      height: 500px;
+    }
+
+    .data-card {
+      position: absolute;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+
+    .data-card:hover {
+      background: var(--glass-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-4px);
+    }
+
+    .card-chart {
+      top: 40px;
+      left: 0;
+      right: 40px;
+      height: 320px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      color: var(--gray-400);
+      font-weight: 500;
+    }
+
+    .card-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 4px;
+      transition: color 0.3s;
+    }
+
+    .card-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(34, 197, 94, 0.15);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #22C55E;
+    }
+
+    .chart-container {
+      height: 180px;
+      position: relative;
+      margin-top: 16px;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-svg .accent-stroke {
+      stroke: var(--accent);
+      transition: stroke 0.3s;
+    }
+
+    .chart-svg .accent-fill {
+      fill: var(--accent);
+      transition: fill 0.3s;
+    }
+
+    .chart-svg .accent-glow {
+      fill: var(--accent-dim);
+      transition: fill 0.3s;
+    }
+
+    .baseline-label {
+      position: absolute;
+      left: 0;
+      top: 65%;
+      font-size: 10px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .card-your-result {
+      bottom: 0;
+      left: 20px;
+      width: 200px;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+    }
+
+    .result-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .result-dot.you {
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .result-dot.collective {
+      background: var(--gray-500);
+    }
+
+    .result-info {
+      flex: 1;
+    }
+
+    .result-label {
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+
+    .result-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .result-value.accent {
+      color: var(--accent);
+      transition: color 0.3s;
+    }
+
+    .card-protocol {
+      bottom: 60px;
+      right: 0;
+      width: 220px;
+    }
+
+    .protocol-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .protocol-meta {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 16px;
+    }
+
+    .protocol-progress {
+      height: 4px;
+      background: var(--glass-border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .protocol-progress-fill {
+      height: 100%;
+      width: 67%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: background 0.3s;
+    }
+
+    .protocol-status {
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+
+    .protocol-status span {
+      color: var(--accent);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .card-chart { animation: float 6s ease-in-out infinite; }
+    .card-your-result { animation: float 6s ease-in-out infinite; animation-delay: -2s; }
+    .card-protocol { animation: float 6s ease-in-out infinite; animation-delay: -4s; }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 1024px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+
+      .hero-left {
+        max-width: 100%;
+        text-align: center;
+      }
+
+      .subheadline {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-group { justify-content: center; }
+      .stats-row { justify-content: center; }
+
+      .hero-right {
+        height: 400px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .color-picker {
+        flex-wrap: wrap;
+        max-width: 90%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header-nav { display: none; }
+      .headline { font-size: 40px; }
+      .cta-group { flex-direction: column; }
+      .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+      .stats-row { gap: 32px; }
+      .hero-right { height: 350px; }
+      .card-protocol { display: none; }
+
+      .color-picker {
+        top: 70px;
+        gap: 8px;
+        padding: 10px 12px;
+      }
+
+      .color-option {
+        padding: 6px 10px;
+      }
+
+      .color-swatch {
+        width: 24px;
+        height: 24px;
+      }
+
+      .color-label {
+        font-size: 9px;
+      }
+
+      .color-hex {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body data-theme="salmon">
+  <!-- Color Picker -->
+  <div class="color-picker">
+    <button class="color-option active" data-theme="salmon" onclick="setTheme('salmon')">
+      <div class="color-swatch" style="background: #FF6B6B;"></div>
+      <span class="color-label">Salmon</span>
+      <span class="color-hex">#FF6B6B</span>
+    </button>
+    <button class="color-option" data-theme="vibrant-red" onclick="setTheme('vibrant-red')">
+      <div class="color-swatch" style="background: #EF4444;"></div>
+      <span class="color-label">Vibrant Red</span>
+      <span class="color-hex">#EF4444</span>
+    </button>
+    <button class="color-option" data-theme="purple" onclick="setTheme('purple')">
+      <div class="color-swatch" style="background: #A855F7;"></div>
+      <span class="color-label">Purple</span>
+      <span class="color-hex">#A855F7</span>
+    </button>
+    <button class="color-option" data-theme="bright-orange" onclick="setTheme('bright-orange')">
+      <div class="color-swatch" style="background: #F97316;"></div>
+      <span class="color-label">Bright Orange</span>
+      <span class="color-hex">#F97316</span>
+    </button>
+    <button class="color-option" data-theme="burnt-orange" onclick="setTheme('burnt-orange')">
+      <div class="color-swatch" style="background: #EA580C;"></div>
+      <span class="color-label">Burnt Orange</span>
+      <span class="color-hex">#EA580C</span>
+    </button>
+    <button class="color-option" data-theme="electric-teal" onclick="setTheme('electric-teal')">
+      <div class="color-swatch" style="background: #14B8A6;"></div>
+      <span class="color-label">Electric Teal</span>
+      <span class="color-hex">#14B8A6</span>
+    </button>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="accent-stroke" d="M6 28V8L18 22V8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M26 8V28" stroke="white" stroke-width="3" stroke-linecap="round"/>
+          <path d="M22 12L26 8" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle class="accent-fill" cx="30" cy="28" r="2"/>
+        </svg>
+      </div>
+      <div class="logo-text">N <span>of</span> One</div>
+    </div>
+
+    <nav class="header-nav">
+      <a href="#">How it works</a>
+      <a href="#">Protocols</a>
+      <a href="#">Science</a>
+      <a href="#" class="btn-header">Start your protocol</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Personal science, validated
+        </div>
+
+        <h1 class="headline">
+          Study <span class="headline-you">yourself</span>.<br>
+          Measure what matters.
+        </h1>
+
+        <p class="subheadline">
+          Design a protocol. Collect your data. See your results.
+          <strong>Your N of 1 study</strong> joins thousands of others to reveal what actually works.
+        </p>
+
+        <div class="cta-group">
+          <a href="#" class="btn-primary">
+            Start your protocol
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="#" class="btn-secondary">
+            Browse protocols
+          </a>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-value"><span class="accent">12,847</span></div>
+            <div class="stat-label">Active protocols</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">847K</div>
+            <div class="stat-label">Data points collected</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">94%</div>
+            <div class="stat-label">Completion rate</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="data-card card-chart">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Your Response Score</div>
+              <div class="card-value">+34%</div>
+            </div>
+            <div class="card-badge">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2 8L5 5L7 7L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Improving
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <span class="baseline-label">Baseline</span>
+            <svg class="chart-svg" viewBox="0 0 400 150" preserveAspectRatio="none">
+              <line x1="0" y1="97" x2="400" y2="97" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+              <path d="M0,120 Q50,115 100,105 T200,95 T300,85 T400,70 L400,150 L0,150 Z" fill="rgba(107,114,128,0.1)"/>
+              <path d="M0,120 Q50,115 100,105 T200,95 T300,85 T400,70" fill="none" stroke="rgba(107,114,128,0.3)" stroke-width="2"/>
+              <path class="accent-stroke" d="M0,110 Q50,105 100,85 T200,60 T300,45 T400,25" fill="none" stroke-width="3" stroke-linecap="round"/>
+              <circle class="accent-fill" cx="0" cy="110" r="4"/>
+              <circle class="accent-fill" cx="100" cy="85" r="4"/>
+              <circle class="accent-fill" cx="200" cy="60" r="4"/>
+              <circle class="accent-fill" cx="300" cy="45" r="4"/>
+              <circle class="accent-fill" cx="400" cy="25" r="6">
+                <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle class="accent-glow" cx="400" cy="25" r="12">
+                <animate attributeName="r" values="12;18;12" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+        </div>
+
+        <div class="data-card card-your-result">
+          <div class="result-row">
+            <div class="result-dot you"></div>
+            <div class="result-info">
+              <div class="result-label">Your result</div>
+              <div class="result-value accent">Week 8: 78</div>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-dot collective"></div>
+            <div class="result-info">
+              <div class="result-label">Collective avg</div>
+              <div class="result-value">Week 8: 62</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="data-card card-protocol">
+          <div class="protocol-name">Creatine + Cognition</div>
+          <div class="protocol-meta">12-week protocol</div>
+          <div class="protocol-progress">
+            <div class="protocol-progress-fill"></div>
+          </div>
+          <div class="protocol-status">
+            <span>Week 8</span> of 12
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function setTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+
+      // Update active state
+      document.querySelectorAll('.color-option').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+    }
+  </script>
+</body>
+</html>

@@ -118,14 +118,14 @@ export default function Home() {
             >
               <div className="flex justify-between items-start mb-5">
                 <div>
-                  <div className="text-sm font-medium text-[#9CA3AF]">Your Response Score</div>
-                  <div className="font-mono text-[32px] font-semibold text-[var(--primary)] mt-1">+34%</div>
+                  <div className="text-sm font-medium text-[#9CA3AF]">Energy & Vitality Score</div>
+                  <div className="font-mono text-[32px] font-semibold text-[var(--primary)] mt-1">+18 pts</div>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(34,197,94,0.15)] rounded-full text-xs font-semibold text-[#22C55E]">
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path d="M2 8L5 5L7 7L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  Improving
+                  Above Average
                 </div>
               </div>
 
@@ -166,28 +166,29 @@ export default function Home() {
               className="absolute bottom-0 left-5 w-52 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-6 hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.12)] hover:-translate-y-1 transition-all animate-fade-in-up"
               style={{ animation: 'fade-in-up 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards, float 6s ease-in-out infinite -2s' }}
             >
+              <div className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-3">SF-36 Vitality</div>
               <div className="flex items-center gap-3 py-3 border-b border-[var(--glass-border)]">
                 <div className="w-2.5 h-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_rgba(234,88,12,0.4)]" />
                 <div className="flex-1">
-                  <div className="text-xs text-[#9CA3AF]">Your result</div>
-                  <div className="font-mono text-base font-medium text-[var(--primary)]">Week 8: 78</div>
+                  <div className="text-xs text-[#9CA3AF]">Your score</div>
+                  <div className="font-mono text-base font-medium text-[var(--primary)]">Week 8: 68</div>
                 </div>
               </div>
               <div className="flex items-center gap-3 py-3">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#6B7280]" />
                 <div className="flex-1">
-                  <div className="text-xs text-[#9CA3AF]">Collective avg</div>
-                  <div className="font-mono text-base font-medium text-white">Week 8: 62</div>
+                  <div className="text-xs text-[#9CA3AF]">Avg response</div>
+                  <div className="font-mono text-base font-medium text-white">Week 8: 58</div>
                 </div>
               </div>
             </div>
 
             {/* Protocol card */}
             <div
-              className="absolute bottom-16 right-0 w-56 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-6 hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.12)] hover:-translate-y-1 transition-all animate-fade-in-up"
+              className="absolute bottom-16 right-0 w-64 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-6 hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.12)] hover:-translate-y-1 transition-all animate-fade-in-up"
               style={{ animation: 'fade-in-up 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards, float 6s ease-in-out infinite -4s' }}
             >
-              <div className="font-semibold text-[15px] text-white mb-1">TRT Self-Study</div>
+              <div className="font-semibold text-[15px] text-white mb-1">TRT Outcomes Study</div>
               <div className="text-xs text-[#6B7280] mb-4">12-week protocol</div>
               <div className="h-1 bg-[var(--glass-border)] rounded-full overflow-hidden mb-2">
                 <div className="h-full w-[67%] bg-[var(--primary)] rounded-full" />
@@ -249,7 +250,7 @@ export default function Home() {
               <span className="w-1.5 h-1.5 bg-[var(--primary)] rounded-full" />
               <span className="text-sm font-medium text-[#D1D5DB]">Featured Protocol</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">TRT Self-Study</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">Testosterone Replacement Treatment Study</h2>
             <p className="text-lg text-[#9CA3AF] max-w-2xl mx-auto">
               Track your response to testosterone replacement therapy with validated instruments
             </p>
