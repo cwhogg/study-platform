@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ProoveLogo } from '@/components/ui/ProoveLogo'
+import { NofOneLogo } from '@/components/ui/NofOneLogo'
 
 export default function SponsorLayout({
   children,
@@ -7,38 +7,37 @@ export default function SponsorLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200">
+      <header className="sticky top-0 z-50 bg-[var(--bg-primary)]/80 backdrop-blur-lg border-b border-[var(--glass-border)]">
         <div className="container-wide">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5">
-              <ProoveLogo size={36} className="shadow-md rounded-full" />
-              <span className="font-semibold text-slate-900">The Proove Platform</span>
+              <NofOneLogo size={32} showText />
             </Link>
 
             {/* Navigation */}
             <nav className="hidden sm:flex items-center gap-6">
               <Link
                 href="/sponsor/studies"
-                className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
               >
                 Dashboard
               </Link>
               <Link
                 href="/sponsor/create"
-                className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
               >
-                Create Study
+                Create Protocol
               </Link>
             </nav>
 
-            {/* User menu placeholder */}
+            {/* Enterprise badge */}
             <div className="flex items-center gap-4">
-              <button className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-                Sign Out
-              </button>
+              <div className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-2 py-1 bg-[var(--glass-bg)] rounded-full border border-[var(--glass-border)]">
+                Enterprise
+              </div>
             </div>
           </div>
         </div>

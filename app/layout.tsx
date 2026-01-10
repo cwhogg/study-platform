@@ -1,24 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { DemoBadge } from "@/components/DemoControls";
 
-// Display font - elegant serif for headlines
-const instrumentSerif = Instrument_Serif({
-  weight: "400",
+// Primary font - geometric sans for headlines and body
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-instrument-serif",
+  variable: "--font-outfit",
   display: "swap",
 });
 
-// Body font - clean, modern sans-serif
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-satoshi",
-  display: "swap",
-});
-
-// Mono font - for data, IDs, clinical values
+// Mono font - for data, numbers, code
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
@@ -26,13 +17,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Study Platform | AI-Powered Clinical Research",
-  description: "Launch observational clinical studies in minutes with AI-generated protocols, consent documents, and patient communications.",
-  keywords: ["clinical research", "observational study", "PRO", "patient reported outcomes", "AI", "healthcare"],
-  authors: [{ name: "Study Platform" }],
+  title: "N of One | Study Yourself. Measure What Matters.",
+  description: "Design a protocol. Collect your data. See your results. Your N of 1 study joins thousands of others to reveal what actually works.",
+  keywords: ["n of 1", "self experiment", "personal science", "quantified self", "health data", "protocol", "clinical study"],
+  authors: [{ name: "N of One" }],
   openGraph: {
-    title: "Study Platform | AI-Powered Clinical Research",
-    description: "Launch observational clinical studies in minutes with AI-generated protocols.",
+    title: "N of One | Study Yourself",
+    description: "Design a protocol. Collect your data. See your results.",
     type: "website",
   },
 };
@@ -43,6 +34,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  themeColor: "#0A0A0A",
 };
 
 export default function RootLayout({
@@ -54,8 +46,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body
         className={`
-          ${instrumentSerif.variable}
-          ${dmSans.variable}
+          ${outfit.variable}
           ${jetbrainsMono.variable}
           antialiased
           min-h-screen
@@ -64,7 +55,6 @@ export default function RootLayout({
           flex-col
         `}
       >
-        <DemoBadge />
         <main className="flex-1 flex flex-col">
           {children}
         </main>

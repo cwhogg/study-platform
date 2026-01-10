@@ -119,7 +119,7 @@ const allInstruments: Record<string, Instrument> = {
     questions: [
       {
         id: 'satisfaction_q1',
-        text: 'Overall, how satisfied are you with your TRT treatment so far?',
+        text: 'Overall, how satisfied are you with your treatment so far?',
         type: 'single_choice',
         options: [
           { value: 1, label: 'Very dissatisfied' },
@@ -301,15 +301,15 @@ export default function AssessmentPage() {
 
   if (isCompleting) {
     return (
-      <MobileContainer centered className="bg-white">
+      <MobileContainer centered>
         <div className="text-center">
-          <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
-            <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="w-16 h-16 bg-[var(--success)]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[var(--success)]/20">
+            <svg className="w-8 h-8 text-[var(--success)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Assessment Complete!</h2>
-          <p className="text-slate-600">Returning to dashboard...</p>
+          <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Data Recorded!</h2>
+          <p className="text-[var(--text-secondary)]">Returning to dashboard...</p>
         </div>
       </MobileContainer>
     )
@@ -317,29 +317,29 @@ export default function AssessmentPage() {
 
   if (!question) {
     return (
-      <MobileContainer centered className="bg-white">
+      <MobileContainer centered>
         <div className="text-center">
-          <p className="text-slate-600">No questions found for this timepoint.</p>
+          <p className="text-[var(--text-secondary)]">No questions found for this timepoint.</p>
         </div>
       </MobileContainer>
     )
   }
 
   return (
-    <MobileContainer withBottomPadding className="pt-6 bg-white">
+    <MobileContainer withBottomPadding className="pt-6">
       {/* Progress Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-600">
-            {getTimepointLabel(timepoint)} CHECK-IN
+          <span className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider">
+            {getTimepointLabel(timepoint)} Entry
           </span>
-          <span className="text-sm text-slate-600">
-            {currentQuestion + 1} of {totalQuestions}
+          <span className="text-sm text-[var(--text-muted)] font-mono">
+            {currentQuestion + 1}/{totalQuestions}
           </span>
         </div>
-        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+        <div className="h-2 bg-[var(--glass-border)] rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#1E40AF] transition-all duration-500 ease-out"
+            className="h-full bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -347,12 +347,12 @@ export default function AssessmentPage() {
 
       {/* Instructions (shown for new instruments) */}
       {showInstructions && isNewInstrument && (
-        <div className="mb-6 p-4 bg-orange-50 rounded-xl border border-orange-200">
-          <p className="text-sm font-medium text-orange-900 mb-1">{question.instrumentName}</p>
-          <p className="text-sm text-orange-800">{question.instructions}</p>
+        <div className="mb-6 p-4 bg-[var(--primary-dim)] rounded-xl border border-[var(--primary)]/30">
+          <p className="text-sm font-medium text-[var(--primary-light)] mb-1">{question.instrumentName}</p>
+          <p className="text-sm text-[var(--text-secondary)]">{question.instructions}</p>
           <button
             onClick={handleDismissInstructions}
-            className="mt-3 text-sm font-medium text-orange-700 active:text-orange-500"
+            className="mt-3 text-sm font-medium text-[var(--primary)] hover:text-[var(--primary-light)] transition-colors"
           >
             Got it
           </button>
@@ -363,7 +363,7 @@ export default function AssessmentPage() {
       <div
         className={`transition-opacity duration-200 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}
       >
-        <h2 className="text-lg font-semibold text-slate-900 mb-6">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-6">
           {question.text}
         </h2>
 
@@ -379,12 +379,12 @@ export default function AssessmentPage() {
                 disabled={isTransitioning}
                 className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
                   isSelected
-                    ? 'border-[#1E40AF] bg-[#1E40AF]/10 scale-[0.98]'
-                    : 'border-slate-200 bg-white active:bg-slate-50 active:scale-[0.98]'
+                    ? 'border-[var(--primary)] bg-[var(--primary-dim)] scale-[0.98]'
+                    : 'border-[var(--glass-border)] bg-[var(--glass-bg)] hover:border-[var(--text-muted)] active:scale-[0.98]'
                 }`}
                 style={{ minHeight: '56px' }}
               >
-                <span className={`font-medium ${isSelected ? 'text-[#1E40AF]' : 'text-slate-900'}`}>
+                <span className={`font-medium ${isSelected ? 'text-[var(--primary)]' : 'text-[var(--text-primary)]'}`}>
                   {option.label}
                 </span>
               </button>
@@ -394,7 +394,7 @@ export default function AssessmentPage() {
       </div>
 
       {/* Subtle hint */}
-      <p className="text-center text-xs text-slate-600 mt-8">
+      <p className="text-center text-xs text-[var(--text-muted)] mt-8">
         Tap an answer to continue
       </p>
     </MobileContainer>

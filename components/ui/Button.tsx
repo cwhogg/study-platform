@@ -29,42 +29,44 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles = `
       inline-flex items-center justify-center gap-2
       font-medium
-      rounded-2xl
+      rounded-xl
       transition-all duration-200
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]
       disabled:cursor-not-allowed disabled:transform-none
       active:scale-[0.98]
     `
 
     const variants = {
       primary: `
-        bg-[#1E40AF]
+        bg-[var(--primary)]
         text-white
-        shadow-md shadow-[#1E40AF]/25
-        hover:bg-[#1D4ED8] hover:shadow-lg hover:shadow-[#1E40AF]/30 hover:-translate-y-0.5
-        focus-visible:ring-[#1E40AF]
-        disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:border disabled:border-slate-300
+        shadow-lg shadow-[var(--primary)]/25
+        hover:bg-[var(--primary-light)] hover:shadow-xl hover:shadow-[var(--primary)]/30 hover:-translate-y-0.5
+        focus-visible:ring-[var(--primary)]
+        disabled:bg-[var(--glass-border)] disabled:text-[var(--text-muted)] disabled:shadow-none
       `,
       secondary: `
-        bg-white
-        text-slate-700
-        border border-slate-200
-        shadow-sm
-        hover:bg-slate-50 hover:border-slate-300 hover:shadow-md
-        focus-visible:ring-slate-400
+        bg-[var(--glass-bg)]
+        text-[var(--text-primary)]
+        border border-[var(--glass-border)]
+        backdrop-blur-sm
+        hover:bg-[var(--glass-hover)] hover:border-[var(--text-muted)]
+        focus-visible:ring-[var(--text-muted)]
+        disabled:bg-transparent disabled:text-[var(--text-muted)] disabled:border-[var(--glass-border)]
       `,
       ghost: `
         bg-transparent
-        text-slate-600
-        hover:bg-slate-100 hover:text-slate-900
-        focus-visible:ring-slate-400
+        text-[var(--text-secondary)]
+        hover:bg-[var(--glass-bg)] hover:text-[var(--text-primary)]
+        focus-visible:ring-[var(--text-muted)]
       `,
       danger: `
-        bg-red-600
+        bg-[var(--error)]
         text-white
-        shadow-md
-        hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5
-        focus-visible:ring-red-500
+        shadow-lg shadow-[var(--error)]/25
+        hover:bg-red-500 hover:shadow-xl hover:-translate-y-0.5
+        focus-visible:ring-[var(--error)]
+        disabled:bg-[var(--glass-border)] disabled:text-[var(--text-muted)] disabled:shadow-none
       `,
     }
 

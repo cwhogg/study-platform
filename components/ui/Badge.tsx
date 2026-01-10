@@ -26,12 +26,12 @@ export function Badge({
   `
 
   const variants = {
-    primary: 'bg-[#1E40AF]/10 text-[#1E40AF] border border-[#1E40AF]/20',
-    success: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-    warning: 'bg-orange-100 text-orange-800 border border-orange-200',
-    danger: 'bg-red-100 text-red-700 border border-red-200',
-    neutral: 'bg-slate-100 text-slate-600 border border-slate-200',
-    outline: 'bg-transparent border border-slate-300 text-slate-600',
+    primary: 'bg-[var(--primary-dim)] text-[var(--primary-light)] border border-[var(--primary)]/30',
+    success: 'bg-[var(--success)]/15 text-[var(--success)] border border-[var(--success)]/30',
+    warning: 'bg-[var(--warning)]/15 text-[var(--warning)] border border-[var(--warning)]/30',
+    danger: 'bg-[var(--error)]/15 text-[var(--error)] border border-[var(--error)]/30',
+    neutral: 'bg-[var(--glass-bg)] text-[var(--text-secondary)] border border-[var(--glass-border)]',
+    outline: 'bg-transparent border border-[var(--glass-border)] text-[var(--text-secondary)]',
   }
 
   const sizes = {
@@ -40,12 +40,12 @@ export function Badge({
   }
 
   const dotColors = {
-    primary: 'bg-[#1E40AF]',
-    success: 'bg-emerald-500',
-    warning: 'bg-orange-500',
-    danger: 'bg-red-500',
-    neutral: 'bg-slate-400',
-    outline: 'bg-slate-400',
+    primary: 'bg-[var(--primary)]',
+    success: 'bg-[var(--success)]',
+    warning: 'bg-[var(--warning)]',
+    danger: 'bg-[var(--error)]',
+    neutral: 'bg-[var(--text-muted)]',
+    outline: 'bg-[var(--text-muted)]',
   }
 
   return (

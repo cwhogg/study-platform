@@ -4,7 +4,8 @@ import { useEffect, useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
-import { CheckCircle2, Calendar, FlaskConical, Mail } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { CheckCircle2, Calendar, FlaskConical, Mail, ArrowRight } from 'lucide-react'
 import type { EnrollmentCopy } from '@/lib/db/types'
 
 // Default copy if none generated
@@ -99,80 +100,69 @@ function CompletePageContent() {
     .replace('{{intervention}}', study?.intervention || 'treatment')
     .replace('{{nextAssessmentDate}}', nextCheckInDate)
 
-  // Icon mapping
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'calendar': return Calendar
-      case 'mail': return Mail
-      case 'droplet':
-      case 'flask': return FlaskConical
-      default: return Calendar
-    }
-  }
-
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-8 bg-white">
+      <MobileContainer withBottomPadding className="pt-8">
         {/* Success Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-200">
-            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+          <div className="w-20 h-20 bg-[var(--success)]/15 rounded-full flex items-center justify-center border border-[var(--success)]/30 shadow-lg shadow-[var(--success)]/20">
+            <CheckCircle2 className="w-10 h-10 text-[var(--success)]" />
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-slate-900 text-center mb-2">
+        <h1 className="text-2xl font-semibold text-[var(--text-primary)] text-center mb-2">
           {copy.headline || DEFAULT_ENROLLMENT_COMPLETE.headline}
         </h1>
-        <p className="text-slate-600 text-center mb-8">
+        <p className="text-[var(--text-secondary)] text-center mb-8">
           {body}
         </p>
 
         {/* Divider */}
-        <div className="border-t border-slate-200 my-6" />
+        <div className="border-t border-[var(--glass-border)] my-6" />
 
         {/* What's Next Section */}
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
           {copy.nextSteps?.headline || 'What\'s Next'}
         </h2>
 
         <div className="space-y-4">
           {/* Next Check-in */}
-          <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-10 h-10 bg-[#1E40AF]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-5 h-5 text-[#1E40AF]" />
+          <div className="flex items-start gap-4 p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
+            <div className="w-10 h-10 bg-[var(--primary-dim)] rounded-lg flex items-center justify-center flex-shrink-0 border border-[var(--primary)]/30">
+              <Calendar className="w-5 h-5 text-[var(--primary)]" />
             </div>
             <div>
-              <div className="font-medium text-slate-900">Next check-in</div>
-              <div className="text-slate-600 text-sm">
+              <div className="font-medium text-[var(--text-primary)]">Next check-in</div>
+              <div className="text-[var(--text-secondary)] text-sm">
                 {nextCheckInDate} (Week 2)
               </div>
-              <div className="text-slate-600 text-sm mt-1">
+              <div className="text-[var(--text-muted)] text-sm mt-1">
                 We&apos;ll send you a reminder
               </div>
             </div>
           </div>
 
           {/* Baseline Labs */}
-          <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-10 h-10 bg-[#1E40AF]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <FlaskConical className="w-5 h-5 text-[#1E40AF]" />
+          <div className="flex items-start gap-4 p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
+            <div className="w-10 h-10 bg-[var(--primary-dim)] rounded-lg flex items-center justify-center flex-shrink-0 border border-[var(--primary)]/30">
+              <FlaskConical className="w-5 h-5 text-[var(--primary)]" />
             </div>
             <div>
-              <div className="font-medium text-slate-900">Baseline labs</div>
-              <div className="text-slate-600 text-sm">
+              <div className="font-medium text-[var(--text-primary)]">Baseline labs</div>
+              <div className="text-[var(--text-secondary)] text-sm">
                 Your doctor will order these as part of your normal care
               </div>
             </div>
           </div>
 
           {/* Email Confirmation */}
-          <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-10 h-10 bg-[#1E40AF]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Mail className="w-5 h-5 text-[#1E40AF]" />
+          <div className="flex items-start gap-4 p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
+            <div className="w-10 h-10 bg-[var(--primary-dim)] rounded-lg flex items-center justify-center flex-shrink-0 border border-[var(--primary)]/30">
+              <Mail className="w-5 h-5 text-[var(--primary)]" />
             </div>
             <div>
-              <div className="font-medium text-slate-900">Check your email</div>
-              <div className="text-slate-600 text-sm">
+              <div className="font-medium text-[var(--text-primary)]">Check your email</div>
+              <div className="text-[var(--text-secondary)] text-sm">
                 We&apos;ve sent a copy of your signed consent
               </div>
             </div>
@@ -180,22 +170,22 @@ function CompletePageContent() {
         </div>
 
         {/* Support Note */}
-        <div className="mt-8 p-4 border border-slate-200 rounded-xl bg-slate-50">
-          <p className="text-sm text-slate-600 text-center">
-            Questions? Contact us at{' '}
-            <span className="font-medium text-slate-900">research@example.com</span>
+        <div className="mt-8 p-4 border border-[var(--glass-border)] rounded-xl bg-[var(--glass-bg)]">
+          <p className="text-sm text-[var(--text-secondary)] text-center">
+            Questions?{' '}
+            <a href="mailto:support@nofone.us" className="font-medium text-[var(--primary)] hover:text-[var(--primary-light)] transition-colors">
+              Contact support
+            </a>
           </p>
         </div>
       </MobileContainer>
 
       {/* Fixed Bottom CTA */}
       <MobileBottomAction>
-        <Link
-          href={`/study/${studyId}/dashboard`}
-          className="block w-full py-4 bg-[#1E40AF] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
-          style={{ minHeight: '52px' }}
-        >
-          {copy.buttonText || DEFAULT_ENROLLMENT_COMPLETE.buttonText}
+        <Link href={`/study/${studyId}/dashboard`} className="block w-full">
+          <Button size="lg" fullWidth rightIcon={<ArrowRight className="w-5 h-5" />}>
+            {copy.buttonText || DEFAULT_ENROLLMENT_COMPLETE.buttonText}
+          </Button>
         </Link>
       </MobileBottomAction>
     </>
@@ -205,10 +195,10 @@ function CompletePageContent() {
 export default function CompletePage() {
   return (
     <Suspense fallback={
-      <MobileContainer centered className="bg-white">
+      <MobileContainer centered>
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-[#1E40AF] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">Loading...</p>
+          <div className="w-8 h-8 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[var(--text-secondary)]">Loading...</p>
         </div>
       </MobileContainer>
     }>

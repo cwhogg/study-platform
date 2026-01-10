@@ -194,14 +194,14 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <MobileContainer className="pt-8 bg-white">
+      <MobileContainer className="pt-8">
         <div className="flex items-center justify-center py-16">
           <div className="text-center animate-fade-in">
             <div className="w-12 h-12 mx-auto mb-4 relative">
-              <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-              <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
+              <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
             </div>
-            <p className="text-slate-600">Loading your dashboard...</p>
+            <p className="text-[var(--text-secondary)]">Loading your data...</p>
           </div>
         </div>
       </MobileContainer>
@@ -210,18 +210,18 @@ export default function DashboardPage() {
 
   if (notEnrolled) {
     return (
-      <MobileContainer className="pt-8 bg-white">
+      <MobileContainer className="pt-8">
         <div className="text-center py-12 animate-fade-in">
-          <div className="w-16 h-16 bg-orange-50 border border-orange-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Clock className="w-8 h-8 text-orange-700" />
+          <div className="w-16 h-16 bg-[var(--warning)]/10 border border-[var(--warning)]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Clock className="w-8 h-8 text-[var(--warning)]" />
           </div>
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">Complete Your Enrollment</h2>
-          <p className="text-slate-600 mb-6 max-w-xs mx-auto">
-            You&apos;re almost there! Complete the enrollment process to start your study journey.
+          <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Complete Your Setup</h2>
+          <p className="text-[var(--text-secondary)] mb-6 max-w-xs mx-auto">
+            You&apos;re almost there! Complete the setup process to start collecting data.
           </p>
           <Link href={`/study/${studyId}/join/overview`}>
             <Button size="lg">
-              Continue Enrollment
+              Continue Setup
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
@@ -231,12 +231,12 @@ export default function DashboardPage() {
   }
 
   return (
-    <MobileContainer className="pt-6 pb-8 bg-white">
+    <MobileContainer className="pt-6 pb-8">
       {/* Header with Progress Ring */}
       <div className="flex items-center justify-between mb-6 animate-fade-in">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Your Study</h1>
-          <p className="text-sm text-slate-600">Week {currentWeek} of {totalWeeks}</p>
+          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Your Data</h1>
+          <p className="text-sm text-[var(--text-secondary)]">Week {currentWeek} of {totalWeeks}</p>
         </div>
         <ProgressRing
           value={progress}
@@ -255,7 +255,7 @@ export default function DashboardPage() {
           className="mb-6 animate-fade-in-up relative overflow-hidden"
         >
           {/* Decorative gradient */}
-          <div className="absolute -right-8 -top-8 w-32 h-32 bg-[#1E40AF]/10 rounded-full blur-2xl" />
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-[var(--primary)]/10 rounded-full blur-2xl" />
 
           <div className="relative">
             <div className="flex items-center gap-2 mb-3">
@@ -268,16 +268,16 @@ export default function DashboardPage() {
               </Badge>
             </div>
 
-            <h3 className="text-lg font-semibold text-slate-900 mb-1">
-              {dueAssessment.timepoint} Check-in
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-1">
+              {dueAssessment.timepoint} Entry
             </h3>
-            <p className="text-slate-600 text-sm mb-4">
-              Quick survey · ~5 minutes
+            <p className="text-[var(--text-secondary)] text-sm mb-4">
+              Quick data entry · ~5 minutes
             </p>
 
             <Link href={`/study/${studyId}/assessment/${dueAssessment.id}`}>
               <Button size="lg" fullWidth>
-                Start Check-in
+                Record Data
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
@@ -289,14 +289,14 @@ export default function DashboardPage() {
       {!dueAssessment && completedAssessments.length > 0 && (
         <Card variant="default" padding="md" className="mb-6 animate-fade-in-up">
           <div className="text-center py-4">
-            <div className="w-14 h-14 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-center mx-auto mb-3">
-              <Sparkles className="w-7 h-7 text-emerald-600" />
+            <div className="w-14 h-14 bg-[var(--success)]/10 border border-[var(--success)]/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <Sparkles className="w-7 h-7 text-[var(--success)]" />
             </div>
-            <h3 className="font-semibold text-slate-900 mb-1">You&apos;re all caught up!</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="font-semibold text-[var(--text-primary)] mb-1">You&apos;re all caught up!</h3>
+            <p className="text-sm text-[var(--text-secondary)]">
               {upcomingAssessments.length > 0
-                ? `Next check-in: ${upcomingAssessments[0].timepoint}`
-                : 'No more assessments scheduled'}
+                ? `Next entry: ${upcomingAssessments[0].timepoint}`
+                : 'No more entries scheduled'}
             </p>
           </div>
         </Card>
@@ -311,23 +311,23 @@ export default function DashboardPage() {
             {completedAssessments.map((assessment) => (
               <div
                 key={assessment.id}
-                className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200"
+                className="flex items-center justify-between p-3.5 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-emerald-50 rounded-lg flex items-center justify-center border border-emerald-200">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <div className="w-9 h-9 bg-[var(--success)]/10 rounded-lg flex items-center justify-center border border-[var(--success)]/20">
+                    <CheckCircle2 className="w-5 h-5 text-[var(--success)]" />
                   </div>
                   <div>
-                    <span className="font-medium text-slate-900 text-sm">{assessment.timepoint}</span>
+                    <span className="font-medium text-[var(--text-primary)] text-sm">{assessment.timepoint}</span>
                     {assessment.hasLabs && assessment.labsReceived && (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <FlaskConical className="w-3 h-3 text-emerald-600" />
-                        <span className="text-xs text-emerald-600">Labs received</span>
+                        <FlaskConical className="w-3 h-3 text-[var(--success)]" />
+                        <span className="text-xs text-[var(--success)]">Labs received</span>
                       </div>
                     )}
                   </div>
                 </div>
-                <span className="text-xs text-slate-600 font-mono">{assessment.completedDate}</span>
+                <span className="text-xs text-[var(--text-muted)] font-mono">{assessment.completedDate}</span>
               </div>
             ))}
           </div>
@@ -341,23 +341,23 @@ export default function DashboardPage() {
             {upcomingAssessments.slice(0, 4).map((assessment) => (
               <div
                 key={assessment.id}
-                className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200"
+                className="flex items-center justify-between p-3.5 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-slate-600" />
+                  <div className="w-9 h-9 bg-[var(--glass-hover)] rounded-lg flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-[var(--text-muted)]" />
                   </div>
                   <div>
-                    <span className="font-medium text-slate-600 text-sm">{assessment.timepoint}</span>
+                    <span className="font-medium text-[var(--text-secondary)] text-sm">{assessment.timepoint}</span>
                     {assessment.hasLabs && (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <FlaskConical className="w-3 h-3 text-slate-600" />
-                        <span className="text-xs text-slate-600">Labs scheduled</span>
+                        <FlaskConical className="w-3 h-3 text-[var(--text-muted)]" />
+                        <span className="text-xs text-[var(--text-muted)]">Labs scheduled</span>
                       </div>
                     )}
                   </div>
                 </div>
-                <span className="text-xs text-slate-600 font-mono">{assessment.dueDate}</span>
+                <span className="text-xs text-[var(--text-muted)] font-mono">{assessment.dueDate}</span>
               </div>
             ))}
           </div>
@@ -366,9 +366,9 @@ export default function DashboardPage() {
 
       {/* Help Link */}
       <div className="mt-8 text-center">
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-[var(--text-muted)]">
           Questions?{' '}
-          <a href="mailto:research@example.com" className="text-orange-700 font-medium hover:text-orange-500">
+          <a href="mailto:support@nofone.us" className="text-[var(--primary)] font-medium hover:text-[var(--primary-light)]">
             Contact support
           </a>
         </p>

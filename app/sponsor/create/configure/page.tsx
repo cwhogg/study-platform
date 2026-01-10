@@ -347,10 +347,10 @@ function ConfigureStudyContent() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
           </div>
-          <p className="text-slate-600">Loading study options...</p>
+          <p className="text-[var(--text-secondary)]">Loading study options...</p>
         </div>
       </div>
     )
@@ -360,25 +360,25 @@ function ConfigureStudyContent() {
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
       {/* Safety Warning Dialog */}
       {safetyWarning.show && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-slide-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 animate-fade-in">
+          <div className="bg-[var(--bg-elevated)] rounded-2xl shadow-xl max-w-md w-full p-6 animate-slide-up border border-[var(--glass-border)]">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="w-6 h-6 text-amber-600" />
+              <div className="w-12 h-12 bg-[var(--warning)]/15 rounded-full flex items-center justify-center flex-shrink-0 border border-[var(--warning)]/30">
+                <AlertTriangle className="w-6 h-6 text-[var(--warning)]" />
               </div>
               <div>
-                <h3 className="font-display text-lg text-slate-900">Safety Rules Failed</h3>
-                <p className="text-sm text-slate-500">Unable to generate safety monitoring</p>
+                <h3 className="font-display text-lg text-[var(--text-primary)]">Safety Rules Failed</h3>
+                <p className="text-sm text-[var(--text-muted)]">Unable to generate safety monitoring</p>
               </div>
             </div>
 
-            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+            <div className="mb-4 p-3 bg-[var(--warning)]/15 border border-[var(--warning)]/30 rounded-lg text-sm text-[var(--warning)]">
               <p className="font-medium mb-1">Error:</p>
-              <p className="text-amber-700">{safetyWarning.error}</p>
+              <p>{safetyWarning.error}</p>
             </div>
 
-            <p className="text-sm text-slate-600 mb-6">
-              <strong className="text-slate-900">Warning:</strong> Proceeding without safety rules means
+            <p className="text-sm text-[var(--text-secondary)] mb-6">
+              <strong className="text-[var(--text-primary)]">Warning:</strong> Proceeding without safety rules means
               this study will have <strong>no automated safety monitoring</strong> for participant responses
               or lab values. This could miss critical safety signals.
             </p>
@@ -394,7 +394,7 @@ function ConfigureStudyContent() {
               <Button
                 variant="ghost"
                 onClick={handleProceedWithoutSafety}
-                className="flex-1 !text-amber-700 hover:!bg-amber-50"
+                className="flex-1 !text-[var(--warning)] hover:!bg-[var(--warning)]/10"
               >
                 Proceed Anyway
               </Button>
@@ -407,34 +407,34 @@ function ConfigureStudyContent() {
       <div className="mb-8 animate-fade-in">
         <Link
           href="/sponsor/create"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-6 block w-fit"
+          className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-6 block w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
         </Link>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full text-xs font-medium text-[#1E40AF] mb-4 w-fit">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--primary-dim)] border border-[var(--primary)]/20 rounded-full text-xs font-medium text-[var(--primary-light)] mb-4 w-fit">
           <Sparkles className="w-3.5 h-3.5" />
-          Configure Study
+          Configure Protocol
         </div>
-        <h1 className="font-display text-2xl sm:text-3xl text-slate-900">
+        <h1 className="font-display text-2xl sm:text-3xl text-[var(--text-primary)]">
           {toTitleCase(intervention)}
           {goal && (
-            <span className="text-slate-400 font-normal"> for </span>
+            <span className="text-[var(--text-muted)] font-normal"> for </span>
           )}
           {goal && (
-            <span className="text-orange-600">{goal}</span>
+            <span className="text-[var(--primary)]">{goal}</span>
           )}
         </h1>
         {discoveryData?.summary && (
-          <p className="mt-2 text-slate-600">{discoveryData.summary}</p>
+          <p className="mt-2 text-[var(--text-secondary)]">{discoveryData.summary}</p>
         )}
       </div>
 
       {/* AI-generated indicator */}
       {discoveryData && (
-        <div className="mb-6 p-4 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-xl text-[#1E40AF] text-sm flex items-center gap-3 animate-fade-in">
-          <div className="w-8 h-8 bg-[#1E40AF]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Info className="w-4 h-4 text-[#1E40AF]" />
+        <div className="mb-6 p-4 bg-[var(--primary-dim)] border border-[var(--primary)]/20 rounded-xl text-[var(--primary-light)] text-sm flex items-center gap-3 animate-fade-in">
+          <div className="w-8 h-8 bg-[var(--primary)]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Info className="w-4 h-4 text-[var(--primary)]" />
           </div>
           <span>Options below were generated by AI based on clinical evidence for {intervention}{goal ? ` for ${goal}` : ''}.</span>
         </div>
@@ -443,16 +443,16 @@ function ConfigureStudyContent() {
       <form onSubmit={handleSubmit} className="space-y-6 stagger-children">
         {/* Population */}
         <Card variant="default" padding="md">
-          <h2 className="font-semibold text-slate-900 mb-1">Population</h2>
-          <p className="text-sm text-slate-600 mb-4">Who are you studying?</p>
+          <h2 className="font-semibold text-[var(--text-primary)] mb-1">Population</h2>
+          <p className="text-sm text-[var(--text-secondary)] mb-4">Who are you studying?</p>
           <div className="space-y-3">
             {populations.map((option, index) => (
               <label
                 key={option.name}
                 className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                   population === option.name && !customPopulation
-                    ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                    : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
                 }`}
               >
                 <input
@@ -464,16 +464,16 @@ function ConfigureStudyContent() {
                     setPopulation(e.target.value)
                     setCustomPopulation('')
                   }}
-                  className="w-4 h-4 mt-0.5 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                  className="w-4 h-4 mt-0.5 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
                 />
                 <div className="flex-1">
-                  <span className="text-slate-900 font-medium">{option.name}</span>
+                  <span className="text-[var(--text-primary)] font-medium">{option.name}</span>
                   {option.description && (
-                    <p className="text-sm text-slate-600 mt-0.5">{option.description}</p>
+                    <p className="text-sm text-[var(--text-secondary)] mt-0.5">{option.description}</p>
                   )}
                 </div>
                 {index === 0 && discoveryData && (
-                  <span className="text-orange-700 text-xs font-medium bg-orange-100 px-2 py-1 rounded-full whitespace-nowrap border border-orange-200">Recommended</span>
+                  <span className="text-[var(--primary)] text-xs font-medium bg-[var(--primary-dim)] px-2 py-1 rounded-full whitespace-nowrap border border-[var(--primary)]/30">Recommended</span>
                 )}
               </label>
             ))}
@@ -481,8 +481,8 @@ function ConfigureStudyContent() {
             <label
               className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                 customPopulation
-                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                  : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
               }`}
             >
               <input
@@ -490,7 +490,7 @@ function ConfigureStudyContent() {
                 name="population"
                 checked={!!customPopulation}
                 onChange={() => {}}
-                className="w-4 h-4 mt-2 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                className="w-4 h-4 mt-2 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
               />
               <input
                 type="text"
@@ -503,7 +503,7 @@ function ConfigureStudyContent() {
                   if (customPopulation) setPopulation(customPopulation)
                 }}
                 placeholder="Or tell me what population you want to study"
-                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+                className="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-0 p-0"
               />
             </label>
           </div>
@@ -511,16 +511,16 @@ function ConfigureStudyContent() {
 
         {/* Treatment Stage */}
         <Card variant="default" padding="md">
-          <h2 className="font-semibold text-slate-900 mb-1">Treatment Stage</h2>
-          <p className="text-sm text-slate-600 mb-4">What phase of treatment?</p>
+          <h2 className="font-semibold text-[var(--text-primary)] mb-1">Treatment Stage</h2>
+          <p className="text-sm text-[var(--text-secondary)] mb-4">What phase of treatment?</p>
           <div className="space-y-3">
             {treatmentStages.map((option, index) => (
               <label
                 key={option.name}
                 className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                   treatmentStage === option.name && !customTreatmentStage
-                    ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                    : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
                 }`}
               >
                 <input
@@ -532,16 +532,16 @@ function ConfigureStudyContent() {
                     setTreatmentStage(e.target.value)
                     setCustomTreatmentStage('')
                   }}
-                  className="w-4 h-4 mt-0.5 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                  className="w-4 h-4 mt-0.5 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
                 />
                 <div className="flex-1">
-                  <span className="text-slate-900 font-medium">{option.name}</span>
+                  <span className="text-[var(--text-primary)] font-medium">{option.name}</span>
                   {option.description && (
-                    <p className="text-sm text-slate-600 mt-0.5">{option.description}</p>
+                    <p className="text-sm text-[var(--text-secondary)] mt-0.5">{option.description}</p>
                   )}
                 </div>
                 {index === 0 && discoveryData && (
-                  <span className="text-orange-700 text-xs font-medium bg-orange-100 px-2 py-1 rounded-full whitespace-nowrap border border-orange-200">Recommended</span>
+                  <span className="text-[var(--primary)] text-xs font-medium bg-[var(--primary-dim)] px-2 py-1 rounded-full whitespace-nowrap border border-[var(--primary)]/30">Recommended</span>
                 )}
               </label>
             ))}
@@ -549,8 +549,8 @@ function ConfigureStudyContent() {
             <label
               className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                 customTreatmentStage
-                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                  : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
               }`}
             >
               <input
@@ -558,7 +558,7 @@ function ConfigureStudyContent() {
                 name="treatmentStage"
                 checked={!!customTreatmentStage}
                 onChange={() => {}}
-                className="w-4 h-4 mt-2 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                className="w-4 h-4 mt-2 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
               />
               <input
                 type="text"
@@ -571,7 +571,7 @@ function ConfigureStudyContent() {
                   if (customTreatmentStage) setTreatmentStage(customTreatmentStage)
                 }}
                 placeholder="Or describe the treatment stage"
-                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+                className="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-0 p-0"
               />
             </label>
           </div>
@@ -579,16 +579,16 @@ function ConfigureStudyContent() {
 
         {/* Primary Endpoint */}
         <Card variant="default" padding="md">
-          <h2 className="font-semibold text-slate-900 mb-1">Primary Endpoint</h2>
-          <p className="text-sm text-slate-600 mb-4">What&apos;s the main outcome you&apos;re measuring?</p>
+          <h2 className="font-semibold text-[var(--text-primary)] mb-1">Primary Endpoint</h2>
+          <p className="text-sm text-[var(--text-secondary)] mb-4">What&apos;s the main outcome you&apos;re measuring?</p>
           <div className="space-y-3">
             {endpoints.map((option) => (
               <label
                 key={option.name}
                 className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                   primaryEndpoint === option.name && !customPrimaryEndpoint
-                    ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                    : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
                 }`}
               >
                 <input
@@ -600,20 +600,20 @@ function ConfigureStudyContent() {
                     setPrimaryEndpoint(e.target.value)
                     setCustomPrimaryEndpoint('')
                   }}
-                  className="w-4 h-4 mt-1.5 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                  className="w-4 h-4 mt-1.5 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-slate-900">{option.name}</div>
+                  <div className="font-medium text-[var(--text-primary)]">{option.name}</div>
                   {option.confidence === 'high' && (
-                    <span className="inline-flex text-emerald-600 text-xs font-medium bg-emerald-100 px-2 py-1 rounded-full border border-emerald-200 mt-2">High confidence</span>
+                    <span className="inline-flex text-[var(--success)] text-xs font-medium bg-[var(--success)]/15 px-2 py-1 rounded-full border border-[var(--success)]/30 mt-2">High confidence</span>
                   )}
                   {option.suggestedInstrument && (
-                    <div className="bg-slate-100 rounded-lg px-3 py-2 text-sm text-slate-600 mt-2">
+                    <div className="bg-[var(--glass-bg)] rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] mt-2 border border-[var(--glass-border)]">
                       {option.suggestedInstrument}
                     </div>
                   )}
                   {option.rationale && (
-                    <p className="text-sm text-slate-600 mt-2">{option.rationale}</p>
+                    <p className="text-sm text-[var(--text-secondary)] mt-2">{option.rationale}</p>
                   )}
                 </div>
               </label>
@@ -622,8 +622,8 @@ function ConfigureStudyContent() {
             <label
               className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                 customPrimaryEndpoint
-                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                  : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
               }`}
             >
               <input
@@ -631,7 +631,7 @@ function ConfigureStudyContent() {
                 name="primaryEndpoint"
                 checked={!!customPrimaryEndpoint}
                 onChange={() => {}}
-                className="w-4 h-4 mt-2 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                className="w-4 h-4 mt-2 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
               />
               <input
                 type="text"
@@ -644,7 +644,7 @@ function ConfigureStudyContent() {
                   if (customPrimaryEndpoint) setPrimaryEndpoint(customPrimaryEndpoint)
                 }}
                 placeholder="Or describe the primary outcome you want to measure"
-                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+                className="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-0 p-0"
               />
             </label>
           </div>
@@ -652,8 +652,8 @@ function ConfigureStudyContent() {
 
         {/* Secondary Endpoints */}
         <Card variant="default" padding="md">
-          <h2 className="font-semibold text-slate-900 mb-1">Secondary Endpoints</h2>
-          <p className="text-sm text-slate-600 mb-4">What else do you want to track?</p>
+          <h2 className="font-semibold text-[var(--text-primary)] mb-1">Secondary Endpoints</h2>
+          <p className="text-sm text-[var(--text-secondary)] mb-4">What else do you want to track?</p>
           <div className="space-y-3">
             {endpoints
               .filter(e => e.name !== primaryEndpoint || customPrimaryEndpoint)
@@ -663,28 +663,28 @@ function ConfigureStudyContent() {
                   key={option.name}
                   className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                     secondaryEndpoints.includes(option.name)
-                      ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                      : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                      ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                      : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={secondaryEndpoints.includes(option.name)}
                     onChange={(e) => handleSecondaryEndpointChange(option.name, e.target.checked)}
-                    className="w-4 h-4 mt-1.5 text-[#1E40AF] border-slate-300 bg-white rounded focus:ring-[#1E40AF]"
+                    className="w-4 h-4 mt-1.5 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] rounded focus:ring-[var(--primary)]"
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-slate-900">{option.name}</div>
+                    <div className="font-medium text-[var(--text-primary)]">{option.name}</div>
                     {option.confidence === 'high' && (
-                      <span className="inline-flex text-emerald-600 text-xs font-medium bg-emerald-100 px-2 py-1 rounded-full border border-emerald-200 mt-2">High confidence</span>
+                      <span className="inline-flex text-[var(--success)] text-xs font-medium bg-[var(--success)]/15 px-2 py-1 rounded-full border border-[var(--success)]/30 mt-2">High confidence</span>
                     )}
                     {option.suggestedInstrument && (
-                      <div className="bg-slate-100 rounded-lg px-3 py-2 text-sm text-slate-600 mt-2">
+                      <div className="bg-[var(--glass-bg)] rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] mt-2 border border-[var(--glass-border)]">
                         {option.suggestedInstrument}
                       </div>
                     )}
                     {option.rationale && (
-                      <p className="text-sm text-slate-600 mt-2">{option.rationale}</p>
+                      <p className="text-sm text-[var(--text-secondary)] mt-2">{option.rationale}</p>
                     )}
                   </div>
                 </label>
@@ -695,17 +695,17 @@ function ConfigureStudyContent() {
               .map((customEndpoint) => (
                 <label
                   key={customEndpoint}
-                  className="flex items-start gap-3 p-4 rounded-xl border border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF] cursor-pointer transition-all duration-200"
+                  className="flex items-start gap-3 p-4 rounded-xl border border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)] cursor-pointer transition-all duration-200"
                 >
                   <input
                     type="checkbox"
                     checked={true}
                     onChange={() => handleSecondaryEndpointChange(customEndpoint, false)}
-                    className="w-4 h-4 mt-1.5 text-[#1E40AF] border-slate-300 bg-white rounded focus:ring-[#1E40AF]"
+                    className="w-4 h-4 mt-1.5 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] rounded focus:ring-[var(--primary)]"
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-slate-900">{customEndpoint}</div>
-                    <span className="inline-flex text-slate-500 text-xs font-medium bg-slate-100 px-2 py-1 rounded-full border border-slate-200 mt-2">Custom endpoint</span>
+                    <div className="font-medium text-[var(--text-primary)]">{customEndpoint}</div>
+                    <span className="inline-flex text-[var(--text-muted)] text-xs font-medium bg-[var(--glass-bg)] px-2 py-1 rounded-full border border-[var(--glass-border)] mt-2">Custom endpoint</span>
                   </div>
                 </label>
               ))}
@@ -713,15 +713,15 @@ function ConfigureStudyContent() {
             <div
               className={`flex items-start gap-3 p-4 rounded-xl border transition-all duration-200 ${
                 customSecondaryEndpoint
-                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                  : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
               }`}
             >
               <input
                 type="checkbox"
                 checked={false}
                 disabled
-                className="w-4 h-4 mt-2 text-[#1E40AF] border-slate-300 bg-white rounded focus:ring-[#1E40AF] opacity-50"
+                className="w-4 h-4 mt-2 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] rounded focus:ring-[var(--primary)] opacity-50"
               />
               <input
                 type="text"
@@ -737,7 +737,7 @@ function ConfigureStudyContent() {
                   }
                 }}
                 placeholder="Or describe another outcome (press Enter to add)"
-                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+                className="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-0 p-0"
               />
               {customSecondaryEndpoint.trim() && (
                 <button
@@ -748,7 +748,7 @@ function ConfigureStudyContent() {
                     }
                     setCustomSecondaryEndpoint('')
                   }}
-                  className="text-xs font-medium text-[#1E40AF] hover:underline"
+                  className="text-xs font-medium text-[var(--primary)] hover:underline"
                 >
                   Add
                 </button>
@@ -759,16 +759,16 @@ function ConfigureStudyContent() {
 
         {/* Duration */}
         <Card variant="default" padding="md">
-          <h2 className="font-semibold text-slate-900 mb-1">Study Duration</h2>
-          <p className="text-sm text-slate-600 mb-4">How long will the study run?</p>
+          <h2 className="font-semibold text-[var(--text-primary)] mb-1">Study Duration</h2>
+          <p className="text-sm text-[var(--text-secondary)] mb-4">How long will the study run?</p>
           <div className="space-y-3">
             {DURATION_OPTIONS.map((option) => (
               <label
                 key={option.weeks}
                 className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                   duration === option.weeks && !customDuration
-                    ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                    : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
                 }`}
               >
                 <input
@@ -780,11 +780,11 @@ function ConfigureStudyContent() {
                     setDuration(parseInt(e.target.value))
                     setCustomDuration('')
                   }}
-                  className="w-4 h-4 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                  className="w-4 h-4 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
                 />
-                <span className="flex-1 text-slate-900 font-medium">{option.label}</span>
+                <span className="flex-1 text-[var(--text-primary)] font-medium">{option.label}</span>
                 {discoveryData?.recommendedDuration?.weeks === option.weeks && (
-                  <span className="text-orange-700 text-xs font-medium bg-orange-100 px-2 py-1 rounded-full border border-orange-200">Recommended</span>
+                  <span className="text-[var(--primary)] text-xs font-medium bg-[var(--primary-dim)] px-2 py-1 rounded-full border border-[var(--primary)]/30">Recommended</span>
                 )}
               </label>
             ))}
@@ -792,8 +792,8 @@ function ConfigureStudyContent() {
             <label
               className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                 customDuration
-                  ? 'border-[#1E40AF] bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]'
-                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'border-[var(--primary)] bg-[var(--primary-dim)] ring-1 ring-[var(--primary)]'
+                  : 'border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
               }`}
             >
               <input
@@ -801,7 +801,7 @@ function ConfigureStudyContent() {
                 name="duration"
                 checked={!!customDuration}
                 onChange={() => {}}
-                className="w-4 h-4 text-[#1E40AF] border-slate-300 bg-white focus:ring-[#1E40AF]"
+                className="w-4 h-4 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
               />
               <input
                 type="text"
@@ -812,15 +812,15 @@ function ConfigureStudyContent() {
                   if (!isNaN(weeks) && weeks > 0) setDuration(weeks)
                 }}
                 placeholder="Or enter duration in weeks (e.g., 16)"
-                className="flex-1 bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 focus:ring-0 p-0"
+                className="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-0 p-0"
               />
             </label>
           </div>
 
           {/* Duration info */}
           {durationRationale && (
-            <div className="mt-4 flex gap-3 p-4 bg-violet-50 border border-violet-200 rounded-xl text-sm text-violet-700">
-              <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-violet-500" />
+            <div className="mt-4 flex gap-3 p-4 bg-[var(--primary-dim)] border border-[var(--primary)]/30 rounded-xl text-sm text-[var(--primary-light)]">
+              <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-[var(--primary)]" />
               <p>{durationRationale}</p>
             </div>
           )}
@@ -828,12 +828,12 @@ function ConfigureStudyContent() {
 
         {/* Safety Considerations */}
         {discoveryData?.safetyConsiderations && discoveryData.safetyConsiderations.length > 0 && (
-          <Card variant="default" padding="md" className="border-orange-200 bg-orange-50">
-            <h2 className="font-semibold text-slate-900 mb-3">Safety Considerations</h2>
-            <ul className="space-y-2 text-sm text-orange-800">
+          <Card variant="default" padding="md" className="border-[var(--warning)]/30 bg-[var(--warning)]/10">
+            <h2 className="font-semibold text-[var(--text-primary)] mb-3">Safety Considerations</h2>
+            <ul className="space-y-2 text-sm text-[var(--warning)]">
               {discoveryData.safetyConsiderations.map((consideration, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <span className="mt-1.5 w-1.5 h-1.5 bg-orange-500 rounded-full flex-shrink-0" />
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-[var(--warning)] rounded-full flex-shrink-0" />
                   {consideration}
                 </li>
               ))}
@@ -843,7 +843,7 @@ function ConfigureStudyContent() {
 
         {/* Error Message */}
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm animate-fade-in">
+          <div className="p-4 bg-[var(--error)]/15 border border-[var(--error)]/30 rounded-xl text-[var(--error)] text-sm animate-fade-in">
             {error}
           </div>
         )}
@@ -875,15 +875,15 @@ function ConfigureStudyContent() {
 
 export default function ConfigureStudyPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <Suspense fallback={
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="text-center animate-fade-in">
             <div className="w-12 h-12 mx-auto mb-4 relative">
-              <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-              <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
+              <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
             </div>
-            <p className="text-slate-600">Loading...</p>
+            <p className="text-[var(--text-secondary)]">Loading...</p>
           </div>
         </div>
       }>

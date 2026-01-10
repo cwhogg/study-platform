@@ -1,28 +1,31 @@
 import Link from 'next/link'
-import { FileText, Users, BarChart3, Shield, ArrowRight, Sparkles, Check } from 'lucide-react'
+import { FileText, Users, BarChart3, Shield, ArrowRight, Target, Check } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 export default function SponsorPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
+        {/* Gradient orbs */}
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[var(--primary)]/10 rounded-full blur-[128px] -translate-y-1/2" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[var(--secondary)]/5 rounded-full blur-[100px] translate-y-1/2" />
 
         <div className="relative container-wide py-20 sm:py-28">
           <div className="max-w-3xl mx-auto text-center stagger-children">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full mb-8">
-              <Sparkles className="w-4 h-4 text-[#1E40AF]" />
-              <span className="text-sm font-medium text-[#1E40AF]">AI-Powered Research Platform</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--primary-dim)] border border-[var(--primary)]/20 rounded-full mb-8">
+              <Target className="w-4 h-4 text-[var(--primary)]" />
+              <span className="text-sm font-medium text-[var(--primary-light)]">Enterprise Platform</span>
             </div>
 
             {/* Headline */}
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-6 text-balance">
-              Launch Clinical Studies in Minutes
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-[var(--text-primary)] mb-6 text-balance leading-tight">
+              Launch Protocols in Minutes
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-2xl mx-auto text-balance leading-relaxed">
+            <p className="text-lg sm:text-xl text-[var(--text-secondary)] mb-10 max-w-2xl mx-auto text-balance leading-relaxed">
               Our AI agents generate complete study protocols, informed consent documents,
               and patient communications — tailored to your specific intervention.
             </p>
@@ -31,16 +34,16 @@ export default function SponsorPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/sponsor/create"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-medium rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all group"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--primary)] hover:bg-[var(--primary-light)] text-white font-medium rounded-xl shadow-lg shadow-[var(--primary)]/25 hover:shadow-xl hover:-translate-y-0.5 transition-all group"
               >
-                Create a Study
+                Create a Protocol
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/sponsor/studies"
-                className="btn btn-secondary btn-lg"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--glass-bg)] text-[var(--text-primary)] font-medium rounded-xl border border-[var(--glass-border)] hover:bg-[var(--glass-hover)] transition-all"
               >
-                View Your Studies
+                View Dashboard
               </Link>
             </div>
           </div>
@@ -48,14 +51,14 @@ export default function SponsorPage() {
       </section>
 
       {/* How It Works */}
-      <section className="border-t border-slate-200">
+      <section className="border-t border-[var(--glass-border)] bg-[var(--bg-elevated)]">
         <div className="container-wide py-20 sm:py-24">
           <div className="text-center mb-16">
-            <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-[var(--text-primary)] mb-4">
               How It Works
             </h2>
-            <p className="text-slate-600 text-lg max-w-xl mx-auto">
-              From intervention to live study in four simple steps
+            <p className="text-[var(--text-secondary)] text-lg max-w-xl mx-auto">
+              From intervention to live protocol in four simple steps
             </p>
           </div>
 
@@ -66,50 +69,42 @@ export default function SponsorPage() {
                 step: '01',
                 title: 'Define Intervention',
                 description: 'Enter the treatment or intervention you want to study. Our AI handles the rest.',
-                iconBg: 'bg-[#1E40AF]',
-                stepColor: 'text-[#1E40AF]',
               },
               {
                 icon: Shield,
                 step: '02',
                 title: 'AI Generates Protocol',
-                description: 'Our Clinical Protocol Agent designs endpoints, PRO instruments, and safety thresholds.',
-                iconBg: 'bg-[#15803D]',
-                stepColor: 'text-[#15803D]',
+                description: 'Our Protocol Agent designs endpoints, PRO instruments, and safety thresholds.',
               },
               {
                 icon: Users,
                 step: '03',
                 title: 'Invite Participants',
                 description: 'Participants complete consent, screening, and baseline surveys on mobile.',
-                iconBg: 'bg-[#1E40AF]',
-                stepColor: 'text-[#1E40AF]',
               },
               {
                 icon: BarChart3,
                 step: '04',
                 title: 'Collect Data',
                 description: 'Track outcomes with validated PRO instruments and integrate lab results.',
-                iconBg: 'bg-[#0D9488]',
-                stepColor: 'text-[#0D9488]',
               },
             ].map((item) => (
               <div
                 key={item.step}
-                className="group relative p-6 bg-white rounded-2xl border border-slate-200 hover:shadow-md transition-all duration-300"
+                className="group relative p-6 bg-[var(--glass-bg)] rounded-2xl border border-[var(--glass-border)] hover:border-[var(--primary)]/30 transition-all duration-300"
               >
                 {/* Step number */}
-                <div className="absolute -top-3 -right-2 w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-sm">
-                  <span className={`text-sm font-mono font-bold ${item.stepColor}`}>{item.step}</span>
+                <div className="absolute -top-3 -right-3 w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center shadow-lg shadow-[var(--primary)]/30">
+                  <span className="text-sm font-mono font-bold text-white">{item.step}</span>
                 </div>
 
                 {/* Icon */}
-                <div className={`w-12 h-12 ${item.iconBg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform shadow-md`}>
-                  <item.icon className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-[var(--primary-dim)] rounded-xl flex items-center justify-center mb-4">
+                  <item.icon className="w-6 h-6 text-[var(--primary)]" />
                 </div>
 
-                <h3 className="font-semibold text-slate-900 mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">{item.description}</p>
+                <h3 className="font-semibold text-[var(--text-primary)] mb-2">{item.title}</h3>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
@@ -117,17 +112,17 @@ export default function SponsorPage() {
       </section>
 
       {/* Features */}
-      <section className="bg-white border-t border-slate-200">
+      <section className="border-t border-[var(--glass-border)]">
         <div className="container-wide py-20 sm:py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left: Feature list */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-xs font-medium text-slate-600 mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-full text-xs font-medium text-[var(--text-muted)] mb-6">
                 Features
               </div>
 
-              <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-8">
-                AI-Powered Study Design
+              <h2 className="text-3xl sm:text-4xl font-semibold text-[var(--text-primary)] mb-8">
+                AI-Powered Protocol Design
               </h2>
 
               <ul className="space-y-5">
@@ -150,12 +145,12 @@ export default function SponsorPage() {
                   },
                 ].map((feature) => (
                   <li key={feature.title} className="flex gap-4">
-                    <div className="flex-shrink-0 w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center mt-0.5 border border-emerald-200">
-                      <Check className="w-4 h-4 text-emerald-600" strokeWidth={2.5} />
+                    <div className="flex-shrink-0 w-6 h-6 bg-[var(--success)]/15 rounded-full flex items-center justify-center mt-0.5 border border-[var(--success)]/30">
+                      <Check className="w-4 h-4 text-[var(--success)]" strokeWidth={2.5} />
                     </div>
                     <div>
-                      <h4 className="font-medium text-slate-900">{feature.title}</h4>
-                      <p className="text-sm text-slate-600 mt-1 leading-relaxed">{feature.description}</p>
+                      <h4 className="font-medium text-[var(--text-primary)]">{feature.title}</h4>
+                      <p className="text-sm text-[var(--text-secondary)] mt-1 leading-relaxed">{feature.description}</p>
                     </div>
                   </li>
                 ))}
@@ -165,20 +160,20 @@ export default function SponsorPage() {
             {/* Right: Example study card */}
             <div className="relative">
               {/* Decorative gradient */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-[#1E40AF]/10 via-transparent to-[#1E40AF]/10 rounded-3xl blur-2xl" />
+              <div className="absolute -inset-4 bg-[var(--primary)]/5 rounded-3xl blur-2xl" />
 
-              <div className="relative bg-white rounded-2xl border border-slate-200 shadow-md p-8">
+              <div className="relative bg-[var(--glass-bg)] backdrop-blur-md rounded-2xl border border-[var(--glass-border)] p-8">
                 <div className="flex items-center justify-between mb-6">
-                  <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Example Study
+                  <div className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
+                    Example Protocol
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-                    <span className="text-xs font-medium text-emerald-600">Active</span>
+                    <div className="w-2 h-2 bg-[var(--success)] rounded-full animate-pulse" />
+                    <span className="text-xs font-medium text-[var(--success)]">Active</span>
                   </div>
                 </div>
 
-                <h3 className="font-display text-2xl text-slate-900 mb-6">
+                <h3 className="text-2xl font-semibold text-[var(--text-primary)] mb-6">
                   TRT Outcomes Study
                 </h3>
 
@@ -189,18 +184,18 @@ export default function SponsorPage() {
                     { label: 'Lab Markers', value: '3 tracked' },
                     { label: 'PRO Schedule', value: '9 timepoints' },
                   ].map((stat) => (
-                    <div key={stat.label} className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                      <div className="text-xs text-slate-500 mb-1">{stat.label}</div>
-                      <div className="font-semibold text-slate-900">{stat.value}</div>
+                    <div key={stat.label} className="p-3 bg-[var(--glass-hover)] rounded-xl border border-[var(--glass-border)]">
+                      <div className="text-xs text-[var(--text-muted)] mb-1">{stat.label}</div>
+                      <div className="font-semibold text-[var(--text-primary)]">{stat.value}</div>
                     </div>
                   ))}
                 </div>
 
-                <div className="pt-6 border-t border-slate-200">
-                  <div className="text-xs text-slate-500 mb-3">Generated in</div>
+                <div className="pt-6 border-t border-[var(--glass-border)]">
+                  <div className="text-xs text-[var(--text-muted)] mb-3">Generated in</div>
                   <div className="flex items-center gap-2">
-                    <div className="text-3xl font-display text-[#1E40AF]">~2 min</div>
-                    <div className="text-sm text-slate-500">by AI</div>
+                    <div className="text-3xl font-semibold text-[var(--primary)]">~2 min</div>
+                    <div className="text-sm text-[var(--text-muted)]">by AI</div>
                   </div>
                 </div>
               </div>
@@ -210,20 +205,17 @@ export default function SponsorPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-[#1E40AF]/5 border-t border-slate-200">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1E40AF]/5 via-transparent to-[#1E40AF]/5" />
-
+      <section className="border-t border-[var(--glass-border)] bg-[var(--bg-elevated)]">
         <div className="relative container-wide py-16 sm:py-20 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl text-slate-900 mb-4">
-            Ready to launch your study?
+          <h2 className="text-3xl sm:text-4xl font-semibold text-[var(--text-primary)] mb-4">
+            Ready to launch your protocol?
           </h2>
-          <p className="text-slate-600 mb-8 max-w-xl mx-auto text-lg">
+          <p className="text-[var(--text-secondary)] mb-8 max-w-xl mx-auto text-lg">
             Get started in minutes. No protocol writing experience required.
           </p>
           <Link href="/sponsor/create">
             <Button size="lg" rightIcon={<ArrowRight className="w-5 h-5" />}>
-              Create Your First Study
+              Create Your First Protocol
             </Button>
           </Link>
         </div>

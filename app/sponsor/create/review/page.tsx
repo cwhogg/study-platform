@@ -119,17 +119,17 @@ function CollapsibleSection({ title, icon, count, children, onEdit, defaultOpen 
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
   return (
-    <Card variant="default" padding="none" className="overflow-hidden bg-white">
+    <Card variant="default" padding="none" className="overflow-hidden">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between p-4 hover:bg-[var(--glass-hover)] transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="text-slate-500">{icon}</div>
-          <span className="font-medium text-slate-900">{title}</span>
+          <div className="text-[var(--text-muted)]">{icon}</div>
+          <span className="font-medium text-[var(--text-primary)]">{title}</span>
           {count !== undefined && (
-            <span className="text-sm text-slate-500">({count})</span>
+            <span className="text-sm text-[var(--text-muted)]">({count})</span>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -139,21 +139,21 @@ function CollapsibleSection({ title, icon, count, children, onEdit, defaultOpen 
                 e.stopPropagation()
                 onEdit()
               }}
-              className="text-sm text-[#1E40AF] hover:text-[#1E40AF] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[#1E40AF]/10"
+              className="text-sm text-[var(--primary)] hover:text-[var(--primary-light)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--primary-dim)]"
             >
               <Pencil className="w-3.5 h-3.5" />
               Edit
             </span>
           )}
           {isOpen ? (
-            <ChevronUp className="w-5 h-5 text-slate-400" />
+            <ChevronUp className="w-5 h-5 text-[var(--text-muted)]" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-slate-400" />
+            <ChevronDown className="w-5 h-5 text-[var(--text-muted)]" />
           )}
         </div>
       </button>
       {isOpen && (
-        <div className="px-4 pb-4 border-t border-slate-200">
+        <div className="px-4 pb-4 border-t border-[var(--glass-border)]">
           <div className="pt-4">{children}</div>
         </div>
       )}
@@ -314,10 +314,10 @@ function ReviewProtocolContent() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
           </div>
-          <p className="text-slate-600">Loading protocol...</p>
+          <p className="text-[var(--text-secondary)]">Loading protocol...</p>
         </div>
       </div>
     )
@@ -353,30 +353,30 @@ function ReviewProtocolContent() {
       <div className="mb-8 animate-fade-in">
         <Link
           href={`/sponsor/create/configure?intervention=${encodeURIComponent(intervention)}`}
-          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-6 block w-fit"
+          className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-6 block w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
         </Link>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full text-xs font-medium text-[#1E40AF] mb-4 w-fit">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--primary-dim)] border border-[var(--primary)]/20 rounded-full text-xs font-medium text-[var(--primary-light)] mb-4 w-fit">
           <Sparkles className="w-3.5 h-3.5" />
           Generated Protocol
         </div>
-        <h1 className="font-display text-2xl sm:text-3xl text-slate-900">{toTitleCase(intervention)} Study</h1>
+        <h1 className="font-display text-2xl sm:text-3xl text-[var(--text-primary)]">{toTitleCase(intervention)} Study</h1>
       </div>
 
       {/* AI-generated indicator */}
-      <div className="mb-6 p-4 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-xl text-[#1E40AF] text-sm flex items-center gap-3 animate-fade-in">
-        <div className="w-8 h-8 bg-[#1E40AF]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Info className="w-4 h-4 text-[#1E40AF]" />
+      <div className="mb-6 p-4 bg-[var(--primary-dim)] border border-[var(--primary)]/20 rounded-xl text-[var(--primary-light)] text-sm flex items-center gap-3 animate-fade-in">
+        <div className="w-8 h-8 bg-[var(--primary)]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Info className="w-4 h-4 text-[var(--primary)]" />
         </div>
         <span>This protocol was generated by AI. Review and edit as needed before finalizing.</span>
       </div>
 
       {/* Summary */}
-      <Card variant="default" padding="md" className="mb-6 bg-gradient-to-br from-[#1E40AF]/10 to-white border-[#1E40AF]/20 animate-fade-in-up">
-        <h2 className="font-semibold text-slate-900 mb-2">Summary</h2>
-        <p className="text-slate-700">{protocol.summary}</p>
+      <Card variant="default" padding="md" className="mb-6 bg-gradient-to-br from-[var(--primary-dim)] to-[var(--glass-bg)] border-[var(--primary)]/20 animate-fade-in-up">
+        <h2 className="font-semibold text-[var(--text-primary)] mb-2">Summary</h2>
+        <p className="text-[var(--text-secondary)]">{protocol.summary}</p>
       </Card>
 
       {/* Collapsible Sections */}
@@ -391,16 +391,16 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-3">
             {protocol.inclusionCriteria?.map((criterion, index) => (
-              <div key={index} className="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
-                <div className="flex items-start gap-2 text-slate-900 font-medium">
-                  <span className="text-emerald-600 mt-0.5">•</span>
+              <div key={index} className="p-3 bg-[var(--success)]/15 rounded-xl border border-[var(--success)]/30">
+                <div className="flex items-start gap-2 text-[var(--text-primary)] font-medium">
+                  <span className="text-[var(--success)] mt-0.5">•</span>
                   {criterion.criterion}
                 </div>
                 {criterion.rationale && (
-                  <p className="text-sm text-slate-600 mt-1 ml-4">{criterion.rationale}</p>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1 ml-4">{criterion.rationale}</p>
                 )}
                 {criterion.assessmentMethod && (
-                  <p className="text-xs text-slate-500 mt-1 ml-4">
+                  <p className="text-xs text-[var(--text-muted)] mt-1 ml-4">
                     Assessment: {criterion.assessmentMethod}
                   </p>
                 )}
@@ -418,16 +418,16 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-3">
             {protocol.exclusionCriteria?.map((criterion, index) => (
-              <div key={index} className="p-3 bg-red-50 rounded-xl border border-red-200">
-                <div className="flex items-start gap-2 text-slate-900 font-medium">
-                  <span className="text-red-600 mt-0.5">•</span>
+              <div key={index} className="p-3 bg-[var(--error)]/15 rounded-xl border border-[var(--error)]/30">
+                <div className="flex items-start gap-2 text-[var(--text-primary)] font-medium">
+                  <span className="text-[var(--error)] mt-0.5">•</span>
                   {criterion.criterion}
                 </div>
                 {criterion.rationale && (
-                  <p className="text-sm text-slate-600 mt-1 ml-4">{criterion.rationale}</p>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1 ml-4">{criterion.rationale}</p>
                 )}
                 {criterion.assessmentMethod && (
-                  <p className="text-xs text-slate-500 mt-1 ml-4">
+                  <p className="text-xs text-[var(--text-muted)] mt-1 ml-4">
                     Assessment: {criterion.assessmentMethod}
                   </p>
                 )}
@@ -448,24 +448,24 @@ function ReviewProtocolContent() {
               <div
                 key={instrument.id || index}
                 className={`p-3 rounded-xl border ${
-                  index === 0 ? 'border-[#1E40AF]/30 bg-[#1E40AF]/10' : 'border-slate-200 bg-slate-50'
+                  index === 0 ? 'border-[var(--primary)]/30 bg-[var(--primary-dim)]' : 'border-[var(--glass-border)] bg-[var(--glass-bg)]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-[var(--text-primary)]">
                     {instrument.name}
                     {index === 0 && primaryInstrument && (
-                      <span className="ml-2 text-xs bg-[#1E40AF] text-white px-2 py-0.5 rounded-full">
+                      <span className="ml-2 text-xs bg-[var(--primary)] text-white px-2 py-0.5 rounded-full">
                         Primary
                       </span>
                     )}
                   </span>
-                  <span className="text-sm text-slate-500">
+                  <span className="text-sm text-[var(--text-muted)]">
                     {instrument.questions?.length || 0} questions
                     {instrument.estimatedMinutes && ` • ~${instrument.estimatedMinutes} min`}
                   </span>
                 </div>
-                <p className="text-sm text-slate-600">{instrument.description}</p>
+                <p className="text-sm text-[var(--text-secondary)]">{instrument.description}</p>
               </div>
             ))}
           </div>
@@ -479,12 +479,12 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-medium text-slate-900 mb-2">Assessment Timepoints</h4>
+              <h4 className="text-sm font-medium text-[var(--text-primary)] mb-2">Assessment Timepoints</h4>
               <div className="flex flex-wrap gap-2">
                 {assessmentTimepoints.map((timepoint, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-full text-sm font-medium"
+                    className="px-3 py-1.5 bg-[var(--glass-bg)] text-[var(--text-secondary)] rounded-full text-sm font-medium border border-[var(--glass-border)]"
                   >
                     {timepoint}
                   </span>
@@ -493,12 +493,12 @@ function ReviewProtocolContent() {
             </div>
             {labTimepoints.length > 0 && (
               <div>
-                <h4 className="text-sm font-medium text-slate-900 mb-2">Lab Collection</h4>
+                <h4 className="text-sm font-medium text-[var(--text-primary)] mb-2">Lab Collection</h4>
                 <div className="flex flex-wrap gap-2">
                   {labTimepoints.map((timepoint, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1.5 bg-violet-100 text-violet-700 rounded-full text-sm font-medium"
+                      className="px-3 py-1.5 bg-[var(--secondary)]/15 text-[var(--secondary)] rounded-full text-sm font-medium border border-[var(--secondary)]/30"
                     >
                       {timepoint}
                     </span>
@@ -508,20 +508,20 @@ function ReviewProtocolContent() {
             )}
 
             {/* Detailed schedule */}
-            <div className="mt-4 border-t border-slate-200 pt-4">
-              <h4 className="text-sm font-medium text-slate-900 mb-3">Detailed Schedule</h4>
+            <div className="mt-4 border-t border-[var(--glass-border)] pt-4">
+              <h4 className="text-sm font-medium text-[var(--text-primary)] mb-3">Detailed Schedule</h4>
               <div className="space-y-2">
                 {protocol.schedule?.map((timepoint, index) => (
-                  <div key={index} className="flex items-start gap-3 text-sm p-2 bg-slate-50 rounded-lg">
-                    <span className="font-medium text-slate-900 w-20 flex-shrink-0">
+                  <div key={index} className="flex items-start gap-3 text-sm p-2 bg-[var(--glass-bg)] rounded-lg border border-[var(--glass-border)]">
+                    <span className="font-medium text-[var(--text-primary)] w-20 flex-shrink-0">
                       {timepoint.week === 0 ? 'Baseline' : `Week ${timepoint.week}`}
                     </span>
                     <div className="flex-1">
-                      <span className="text-slate-700">
+                      <span className="text-[var(--text-secondary)]">
                         {timepoint.instruments?.join(', ')}
                       </span>
                       {timepoint.labs && timepoint.labs.length > 0 && (
-                        <span className="text-violet-600 ml-2">
+                        <span className="text-[var(--secondary)] ml-2">
                           + Labs: {timepoint.labs.join(', ')}
                         </span>
                       )}
@@ -542,19 +542,19 @@ function ReviewProtocolContent() {
         >
           <div className="space-y-3">
             {safetyRules.map((rule, index) => (
-              <div key={index} className="p-3 rounded-xl border border-orange-200 bg-orange-50">
+              <div key={index} className="p-3 rounded-xl border border-[var(--warning)]/30 bg-[var(--warning)]/15">
                 <div className="text-sm">
-                  <span className="font-medium text-slate-900">If:</span>{' '}
-                  <span className="text-slate-700">{rule.trigger}</span>
+                  <span className="font-medium text-[var(--text-primary)]">If:</span>{' '}
+                  <span className="text-[var(--text-secondary)]">{rule.trigger}</span>
                 </div>
                 <div className="text-sm mt-1">
-                  <span className="font-medium text-slate-900">Then:</span>{' '}
-                  <span className="text-slate-700">{rule.action}</span>
+                  <span className="font-medium text-[var(--text-primary)]">Then:</span>{' '}
+                  <span className="text-[var(--text-secondary)]">{rule.action}</span>
                 </div>
               </div>
             ))}
             {safetyRules.length === 0 && (
-              <p className="text-sm text-slate-500">No safety rules defined.</p>
+              <p className="text-sm text-[var(--text-muted)]">No safety rules defined.</p>
             )}
           </div>
         </CollapsibleSection>
@@ -571,12 +571,12 @@ function ReviewProtocolContent() {
               {riskAssessment.interventionCategory === 'pharmacological' && (
                 <div className={`p-4 rounded-xl ${
                   riskAssessment.fdaApprovalStatus?.approvedForStudiedIndication
-                    ? 'bg-emerald-50 border border-emerald-200'
+                    ? 'bg-[var(--success)]/15 border border-[var(--success)]/30'
                     : riskAssessment.fdaApprovalStatus?.approved
-                    ? 'bg-amber-50 border border-amber-200'
-                    : 'bg-red-50 border border-red-200'
+                    ? 'bg-[var(--warning)]/15 border border-[var(--warning)]/30'
+                    : 'bg-[var(--error)]/15 border border-[var(--error)]/30'
                 }`}>
-                  <div className="font-medium text-slate-900 mb-1">
+                  <div className="font-medium text-[var(--text-primary)] mb-1">
                     {riskAssessment.fdaApprovalStatus?.approvedForStudiedIndication
                       ? `✓ FDA Approved${riskAssessment.fdaApprovalStatus?.studiedIndication ? ` for ${riskAssessment.fdaApprovalStatus.studiedIndication}` : ''}`
                       : riskAssessment.fdaApprovalStatus?.approved
@@ -585,7 +585,7 @@ function ReviewProtocolContent() {
                   </div>
                   {/* Show approved indications for off-label use */}
                   {riskAssessment.fdaApprovalStatus?.approved && !riskAssessment.fdaApprovalStatus?.approvedForStudiedIndication && (
-                    <p className="text-sm text-amber-700 mb-1">
+                    <p className="text-sm text-[var(--warning)] mb-1">
                       FDA-approved for: {riskAssessment.fdaApprovalStatus?.indications?.join(', ') || 'other indications'}
                       {riskAssessment.fdaApprovalStatus?.studiedIndication && (
                         <> — not for {riskAssessment.fdaApprovalStatus.studiedIndication}</>
@@ -595,7 +595,7 @@ function ReviewProtocolContent() {
                   {/* Show regulatory disclaimer for off-label or non-approved */}
                   {riskAssessment.regulatoryDisclaimer && (
                     <p className={`text-sm ${
-                      riskAssessment.fdaApprovalStatus?.approved ? 'text-amber-700' : 'text-red-700'
+                      riskAssessment.fdaApprovalStatus?.approved ? 'text-[var(--warning)]' : 'text-[var(--error)]'
                     }`}>
                       {riskAssessment.regulatoryDisclaimer}
                     </p>
@@ -604,14 +604,14 @@ function ReviewProtocolContent() {
               )}
 
               {/* Risk Summary */}
-              <div className="p-4 bg-slate-50 rounded-xl">
-                <div className="font-medium text-slate-900 mb-1">Risk Summary</div>
-                <p className="text-sm text-slate-700">{riskAssessment.riskSummary}</p>
+              <div className="p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
+                <div className="font-medium text-[var(--text-primary)] mb-1">Risk Summary</div>
+                <p className="text-sm text-[var(--text-secondary)]">{riskAssessment.riskSummary}</p>
                 <div className="mt-2">
                   <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
-                    riskAssessment.overallRiskLevel === 'high' ? 'bg-red-100 text-red-700' :
-                    riskAssessment.overallRiskLevel === 'moderate' ? 'bg-orange-100 text-orange-800' :
-                    'bg-emerald-100 text-emerald-700'
+                    riskAssessment.overallRiskLevel === 'high' ? 'bg-[var(--error)]/15 text-[var(--error)] border border-[var(--error)]/30' :
+                    riskAssessment.overallRiskLevel === 'moderate' ? 'bg-[var(--warning)]/15 text-[var(--warning)] border border-[var(--warning)]/30' :
+                    'bg-[var(--success)]/15 text-[var(--success)] border border-[var(--success)]/30'
                   }`}>
                     Overall Risk: {riskAssessment.overallRiskLevel}
                   </span>
@@ -621,16 +621,16 @@ function ReviewProtocolContent() {
               {/* Known Risks */}
               {riskAssessment.knownRisks && riskAssessment.knownRisks.length > 0 && (
                 <div>
-                  <div className="font-medium text-slate-900 mb-2">Known Risks</div>
+                  <div className="font-medium text-[var(--text-primary)] mb-2">Known Risks</div>
                   <div className="space-y-2">
                     {riskAssessment.knownRisks.map((risk, index) => (
                       <div key={index} className="flex items-start gap-2 text-sm">
                         <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${
-                          risk.severity === 'high' ? 'bg-red-500' :
-                          risk.severity === 'moderate' ? 'bg-orange-500' : 'bg-emerald-500'
+                          risk.severity === 'high' ? 'bg-[var(--error)]' :
+                          risk.severity === 'moderate' ? 'bg-[var(--warning)]' : 'bg-[var(--success)]'
                         }`} />
-                        <span className="text-slate-700">
-                          <strong>{risk.risk}</strong>
+                        <span className="text-[var(--text-secondary)]">
+                          <strong className="text-[var(--text-primary)]">{risk.risk}</strong>
                           {risk.frequency && ` (${risk.frequency})`}
                         </span>
                       </div>
@@ -642,16 +642,16 @@ function ReviewProtocolContent() {
               {/* Community-Reported Risks */}
               {riskAssessment.communityReportedRisks && riskAssessment.communityReportedRisks.length > 0 && (
                 <div>
-                  <div className="font-medium text-slate-900 mb-2">Community-Reported Risks</div>
+                  <div className="font-medium text-[var(--text-primary)] mb-2">Community-Reported Risks</div>
                   <div className="space-y-2">
                     {riskAssessment.communityReportedRisks.map((risk, index) => (
                       <div key={index} className="flex items-start gap-2 text-sm">
                         <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${
-                          risk.severity === 'high' ? 'bg-red-500' :
-                          risk.severity === 'moderate' ? 'bg-orange-500' : 'bg-emerald-500'
+                          risk.severity === 'high' ? 'bg-[var(--error)]' :
+                          risk.severity === 'moderate' ? 'bg-[var(--warning)]' : 'bg-[var(--success)]'
                         }`} />
-                        <span className="text-slate-700">
-                          <strong>{risk.risk}</strong>
+                        <span className="text-[var(--text-secondary)]">
+                          <strong className="text-[var(--text-primary)]">{risk.risk}</strong>
                           {risk.frequency && ` (${risk.frequency})`}
                         </span>
                       </div>
@@ -663,8 +663,8 @@ function ReviewProtocolContent() {
               {/* Contraindications */}
               {riskAssessment.contraindications && riskAssessment.contraindications.length > 0 && (
                 <div>
-                  <div className="font-medium text-slate-900 mb-2">Contraindications</div>
-                  <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
+                  <div className="font-medium text-[var(--text-primary)] mb-2">Contraindications</div>
+                  <ul className="list-disc list-inside text-sm text-[var(--text-secondary)] space-y-1">
                     {riskAssessment.contraindications.map((item, index) => (
                       <li key={index}>{item}</li>
                     ))}
@@ -674,7 +674,7 @@ function ReviewProtocolContent() {
 
               {/* Data Sources */}
               {riskAssessment.dataSources && riskAssessment.dataSources.length > 0 && (
-                <div className="text-xs text-slate-500 pt-2 border-t border-slate-200">
+                <div className="text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--glass-border)]">
                   Sources: {riskAssessment.dataSources.join(', ')}
                 </div>
               )}
@@ -685,7 +685,7 @@ function ReviewProtocolContent() {
 
       {/* Error Message */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm mb-6 animate-fade-in">
+        <div className="p-4 bg-[var(--error)]/15 border border-[var(--error)]/30 rounded-xl text-[var(--error)] text-sm mb-6 animate-fade-in">
           {error}
         </div>
       )}
@@ -728,15 +728,15 @@ function ReviewProtocolContent() {
 
 export default function ReviewProtocolPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <Suspense fallback={
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="text-center animate-fade-in">
             <div className="w-12 h-12 mx-auto mb-4 relative">
-              <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-              <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
+              <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
             </div>
-            <p className="text-slate-600">Loading...</p>
+            <p className="text-[var(--text-secondary)]">Loading...</p>
           </div>
         </div>
       }>

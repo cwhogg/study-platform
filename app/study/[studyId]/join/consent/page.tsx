@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileBottomAction } from '@/components/ui/MobileContainer'
 import { ConsentContent } from '@/components/participant/ConsentContent'
+import { Button } from '@/components/ui/Button'
 import { Loader2 } from 'lucide-react'
 import { generateConsentSections, type ConsentSection } from '@/lib/study/consent'
 
@@ -61,9 +62,9 @@ export default function ConsentPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex flex-col h-full bg-white items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#1E40AF] animate-spin mb-4" />
-        <p className="text-slate-600">Loading consent document...</p>
+      <div className="flex flex-col h-full bg-[var(--bg-primary)] items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin mb-4" />
+        <p className="text-[var(--text-secondary)]">Loading consent document...</p>
       </div>
     )
   }
@@ -71,14 +72,11 @@ export default function ConsentPage() {
   // No sections available
   if (consentSections.length === 0) {
     return (
-      <div className="flex flex-col h-full bg-white items-center justify-center p-4">
-        <p className="text-slate-600 mb-4">Consent document not available.</p>
-        <button
-          onClick={() => router.push(`/study/${studyId}/join/consent/quiz`)}
-          className="px-6 py-3 bg-[#1E40AF] text-white rounded-xl"
-        >
+      <div className="flex flex-col h-full bg-[var(--bg-primary)] items-center justify-center p-4">
+        <p className="text-[var(--text-secondary)] mb-4">Consent document not available.</p>
+        <Button onClick={() => router.push(`/study/${studyId}/join/consent/quiz`)}>
           Continue
-        </button>
+        </Button>
       </div>
     )
   }
@@ -103,18 +101,18 @@ export default function ConsentPage() {
   const section = consentSections[currentSection]
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-[var(--bg-primary)]">
       {/* Progress Header */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-slate-200">
+      <div className="flex-shrink-0 px-4 py-3 border-b border-[var(--glass-border)]">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-600">CONSENT</span>
-          <span className="text-sm text-slate-600">
+          <span className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider">Consent</span>
+          <span className="text-sm text-[var(--text-muted)] font-mono">
             {currentSection + 1} of {totalSections}
           </span>
         </div>
-        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+        <div className="h-2 bg-[var(--glass-border)] rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#1E40AF] transition-all duration-300 ease-out"
+            className="h-full bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)] transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -125,13 +123,13 @@ export default function ConsentPage() {
         ref={contentRef}
         className="flex-1 overflow-y-auto px-4 py-6 pb-32"
       >
-        <h2 className="text-xl font-bold text-slate-900 mb-4">
+        <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
           {section.title}
         </h2>
         <ConsentContent content={section.content} />
 
         {/* Section Navigation Dots */}
-        <div className="flex justify-center gap-2 mt-8 pt-4 border-t border-slate-200">
+        <div className="flex justify-center gap-2 mt-8 pt-4 border-t border-[var(--glass-border)]">
           {consentSections.map((_, idx) => (
             <button
               key={idx}
@@ -141,10 +139,10 @@ export default function ConsentPage() {
               }}
               className={`w-2.5 h-2.5 rounded-full transition-colors ${
                 idx === currentSection
-                  ? 'bg-[#1E40AF]'
+                  ? 'bg-[var(--primary)]'
                   : readSections.has(idx)
-                  ? 'bg-[#1E40AF]/60'
-                  : 'bg-slate-300'
+                  ? 'bg-[var(--primary)]/60'
+                  : 'bg-[var(--glass-border)]'
               }`}
               style={{ minWidth: '10px', minHeight: '10px' }}
               aria-label={`Go to section ${idx + 1}`}
@@ -157,21 +155,20 @@ export default function ConsentPage() {
       <MobileBottomAction>
         <div className="flex gap-3">
           {currentSection > 0 && (
-            <button
+            <Button
               onClick={handleBack}
-              className="px-6 py-4 border border-slate-200 text-slate-700 font-semibold rounded-xl active:bg-slate-50 transition-colors"
-              style={{ minHeight: '52px' }}
+              variant="secondary"
+              className="px-6"
             >
               Back
-            </button>
+            </Button>
           )}
-          <button
+          <Button
             onClick={handleContinue}
-            className="flex-1 py-4 bg-[#1E40AF] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] transition-colors"
-            style={{ minHeight: '52px' }}
+            fullWidth
           >
             {isLastSection ? 'Continue to Quiz' : 'Continue'}
-          </button>
+          </Button>
         </div>
       </MobileBottomAction>
     </div>

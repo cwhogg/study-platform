@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer } from '@/components/ui/MobileContainer'
+import { Button } from '@/components/ui/Button'
 import { createClient } from '@/lib/supabase/client'
 import { Loader2 } from 'lucide-react'
 import {
@@ -178,10 +179,10 @@ export default function BaselinePage() {
   // Loading state
   if (isLoading) {
     return (
-      <MobileContainer centered className="bg-white">
+      <MobileContainer centered>
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-[#1E40AF] animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">Loading survey...</p>
+          <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin mx-auto mb-4" />
+          <p className="text-[var(--text-secondary)]">Loading survey...</p>
         </div>
       </MobileContainer>
     )
@@ -190,15 +191,12 @@ export default function BaselinePage() {
   // No questions available
   if (!question || totalQuestions === 0) {
     return (
-      <MobileContainer centered className="bg-white">
+      <MobileContainer centered>
         <div className="text-center">
-          <p className="text-slate-600 mb-4">No baseline questions available.</p>
-          <button
-            onClick={() => router.push(`/study/${studyId}/join/complete?participantId=${participantId}`)}
-            className="px-6 py-3 bg-[#1E40AF] text-white rounded-xl"
-          >
+          <p className="text-[var(--text-secondary)] mb-4">No baseline questions available.</p>
+          <Button onClick={() => router.push(`/study/${studyId}/join/complete?participantId=${participantId}`)}>
             Continue
-          </button>
+          </Button>
         </div>
       </MobileContainer>
     )
@@ -206,14 +204,14 @@ export default function BaselinePage() {
 
   if (isCompleting) {
     return (
-      <MobileContainer centered className="bg-white">
+      <MobileContainer centered>
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#1E40AF]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse border border-[#1E40AF]/20">
-            <svg className="w-8 h-8 text-[#1E40AF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="w-16 h-16 bg-[var(--primary-dim)] rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse border border-[var(--primary)]/30">
+            <svg className="w-8 h-8 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Saving your responses...</h2>
+          <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Saving your responses...</h2>
         </div>
       </MobileContainer>
     )
@@ -233,12 +231,12 @@ export default function BaselinePage() {
                 disabled={isTransitioning}
                 className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
                   isSelected
-                    ? 'border-[#1E40AF] bg-[#1E40AF]/10 scale-[0.98]'
-                    : 'border-slate-200 bg-white active:bg-slate-50 active:scale-[0.98]'
+                    ? 'border-[var(--primary)] bg-[var(--primary-dim)] scale-[0.98]'
+                    : 'border-[var(--glass-border)] bg-[var(--glass-bg)] hover:border-[var(--text-muted)] active:scale-[0.98]'
                 }`}
                 style={{ minHeight: '56px' }}
               >
-                <span className={`font-medium ${isSelected ? 'text-[#1E40AF]' : 'text-slate-900'}`}>
+                <span className={`font-medium ${isSelected ? 'text-[var(--primary)]' : 'text-[var(--text-primary)]'}`}>
                   {option.label}
                 </span>
               </button>
@@ -253,7 +251,7 @@ export default function BaselinePage() {
       const values = Array.from({ length: max - min + 1 }, (_, i) => min + i)
       return (
         <div className="space-y-4">
-          <div className="flex justify-between text-sm text-slate-500">
+          <div className="flex justify-between text-sm text-[var(--text-muted)]">
             <span>{minLabel}</span>
             <span>{maxLabel}</span>
           </div>
@@ -267,8 +265,8 @@ export default function BaselinePage() {
                   disabled={isTransitioning}
                   className={`w-12 h-12 rounded-xl border-2 font-medium transition-all ${
                     isSelected
-                      ? 'border-[#1E40AF] bg-[#1E40AF] text-white'
-                      : 'border-slate-200 bg-white text-slate-700 active:bg-slate-50'
+                      ? 'border-[var(--primary)] bg-[var(--primary)] text-white'
+                      : 'border-[var(--glass-border)] bg-[var(--glass-bg)] text-[var(--text-secondary)] hover:border-[var(--text-muted)]'
                   }`}
                 >
                   {value}
@@ -284,18 +282,18 @@ export default function BaselinePage() {
   }
 
   return (
-    <MobileContainer withBottomPadding className="pt-6 bg-white">
+    <MobileContainer withBottomPadding className="pt-6">
       {/* Progress Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-600">BASELINE</span>
-          <span className="text-sm text-slate-600">
-            {currentQuestion + 1} of {totalQuestions}
+          <span className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider">Baseline</span>
+          <span className="text-sm text-[var(--text-muted)] font-mono">
+            {currentQuestion + 1}/{totalQuestions}
           </span>
         </div>
-        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+        <div className="h-2 bg-[var(--glass-border)] rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#1E40AF] transition-all duration-500 ease-out"
+            className="h-full bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -303,12 +301,12 @@ export default function BaselinePage() {
 
       {/* Instructions (shown for new instruments) */}
       {showInstructions && isNewInstrument && (
-        <div className="mb-6 p-4 bg-orange-50 rounded-xl border border-orange-200">
-          <p className="text-sm font-medium text-orange-900 mb-1">{question.instrumentName}</p>
-          <p className="text-sm text-orange-800">{question.instructions}</p>
+        <div className="mb-6 p-4 bg-[var(--primary-dim)] rounded-xl border border-[var(--primary)]/30">
+          <p className="text-sm font-medium text-[var(--primary-light)] mb-1">{question.instrumentName}</p>
+          <p className="text-sm text-[var(--text-secondary)]">{question.instructions}</p>
           <button
             onClick={handleDismissInstructions}
-            className="mt-3 text-sm font-medium text-orange-700 active:text-orange-500"
+            className="mt-3 text-sm font-medium text-[var(--primary)] hover:text-[var(--primary-light)] transition-colors"
           >
             Got it
           </button>
@@ -319,7 +317,7 @@ export default function BaselinePage() {
       <div
         className={`transition-opacity duration-200 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}
       >
-        <h2 className="text-lg font-semibold text-slate-900 mb-6">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-6">
           {question.text}
         </h2>
 
@@ -328,7 +326,7 @@ export default function BaselinePage() {
       </div>
 
       {/* Subtle hint */}
-      <p className="text-center text-xs text-slate-600 mt-8">
+      <p className="text-center text-xs text-[var(--text-muted)] mt-8">
         Tap an answer to continue
       </p>
     </MobileContainer>

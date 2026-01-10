@@ -30,17 +30,17 @@ export function ProgressBar({
     <div className={`w-full ${className}`} {...props}>
       {(showLabel || label) && (
         <div className="flex items-center justify-between mb-2">
-          {label && <span className="text-sm font-medium text-slate-700">{label}</span>}
+          {label && <span className="text-sm font-medium text-[var(--text-secondary)]">{label}</span>}
           {showLabel && (
-            <span className="text-sm font-mono text-slate-500">{Math.round(percentage)}%</span>
+            <span className="text-sm font-mono text-[var(--text-muted)]">{Math.round(percentage)}%</span>
           )}
         </div>
       )}
-      <div className={`w-full bg-slate-200 rounded-full overflow-hidden ${sizes[size]}`}>
+      <div className={`w-full bg-[var(--glass-border)] rounded-full overflow-hidden ${sizes[size]}`}>
         <div
           className={`
             ${sizes[size]}
-            bg-gradient-to-r from-[#1E40AF] to-[#EA580C]
+            bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)]
             rounded-full
             transition-all duration-700 ease-out
           `}
@@ -92,7 +92,7 @@ export function ProgressRing({
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-slate-200"
+          className="text-[var(--glass-border)]"
         />
         {/* Progress fill */}
         <circle
@@ -110,8 +110,8 @@ export function ProgressRing({
         {/* Gradient definition */}
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#1E40AF" />
-            <stop offset="100%" stopColor="#EA580C" />
+            <stop offset="0%" stopColor="var(--primary)" />
+            <stop offset="100%" stopColor="var(--primary-light)" />
           </linearGradient>
         </defs>
       </svg>
@@ -119,12 +119,12 @@ export function ProgressRing({
       {(showValue || label) && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {showValue && (
-            <span className="text-2xl font-semibold text-slate-900 font-mono">
+            <span className="text-2xl font-semibold text-[var(--text-primary)] font-mono">
               {Math.round(percentage)}%
             </span>
           )}
           {label && (
-            <span className="text-xs text-slate-500 mt-0.5">{label}</span>
+            <span className="text-xs text-[var(--text-muted)] mt-0.5">{label}</span>
           )}
         </div>
       )}
@@ -153,10 +153,10 @@ export function StepProgress({ steps, currentStep, className = '' }: StepProgres
                   text-sm font-medium
                   transition-all duration-300
                   ${index < currentStep
-                    ? 'bg-[#1E40AF] text-white'
+                    ? 'bg-[var(--primary)] text-white'
                     : index === currentStep
-                      ? 'bg-[#1E40AF] text-white ring-4 ring-[#1E40AF]/20'
-                      : 'bg-slate-200 text-slate-500'
+                      ? 'bg-[var(--primary)] text-white ring-4 ring-[var(--primary)]/20'
+                      : 'bg-[var(--glass-border)] text-[var(--text-muted)]'
                   }
                 `}
               >
@@ -171,7 +171,7 @@ export function StepProgress({ steps, currentStep, className = '' }: StepProgres
               <span
                 className={`
                   mt-2 text-xs font-medium
-                  ${index <= currentStep ? 'text-slate-900' : 'text-slate-500'}
+                  ${index <= currentStep ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}
                 `}
               >
                 {step}
@@ -183,7 +183,7 @@ export function StepProgress({ steps, currentStep, className = '' }: StepProgres
                 className={`
                   flex-1 h-0.5 mx-2 -mt-6
                   transition-colors duration-300
-                  ${index < currentStep ? 'bg-[#1E40AF]' : 'bg-slate-200'}
+                  ${index < currentStep ? 'bg-[var(--primary)]' : 'bg-[var(--glass-border)]'}
                 `}
               />
             )}

@@ -282,10 +282,10 @@ function ConsentReviewContent() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
           </div>
-          <p className="text-slate-600">Loading consent document...</p>
+          <p className="text-[var(--text-secondary)]">Loading consent document...</p>
         </div>
       </div>
     )
@@ -297,34 +297,34 @@ function ConsentReviewContent() {
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
         <div className="w-full max-w-lg text-center animate-fade-in-up">
           {/* Success Icon */}
-          <div className="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+          <div className="w-20 h-20 bg-[var(--success)]/15 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-[var(--success)]/30">
+            <CheckCircle2 className="w-10 h-10 text-[var(--success)]" />
           </div>
 
-          <h1 className="font-display text-2xl sm:text-3xl text-slate-900 mb-2">
-            Study Created!
+          <h1 className="font-display text-2xl sm:text-3xl text-[var(--text-primary)] mb-2">
+            Protocol Created!
           </h1>
-          <p className="text-slate-600 mb-8">
-            Your study is ready. Share the invitation link with eligible participants.
+          <p className="text-[var(--text-secondary)] mb-8">
+            Your protocol is ready. Share the invitation link with eligible participants.
           </p>
 
           {/* Study Info */}
-          <Card variant="default" padding="md" className="mb-6 text-left bg-white">
+          <Card variant="default" padding="md" className="mb-6 text-left">
             <div className="mb-4">
-              <div className="text-sm text-slate-500 mb-1">Study Name</div>
-              <div className="font-semibold text-slate-900">{createdStudy.name}</div>
+              <div className="text-sm text-[var(--text-muted)] mb-1">Protocol Name</div>
+              <div className="font-semibold text-[var(--text-primary)]">{createdStudy.name}</div>
             </div>
             <div>
-              <div className="text-sm text-slate-500 mb-1">Study ID</div>
-              <div className="font-mono text-sm text-slate-700">{createdStudy.id}</div>
+              <div className="text-sm text-[var(--text-muted)] mb-1">Protocol ID</div>
+              <div className="font-mono text-sm text-[var(--text-secondary)]">{createdStudy.id}</div>
             </div>
           </Card>
 
           {/* Invitation Link */}
-          <Card variant="default" padding="md" className="mb-8 bg-white">
-            <div className="text-sm font-medium text-slate-900 mb-3">Invitation Link</div>
+          <Card variant="default" padding="md" className="mb-8">
+            <div className="text-sm font-medium text-[var(--text-primary)] mb-3">Invitation Link</div>
             <div className="flex items-center gap-2">
-              <div className="flex-1 bg-slate-100 rounded-xl px-4 py-3 text-sm text-slate-700 font-mono truncate border border-slate-200">
+              <div className="flex-1 bg-[var(--glass-bg)] rounded-xl px-4 py-3 text-sm text-[var(--text-secondary)] font-mono truncate border border-[var(--glass-border)]">
                 {inviteLink}
               </div>
               <Button
@@ -335,8 +335,8 @@ function ConsentReviewContent() {
                 {copied ? 'Copied!' : 'Copy'}
               </Button>
             </div>
-            <p className="text-sm text-slate-500 mt-3">
-              Share this link with eligible participants to invite them to the study.
+            <p className="text-sm text-[var(--text-muted)] mt-3">
+              Share this link with eligible participants to invite them to the protocol.
             </p>
           </Card>
 
@@ -344,7 +344,7 @@ function ConsentReviewContent() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href={`/sponsor/studies/${createdStudy.id}`} className="flex-1">
               <Button size="lg" fullWidth>
-                View Study Dashboard
+                View Protocol Dashboard
                 <ExternalLink className="w-4 h-4" />
               </Button>
             </Link>
@@ -366,23 +366,23 @@ function ConsentReviewContent() {
       <div className="mb-8 animate-fade-in">
         <Link
           href={`/sponsor/create/review?${searchParams.toString()}`}
-          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-6 block w-fit"
+          className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-6 block w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
         </Link>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full text-xs font-medium text-[#1E40AF] mb-4 w-fit">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--primary-dim)] border border-[var(--primary)]/20 rounded-full text-xs font-medium text-[var(--primary-light)] mb-4 w-fit">
           <Sparkles className="w-3.5 h-3.5" />
           Consent Document
         </div>
-        <h1 className="font-display text-2xl sm:text-3xl text-slate-900">Review & Finalize</h1>
+        <h1 className="font-display text-2xl sm:text-3xl text-[var(--text-primary)]">Review & Finalize</h1>
       </div>
 
       {/* AI-generated indicator */}
       {consent && consent !== FALLBACK_CONSENT && (
-        <div className="mb-6 p-4 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-xl text-[#1E40AF] text-sm flex items-center gap-3 animate-fade-in">
-          <div className="w-8 h-8 bg-[#1E40AF]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Info className="w-4 h-4 text-[#1E40AF]" />
+        <div className="mb-6 p-4 bg-[var(--primary-dim)] border border-[var(--primary)]/20 rounded-xl text-[var(--primary-light)] text-sm flex items-center gap-3 animate-fade-in">
+          <div className="w-8 h-8 bg-[var(--primary)]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Info className="w-4 h-4 text-[var(--primary)]" />
           </div>
           <span>This consent document was generated by AI. Review and edit as needed.</span>
         </div>
@@ -390,12 +390,12 @@ function ConsentReviewContent() {
 
       {/* Summary Card */}
       {consent?.summary && (
-        <Card variant="default" padding="md" className="mb-6 bg-gradient-to-br from-[#1E40AF]/10 to-white border-[#1E40AF]/20 animate-fade-in-up">
-          <h2 className="font-semibold text-slate-900 mb-3">{consent.summary.title || 'Study at a Glance'}</h2>
+        <Card variant="default" padding="md" className="mb-6 bg-gradient-to-br from-[var(--primary-dim)] to-[var(--glass-bg)] border-[var(--primary)]/20 animate-fade-in-up">
+          <h2 className="font-semibold text-[var(--text-primary)] mb-3">{consent.summary.title || 'Study at a Glance'}</h2>
           <ul className="space-y-2">
             {consent.summary.bullets.map((bullet, index) => (
-              <li key={index} className="flex items-start gap-2 text-slate-700">
-                <span className="text-[#1E40AF] mt-0.5">•</span>
+              <li key={index} className="flex items-start gap-2 text-[var(--text-secondary)]">
+                <span className="text-[var(--primary)] mt-0.5">•</span>
                 {bullet}
               </li>
             ))}
@@ -404,36 +404,36 @@ function ConsentReviewContent() {
       )}
 
       {/* Consent Document Sections */}
-      <Card variant="default" padding="none" className="mb-6 overflow-hidden stagger-children bg-white">
-        <div className="flex items-center justify-between p-4 border-b border-slate-200">
+      <Card variant="default" padding="none" className="mb-6 overflow-hidden stagger-children">
+        <div className="flex items-center justify-between p-4 border-b border-[var(--glass-border)]">
           <div className="flex items-center gap-3">
-            <FileText className="w-5 h-5 text-slate-500" />
-            <span className="font-medium text-slate-900">
+            <FileText className="w-5 h-5 text-[var(--text-muted)]" />
+            <span className="font-medium text-[var(--text-primary)]">
               {consent?.document?.title || 'Informed Consent Document'}
             </span>
             {consent?.document?.version && (
-              <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-[var(--glass-bg)] text-[var(--text-secondary)] px-2 py-0.5 rounded-full border border-[var(--glass-border)]">
                 v{consent.document.version}
               </span>
             )}
           </div>
-          <button className="text-sm text-[#1E40AF] hover:text-[#1E40AF] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[#1E40AF]/10">
+          <button className="text-sm text-[var(--primary)] hover:text-[var(--primary-light)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--primary-dim)]">
             <Pencil className="w-3.5 h-3.5" />
             Edit
           </button>
         </div>
-        <div className="divide-y divide-slate-200">
+        <div className="divide-y divide-[var(--glass-border)]">
           {consent?.document?.sections?.map((section) => (
-            <div key={section.id} className="border-b border-slate-200 last:border-0">
+            <div key={section.id} className="border-b border-[var(--glass-border)] last:border-0">
               <button
                 onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors text-left"
+                className="w-full flex items-center justify-between p-4 hover:bg-[var(--glass-hover)] transition-colors text-left"
               >
-                <span className="font-medium text-slate-900">{section.title}</span>
+                <span className="font-medium text-[var(--text-primary)]">{section.title}</span>
                 {expandedSections.has(section.id) ? (
-                  <ChevronUp className="w-5 h-5 text-slate-400" />
+                  <ChevronUp className="w-5 h-5 text-[var(--text-muted)]" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-400" />
+                  <ChevronDown className="w-5 h-5 text-[var(--text-muted)]" />
                 )}
               </button>
               {expandedSections.has(section.id) && (
@@ -447,32 +447,32 @@ function ConsentReviewContent() {
       </Card>
 
       {/* Comprehension Questions */}
-      <Card variant="default" padding="none" className="mb-8 overflow-hidden bg-white">
-        <div className="flex items-center justify-between p-4 border-b border-slate-200">
+      <Card variant="default" padding="none" className="mb-8 overflow-hidden">
+        <div className="flex items-center justify-between p-4 border-b border-[var(--glass-border)]">
           <div className="flex items-center gap-3">
-            <ListChecks className="w-5 h-5 text-slate-500" />
-            <span className="font-medium text-slate-900">Comprehension Questions</span>
-            <span className="text-sm text-slate-500">
+            <ListChecks className="w-5 h-5 text-[var(--text-muted)]" />
+            <span className="font-medium text-[var(--text-primary)]">Comprehension Questions</span>
+            <span className="text-sm text-[var(--text-muted)]">
               ({consent?.comprehensionQuestions?.length || 0})
             </span>
           </div>
-          <button className="text-sm text-[#1E40AF] hover:text-[#1E40AF] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[#1E40AF]/10">
+          <button className="text-sm text-[var(--primary)] hover:text-[var(--primary-light)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--primary-dim)]">
             <Pencil className="w-3.5 h-3.5" />
             Edit
           </button>
         </div>
         <div className="p-4">
-          <p className="text-sm text-slate-500 mb-4">
+          <p className="text-sm text-[var(--text-muted)] mb-4">
             Participants must answer these questions correctly before signing consent.
           </p>
           <div className="space-y-4">
             {consent?.comprehensionQuestions?.map((q, index) => (
-              <div key={q.id} className="p-4 bg-slate-50 rounded-xl">
+              <div key={q.id} className="p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
                 <div className="flex items-start gap-3 mb-3">
-                  <span className="flex-shrink-0 w-7 h-7 bg-[#1E40AF]/20 text-[#1E40AF] rounded-lg flex items-center justify-center text-sm font-medium">
+                  <span className="flex-shrink-0 w-7 h-7 bg-[var(--primary-dim)] text-[var(--primary)] rounded-lg flex items-center justify-center text-sm font-medium border border-[var(--primary)]/30">
                     {index + 1}
                   </span>
-                  <div className="font-medium text-slate-900">{q.question}</div>
+                  <div className="font-medium text-[var(--text-primary)]">{q.question}</div>
                 </div>
                 <div className="ml-10 space-y-2">
                   {q.options?.map((option, optIndex) => (
@@ -480,8 +480,8 @@ function ConsentReviewContent() {
                       key={optIndex}
                       className={`flex items-center gap-2 text-sm p-3 rounded-lg ${
                         option.correct
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-white text-slate-700 border border-slate-200'
+                          ? 'bg-[var(--success)]/15 text-[var(--success)] border border-[var(--success)]/30'
+                          : 'bg-[var(--glass-hover)] text-[var(--text-secondary)] border border-[var(--glass-border)]'
                       }`}
                     >
                       {option.correct && <CheckCircle2 className="w-4 h-4" />}
@@ -493,7 +493,7 @@ function ConsentReviewContent() {
                   ))}
                 </div>
                 {q.explanation && (
-                  <div className="ml-10 mt-2 text-xs text-slate-500">
+                  <div className="ml-10 mt-2 text-xs text-[var(--text-muted)]">
                     <span className="font-medium">If wrong:</span> {q.explanation}
                   </div>
                 )}
@@ -505,7 +505,7 @@ function ConsentReviewContent() {
 
       {/* Error Message */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm mb-6 animate-fade-in">
+        <div className="p-4 bg-[var(--error)]/15 border border-[var(--error)]/30 rounded-xl text-[var(--error)] text-sm mb-6 animate-fade-in">
           {error}
         </div>
       )}
@@ -521,17 +521,17 @@ function ConsentReviewContent() {
         {isSubmitting ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            Creating Study...
+            Creating Protocol...
           </>
         ) : (
           <>
-            Finalize Study
+            Finalize Protocol
             <Check className="w-5 h-5" />
           </>
         )}
       </Button>
 
-      <p className="mt-4 text-center text-sm text-slate-500">
+      <p className="mt-4 text-center text-sm text-[var(--text-muted)]">
         Once finalized, you can share the invitation link with participants.
       </p>
     </div>
@@ -540,15 +540,15 @@ function ConsentReviewContent() {
 
 export default function ConsentPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <Suspense fallback={
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="text-center animate-fade-in">
             <div className="w-12 h-12 mx-auto mb-4 relative">
-              <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-              <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
+              <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
             </div>
-            <p className="text-slate-600">Loading...</p>
+            <p className="text-[var(--text-secondary)]">Loading...</p>
           </div>
         </div>
       }>

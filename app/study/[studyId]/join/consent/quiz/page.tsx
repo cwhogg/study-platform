@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
+import { Button } from '@/components/ui/Button'
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react'
 
 // Types matching the agent-generated format
@@ -127,10 +128,10 @@ export default function ConsentQuizPage() {
   // Loading state
   if (isLoading) {
     return (
-      <MobileContainer withBottomPadding className="pt-6 bg-white">
+      <MobileContainer withBottomPadding className="pt-6">
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
-          <Loader2 className="w-8 h-8 text-[#1E40AF] animate-spin mb-4" />
-          <p className="text-slate-600">Loading questions...</p>
+          <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin mb-4" />
+          <p className="text-[var(--text-secondary)]">Loading questions...</p>
         </div>
       </MobileContainer>
     )
@@ -139,15 +140,12 @@ export default function ConsentQuizPage() {
   // No questions available
   if (!question) {
     return (
-      <MobileContainer withBottomPadding className="pt-6 bg-white">
+      <MobileContainer withBottomPadding className="pt-6">
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
-          <p className="text-slate-600 mb-4">No questions available.</p>
-          <button
-            onClick={() => router.push(`/study/${studyId}/join/consent/sign`)}
-            className="px-6 py-3 bg-[#1E40AF] text-white rounded-xl"
-          >
+          <p className="text-[var(--text-secondary)] mb-4">No questions available.</p>
+          <Button onClick={() => router.push(`/study/${studyId}/join/consent/sign`)}>
             Continue to Sign
-          </button>
+          </Button>
         </div>
       </MobileContainer>
     )
@@ -155,23 +153,23 @@ export default function ConsentQuizPage() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-6 bg-white">
+      <MobileContainer withBottomPadding className="pt-6">
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="text-sm text-slate-600 mb-2">
+          <p className="text-sm text-[var(--text-muted)] mb-2 font-mono">
             Question {currentQuestion + 1} of {totalQuestions}
           </p>
-          <h1 className="text-xl font-bold text-slate-900">
+          <h1 className="text-xl font-semibold text-[var(--text-primary)]">
             Quick Check
           </h1>
-          <p className="text-slate-600 text-sm mt-1">
+          <p className="text-[var(--text-secondary)] text-sm mt-1">
             Let&apos;s make sure you understand the key points
           </p>
         </div>
 
         {/* Question */}
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-slate-900 text-center">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] text-center">
             {question.question}
           </h2>
         </div>
@@ -186,16 +184,16 @@ export default function ConsentQuizPage() {
 
             if (showFeedback) {
               if (isCorrectAnswer) {
-                buttonClasses += ' border-emerald-500 bg-emerald-50'
+                buttonClasses += ' border-[var(--success)] bg-[var(--success)]/15'
               } else if (isSelected && !isCorrectAnswer) {
-                buttonClasses += ' border-red-500 bg-red-50'
+                buttonClasses += ' border-[var(--error)] bg-[var(--error)]/15'
               } else {
-                buttonClasses += ' border-slate-200 bg-slate-50 opacity-60'
+                buttonClasses += ' border-[var(--glass-border)] bg-[var(--glass-bg)] opacity-60'
               }
             } else {
               buttonClasses += isSelected
-                ? ' border-[#1E40AF] bg-[#1E40AF]/10'
-                : ' border-slate-200 bg-slate-50 active:bg-slate-100'
+                ? ' border-[var(--primary)] bg-[var(--primary-dim)]'
+                : ' border-[var(--glass-border)] bg-[var(--glass-bg)] hover:border-[var(--text-muted)]'
             }
 
             return (
@@ -209,18 +207,18 @@ export default function ConsentQuizPage() {
                 <div className="flex items-center justify-between">
                   <span className={`font-medium ${
                     showFeedback && isCorrectAnswer
-                      ? 'text-emerald-700'
+                      ? 'text-[var(--success)]'
                       : showFeedback && isSelected && !isCorrectAnswer
-                      ? 'text-red-700'
-                      : 'text-slate-900'
+                      ? 'text-[var(--error)]'
+                      : 'text-[var(--text-primary)]'
                   }`}>
                     {option.text}
                   </span>
                   {showFeedback && isCorrectAnswer && (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-[var(--success)] flex-shrink-0" />
                   )}
                   {showFeedback && isSelected && !isCorrectAnswer && (
-                    <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                    <XCircle className="w-5 h-5 text-[var(--error)] flex-shrink-0" />
                   )}
                 </div>
               </button>
@@ -230,22 +228,24 @@ export default function ConsentQuizPage() {
 
         {/* Feedback */}
         {showFeedback && (
-          <div className={`mt-6 p-4 rounded-xl ${
-            isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-orange-50 border border-orange-200'
+          <div className={`mt-6 p-4 rounded-xl border ${
+            isCorrect
+              ? 'bg-[var(--success)]/15 border-[var(--success)]/30'
+              : 'bg-[var(--warning)]/15 border-[var(--warning)]/30'
           }`}>
             <div className="flex items-start gap-3">
               {isCorrect ? (
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-[var(--success)] flex-shrink-0 mt-0.5" />
               ) : (
                 <div className="w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-orange-700 font-bold">!</span>
+                  <span className="text-[var(--warning)] font-bold">!</span>
                 </div>
               )}
               <div>
-                <p className={`font-medium ${isCorrect ? 'text-emerald-700' : 'text-orange-800'}`}>
+                <p className={`font-medium ${isCorrect ? 'text-[var(--success)]' : 'text-[var(--warning)]'}`}>
                   {isCorrect ? 'Correct!' : 'Not quite'}
                 </p>
-                <p className={`text-sm mt-1 ${isCorrect ? 'text-emerald-600' : 'text-orange-700'}`}>
+                <p className={`text-sm mt-1 ${isCorrect ? 'text-[var(--success)]/80' : 'text-[var(--warning)]/80'}`}>
                   {question.explanation}
                 </p>
               </div>
@@ -256,14 +256,14 @@ export default function ConsentQuizPage() {
 
       {/* Fixed Bottom CTA */}
       <MobileBottomAction>
-        <button
+        <Button
           onClick={handleContinue}
           disabled={!showFeedback}
-          className="w-full py-4 bg-[#1E40AF] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
-          style={{ minHeight: '52px' }}
+          size="lg"
+          fullWidth
         >
           {isLastQuestion ? 'Continue to Sign' : 'Next Question'}
-        </button>
+        </Button>
       </MobileBottomAction>
     </>
   )

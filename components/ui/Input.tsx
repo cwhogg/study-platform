@@ -18,14 +18,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-slate-700 mb-1.5"
+            className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5"
           >
             {label}
           </label>
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
               {leftIcon}
             </div>
           )}
@@ -35,15 +35,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             className={`
               w-full
               px-4 py-3
-              text-base text-slate-900
-              placeholder:text-slate-400
-              bg-white
-              border-[1.5px] rounded-xl
+              text-base text-[var(--text-primary)]
+              placeholder:text-[var(--text-muted)]
+              bg-[var(--glass-bg)]
+              border border-[var(--glass-border)] rounded-xl
               transition-all duration-150
               focus:outline-none
               ${error
-                ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-slate-200 focus:border-[#1E40AF] focus:ring-2 focus:ring-[#1E40AF]/10'
+                ? 'border-[var(--error)] focus:border-[var(--error)] focus:ring-2 focus:ring-[var(--error)]/20'
+                : 'focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20'
               }
               ${leftIcon ? 'pl-11' : ''}
               ${rightIcon ? 'pr-11' : ''}
@@ -52,13 +52,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
               {rightIcon}
             </div>
           )}
         </div>
         {(error || hint) && (
-          <p className={`mt-1.5 text-sm ${error ? 'text-red-600' : 'text-slate-500'}`}>
+          <p className={`mt-1.5 text-sm ${error ? 'text-[var(--error)]' : 'text-[var(--text-muted)]'}`}>
             {error || hint}
           </p>
         )}
@@ -85,7 +85,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label
             htmlFor={textareaId}
-            className="block text-sm font-medium text-slate-700 mb-1.5"
+            className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5"
           >
             {label}
           </label>
@@ -96,23 +96,23 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           className={`
             w-full
             px-4 py-3
-            text-base text-slate-900
-            placeholder:text-slate-400
-            bg-white
-            border-[1.5px] rounded-xl
+            text-base text-[var(--text-primary)]
+            placeholder:text-[var(--text-muted)]
+            bg-[var(--glass-bg)]
+            border border-[var(--glass-border)] rounded-xl
             transition-all duration-150
             resize-y min-h-[120px]
             focus:outline-none
             ${error
-              ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-slate-200 focus:border-[#1E40AF] focus:ring-2 focus:ring-[#1E40AF]/10'
+              ? 'border-[var(--error)] focus:border-[var(--error)] focus:ring-2 focus:ring-[var(--error)]/20'
+              : 'focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20'
             }
             ${className}
           `}
           {...props}
         />
         {(error || hint) && (
-          <p className={`mt-1.5 text-sm ${error ? 'text-red-600' : 'text-slate-500'}`}>
+          <p className={`mt-1.5 text-sm ${error ? 'text-[var(--error)]' : 'text-[var(--text-muted)]'}`}>
             {error || hint}
           </p>
         )}

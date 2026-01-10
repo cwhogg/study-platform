@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { MobileFullScreen, MobileBottomAction, MobileDivider } from '@/components/ui/MobileContainer'
 import { Button } from '@/components/ui/Button'
-import { ClipboardCheck, Clock, Sparkles, Shield } from 'lucide-react'
+import { Target, Clock, Activity, TrendingUp, AlertCircle } from 'lucide-react'
 import type { EnrollmentCopy } from '@/lib/db/types'
 
 interface StudyData {
@@ -18,18 +18,18 @@ interface StudyData {
 
 // Default copy if none generated
 const DEFAULT_WELCOME = {
-  headline: 'Join Our Research Study',
-  subheadline: 'Help shape the future of care',
+  headline: 'Begin Your Protocol',
+  subheadline: 'Track your response with scientific rigor',
   bullets: [
-    'Quick check-ins from your phone',
-    'Your regular treatment continues',
-    'Make a real impact on research',
+    'Quick data entries from your phone',
+    'Validated measurement instruments',
+    'Compare your results to the aggregate',
   ],
   buttonText: 'Get Started',
-  footerNote: 'Takes about 10 minutes to enroll',
+  footerNote: 'Takes about 10 minutes to set up',
 }
 
-const FEATURE_ICONS = [ClipboardCheck, Clock, Sparkles]
+const FEATURE_ICONS = [Activity, TrendingUp, Target]
 
 export default function JoinPage() {
   const params = useParams()
@@ -45,7 +45,7 @@ export default function JoinPage() {
         const response = await fetch(`/api/studies/${studyId}/public`)
         if (!response.ok) {
           const data = await response.json()
-          setError(data.error || 'Failed to load study')
+          setError(data.error || 'Failed to load protocol')
           setIsLoading(false)
           return
         }
@@ -53,7 +53,7 @@ export default function JoinPage() {
         setStudy(data)
       } catch (err) {
         console.error('Error fetching study:', err)
-        setError('Failed to load study')
+        setError('Failed to load protocol')
       }
       setIsLoading(false)
     }
@@ -63,13 +63,13 @@ export default function JoinPage() {
 
   if (isLoading) {
     return (
-      <MobileFullScreen className="flex items-center justify-center bg-white">
+      <MobileFullScreen className="flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-slate-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-[#1E40AF] border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
           </div>
-          <p className="text-slate-600">Loading study...</p>
+          <p className="text-[var(--text-secondary)]">Loading protocol...</p>
         </div>
       </MobileFullScreen>
     )
@@ -77,16 +77,16 @@ export default function JoinPage() {
 
   if (error || !study) {
     return (
-      <MobileFullScreen className="flex items-center justify-center bg-white">
+      <MobileFullScreen className="flex items-center justify-center">
         <div className="text-center px-4 animate-fade-in">
-          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-8 h-8 text-slate-600" />
+          <div className="w-16 h-16 bg-[var(--error)]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-[var(--error)]/20">
+            <AlertCircle className="w-8 h-8 text-[var(--error)]" />
           </div>
-          <h1 className="text-xl font-semibold text-slate-900 mb-2">Unable to Load Study</h1>
-          <p className="text-slate-600 mb-6">{error || 'Study not found'}</p>
+          <h1 className="text-xl font-semibold text-[var(--text-primary)] mb-2">Unable to Load Protocol</h1>
+          <p className="text-[var(--text-secondary)] mb-6">{error || 'Protocol not found'}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-[#1E40AF] text-white font-medium rounded-xl hover:bg-[#1E40AF]/90 transition-colors"
+            className="px-6 py-3 bg-[var(--primary)] text-white font-medium rounded-xl hover:bg-[var(--primary-light)] transition-colors"
           >
             Try Again
           </button>
@@ -100,23 +100,23 @@ export default function JoinPage() {
 
   return (
     <>
-      <MobileFullScreen className="pb-32 bg-white">
+      <MobileFullScreen className="pb-32">
         {/* Hero Section */}
         <div className="text-center pt-8 mb-8 stagger-children">
-          {/* Logo/Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/30 rounded-full mb-6">
-            <div className="w-2 h-2 bg-[#1E40AF] rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-[#1E40AF]">Research Study</span>
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--primary-dim)] border border-[var(--primary)]/30 rounded-full mb-6">
+            <div className="w-2 h-2 bg-[var(--primary)] rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-[var(--primary-light)]">N of 1 Protocol</span>
           </div>
 
           {/* Headline */}
-          <h1 className="font-display text-3xl text-slate-900 mb-3 text-balance">
+          <h1 className="text-3xl font-semibold text-[var(--text-primary)] mb-3 text-balance">
             {welcome.headline || study.name}
           </h1>
 
           {/* Subheadline */}
           {welcome.subheadline && (
-            <p className="text-slate-600 text-lg">
+            <p className="text-[var(--text-secondary)] text-lg">
               {welcome.subheadline}
             </p>
           )}
@@ -131,13 +131,13 @@ export default function JoinPage() {
             return (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm"
+                className="flex items-start gap-4 p-4 bg-[var(--glass-bg)] rounded-2xl border border-[var(--glass-border)]"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-[#1E40AF] to-[#1E40AF] rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-[var(--primary-dim)] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-6 h-6 text-[var(--primary)]" />
                 </div>
                 <div className="flex-1 pt-1">
-                  <p className="font-medium text-slate-900">{bullet}</p>
+                  <p className="font-medium text-[var(--text-primary)]">{bullet}</p>
                 </div>
               </div>
             )
@@ -146,15 +146,15 @@ export default function JoinPage() {
 
         {/* Duration Badge */}
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 text-sm text-slate-600">
+          <div className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)]">
             <Clock className="w-4 h-4" />
-            <span>{study.durationWeeks} week study</span>
+            <span>{study.durationWeeks} week protocol</span>
           </div>
         </div>
 
         {/* Footer note */}
         {welcome.footerNote && (
-          <p className="text-center text-sm text-slate-600 mt-4">
+          <p className="text-center text-sm text-[var(--text-muted)] mt-4">
             {welcome.footerNote}
           </p>
         )}
@@ -167,8 +167,8 @@ export default function JoinPage() {
             {welcome.buttonText || 'Get Started'}
           </Button>
         </Link>
-        <p className="text-center text-xs text-slate-600 mt-3">
-          By continuing, you agree to review the study information
+        <p className="text-center text-xs text-[var(--text-muted)] mt-3">
+          By continuing, you agree to review the protocol information
         </p>
       </MobileBottomAction>
     </>

@@ -249,16 +249,16 @@ export default function CreateStudyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       {/* Decorative elements */}
-      <div className="fixed -right-40 top-20 w-96 h-96 bg-[#1E40AF]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="fixed -left-40 bottom-20 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed -right-40 top-20 w-96 h-96 bg-[var(--primary)]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed -left-40 bottom-20 w-96 h-96 bg-[var(--secondary)]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative container-base py-8 sm:py-12">
         {/* Back link */}
         <Link
           href="/sponsor"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors mb-8"
+          className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -266,15 +266,15 @@ export default function CreateStudyPage() {
 
         {/* Header */}
         <div className="text-center mb-10 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1E40AF]/10 border border-[#1E40AF]/20 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-[#1E40AF]" />
-            <span className="text-xs font-medium text-[#1E40AF]">New Study</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--primary-dim)] border border-[var(--primary)]/20 rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-[var(--primary)]" />
+            <span className="text-xs font-medium text-[var(--primary-light)]">New Protocol</span>
           </div>
 
-          <h1 className="font-display text-3xl sm:text-4xl text-slate-900 mb-3">
+          <h1 className="font-display text-3xl sm:text-4xl text-[var(--text-primary)] mb-3">
             What do you want to study?
           </h1>
-          <p className="text-slate-600 max-w-md mx-auto">
+          <p className="text-[var(--text-secondary)] max-w-md mx-auto">
             Describe the treatment or intervention, and our AI will design a complete study protocol.
           </p>
         </div>
@@ -287,10 +287,10 @@ export default function CreateStudyPage() {
               {/* Intervention Input */}
               <div className="relative">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="p-2 bg-[#1E40AF]/10 rounded-lg">
-                    <Pill className="w-4 h-4 text-[#1E40AF]" />
+                  <div className="p-2 bg-[var(--primary-dim)] rounded-lg">
+                    <Pill className="w-4 h-4 text-[var(--primary)]" />
                   </div>
-                  <label className="text-sm font-semibold text-slate-900">
+                  <label className="text-sm font-semibold text-[var(--text-primary)]">
                     Intervention
                   </label>
                 </div>
@@ -318,7 +318,7 @@ export default function CreateStudyPage() {
                   {showSuggestions && filteredSuggestions.length > 0 && (
                     <div
                       ref={suggestionsRef}
-                      className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden"
+                      className="absolute z-50 left-0 right-0 mt-2 bg-[var(--bg-elevated)] border border-[var(--glass-border)] rounded-xl shadow-xl overflow-hidden"
                     >
                       {filteredSuggestions.map((item, index) => {
                         const isHighlighted = index === highlightedIndex
@@ -329,10 +329,10 @@ export default function CreateStudyPage() {
                             type="button"
                             onClick={() => handleSelectSuggestion(item.name)}
                             className={`
-                              w-full text-left px-4 py-3 text-sm transition-colors border-b border-slate-100 last:border-b-0
+                              w-full text-left px-4 py-3 text-sm transition-colors border-b border-[var(--glass-border)] last:border-b-0
                               ${isHighlighted
-                                ? 'bg-indigo-50 text-indigo-600'
-                                : 'text-slate-700 hover:bg-slate-50'
+                                ? 'bg-[var(--primary-dim)] text-[var(--primary)]'
+                                : 'text-[var(--text-secondary)] hover:bg-[var(--glass-hover)]'
                               }
                             `}
                           >
@@ -345,32 +345,32 @@ export default function CreateStudyPage() {
 
                   {/* No results message */}
                   {showSuggestions && intervention.trim().length > 0 && filteredSuggestions.length === 0 && (
-                    <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl p-4">
-                      <p className="text-sm text-slate-500 text-center">
+                    <div className="absolute z-50 left-0 right-0 mt-2 bg-[var(--bg-elevated)] border border-[var(--glass-border)] rounded-xl shadow-xl p-4">
+                      <p className="text-sm text-[var(--text-muted)] text-center">
                         No matching interventions found. You can still continue with your custom input.
                       </p>
                     </div>
                   )}
                 </div>
-                <p className="mt-2 text-xs text-slate-500">
+                <p className="mt-2 text-xs text-[var(--text-muted)]">
                   The treatment, therapy, or approach being studied
                 </p>
               </div>
 
               {/* Visual connector */}
               <div className="flex items-center justify-center gap-3 py-2">
-                <div className="h-px bg-slate-200 flex-1" />
-                <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">for</span>
-                <div className="h-px bg-slate-200 flex-1" />
+                <div className="h-px bg-[var(--glass-border)] flex-1" />
+                <span className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wide">for</span>
+                <div className="h-px bg-[var(--glass-border)] flex-1" />
               </div>
 
               {/* Goal Input */}
               <div className="relative">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="p-2 bg-orange-500/10 rounded-lg">
-                    <Target className="w-4 h-4 text-orange-600" />
+                  <div className="p-2 bg-[var(--primary)]/10 rounded-lg">
+                    <Target className="w-4 h-4 text-[var(--primary)]" />
                   </div>
-                  <label className="text-sm font-semibold text-slate-900">
+                  <label className="text-sm font-semibold text-[var(--text-primary)]">
                     Goal
                   </label>
                 </div>
@@ -381,14 +381,14 @@ export default function CreateStudyPage() {
                   placeholder="e.g., weight loss, injury recovery, depression..."
                   className="text-lg"
                 />
-                <p className="mt-2 text-xs text-slate-500">
+                <p className="mt-2 text-xs text-[var(--text-muted)]">
                   What you want to study, prove, or measure the impact on
                 </p>
               </div>
 
               {/* Example combinations */}
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                <div className="text-xs font-medium text-slate-500 mb-3 uppercase tracking-wide">Example combinations</div>
+              <div className="bg-[var(--glass-bg)] rounded-xl p-4 border border-[var(--glass-border)]">
+                <div className="text-xs font-medium text-[var(--text-muted)] mb-3 uppercase tracking-wide">Example combinations</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {[
                     { intervention: 'GLP-1 agonists (semaglutide, tirzepatide)', goal: 'weight loss' },
@@ -407,16 +407,16 @@ export default function CreateStudyPage() {
                       className={`
                         text-left p-3 rounded-lg border transition-all duration-150 text-sm
                         ${intervention === example.intervention && goal === example.goal
-                          ? 'bg-[#1E40AF]/5 border-[#1E40AF]/30'
-                          : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-white'
+                          ? 'bg-[var(--primary-dim)] border-[var(--primary)]/30'
+                          : 'bg-[var(--bg-elevated)] border-[var(--glass-border)] hover:border-[var(--text-muted)] hover:bg-[var(--glass-hover)]'
                         }
                       `}
                     >
-                      <span className="font-medium text-slate-700">
+                      <span className="font-medium text-[var(--text-secondary)]">
                         {example.intervention.length > 25 ? example.intervention.slice(0, 25) + '...' : example.intervention}
                       </span>
-                      <span className="text-slate-400 mx-1">for</span>
-                      <span className="text-orange-600 font-medium">{example.goal}</span>
+                      <span className="text-[var(--text-muted)] mx-1">for</span>
+                      <span className="text-[var(--primary)] font-medium">{example.goal}</span>
                     </button>
                   ))}
                 </div>
@@ -425,8 +425,8 @@ export default function CreateStudyPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-fade-in">
-                <p className="text-sm text-red-600">{error}</p>
+              <div className="mt-6 p-4 bg-[var(--error)]/15 border border-[var(--error)]/30 rounded-xl animate-fade-in">
+                <p className="text-sm text-[var(--error)]">{error}</p>
               </div>
             )}
 
@@ -455,7 +455,7 @@ export default function CreateStudyPage() {
         </Card>
 
         {/* Info */}
-        <p className="mt-8 text-center text-sm text-slate-500 max-w-md mx-auto animate-fade-in">
+        <p className="mt-8 text-center text-sm text-[var(--text-muted)] max-w-md mx-auto animate-fade-in">
           Our AI will analyze your intervention and goal to generate a complete study protocol
           including endpoints, PRO instruments, and safety monitoring.
         </p>

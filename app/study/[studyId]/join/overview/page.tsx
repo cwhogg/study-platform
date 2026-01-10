@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
-import { CheckCircle2, FileText, FlaskConical, MessageSquare, Shield, ClipboardList, Clock } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { CheckCircle2, FileText, FlaskConical, MessageSquare, Shield, ClipboardList, Clock, ArrowRight } from 'lucide-react'
 import type { EnrollmentCopy } from '@/lib/db/types'
 
 // Default copy if none generated
@@ -72,19 +73,19 @@ export default function OverviewPage() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-6 bg-white">
+      <MobileContainer withBottomPadding className="pt-6">
         {/* Success Badge */}
         <div className="flex justify-center mb-6">
-          <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full border border-emerald-200">
+          <div className="flex items-center gap-2 bg-[var(--success)]/15 text-[var(--success)] px-4 py-2 rounded-full border border-[var(--success)]/30">
             <CheckCircle2 className="w-5 h-5" />
             <span className="font-medium text-sm">Account Created</span>
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-slate-900 text-center mb-2">
+        <h1 className="text-2xl font-semibold text-[var(--text-primary)] text-center mb-2">
           {copy.headline || DEFAULT_PRE_CONSENT.headline}
         </h1>
-        <p className="text-slate-600 text-center mb-8">
+        <p className="text-[var(--text-secondary)] text-center mb-8">
           A quick overview of what participating involves
         </p>
 
@@ -93,13 +94,13 @@ export default function OverviewPage() {
           {sections.slice(0, 4).map((section, index) => {
             const Icon = getIcon(section.icon)
             return (
-              <div key={index} className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <div className="w-10 h-10 bg-[#1E40AF] rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-5 h-5 text-white" />
+              <div key={index} className="flex items-start gap-4 p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
+                <div className="w-10 h-10 bg-[var(--primary-dim)] rounded-lg flex items-center justify-center flex-shrink-0 border border-[var(--primary)]/30">
+                  <Icon className="w-5 h-5 text-[var(--primary)]" />
                 </div>
                 <div className="flex-1">
-                  <div className="font-semibold text-slate-900 mb-1">{section.title}</div>
-                  <div className="text-slate-600 text-sm">
+                  <div className="font-semibold text-[var(--text-primary)] mb-1">{section.title}</div>
+                  <div className="text-[var(--text-secondary)] text-sm leading-relaxed">
                     {section.body}
                   </div>
                 </div>
@@ -109,9 +110,9 @@ export default function OverviewPage() {
         </div>
 
         {/* Privacy Note */}
-        <div className="mt-6 p-4 border border-slate-200 rounded-xl bg-slate-50">
-          <p className="text-sm text-slate-600 text-center">
-            <span className="font-medium text-slate-900">Your privacy matters.</span>{' '}
+        <div className="mt-6 p-4 border border-[var(--glass-border)] rounded-xl bg-[var(--glass-bg)]">
+          <p className="text-sm text-[var(--text-secondary)] text-center">
+            <span className="font-medium text-[var(--text-primary)]">Your privacy matters.</span>{' '}
             All data is encrypted and de-identified before analysis.
           </p>
         </div>
@@ -119,14 +120,15 @@ export default function OverviewPage() {
 
       {/* Fixed Bottom CTA */}
       <MobileBottomAction>
-        <button
+        <Button
           onClick={handleContinue}
           disabled={isLoading}
-          className="w-full py-4 bg-[#1E40AF] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
-          style={{ minHeight: '52px' }}
+          size="lg"
+          fullWidth
+          rightIcon={<ArrowRight className="w-5 h-5" />}
         >
           {isLoading ? 'Loading...' : (copy.buttonText || DEFAULT_PRE_CONSENT.buttonText)}
-        </button>
+        </Button>
       </MobileBottomAction>
     </>
   )

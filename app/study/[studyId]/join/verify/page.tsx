@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { MobileContainer, MobileBottomAction } from '@/components/ui/MobileContainer'
+import { Button } from '@/components/ui/Button'
 import { Mail, CheckCircle2 } from 'lucide-react'
 
 function VerifyContent() {
@@ -164,25 +165,25 @@ function VerifyContent() {
 
   return (
     <>
-      <MobileContainer withBottomPadding className="pt-8 bg-white">
+      <MobileContainer withBottomPadding className="pt-8">
         {/* Email Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-[#1E40AF]/10 rounded-full flex items-center justify-center">
-            <Mail className="w-8 h-8 text-[#1E40AF]" />
+          <div className="w-16 h-16 bg-[var(--primary-dim)] rounded-full flex items-center justify-center border border-[var(--primary)]/30">
+            <Mail className="w-8 h-8 text-[var(--primary)]" />
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-slate-900 text-center mb-2">
+        <h1 className="text-2xl font-semibold text-[var(--text-primary)] text-center mb-2">
           Check Your Email
         </h1>
-        <p className="text-slate-600 text-center mb-8">
+        <p className="text-[var(--text-secondary)] text-center mb-8">
           We sent a verification code to<br />
-          <span className="font-medium text-slate-900">{email}</span>
+          <span className="font-medium text-[var(--text-primary)]">{email}</span>
         </p>
 
         {/* Demo Mode Hint */}
         {isDemo && (
-          <div className="mb-6 p-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-800 text-sm text-center">
+          <div className="mb-6 p-3 bg-[var(--warning)]/15 border border-[var(--warning)]/30 rounded-xl text-[var(--warning)] text-sm text-center">
             Demo mode: Enter any 6-digit code to continue
           </div>
         )}
@@ -199,8 +200,8 @@ function VerifyContent() {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`w-12 h-14 text-center text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-[#1E40AF] focus:border-[#1E40AF] transition-shadow bg-white text-slate-900 ${
-                error ? 'border-red-500 bg-red-50' : 'border-slate-200'
+              className={`w-12 h-14 text-center text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] transition-all bg-[var(--glass-bg)] text-[var(--text-primary)] ${
+                error ? 'border-[var(--error)] bg-[var(--error)]/10' : 'border-[var(--glass-border)]'
               }`}
               style={{ minWidth: '44px', minHeight: '52px' }}
             />
@@ -209,14 +210,14 @@ function VerifyContent() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm text-center">
+          <div className="mb-4 p-3 bg-[var(--error)]/15 border border-[var(--error)]/30 rounded-xl text-[var(--error)] text-sm text-center">
             {error}
           </div>
         )}
 
         {/* Success Message */}
         {resendSuccess && (
-          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-sm text-center flex items-center justify-center gap-2">
+          <div className="mb-4 p-3 bg-[var(--success)]/15 border border-[var(--success)]/30 rounded-xl text-[var(--success)] text-sm text-center flex items-center justify-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             Verification code sent!
           </div>
@@ -224,11 +225,11 @@ function VerifyContent() {
 
         {/* Resend Link */}
         <div className="text-center">
-          <p className="text-slate-600 text-sm mb-2">Didn&apos;t receive the code?</p>
+          <p className="text-[var(--text-secondary)] text-sm mb-2">Didn&apos;t receive the code?</p>
           <button
             onClick={handleResend}
             disabled={isResending}
-            className="text-[#1E40AF] font-medium text-sm py-2 px-4 rounded-lg active:bg-slate-50 disabled:text-slate-400 transition-colors"
+            className="text-[var(--primary)] font-medium text-sm py-2 px-4 rounded-lg hover:bg-[var(--glass-bg)] disabled:text-[var(--text-muted)] transition-colors"
             style={{ minHeight: '44px' }}
           >
             {isResending ? 'Sending...' : 'Resend Code'}
@@ -238,14 +239,14 @@ function VerifyContent() {
 
       {/* Fixed Bottom CTA */}
       <MobileBottomAction>
-        <button
+        <Button
           onClick={() => handleSubmit()}
           disabled={isSubmitting || code.some(d => !d)}
-          className="w-full py-4 bg-[#1E40AF] text-white text-center font-semibold rounded-xl active:bg-[#162d4a] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
-          style={{ minHeight: '52px' }}
+          size="lg"
+          fullWidth
         >
           {isSubmitting ? 'Verifying...' : 'Verify'}
-        </button>
+        </Button>
       </MobileBottomAction>
     </>
   )
@@ -253,7 +254,7 @@ function VerifyContent() {
 
 export default function VerifyPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-white text-slate-600">Loading...</div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-[var(--bg-primary)] text-[var(--text-secondary)]">Loading...</div>}>
       <VerifyContent />
     </Suspense>
   )

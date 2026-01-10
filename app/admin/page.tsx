@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import {
   Users,
   Clock,
@@ -14,6 +15,7 @@ import {
   CheckCircle,
   Trash2
 } from 'lucide-react'
+import { NofOneLogo } from '@/components/ui/NofOneLogo'
 
 interface Study {
   id: string
@@ -155,18 +157,18 @@ export default function AdminPage() {
 
   function getStatusBadge(status: string) {
     const styles: Record<string, string> = {
-      draft: 'bg-slate-100 text-slate-600',
-      active: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-      paused: 'bg-orange-100 text-orange-800 border border-orange-200',
-      completed: 'bg-violet-100 text-violet-700 border border-violet-200',
-      enrolled: 'bg-orange-100 text-orange-800 border border-orange-200',
-      consented: 'bg-[#1E40AF]/10 text-[#1E40AF] border border-[#1E40AF]/20',
-      screening: 'bg-orange-100 text-orange-700 border border-orange-200',
-      withdrawn: 'bg-red-100 text-red-700 border border-red-200',
-      ineligible: 'bg-red-100 text-red-700 border border-red-200',
+      draft: 'bg-[var(--glass-bg)] text-[var(--text-muted)] border border-[var(--glass-border)]',
+      active: 'bg-[var(--success)]/15 text-[var(--success)] border border-[var(--success)]/30',
+      paused: 'bg-[var(--warning)]/15 text-[var(--warning)] border border-[var(--warning)]/30',
+      completed: 'bg-[var(--secondary)]/15 text-[var(--secondary)] border border-[var(--secondary)]/30',
+      enrolled: 'bg-[var(--primary-dim)] text-[var(--primary-light)] border border-[var(--primary)]/30',
+      consented: 'bg-[var(--primary-dim)] text-[var(--primary-light)] border border-[var(--primary)]/30',
+      screening: 'bg-[var(--warning)]/15 text-[var(--warning)] border border-[var(--warning)]/30',
+      withdrawn: 'bg-[var(--error)]/15 text-[var(--error)] border border-[var(--error)]/30',
+      ineligible: 'bg-[var(--error)]/15 text-[var(--error)] border border-[var(--error)]/30',
     }
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${styles[status] || 'bg-slate-100 text-slate-600'}`}>
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${styles[status] || 'bg-[var(--glass-bg)] text-[var(--text-muted)]'}`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     )
@@ -177,27 +179,39 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center">
         <div className="text-center">
-          <RefreshCw className="w-8 h-8 text-slate-400 animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">Loading admin data...</p>
+          <RefreshCw className="w-8 h-8 text-[var(--text-muted)] animate-spin mx-auto mb-4" />
+          <p className="text-[var(--text-secondary)]">Loading admin data...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-[var(--bg-primary)]/80 backdrop-blur-lg border-b border-[var(--glass-border)]">
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <Link href="/">
+            <NofOneLogo size={28} />
+          </Link>
+          <div className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-2 py-1 bg-[var(--glass-bg)] rounded-full border border-[var(--glass-border)]">
+            Admin
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
-            <p className="text-slate-600 mt-1">Demo controls and study management</p>
+            <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Admin Dashboard</h1>
+            <p className="text-[var(--text-secondary)] mt-1">Demo controls and study management</p>
           </div>
           <button
             onClick={fetchData}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[var(--text-primary)] font-medium rounded-lg hover:bg-[var(--glass-hover)] transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Refresh
@@ -207,7 +221,9 @@ export default function AdminPage() {
         {/* Status Message */}
         {message && (
           <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
-            message.type === 'success' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-red-100 text-red-700 border border-red-200'
+            message.type === 'success'
+              ? 'bg-[var(--success)]/15 text-[var(--success)] border border-[var(--success)]/30'
+              : 'bg-[var(--error)]/15 text-[var(--error)] border border-[var(--error)]/30'
           }`}>
             {message.type === 'success' ? (
               <CheckCircle className="w-5 h-5 flex-shrink-0" />
@@ -219,20 +235,20 @@ export default function AdminPage() {
         )}
 
         {/* Studies Overview */}
-        <div className="bg-white rounded-xl border border-slate-200 mb-8">
-          <div className="p-6 border-b border-slate-200">
-            <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#1E40AF]" />
+        <div className="bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)] mb-8">
+          <div className="p-6 border-b border-[var(--glass-border)]">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-[var(--primary)]" />
               Studies ({studies.length})
             </h2>
           </div>
 
           {studies.length === 0 ? (
-            <div className="p-8 text-center text-slate-500">
+            <div className="p-8 text-center text-[var(--text-muted)]">
               No studies found. Create a study from the sponsor portal.
             </div>
           ) : (
-            <div className="divide-y divide-slate-200">
+            <div className="divide-y divide-[var(--glass-border)]">
               {studies.map((study) => (
                 <div key={study.id} className="p-6">
                   <div
@@ -241,11 +257,11 @@ export default function AdminPage() {
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
-                        <h3 className="font-medium text-slate-900">{study.name}</h3>
+                        <h3 className="font-medium text-[var(--text-primary)]">{study.name}</h3>
                         {getStatusBadge(study.status)}
                       </div>
-                      <p className="text-sm text-slate-600">{study.intervention}</p>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
+                      <p className="text-sm text-[var(--text-secondary)]">{study.intervention}</p>
+                      <div className="flex items-center gap-4 mt-2 text-sm text-[var(--text-muted)]">
                         <span className="flex items-center gap-1">
                           <Users className="w-4 h-4" />
                           {study.participantCount} participants
@@ -259,44 +275,44 @@ export default function AdminPage() {
                           deleteStudy(study.id, study.name)
                         }}
                         disabled={actionLoading === `delete-${study.id}`}
-                        className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
+                        className="p-2 text-[var(--error)] hover:bg-[var(--error)]/10 rounded-lg transition-colors disabled:opacity-50"
                         title="Delete study"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                       {expandedStudy === study.id ? (
-                        <ChevronUp className="w-5 h-5 text-slate-400" />
+                        <ChevronUp className="w-5 h-5 text-[var(--text-muted)]" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                        <ChevronDown className="w-5 h-5 text-[var(--text-muted)]" />
                       )}
                     </div>
                   </div>
 
                   {/* Expanded Participant List */}
                   {expandedStudy === study.id && (
-                    <div className="mt-6 pt-6 border-t border-slate-200">
-                      <h4 className="text-sm font-medium text-slate-700 mb-4">Participants</h4>
+                    <div className="mt-6 pt-6 border-t border-[var(--glass-border)]">
+                      <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-4">Participants</h4>
                       {getParticipantsForStudy(study.id).length === 0 ? (
-                        <p className="text-sm text-slate-500">No participants enrolled yet.</p>
+                        <p className="text-sm text-[var(--text-muted)]">No participants enrolled yet.</p>
                       ) : (
                         <div className="space-y-4">
                           {getParticipantsForStudy(study.id).map((participant) => (
                             <div
                               key={participant.id}
-                              className="bg-slate-50 rounded-lg p-4 border border-slate-200"
+                              className="bg-[var(--glass-hover)] rounded-lg p-4 border border-[var(--glass-border)]"
                             >
                               <div className="flex items-start justify-between mb-3">
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <span className="font-medium text-slate-900">
+                                    <span className="font-medium text-[var(--text-primary)]">
                                       {participant.firstName || participant.email}
                                     </span>
                                     {getStatusBadge(participant.status)}
                                   </div>
-                                  <p className="text-sm text-slate-600 mt-1">
+                                  <p className="text-sm text-[var(--text-secondary)] mt-1">
                                     {participant.email}
                                   </p>
-                                  <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
+                                  <div className="flex items-center gap-4 mt-2 text-sm text-[var(--text-muted)]">
                                     <span className="flex items-center gap-1">
                                       <Clock className="w-4 h-4" />
                                       Week {participant.currentWeek}
@@ -311,11 +327,11 @@ export default function AdminPage() {
                               </div>
 
                               {/* Demo Controls */}
-                              <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-slate-200">
+                              <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-[var(--glass-border)]">
                                 {/* Advance Week Dropdown */}
                                 <div className="relative inline-block">
                                   <select
-                                    className="appearance-none bg-white border border-slate-200 rounded-lg px-3 py-2 pr-8 text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer"
+                                    className="appearance-none bg-[var(--bg-primary)] border border-[var(--glass-border)] rounded-lg px-3 py-2 pr-8 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--glass-bg)] cursor-pointer"
                                     value=""
                                     onChange={(e) => {
                                       if (e.target.value) {
@@ -331,14 +347,14 @@ export default function AdminPage() {
                                       <option key={week} value={week}>Week {week}</option>
                                     ))}
                                   </select>
-                                  <Clock className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
+                                  <Clock className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)]" />
                                 </div>
 
                                 {/* Simulate Labs */}
                                 <button
                                   onClick={() => simulateLabs(participant.id, `week_${participant.currentWeek}`)}
                                   disabled={actionLoading === `labs-${participant.id}`}
-                                  className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                                  className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-primary)] border border-[var(--glass-border)] rounded-lg text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--glass-bg)] transition-colors disabled:opacity-50"
                                 >
                                   <TestTube className="w-4 h-4" />
                                   {actionLoading === `labs-${participant.id}` ? 'Simulating...' : 'Simulate Labs'}
@@ -348,7 +364,7 @@ export default function AdminPage() {
                                 <button
                                   onClick={() => triggerReminder(participant.id, `week_${participant.currentWeek}`)}
                                   disabled={actionLoading === `reminder-${participant.id}`}
-                                  className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                                  className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-primary)] border border-[var(--glass-border)] rounded-lg text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--glass-bg)] transition-colors disabled:opacity-50"
                                 >
                                   <Bell className="w-4 h-4" />
                                   {actionLoading === `reminder-${participant.id}` ? 'Sending...' : 'Send Reminder'}
@@ -367,61 +383,61 @@ export default function AdminPage() {
         </div>
 
         {/* All Participants Table */}
-        <div className="bg-white rounded-xl border border-slate-200">
-          <div className="p-6 border-b border-slate-200">
-            <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#1E40AF]" />
+        <div className="bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
+          <div className="p-6 border-b border-[var(--glass-border)]">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
+              <Users className="w-5 h-5 text-[var(--primary)]" />
               All Participants ({participants.length})
             </h2>
           </div>
 
           {participants.length === 0 ? (
-            <div className="p-8 text-center text-slate-500">
+            <div className="p-8 text-center text-[var(--text-muted)]">
               No participants found.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-[var(--glass-hover)] border-b border-[var(--glass-border)]">
                   <tr>
-                    <th className="text-left text-xs font-medium text-slate-600 uppercase tracking-wider px-6 py-3">
+                    <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-6 py-3">
                       Participant
                     </th>
-                    <th className="text-left text-xs font-medium text-slate-600 uppercase tracking-wider px-6 py-3">
+                    <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-6 py-3">
                       Study
                     </th>
-                    <th className="text-left text-xs font-medium text-slate-600 uppercase tracking-wider px-6 py-3">
+                    <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-6 py-3">
                       Status
                     </th>
-                    <th className="text-left text-xs font-medium text-slate-600 uppercase tracking-wider px-6 py-3">
+                    <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-6 py-3">
                       Week
                     </th>
-                    <th className="text-left text-xs font-medium text-slate-600 uppercase tracking-wider px-6 py-3">
+                    <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-6 py-3">
                       Enrolled
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
+                <tbody className="divide-y divide-[var(--glass-border)]">
                   {participants.map((participant) => (
-                    <tr key={participant.id} className="hover:bg-slate-50">
+                    <tr key={participant.id} className="hover:bg-[var(--glass-hover)]">
                       <td className="px-6 py-4">
                         <div>
-                          <p className="font-medium text-slate-900">
+                          <p className="font-medium text-[var(--text-primary)]">
                             {participant.firstName || 'Unknown'}
                           </p>
-                          <p className="text-sm text-slate-600">{participant.email}</p>
+                          <p className="text-sm text-[var(--text-secondary)]">{participant.email}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-slate-600">
+                      <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                         {participant.studyName}
                       </td>
                       <td className="px-6 py-4">
                         {getStatusBadge(participant.status)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-slate-600">
+                      <td className="px-6 py-4 text-sm text-[var(--text-secondary)] font-mono">
                         Week {participant.currentWeek}
                       </td>
-                      <td className="px-6 py-4 text-sm text-slate-500">
+                      <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
                         {participant.enrolledAt
                           ? new Date(participant.enrolledAt).toLocaleDateString()
                           : '-'}
