@@ -21,10 +21,10 @@ export default function Home() {
             Enterprise
           </Link>
           <Link
-            href="/sponsor/create"
+            href="/create"
             className="px-5 py-2.5 bg-[var(--primary)] text-[#0A0A0A] rounded-lg font-semibold text-sm hover:bg-[var(--primary-light)] hover:-translate-y-0.5 transition-all"
           >
-            Start your protocol
+            Create a protocol
           </Link>
         </nav>
       </header>
@@ -62,10 +62,7 @@ export default function Home() {
 
             {/* Headline */}
             <h1 className="text-[clamp(48px,6vw,72px)] font-bold leading-[1.05] tracking-[-0.03em] mb-6">
-              Study <span className="text-[var(--primary)] relative inline-block">
-                yourself
-                <span className="absolute bottom-1 left-0 right-0 h-0.5 bg-[var(--primary)] opacity-40 rounded" />
-              </span>.
+              <span className="text-[var(--primary)]">Study yourself</span>.
               <br />
               Measure what matters.
             </h1>
@@ -79,17 +76,17 @@ export default function Home() {
             {/* CTAs */}
             <div className="flex gap-4 mb-16">
               <Link
-                href="/sponsor/create"
+                href="/create"
                 className="group inline-flex items-center gap-2.5 px-7 py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold text-base shadow-[0_0_0_0_rgba(234,88,12,0.4)] hover:bg-[var(--primary-light)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(234,88,12,0.4)] transition-all duration-200"
               >
-                Start your protocol
+                Create a protocol
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
                 href="/protocols"
                 className="inline-flex items-center gap-2.5 px-7 py-4 bg-[var(--glass-bg)] text-white rounded-xl font-medium text-base border border-[var(--glass-border)] backdrop-blur-sm hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.15)] transition-all"
               >
-                Browse protocols
+                Find a protocol
               </Link>
             </div>
 
@@ -190,7 +187,7 @@ export default function Home() {
               className="absolute bottom-16 right-0 w-56 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-6 hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.12)] hover:-translate-y-1 transition-all animate-fade-in-up"
               style={{ animation: 'fade-in-up 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards, float 6s ease-in-out infinite -4s' }}
             >
-              <div className="font-semibold text-[15px] text-white mb-1">Creatine + Cognition</div>
+              <div className="font-semibold text-[15px] text-white mb-1">TRT Self-Study</div>
               <div className="text-xs text-[#6B7280] mb-4">12-week protocol</div>
               <div className="h-1 bg-[var(--glass-border)] rounded-full overflow-hidden mb-2">
                 <div className="h-full w-[67%] bg-[var(--primary)] rounded-full" />
@@ -240,6 +237,129 @@ export default function Home() {
                 <p className="text-sm text-[#9CA3AF] leading-relaxed">{item.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sample Protocol */}
+      <section className="border-t border-[var(--glass-border)] py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-full mb-6">
+              <span className="w-1.5 h-1.5 bg-[var(--primary)] rounded-full" />
+              <span className="text-sm font-medium text-[#D1D5DB]">Featured Protocol</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">TRT Self-Study</h2>
+            <p className="text-lg text-[#9CA3AF] max-w-2xl mx-auto">
+              Track your response to testosterone replacement therapy with validated instruments
+            </p>
+          </div>
+
+          <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl overflow-hidden">
+            <div className="grid lg:grid-cols-3">
+              {/* Protocol Overview */}
+              <div className="p-8 border-b lg:border-b-0 lg:border-r border-[var(--glass-border)]">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-[var(--primary)]/15 rounded-xl flex items-center justify-center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <line x1="16" y1="13" x2="8" y2="13"/>
+                      <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">Protocol Details</h3>
+                    <p className="text-xs text-[#6B7280]">What you&apos;ll track</p>
+                  </div>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    { label: 'Duration', value: '12 weeks' },
+                    { label: 'Check-ins', value: 'Weekly' },
+                    { label: 'Time per entry', value: '~3 minutes' },
+                    { label: 'Participants', value: '847 enrolled' },
+                  ].map((item) => (
+                    <li key={item.label} className="flex justify-between items-center py-2 border-b border-[var(--glass-border)] last:border-0">
+                      <span className="text-sm text-[#9CA3AF]">{item.label}</span>
+                      <span className="text-sm font-medium text-white">{item.value}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Outcomes Measured */}
+              <div className="p-8 border-b lg:border-b-0 lg:border-r border-[var(--glass-border)]">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-[#3B82F6]/15 rounded-xl flex items-center justify-center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">Outcomes Measured</h3>
+                    <p className="text-xs text-[#6B7280]">Validated PRO instruments</p>
+                  </div>
+                </div>
+                <ul className="space-y-2.5">
+                  {[
+                    { name: 'Energy & Vitality', instrument: 'SF-36 subscale' },
+                    { name: 'Mood & Well-being', instrument: 'PHQ-9' },
+                    { name: 'Sleep Quality', instrument: 'PSQI' },
+                    { name: 'Sexual Function', instrument: 'IIEF-5' },
+                    { name: 'Body Composition', instrument: 'Self-report' },
+                  ].map((outcome) => (
+                    <li key={outcome.name} className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 bg-[var(--primary)] rounded-full flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm text-white">{outcome.name}</span>
+                        <span className="text-xs text-[#6B7280] ml-2">({outcome.instrument})</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* What You'll Learn */}
+              <div className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-[#22C55E]/15 rounded-xl flex items-center justify-center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">What You&apos;ll Learn</h3>
+                    <p className="text-xs text-[#6B7280]">Your personalized insights</p>
+                  </div>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    'Your trajectory vs. baseline',
+                    'How you compare to others on TRT',
+                    'Which outcomes improve fastest',
+                    'Personalized response timeline',
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <div className="w-5 h-5 bg-[#22C55E]/15 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </div>
+                      <span className="text-sm text-[#9CA3AF]">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/protocols"
+                  className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold text-sm hover:bg-[var(--primary-light)] transition-all"
+                >
+                  Join TRT Protocol
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -404,7 +524,7 @@ export default function Home() {
           Start your first N of 1 study today. No cost, no commitment.
         </p>
         <Link
-          href="/sponsor/create"
+          href="/create"
           className="inline-flex items-center gap-2.5 px-8 py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold shadow-lg shadow-[var(--primary)]/25 hover:bg-[var(--primary-light)] hover:-translate-y-0.5 transition-all"
         >
           Start Your Protocol
