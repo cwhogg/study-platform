@@ -244,8 +244,98 @@ export default function Home() {
         </div>
       </section>
 
-      {/* N of Many */}
+      {/* AI Agents */}
       <section className="border-t border-[var(--glass-border)] py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-full mb-6">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+              <span className="text-sm font-medium text-[#D1D5DB]">AI Agents</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">Four Specialized Agents</h2>
+            <p className="text-lg text-[#9CA3AF]">Working together to design, launch, and run your study</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                name: 'Protocol Agent',
+                description: 'Designs study endpoints, inclusion/exclusion criteria, PRO instruments, and safety thresholds.',
+                color: '#3B82F6',
+                bgColor: 'rgba(59, 130, 246, 0.15)',
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                  </svg>
+                ),
+              },
+              {
+                name: 'Consent Agent',
+                description: 'Generates plain-language informed consent with comprehension verification.',
+                color: '#22C55E',
+                bgColor: 'rgba(34, 197, 94, 0.15)',
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <polyline points="9 12 11 14 15 10"/>
+                  </svg>
+                ),
+              },
+              {
+                name: 'Enrollment Agent',
+                description: 'Guides participants through registration, consent, and eligibility screening.',
+                color: '#A855F7',
+                bgColor: 'rgba(168, 85, 247, 0.15)',
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                ),
+              },
+              {
+                name: 'Engagement Agent',
+                description: 'Sends personalized reminders and milestone messages to maximize retention.',
+                color: '#EA580C',
+                bgColor: 'rgba(234, 88, 12, 0.15)',
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                  </svg>
+                ),
+              },
+            ].map((agent) => (
+              <div
+                key={agent.name}
+                className="p-6 bg-[var(--glass-bg)] rounded-2xl border border-[var(--glass-border)] hover:border-[rgba(255,255,255,0.12)] transition-all"
+              >
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+                  style={{ backgroundColor: agent.bgColor, color: agent.color }}
+                >
+                  {agent.icon}
+                </div>
+                <h3 className="font-semibold text-white text-base mb-2">{agent.name}</h3>
+                <p className="text-sm text-[#9CA3AF] leading-relaxed">{agent.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* N of Many */}
+      <section className="border-t border-[var(--glass-border)] bg-[var(--bg-elevated)] py-24 px-6">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--secondary)]/10 border border-[var(--secondary)]/20 rounded-full text-xs font-medium text-[var(--secondary)] mb-6">
