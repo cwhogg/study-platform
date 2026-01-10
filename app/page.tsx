@@ -14,7 +14,7 @@ export default function Home() {
           <Link href="#how-it-works" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
             How it works
           </Link>
-          <Link href="/study" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
+          <Link href="/protocols" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
             Protocols
           </Link>
           <Link href="/sponsor" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
@@ -86,7 +86,7 @@ export default function Home() {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
-                href="/study"
+                href="/protocols"
                 className="inline-flex items-center gap-2.5 px-7 py-4 bg-[var(--glass-bg)] text-white rounded-xl font-medium text-base border border-[var(--glass-border)] backdrop-blur-sm hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.15)] transition-all"
               >
                 Browse protocols
