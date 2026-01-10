@@ -118,8 +118,8 @@ export default function Home() {
             >
               <div className="flex justify-between items-start mb-5">
                 <div>
-                  <div className="text-sm font-medium text-[#9CA3AF]">Energy & Vitality Score</div>
-                  <div className="font-mono text-[32px] font-semibold text-[var(--primary)] mt-1">+18 pts</div>
+                  <div className="text-sm font-medium text-[#9CA3AF]">Sexual Function Score</div>
+                  <div className="font-mono text-[32px] font-semibold text-[var(--primary)] mt-1">+6 pts</div>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(34,197,94,0.15)] rounded-full text-xs font-semibold text-[#22C55E]">
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -166,19 +166,19 @@ export default function Home() {
               className="absolute bottom-0 left-5 w-52 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-6 hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.12)] hover:-translate-y-1 transition-all animate-fade-in-up"
               style={{ animation: 'fade-in-up 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards, float 6s ease-in-out infinite -2s' }}
             >
-              <div className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-3">SF-36 Vitality</div>
+              <div className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-3">IIEF-5</div>
               <div className="flex items-center gap-3 py-3 border-b border-[var(--glass-border)]">
                 <div className="w-2.5 h-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_rgba(234,88,12,0.4)]" />
                 <div className="flex-1">
                   <div className="text-xs text-[#9CA3AF]">Your score</div>
-                  <div className="font-mono text-base font-medium text-[var(--primary)]">Week 8: 68</div>
+                  <div className="font-mono text-base font-medium text-[var(--primary)]">Week 8: 19</div>
                 </div>
               </div>
               <div className="flex items-center gap-3 py-3">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#6B7280]" />
                 <div className="flex-1">
                   <div className="text-xs text-[#9CA3AF]">Avg response</div>
-                  <div className="font-mono text-base font-medium text-white">Week 8: 58</div>
+                  <div className="font-mono text-base font-medium text-white">Week 8: 16</div>
                 </div>
               </div>
             </div>
@@ -304,10 +304,10 @@ export default function Home() {
                 </div>
                 <ul className="space-y-2.5">
                   {[
+                    { name: 'Sexual Function', instrument: 'IIEF-5' },
                     { name: 'Energy & Vitality', instrument: 'SF-36 subscale' },
                     { name: 'Mood & Well-being', instrument: 'PHQ-9' },
                     { name: 'Sleep Quality', instrument: 'PSQI' },
-                    { name: 'Sexual Function', instrument: 'IIEF-5' },
                     { name: 'Body Composition', instrument: 'Self-report' },
                   ].map((outcome) => (
                     <li key={outcome.name} className="flex items-center gap-3">
