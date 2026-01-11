@@ -405,6 +405,23 @@ export default function CreateStudyPage() {
                 </p>
               </div>
 
+              {/* Dynamic Study Name Preview */}
+              {(intervention.trim() || goal.trim()) && (
+                <div className="bg-[var(--primary-dim)] rounded-xl p-4 border border-[var(--primary)]/20">
+                  <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide mb-1">Study Name</p>
+                  <p className="text-sm text-[var(--text-primary)]">
+                    <span className={intervention.trim() ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}>
+                      {intervention.trim() || '[Intervention]'}
+                    </span>
+                    <span className="text-[var(--text-muted)]"> for </span>
+                    <span className={goal.trim() ? 'text-[var(--primary)]' : 'text-[var(--text-muted)]'}>
+                      {goal.trim() || '[Goal]'}
+                    </span>
+                    <span className="text-[var(--text-secondary)]"> Study</span>
+                  </p>
+                </div>
+              )}
+
               {/* Example combinations */}
               <div className="bg-[var(--glass-bg)] rounded-xl p-4 border border-[var(--glass-border)]">
                 <div className="text-xs font-medium text-[var(--text-muted)] mb-3 uppercase tracking-wide">Example combinations</div>
