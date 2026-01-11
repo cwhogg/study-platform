@@ -411,11 +411,11 @@ export default function Home() {
               </svg>
               <span className="text-sm font-medium text-[#D1D5DB]">AI Agents</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">Four Specialized Agents</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">Five Specialized Agents</h2>
             <p className="text-lg text-[#9CA3AF]">Working together to design, launch, and run your study</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {[
               {
                 name: 'Protocol Agent',
@@ -467,6 +467,17 @@ export default function Home() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                  </svg>
+                ),
+              },
+              {
+                name: 'Safety Agent',
+                description: 'Monitors adverse events and flags concerning patterns for immediate review.',
+                color: '#EF4444',
+                bgColor: 'rgba(239, 68, 68, 0.15)',
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
                   </svg>
                 ),
               },
