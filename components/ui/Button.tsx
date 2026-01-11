@@ -5,6 +5,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   isLoading?: boolean
+  loadingText?: string
   leftIcon?: ReactNode
   rightIcon?: ReactNode
   fullWidth?: boolean
@@ -17,6 +18,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'primary',
       size = 'md',
       isLoading = false,
+      loadingText,
       leftIcon,
       rightIcon,
       fullWidth = false,
@@ -92,7 +94,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {isLoading ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Loading...</span>
+            <span>{loadingText || 'Loading...'}</span>
           </>
         ) : (
           <>
