@@ -29,6 +29,7 @@ export interface ExclusionCriterion {
 export interface Protocol {
   inclusionCriteria?: InclusionCriterion[]
   exclusionCriteria?: ExclusionCriterion[]
+  schedule?: { timepoint: string; labs?: string[] }[]
 }
 
 /**
@@ -78,13 +79,42 @@ export function exclusionToQuestion(
 }
 
 /**
- * Generate a participation willingness question based on study duration
+ * Format timepoint name for display (e.g., "week_6" -> "Week 6")
  */
-export function generateParticipationQuestion(durationWeeks: number): ScreeningQuestion {
-  const months = Math.round(durationWeeks / 4)
+function formatTimepoint(tp: string): string {
+  const formatted = tp.replace(/_/g, ' ')
+  return formatted
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
+/**
+ * Generate a participation willingness question based on study schedule
+ */
+export function generateParticipationQuestion(
+  durationWeeks: number,
+  schedule?: { timepoint: string }[]
+): ScreeningQuestion {
+  const months = Math.round(durationWeeks / 4.33)
+
+  let question: string
+  if (schedule && schedule.length > 0) {
+    const scheduleCount = schedule.length
+    const timepoints = schedule.map(tp => formatTimepoint(tp.timepoint))
+
+    if (scheduleCount <= 4) {
+      question = `Are you willing to complete ${scheduleCount} surveys at ${timepoints.join(', ')} over ${months} months?`
+    } else {
+      question = `Are you willing to complete ${scheduleCount} surveys over ${months} months?`
+    }
+  } else {
+    question = `Are you willing to complete short surveys over ${months} months?`
+  }
+
   return {
     id: 'willing_to_participate',
-    question: `Are you willing to complete short surveys every 2-4 weeks for ${months} months?`,
+    question,
     type: 'yes_no',
     disqualifyingAnswer: false, // "No" disqualifies
     source: 'general',
@@ -158,7 +188,7 @@ export function buildScreeningQuestions(
   }
 
   // Always add participation willingness question at the end
-  questions.push(generateParticipationQuestion(durationWeeks))
+  questions.push(generateParticipationQuestion(durationWeeks, protocol?.schedule))
 
   return questions.length > 1 ? questions : getFallbackQuestions()
 }
