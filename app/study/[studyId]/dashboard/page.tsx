@@ -21,14 +21,37 @@ interface Assessment {
   score?: number
 }
 
-const scheduleConfig: { id: string; timepoint: string; week: number; instruments: string[] }[] = [
-  { id: 'baseline', timepoint: 'Baseline', week: 0, instruments: ['phq-2', 'energy'] },
-  { id: 'week2', timepoint: 'Week 2', week: 2, instruments: ['phq-2', 'energy'] },
-  { id: 'week4', timepoint: 'Week 4', week: 4, instruments: ['phq-2', 'energy', 'symptoms'] },
-  { id: 'week6', timepoint: 'Week 6', week: 6, instruments: ['phq-2', 'energy', 'symptoms'] },
-  { id: 'week8', timepoint: 'Week 8', week: 8, instruments: ['phq-2', 'energy', 'symptoms', 'satisfaction'] },
-  { id: 'week12', timepoint: 'Week 12', week: 12, instruments: ['phq-2', 'energy', 'symptoms', 'satisfaction'] },
+interface ScheduleItem {
+  id: string
+  timepoint: string
+  week: number
+  instruments: string[]
+}
+
+// Fallback schedule if protocol doesn't have one
+const FALLBACK_SCHEDULE: ScheduleItem[] = [
+  { id: 'baseline', timepoint: 'Baseline', week: 0, instruments: [] },
+  { id: 'week_2', timepoint: 'Week 2', week: 2, instruments: [] },
+  { id: 'week_4', timepoint: 'Week 4', week: 4, instruments: [] },
+  { id: 'week_6', timepoint: 'Week 6', week: 6, instruments: [] },
+  { id: 'week_12', timepoint: 'Week 12', week: 12, instruments: [] },
 ]
+
+// Format timepoint name for display (e.g., "week_6" -> "Week 6")
+function formatTimepoint(tp: string): string {
+  const formatted = tp.replace(/_/g, ' ')
+  return formatted
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
+// Parse week number from timepoint string
+function parseWeekNumber(timepoint: string): number {
+  if (timepoint.toLowerCase() === 'baseline') return 0
+  const match = timepoint.match(/week[_\s]*(\d+)/i)
+  return match ? parseInt(match[1], 10) : 0
+}
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -43,7 +66,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [notEnrolled, setNotEnrolled] = useState(false)
   const [studyName, setStudyName] = useState('Your Protocol')
-  const totalWeeks = 12
+  const [totalWeeks, setTotalWeeks] = useState(12)
 
   const loadDashboardData = useCallback(async () => {
     const supabase = createClient()
@@ -55,15 +78,34 @@ export default function DashboardPage() {
         return
       }
 
-      // Get study info
+      // Get study info including protocol
       const { data: study } = await supabase
         .from('sp_studies')
-        .select('name, intervention')
+        .select('name, intervention, protocol, duration_weeks')
         .eq('id', studyId)
         .single()
 
       if (study) {
         setStudyName(study.name || study.intervention || 'Your Protocol')
+        if (study.duration_weeks) {
+          setTotalWeeks(study.duration_weeks)
+        }
+      }
+
+      // Build schedule from protocol or use fallback
+      let scheduleConfig: ScheduleItem[] = FALLBACK_SCHEDULE
+      const protocol = study?.protocol as { schedule?: { timepoint: string; instruments?: string[] }[] } | null
+
+      if (protocol?.schedule && protocol.schedule.length > 0) {
+        scheduleConfig = protocol.schedule.map(tp => ({
+          id: tp.timepoint,
+          timepoint: formatTimepoint(tp.timepoint),
+          week: parseWeekNumber(tp.timepoint),
+          instruments: tp.instruments || [],
+        }))
+        console.log('[Dashboard] Using protocol schedule:', scheduleConfig.length, 'timepoints')
+      } else {
+        console.log('[Dashboard] Using fallback schedule')
       }
 
       const { data: participant, error: participantError } = await supabase
@@ -90,6 +132,7 @@ export default function DashboardPage() {
         .select('timepoint, instrument, submitted_at')
         .eq('participant_id', participant.id)
 
+      // Track submissions by timepoint
       const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null }>()
       submissions?.forEach(s => {
         if (!submissionsByTimepoint.has(s.timepoint)) {
@@ -124,7 +167,13 @@ export default function DashboardPage() {
 
         const submissionEntry = submissionsByTimepoint.get(config.id)
         const completedInstruments = Array.from(submissionEntry?.instruments || [])
-        const allCompleted = config.instruments.every(i => completedInstruments.includes(i))
+
+        // Check if timepoint has any submissions - for protocols without instrument list,
+        // having ANY submission means it's complete
+        const hasSubmissions = completedInstruments.length > 0
+        const allCompleted = config.instruments.length === 0
+          ? hasSubmissions  // No instruments specified: any submission counts
+          : config.instruments.every(i => completedInstruments.includes(i))
 
         let status: Assessment['status']
         if (allCompleted) {
@@ -216,7 +265,9 @@ export default function DashboardPage() {
         {/* Sidebar */}
         <aside className="fixed top-0 left-0 bottom-0 w-[240px] bg-[var(--bg-elevated)] border-r border-[var(--glass-border)] p-6 flex flex-col">
           <div className="mb-8">
-            <NofOneLogo showText size={32} />
+            <Link href="/">
+              <NofOneLogo showText size={32} />
+            </Link>
           </div>
 
           <nav className="flex-1 space-y-1">
@@ -468,7 +519,9 @@ export default function DashboardPage() {
       <div className="lg:hidden px-5 py-6 pb-8">
         {/* Mobile Header */}
         <div className="flex items-center justify-between mb-6">
-          <NofOneLogo size={28} />
+          <Link href="/">
+            <NofOneLogo size={28} />
+          </Link>
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center text-sm font-semibold">
             U
           </div>
