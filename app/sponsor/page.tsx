@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FileText, Users, BarChart3, Shield, ArrowRight, Target, Check } from 'lucide-react'
+import { FileText, Users, BarChart3, Shield, ArrowRight, Target, Check, Stethoscope, UserCheck, PieChart, Palette, ClipboardCheck, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 export default function SponsorPage() {
@@ -21,7 +21,7 @@ export default function SponsorPage() {
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-[var(--text-primary)] mb-6 text-balance leading-tight">
-              Launch Protocols in Minutes
+              Launch Sponsored Protocols in Minutes
             </h1>
 
             {/* Subheadline */}
@@ -46,6 +46,71 @@ export default function SponsorPage() {
                 View Dashboard
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits to Sponsors */}
+      <section className="border-t border-[var(--glass-border)]">
+        <div className="container-wide py-20 sm:py-24">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-full text-xs font-medium text-[var(--text-muted)] mb-6">
+              Why Sponsors Choose Us
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-[var(--text-primary)] mb-4">
+              Benefits to Sponsors
+            </h2>
+            <p className="text-[var(--text-secondary)] text-lg max-w-2xl mx-auto">
+              Everything you need to run professional observational studies — without the traditional overhead
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {[
+              {
+                icon: Stethoscope,
+                title: 'Physician Oversight',
+                description: 'Every protocol is reviewed and overseen by a licensed MD to ensure clinical validity and participant safety.',
+              },
+              {
+                icon: UserCheck,
+                title: 'Human Study Coordinator',
+                description: 'Dedicated coordinators manage participant communications, safety alerts, and data quality — not just bots.',
+              },
+              {
+                icon: PieChart,
+                title: 'Aggregate Data & Insights',
+                description: 'Access de-identified aggregate outcomes data for marketing claims, product development, and clinical validation.',
+              },
+              {
+                icon: Palette,
+                title: 'White-Label Branding',
+                description: 'Brand the study experience with your company logo, colors, and messaging for seamless patient engagement.',
+              },
+              {
+                icon: ClipboardCheck,
+                title: 'IRB-Ready Documentation',
+                description: 'AI-generated protocols and consent documents follow FDA and IRB requirements out of the box.',
+              },
+              {
+                icon: Zap,
+                title: 'Launch in Days, Not Months',
+                description: 'Skip the traditional 6-12 month protocol development cycle. Go from concept to live study in under a week.',
+              },
+            ].map((benefit) => (
+              <div
+                key={benefit.title}
+                className="group p-6 bg-[var(--glass-bg)] rounded-2xl border border-[var(--glass-border)] hover:border-[var(--primary)]/30 transition-all duration-300"
+              >
+                {/* Icon */}
+                <div className="w-12 h-12 bg-[var(--primary-dim)] rounded-xl flex items-center justify-center mb-4 group-hover:bg-[var(--primary)]/20 transition-colors">
+                  <benefit.icon className="w-6 h-6 text-[var(--primary)]" />
+                </div>
+
+                <h3 className="font-semibold text-[var(--text-primary)] mb-2">{benefit.title}</h3>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{benefit.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
