@@ -8,6 +8,13 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { toTitleCase } from '@/lib/utils'
 import { generateDefaultSchedule } from '@/lib/study/schedule'
+import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
+import {
+  DynamicLoader,
+  DISCOVERY_MESSAGES,
+  PROTOCOL_BUTTON_MESSAGES,
+  SAFETY_BUTTON_MESSAGES,
+} from '@/components/ui/DynamicLoader'
 
 // Types for AI discovery response
 interface EndpointOption {
@@ -104,6 +111,18 @@ function ConfigureStudyContent() {
     error: '',
     protocol: null,
   })
+
+  // Dynamic loading messages based on submission phase
+  const protocolMessage = useDynamicMessage(
+    PROTOCOL_BUTTON_MESSAGES,
+    2500,
+    isSubmitting && submissionPhase === 'protocol'
+  )
+  const safetyMessage = useDynamicMessage(
+    SAFETY_BUTTON_MESSAGES,
+    2500,
+    isSubmitting && submissionPhase === 'safety'
+  )
 
   // Load discovery data from sessionStorage
   useEffect(() => {
@@ -343,17 +362,7 @@ function ConfigureStudyContent() {
   }
 
   if (isLoading) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center animate-fade-in">
-          <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
-            <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
-          </div>
-          <p className="text-[var(--text-secondary)]">Loading study options...</p>
-        </div>
-      </div>
-    )
+    return <DynamicLoader messages={DISCOVERY_MESSAGES} intervalMs={2500} />
   }
 
   return (
@@ -859,7 +868,7 @@ function ConfigureStudyContent() {
           {isSubmitting ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              {submissionPhase === 'safety' ? 'Generating Safety Rules...' : 'Generating Protocol...'}
+              {submissionPhase === 'safety' ? safetyMessage : protocolMessage}
             </>
           ) : (
             <>

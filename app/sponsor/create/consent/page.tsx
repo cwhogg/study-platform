@@ -22,6 +22,12 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { ConsentContent } from '@/components/participant/ConsentContent'
 import { toTitleCase } from '@/lib/utils'
+import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
+import {
+  DynamicLoader,
+  CONSENT_MESSAGES,
+  FINALIZATION_BUTTON_MESSAGES,
+} from '@/components/ui/DynamicLoader'
 
 // Types for AI-generated consent
 interface ConsentSection {
@@ -129,6 +135,9 @@ function ConsentReviewContent() {
   const [createdStudy, setCreatedStudy] = useState<CreatedStudy | null>(null)
   const [inviteLink, setInviteLink] = useState('')
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['intro']))
+
+  // Dynamic loading message for finalization
+  const finalizationMessage = useDynamicMessage(FINALIZATION_BUTTON_MESSAGES, 2500, isSubmitting)
 
   // Load consent from sessionStorage
   useEffect(() => {
@@ -278,17 +287,7 @@ function ConsentReviewContent() {
   }
 
   if (isLoading) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center animate-fade-in">
-          <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
-            <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
-          </div>
-          <p className="text-[var(--text-secondary)]">Loading consent document...</p>
-        </div>
-      </div>
-    )
+    return <DynamicLoader messages={CONSENT_MESSAGES} intervalMs={2500} />
   }
 
   // Success state
@@ -521,7 +520,7 @@ function ConsentReviewContent() {
         {isSubmitting ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            Creating Protocol...
+            {finalizationMessage}
           </>
         ) : (
           <>
