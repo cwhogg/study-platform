@@ -3,9 +3,16 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Target, ArrowRight, Search, BarChart3 } from 'lucide-react'
+import { Target, ArrowRight, Search, Users, Clock } from 'lucide-react'
 import { PageSpinner } from '@/components/ui/Spinner'
 import { NofOneLogo } from '@/components/ui/NofOneLogo'
+
+interface StudyProtocol {
+  duration_weeks?: number
+  primary_endpoint?: {
+    name?: string
+  }
+}
 
 interface Study {
   id: string
@@ -13,7 +20,59 @@ interface Study {
   intervention: string
   config?: {
     description?: string
+    goal?: string
+    duration_weeks?: number
   }
+  protocol?: StudyProtocol
+  participant_count?: number
+}
+
+// Extract a clean intervention name from the full intervention string
+function getShortIntervention(intervention: string): string {
+  // Remove parenthetical details for cleaner display
+  const cleaned = intervention.replace(/\s*\([^)]*\)\s*/g, '').trim()
+  return cleaned
+}
+
+// Get goal from study - try config.goal, then extract from primary endpoint, or infer from name
+function getGoal(study: Study): string | null {
+  // Check config first
+  if (study.config?.goal) {
+    return study.config.goal
+  }
+
+  // Try to extract from primary endpoint name
+  const endpointName = study.protocol?.primary_endpoint?.name
+  if (endpointName) {
+    // Extract goal from endpoint like "Symptom improvement (qADAM)" -> "symptom improvement"
+    const match = endpointName.match(/^([^(]+)/)
+    if (match) {
+      return match[1].trim().toLowerCase()
+    }
+  }
+
+  // Try to extract from study name (e.g. "Magnesium Supplementation Outcomes Study")
+  const nameMatch = study.name.match(/(.+?)\s+(?:Outcomes?\s+)?Study$/i)
+  if (nameMatch) {
+    // Remove "Supplementation" type words
+    const goal = nameMatch[1]
+      .replace(/\s+Supplementation$/i, '')
+      .replace(/\s+Therapy$/i, '')
+      .replace(/\s+Treatment$/i, '')
+    return goal.toLowerCase()
+  }
+
+  return null
+}
+
+// Format duration in weeks to a readable string
+function formatDuration(weeks?: number): string {
+  if (!weeks) return '12 weeks'
+  if (weeks >= 52) {
+    const years = Math.floor(weeks / 52)
+    return years === 1 ? '1 year' : `${years} years`
+  }
+  return `${weeks} weeks`
 }
 
 export default function ProtocolsPage() {
@@ -105,45 +164,9 @@ export default function ProtocolsPage() {
           </div>
           <h1 className="text-2xl font-semibold text-[var(--text-primary)] mb-2">Find a Protocol</h1>
           <p className="text-[var(--text-secondary)]">
-            Enter a protocol code or select from available studies below
+            Join a self-study protocol to track your outcomes
           </p>
         </div>
-
-        {/* Protocol Code Form */}
-        <form onSubmit={handleSubmit} className="bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)] p-6 mb-6">
-          <label htmlFor="studyCode" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-            Protocol Code
-          </label>
-          <div className="flex gap-3">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
-              <input
-                id="studyCode"
-                type="text"
-                value={studyCode}
-                onChange={(e) => {
-                  setStudyCode(e.target.value)
-                  if (error) setError('')
-                }}
-                placeholder="Enter protocol code"
-                className="w-full pl-10 pr-4 py-3 bg-[var(--bg-primary)] border border-[var(--glass-border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-6 py-3 bg-[var(--primary)] text-white font-medium rounded-lg hover:bg-[var(--primary-light)] disabled:bg-[var(--glass-border)] disabled:text-[var(--text-muted)] transition-colors"
-            >
-              {isSubmitting ? 'Checking...' : 'Go'}
-            </button>
-          </div>
-          {error && (
-            <p className="mt-2 text-sm text-[var(--error)]">{error}</p>
-          )}
-          <p className="mt-2 text-xs text-[var(--text-muted)]">
-            You may have received a protocol code or invitation link
-          </p>
-        </form>
 
         {/* API Error */}
         {error && studies.length === 0 && !studyCode && (
@@ -160,46 +183,104 @@ export default function ProtocolsPage() {
 
         {/* Available Studies */}
         {studies.length > 0 && (
-          <div>
+          <div className="mb-8">
             <h2 className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-3">
               Available Protocols
             </h2>
             <div className="space-y-3">
-              {studies.map((study) => (
-                <Link
-                  key={study.id}
-                  href={`/study/${study.id}/join`}
-                  className="block bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)] p-4 hover:border-[var(--primary)]/40 hover:shadow-lg hover:shadow-[var(--primary)]/5 transition-all group"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 flex-1 min-w-0">
-                      <div className="w-10 h-10 bg-[var(--primary-dim)] rounded-xl flex items-center justify-center flex-shrink-0">
-                        <BarChart3 className="w-5 h-5 text-[var(--primary)]" />
-                      </div>
+              {studies.map((study) => {
+                const goal = getGoal(study)
+                const shortIntervention = getShortIntervention(study.intervention)
+                const duration = formatDuration(study.protocol?.duration_weeks || study.config?.duration_weeks)
+                const participantCount = study.participant_count || 0
+
+                return (
+                  <Link
+                    key={study.id}
+                    href={`/study/${study.id}/join`}
+                    className="block bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)] p-4 hover:border-[var(--primary)]/40 hover:shadow-lg hover:shadow-[var(--primary)]/5 transition-all group"
+                  >
+                    <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
+                        {/* Title: Intervention for Goal */}
                         <h3 className="font-semibold text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors">
-                          {study.name}
+                          {goal ? (
+                            <>
+                              <span>{shortIntervention}</span>
+                              <span className="text-[var(--text-muted)] font-normal"> for </span>
+                              <span className="text-[var(--primary)]">{goal}</span>
+                            </>
+                          ) : (
+                            shortIntervention
+                          )}
                         </h3>
-                        <p className="text-sm text-[var(--text-secondary)] mt-1">
-                          {study.config?.description || `Self-study protocol for ${study.intervention.toLowerCase()}.`}
+
+                        {/* Description */}
+                        <p className="text-sm text-[var(--text-secondary)] mt-1.5 line-clamp-2">
+                          {study.config?.description || `Track your progress and outcomes over ${duration.toLowerCase()}.`}
                         </p>
+
+                        {/* Stats */}
+                        <div className="flex items-center gap-4 mt-3">
+                          <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                            <Users className="w-3.5 h-3.5" />
+                            <span>{participantCount} enrolled</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>{duration}</span>
+                          </div>
+                        </div>
                       </div>
+                      <ArrowRight className="w-5 h-5 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors flex-shrink-0 mt-1" />
                     </div>
-                    <ArrowRight className="w-5 h-5 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors flex-shrink-0 mt-1" />
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                )
+              })}
             </div>
           </div>
         )}
 
         {/* No studies message */}
         {studies.length === 0 && !error && (
-          <div className="text-center text-[var(--text-secondary)] py-8">
+          <div className="text-center text-[var(--text-secondary)] py-8 mb-8">
             <p>No protocols are currently available.</p>
-            <p className="text-sm text-[var(--text-muted)] mt-1">If you have an invitation link, use it directly or enter the protocol code above.</p>
+            <p className="text-sm text-[var(--text-muted)] mt-1">If you have an invitation link, use it directly or enter the protocol code below.</p>
           </div>
         )}
+
+        {/* Protocol Code Form - Moved to bottom */}
+        <form onSubmit={handleSubmit} className="bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)] p-5">
+          <label htmlFor="studyCode" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+            Have a protocol code?
+          </label>
+          <div className="flex gap-3">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+              <input
+                id="studyCode"
+                type="text"
+                value={studyCode}
+                onChange={(e) => {
+                  setStudyCode(e.target.value)
+                  if (error) setError('')
+                }}
+                placeholder="Enter code"
+                className="w-full pl-10 pr-4 py-3 bg-[var(--bg-primary)] border border-[var(--glass-border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition-colors"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-3 bg-[var(--primary)] text-white font-medium rounded-lg hover:bg-[var(--primary-light)] disabled:bg-[var(--glass-border)] disabled:text-[var(--text-muted)] transition-colors"
+            >
+              {isSubmitting ? '...' : 'Go'}
+            </button>
+          </div>
+          {error && studyCode && (
+            <p className="mt-2 text-sm text-[var(--error)]">{error}</p>
+          )}
+        </form>
 
         {/* Back link */}
         <div className="text-center mt-8">
