@@ -114,12 +114,29 @@ export default function JoinPage() {
     : study.protocol?.summary || 'Track your personal response with validated clinical measures'
 
   // Build dynamic bullets based on actual study data
+  // Calculate survey frequency from schedule
+  const scheduleCount = study.protocol?.schedule?.length || 0
+  const surveyDescription = scheduleCount > 0
+    ? scheduleCount <= 3
+      ? `${scheduleCount} check-ins over the study period`
+      : `${scheduleCount} surveys throughout the study`
+    : 'Short surveys at key timepoints'
+
+  // Calculate duration in months
+  const durationMonths = Math.round(study.durationWeeks / 4.33)
+  const durationDescription = durationMonths === 1
+    ? '1 month commitment'
+    : `${durationMonths} months total`
+
+  // Get primary endpoint description
+  const endpointDescription = study.protocol?.primaryEndpoint?.name
+    ? `Track your ${study.protocol.primaryEndpoint.name.toLowerCase()}`
+    : 'Help shape future treatments'
+
   const dynamicBullets = [
-    `Short surveys every 2-4 weeks`,
-    `${Math.round(study.durationWeeks / 4.33)} months total`,
-    study.protocol?.primaryEndpoint?.name
-      ? `Measure ${study.protocol.primaryEndpoint.name.toLowerCase()}`
-      : 'Help improve future treatments',
+    surveyDescription,
+    durationDescription,
+    endpointDescription,
   ]
 
   const bullets = welcome.bullets && welcome.bullets.length > 0 && welcome.bullets[0] !== DEFAULT_WELCOME.bullets[0]
