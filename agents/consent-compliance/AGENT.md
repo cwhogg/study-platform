@@ -262,14 +262,33 @@ This is shown BEFORE the full consent to orient participants.
 
 **Important: Do NOT use emojis in the summary bullets or anywhere else in the output.**
 
-### Example
+**CRITICAL: Use the ACTUAL schedule from the protocol to describe survey frequency.**
+- If the protocol has 3 timepoints (baseline, week 13, week 26), say "Surveys at 3 timepoints: baseline, 13 weeks, and 26 weeks"
+- If the protocol has weekly surveys, say "Weekly surveys"
+- Do NOT use generic phrases like "every 2-4 weeks" unless that matches the actual schedule
+- Count the timepoints from `protocol.schedule` to determine frequency
+
+### Example (for a 3-timepoint study)
 ```json
 {
   "title": "Study at a Glance",
   "bullets": [
-    "Short surveys every 2-4 weeks (~5 min each)",
-    "Blood tests at 4 timepoints (same as your regular care)",
-    "6 months total, you can stop anytime",
+    "Surveys at 3 timepoints: baseline, midpoint, and end of study (~5-10 min each)",
+    "Blood tests at 3 timepoints",
+    "26 weeks total, you can stop anytime",
+    "Your information is kept private and secure"
+  ]
+}
+```
+
+### Example (for more frequent surveys)
+```json
+{
+  "title": "Study at a Glance",
+  "bullets": [
+    "Brief surveys every 2 weeks for 12 weeks (~5 min each)",
+    "No blood tests required",
+    "12 weeks total, you can stop anytime",
     "Your information is kept private and secure"
   ]
 }
