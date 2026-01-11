@@ -19,6 +19,81 @@ export default function ConsentPage() {
   const [readSections, setReadSections] = useState<Set<number>>(new Set([0]))
   const contentRef = useRef<HTMLDivElement>(null)
 
+  // Format timepoint name for display (e.g., "week_6" -> "Week 6")
+  const formatTimepoint = (tp: string): string => {
+    const formatted = tp.replace(/_/g, ' ')
+    return formatted
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ')
+  }
+
+  // Post-process consent sections to replace generic text with actual protocol data
+  const enhanceConsentWithProtocol = (
+    sections: ConsentSection[],
+    protocol: { schedule?: { timepoint: string; labs?: string[] }[]; labMarkers?: string[] } | undefined,
+    durationWeeks: number
+  ): ConsentSection[] => {
+    if (!protocol?.schedule || protocol.schedule.length === 0) {
+      return sections
+    }
+
+    const schedule = protocol.schedule
+    const scheduleCount = schedule.length
+    const labTimepoints = schedule.filter(tp => tp.labs && tp.labs.length > 0)
+    const durationMonths = Math.round(durationWeeks / 4.33)
+    const timepoints = schedule.map(tp => formatTimepoint(tp.timepoint))
+    const timepointsText = timepoints.join(', ')
+
+    return sections.map(section => {
+      let content = section.content
+
+      // Replace generic "every 2-4 weeks" with actual schedule
+      content = content.replace(
+        /every 2-4 weeks/gi,
+        `at ${scheduleCount} timepoints: ${timepointsText}`
+      )
+      content = content.replace(
+        /every 2 to 4 weeks/gi,
+        `at ${scheduleCount} timepoints: ${timepointsText}`
+      )
+
+      // Replace generic questionnaire counts
+      content = content.replace(
+        /approximately \d+ questionnaires/gi,
+        `${scheduleCount} questionnaires`
+      )
+      content = content.replace(
+        /\d+ questionnaires over \d+ months/gi,
+        `${scheduleCount} questionnaires over ${durationMonths} months`
+      )
+
+      // Replace generic "7 months" or similar with actual duration
+      content = content.replace(
+        /(\d+) months total/gi,
+        `${durationMonths} months total`
+      )
+      content = content.replace(
+        /lasts (\d+) months/gi,
+        `lasts ${durationMonths} months`
+      )
+      content = content.replace(
+        /for (\d+) months/gi,
+        `for ${durationMonths} months`
+      )
+
+      // Replace generic blood test count
+      if (labTimepoints.length > 0) {
+        content = content.replace(
+          /blood tests at (each visit|every visit|all visits)/gi,
+          `blood tests at ${labTimepoints.length} visits`
+        )
+      }
+
+      return { ...section, content }
+    })
+  }
+
   // Fetch consent document from study
   useEffect(() => {
     const fetchConsent = async () => {
@@ -30,7 +105,13 @@ export default function ConsentPage() {
           const durationWeeks = data.durationWeeks || 26
 
           if (data.consentDocument?.sections && data.consentDocument.sections.length > 0) {
-            setConsentSections(data.consentDocument.sections)
+            // Enhance stored consent with actual protocol data
+            const enhanced = enhanceConsentWithProtocol(
+              data.consentDocument.sections,
+              data.protocol,
+              durationWeeks
+            )
+            setConsentSections(enhanced)
           } else {
             // Use personalized fallback with intervention name
             console.log('[Consent] Using fallback with intervention:', intervention)
