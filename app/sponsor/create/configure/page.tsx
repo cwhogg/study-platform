@@ -112,7 +112,7 @@ function ConfigureStudyContent() {
     protocol: null,
   })
 
-  // Dynamic loading messages based on submission phase
+  // Dynamic loading messages - switch based on current phase
   const protocolMessage = useDynamicMessage(
     PROTOCOL_BUTTON_MESSAGES,
     2500,
@@ -123,6 +123,8 @@ function ConfigureStudyContent() {
     2500,
     isSubmitting && submissionPhase === 'safety'
   )
+  // Use the message for the current phase
+  const loadingMessage = submissionPhase === 'safety' ? safetyMessage : protocolMessage
 
   // Load discovery data from sessionStorage
   useEffect(() => {
@@ -864,7 +866,7 @@ function ConfigureStudyContent() {
           fullWidth
           disabled={isSubmitting || !population || !treatmentStage || !primaryEndpoint}
           isLoading={isSubmitting}
-          loadingText={submissionPhase === 'safety' ? safetyMessage : protocolMessage}
+          loadingText={loadingMessage}
           rightIcon={<ArrowRight className="w-5 h-5" />}
         >
           Generate Protocol
