@@ -16,12 +16,15 @@ import {
   ChevronUp,
   ListChecks,
   Sparkles,
-  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { ConsentContent } from '@/components/participant/ConsentContent'
 import { toTitleCase } from '@/lib/utils'
+import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
+import {
+  FINALIZATION_BUTTON_MESSAGES,
+} from '@/components/ui/DynamicLoader'
 
 // Types for AI-generated consent
 interface ConsentSection {
@@ -129,6 +132,9 @@ function ConsentReviewContent() {
   const [createdStudy, setCreatedStudy] = useState<CreatedStudy | null>(null)
   const [inviteLink, setInviteLink] = useState('')
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['intro']))
+
+  // Dynamic loading message
+  const finalizationMessage = useDynamicMessage(FINALIZATION_BUTTON_MESSAGES, 2500, isSubmitting)
 
   // Load consent from sessionStorage
   useEffect(() => {
@@ -518,18 +524,10 @@ function ConsentReviewContent() {
         onClick={handleFinalize}
         disabled={isSubmitting}
         isLoading={isSubmitting}
+        loadingText={finalizationMessage}
+        rightIcon={<Check className="w-5 h-5" />}
       >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            Creating Protocol...
-          </>
-        ) : (
-          <>
-            Finalize Protocol
-            <Check className="w-5 h-5" />
-          </>
-        )}
+        Finalize Protocol
       </Button>
 
       <p className="mt-4 text-center text-sm text-[var(--text-muted)]">

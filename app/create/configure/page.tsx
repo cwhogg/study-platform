@@ -2,12 +2,19 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowRight, ArrowLeft, Info, Sparkles, Loader2, AlertTriangle } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Info, Sparkles, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { toTitleCase } from '@/lib/utils'
 import { generateDefaultSchedule } from '@/lib/study/schedule'
+import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
+import {
+  DynamicLoader,
+  DISCOVERY_MESSAGES,
+  PROTOCOL_BUTTON_MESSAGES,
+  SAFETY_BUTTON_MESSAGES,
+} from '@/components/ui/DynamicLoader'
 
 // Types for AI discovery response
 interface EndpointOption {
@@ -104,6 +111,19 @@ function ConfigureStudyContent() {
     error: '',
     protocol: null,
   })
+
+  // Dynamic loading messages
+  const protocolMessage = useDynamicMessage(
+    PROTOCOL_BUTTON_MESSAGES,
+    2500,
+    submissionPhase === 'protocol'
+  )
+  const safetyMessage = useDynamicMessage(
+    SAFETY_BUTTON_MESSAGES,
+    2500,
+    submissionPhase === 'safety'
+  )
+  const loadingMessage = submissionPhase === 'safety' ? safetyMessage : protocolMessage
 
   // Load discovery data from sessionStorage
   useEffect(() => {
@@ -855,18 +875,10 @@ function ConfigureStudyContent() {
           fullWidth
           disabled={isSubmitting || !population || !treatmentStage || !primaryEndpoint}
           isLoading={isSubmitting}
+          loadingText={loadingMessage}
+          rightIcon={<ArrowRight className="w-5 h-5" />}
         >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              {submissionPhase === 'safety' ? 'Generating Safety Rules...' : 'Generating Protocol...'}
-            </>
-          ) : (
-            <>
-              Generate Protocol
-              <ArrowRight className="w-5 h-5" />
-            </>
-          )}
+          Generate Protocol
         </Button>
       </form>
     </div>

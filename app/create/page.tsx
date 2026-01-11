@@ -3,10 +3,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, ArrowLeft, Sparkles, Loader2, Pill, Target } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Sparkles, Pill, Target } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
+import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
+import { DISCOVERY_BUTTON_MESSAGES } from '@/components/ui/DynamicLoader'
 
 interface InterventionOption {
   name: string
@@ -140,6 +142,9 @@ export default function CreateStudyPage() {
   const inputRef = useRef<HTMLInputElement>(null)
   const goalInputRef = useRef<HTMLInputElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
+
+  // Dynamic loading message
+  const loadingMessage = useDynamicMessage(DISCOVERY_BUTTON_MESSAGES, 2500, isSubmitting)
 
   // Filter interventions based on input - limit to top 8 matches
   const filteredSuggestions = intervention.trim().length > 0
@@ -437,19 +442,11 @@ export default function CreateStudyPage() {
               fullWidth
               disabled={!intervention.trim() || !goal.trim()}
               isLoading={isSubmitting}
+              loadingText={loadingMessage}
+              rightIcon={<ArrowRight className="w-5 h-5" />}
               className="mt-6"
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Analyzing Study...
-                </>
-              ) : (
-                <>
-                  Continue
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
+              Continue
             </Button>
           </form>
         </Card>

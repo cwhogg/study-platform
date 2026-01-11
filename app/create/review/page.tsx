@@ -16,8 +16,9 @@ import {
   Shield,
   Info,
   Sparkles,
-  Loader2,
 } from 'lucide-react'
+import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
+import { CONSENT_BUTTON_MESSAGES } from '@/components/ui/DynamicLoader'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { CriteriaEditModal } from '@/components/sponsor/CriteriaEditModal'
@@ -192,6 +193,9 @@ function ReviewProtocolContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [editingCriteria, setEditingCriteria] = useState<'inclusion' | 'exclusion' | null>(null)
+
+  // Dynamic loading message
+  const consentMessage = useDynamicMessage(CONSENT_BUTTON_MESSAGES, 2500, isSubmitting)
 
   // Load protocol and discovery data from sessionStorage
   useEffect(() => {
@@ -698,18 +702,10 @@ function ReviewProtocolContent() {
         onClick={handleSubmit}
         disabled={isSubmitting}
         isLoading={isSubmitting}
+        loadingText={consentMessage}
+        rightIcon={<ArrowRight className="w-5 h-5" />}
       >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            Generating Consent Document...
-          </>
-        ) : (
-          <>
-            Generate Consent Document
-            <ArrowRight className="w-5 h-5" />
-          </>
-        )}
+        Generate Consent Document
       </Button>
 
       {/* Criteria Edit Modal */}
