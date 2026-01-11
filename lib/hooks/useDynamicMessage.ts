@@ -19,10 +19,13 @@ export function useDynamicMessage(
   intervalMs: number = 2500,
   isActive: boolean = true
 ): string {
-  // Defensive: ensure messages is a valid array
+  // Defensive: ensure messages is a valid array with non-empty strings
   const safeMessages = Array.isArray(messages) && messages.length > 0
-    ? messages
-    : [DEFAULT_MESSAGE]
+    ? messages.filter(m => typeof m === 'string' && m.trim().length > 0)
+    : []
+
+  // Fallback if no valid messages
+  const finalMessages = safeMessages.length > 0 ? safeMessages : [DEFAULT_MESSAGE]
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -34,12 +37,12 @@ export function useDynamicMessage(
   }, [isActive])
 
   useEffect(() => {
-    if (!isActive || safeMessages.length <= 1) return
+    if (!isActive || finalMessages.length <= 1) return
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => {
         // Stop at the last message instead of cycling
-        if (prev >= safeMessages.length - 1) {
+        if (prev >= finalMessages.length - 1) {
           return prev
         }
         return prev + 1
@@ -47,8 +50,8 @@ export function useDynamicMessage(
     }, intervalMs)
 
     return () => clearInterval(interval)
-  }, [safeMessages.length, intervalMs, isActive])
+  }, [finalMessages.length, intervalMs, isActive])
 
   // Triple fallback: current index -> first message -> default
-  return safeMessages[currentIndex] || safeMessages[0] || DEFAULT_MESSAGE
+  return finalMessages[currentIndex] || finalMessages[0] || DEFAULT_MESSAGE
 }

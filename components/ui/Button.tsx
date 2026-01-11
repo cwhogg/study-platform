@@ -95,8 +95,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            <span>{typeof loadingText === 'string' && loadingText.length > 0 ? loadingText : 'Loading...'}</span>
+            <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
+            <span className="whitespace-nowrap">{loadingText && loadingText.trim() ? loadingText : 'Loading...'}</span>
           </>
         ) : (
           <>
