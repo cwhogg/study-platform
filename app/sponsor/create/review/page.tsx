@@ -190,6 +190,7 @@ function ReviewProtocolContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const intervention = searchParams.get('intervention') || 'Unknown Intervention'
+  const goal = searchParams.get('goal') || ''
 
   const [protocol, setProtocol] = useState<Protocol | null>(null)
   const [riskAssessment, setRiskAssessment] = useState<RiskAssessment | null>(null)
@@ -199,7 +200,7 @@ function ReviewProtocolContent() {
   const [editingCriteria, setEditingCriteria] = useState<'inclusion' | 'exclusion' | null>(null)
 
   // Dynamic loading message for consent generation
-  const consentMessage = useDynamicMessage(CONSENT_BUTTON_MESSAGES, 2500, isSubmitting)
+  const consentMessage = useDynamicMessage(CONSENT_BUTTON_MESSAGES, 4000, isSubmitting)
 
   // Load protocol and discovery data from sessionStorage
   useEffect(() => {
@@ -264,9 +265,14 @@ function ReviewProtocolContent() {
       const duration = parseInt(searchParams.get('duration') || '26')
 
       // Call consent generation API
+      // Generate study name: include goal if available for more specific naming
+      const studyName = goal
+        ? `${toTitleCase(intervention)} for ${toTitleCase(goal)} Study`
+        : `${toTitleCase(intervention)} Outcomes Study`
+
       const consentRequest = {
         protocol,
-        studyName: `${toTitleCase(intervention)} Outcomes Study`,
+        studyName,
         intervention,
         durationWeeks: duration,
         riskAssessment,  // Pass risk assessment from discovery

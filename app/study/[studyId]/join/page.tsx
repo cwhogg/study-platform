@@ -14,6 +14,12 @@ interface StudyData {
   intervention: string
   enrollmentCopy: EnrollmentCopy | null
   durationWeeks: number
+  protocol?: {
+    summary?: string
+    primaryEndpoint?: { name: string }
+    secondaryEndpoints?: { name: string }[]
+    schedule?: { timepoint: string }[]
+  }
 }
 
 // Default copy if none generated
@@ -96,7 +102,29 @@ export default function JoinPage() {
   }
 
   const welcome = study.enrollmentCopy?.welcome || DEFAULT_WELCOME
-  const bullets = welcome.bullets || DEFAULT_WELCOME.bullets
+
+  // Build dynamic headline - use study name which includes intervention + goal
+  const headline = welcome.headline && welcome.headline !== DEFAULT_WELCOME.headline
+    ? welcome.headline
+    : `Join the ${study.name}`
+
+  // Build dynamic subheadline - use protocol summary or fall back
+  const subheadline = welcome.subheadline && !welcome.subheadline.includes('Study Sponsor')
+    ? welcome.subheadline
+    : study.protocol?.summary || 'Track your personal response with validated clinical measures'
+
+  // Build dynamic bullets based on actual study data
+  const dynamicBullets = [
+    `Short surveys every 2-4 weeks`,
+    `${Math.round(study.durationWeeks / 4.33)} months total`,
+    study.protocol?.primaryEndpoint?.name
+      ? `Measure ${study.protocol.primaryEndpoint.name.toLowerCase()}`
+      : 'Help improve future treatments',
+  ]
+
+  const bullets = welcome.bullets && welcome.bullets.length > 0 && welcome.bullets[0] !== DEFAULT_WELCOME.bullets[0]
+    ? welcome.bullets
+    : dynamicBullets
 
   return (
     <>
@@ -111,15 +139,13 @@ export default function JoinPage() {
 
           {/* Headline */}
           <h1 className="text-3xl font-semibold text-[var(--text-primary)] mb-3 text-balance">
-            {welcome.headline || study.name}
+            {headline}
           </h1>
 
           {/* Subheadline */}
-          {welcome.subheadline && (
-            <p className="text-[var(--text-secondary)] text-lg">
-              {welcome.subheadline}
-            </p>
-          )}
+          <p className="text-[var(--text-secondary)] text-lg text-balance px-2">
+            {subheadline}
+          </p>
         </div>
 
         <MobileDivider />

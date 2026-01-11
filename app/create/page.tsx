@@ -10,6 +10,17 @@ import { Card } from '@/components/ui/Card'
 import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
 import { DISCOVERY_BUTTON_MESSAGES } from '@/components/ui/DynamicLoader'
 
+/**
+ * Normalizes a goal string for consistent display:
+ * - Trims whitespace
+ * - Capitalizes the first letter of the first word
+ */
+function normalizeGoal(goal: string): string {
+  const trimmed = goal.trim()
+  if (!trimmed) return ''
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
+}
+
 interface InterventionOption {
   name: string
   category: 'pharmacological' | 'behavioral' | 'device' | 'lifestyle' | 'supplement'
@@ -144,7 +155,7 @@ export default function CreateStudyPage() {
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
   // Dynamic loading message
-  const loadingMessage = useDynamicMessage(DISCOVERY_BUTTON_MESSAGES, 2500, isSubmitting)
+  const loadingMessage = useDynamicMessage(DISCOVERY_BUTTON_MESSAGES, 4000, isSubmitting)
 
   // Filter interventions based on input - limit to top 8 matches
   const filteredSuggestions = intervention.trim().length > 0
@@ -214,15 +225,18 @@ export default function CreateStudyPage() {
     setIsSubmitting(true)
     setError('')
 
+    // Normalize the goal for consistent display (capitalize first letter)
+    const normalizedGoal = normalizeGoal(goal)
+
     try {
       // Call study discovery API
-      console.log('[StudyDiscovery] Sending request for intervention:', intervention.trim(), 'goal:', goal.trim())
+      console.log('[StudyDiscovery] Sending request for intervention:', intervention.trim(), 'goal:', normalizedGoal)
       const response = await fetch('/api/agents/study-discovery', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           intervention: intervention.trim(),
-          goal: goal.trim(),
+          goal: normalizedGoal,
         }),
       })
 
@@ -239,10 +253,10 @@ export default function CreateStudyPage() {
       // Store discovery results in sessionStorage for the configure page
       sessionStorage.setItem('studyDiscovery', JSON.stringify(data.data))
 
-      // Navigate to configure page
+      // Navigate to configure page with normalized goal
       const params = new URLSearchParams({
         intervention: intervention.trim(),
-        goal: goal.trim(),
+        goal: normalizedGoal,
       })
       router.push(`/create/configure?${params.toString()}`)
 

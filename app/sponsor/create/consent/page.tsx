@@ -119,6 +119,7 @@ const FALLBACK_CONSENT: GeneratedConsent = {
 function ConsentReviewContent() {
   const searchParams = useSearchParams()
   const intervention = searchParams.get('intervention') || 'Unknown Intervention'
+  const goal = searchParams.get('goal') || ''
   const population = searchParams.get('population') || ''
   const treatmentStage = searchParams.get('treatmentStage') || ''
   const primaryEndpoint = searchParams.get('primaryEndpoint') || ''
@@ -136,7 +137,7 @@ function ConsentReviewContent() {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['intro']))
 
   // Dynamic loading message for finalization
-  const finalizationMessage = useDynamicMessage(FINALIZATION_BUTTON_MESSAGES, 2500, isSubmitting)
+  const finalizationMessage = useDynamicMessage(FINALIZATION_BUTTON_MESSAGES, 4000, isSubmitting)
 
   // Load consent from sessionStorage
   useEffect(() => {
@@ -175,8 +176,10 @@ function ConsentReviewContent() {
       const protocol = storedProtocol ? JSON.parse(storedProtocol) : null
       const discovery = storedDiscovery ? JSON.parse(storedDiscovery) : null
 
-      // Use AI-generated name if available, otherwise fall back to generic
-      const studyName = discovery?.suggestedStudyName || `${toTitleCase(intervention)} Outcomes Study`
+      // Use AI-generated name if available, otherwise fall back to goal-specific or generic
+      const studyName = discovery?.suggestedStudyName || (goal
+        ? `${toTitleCase(intervention)} for ${toTitleCase(goal)} Study`
+        : `${toTitleCase(intervention)} Outcomes Study`)
       const studyDescription = discovery?.studyDescription || discovery?.summary || null
       const durationWeeks = parseInt(duration) || 26
 
@@ -340,15 +343,15 @@ function ConsentReviewContent() {
           </Card>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-stretch gap-4">
             <Link href={`/sponsor/studies/${createdStudy.id}`} className="flex-1">
-              <Button size="lg" fullWidth>
+              <Button size="lg" fullWidth className="h-full whitespace-nowrap">
                 View Protocol Dashboard
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-4 h-4 flex-shrink-0" />
               </Button>
             </Link>
             <Link href="/" className="flex-1">
-              <Button variant="secondary" size="lg" fullWidth>
+              <Button variant="secondary" size="lg" fullWidth className="h-full">
                 Back to Home
               </Button>
             </Link>

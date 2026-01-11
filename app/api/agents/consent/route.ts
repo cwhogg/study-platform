@@ -10,7 +10,7 @@ import { toTitleCase } from '@/lib/utils'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { protocol, studyName, intervention, durationWeeks, riskAssessment } = body
+    const { protocol, studyName, intervention, goal, durationWeeks, riskAssessment } = body
 
     // Validate required fields
     if (!protocol) {
@@ -31,7 +31,9 @@ export async function POST(request: NextRequest) {
       ? durationWeeks
       : parseInt(durationWeeks) || 26
 
-    const name = studyName || `${toTitleCase(intervention)} Outcomes Study`
+    const name = studyName || (goal
+      ? `${toTitleCase(intervention)} for ${toTitleCase(goal)} Study`
+      : `${toTitleCase(intervention)} Outcomes Study`)
 
     console.log(`[Consent Generation] Starting for: ${name}`)
     console.log(`[Consent Generation] Risk Assessment:`, JSON.stringify(riskAssessment, null, 2))

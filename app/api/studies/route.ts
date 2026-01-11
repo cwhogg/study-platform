@@ -260,8 +260,10 @@ export async function POST(request: NextRequest) {
       ? secondaryEndpoints.split(',').filter(Boolean)
       : (secondaryEndpoints || [])
 
-    // Use AI-generated study name if provided, otherwise generate default
-    const studyName = aiStudyName || `${toTitleCase(intervention)} Outcomes Study`
+    // Use AI-generated study name if provided, otherwise generate default with goal
+    const studyName = aiStudyName || (goal
+      ? `${toTitleCase(intervention)} for ${toTitleCase(goal)} Study`
+      : `${toTitleCase(intervention)} Outcomes Study`)
 
     // Use AI-generated content when available, fall back to hardcoded templates
     const protocol = aiProtocol || generateProtocol({

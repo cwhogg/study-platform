@@ -144,7 +144,7 @@ export default function CreateStudyPage() {
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
   // Dynamic loading message
-  const loadingMessage = useDynamicMessage(DISCOVERY_BUTTON_MESSAGES, 2500, isSubmitting)
+  const loadingMessage = useDynamicMessage(DISCOVERY_BUTTON_MESSAGES, 4000, isSubmitting)
 
   // Filter interventions based on input - limit to top 8 matches
   const filteredSuggestions = intervention.trim().length > 0

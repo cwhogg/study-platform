@@ -115,12 +115,12 @@ function ConfigureStudyContent() {
   // Dynamic loading messages
   const protocolMessage = useDynamicMessage(
     PROTOCOL_BUTTON_MESSAGES,
-    2500,
+    4000,
     submissionPhase === 'protocol'
   )
   const safetyMessage = useDynamicMessage(
     SAFETY_BUTTON_MESSAGES,
-    2500,
+    4000,
     submissionPhase === 'safety'
   )
   const loadingMessage = submissionPhase === 'safety' ? safetyMessage : protocolMessage

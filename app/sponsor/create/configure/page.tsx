@@ -115,12 +115,12 @@ function ConfigureStudyContent() {
   // Dynamic loading messages - switch based on current phase
   const protocolMessage = useDynamicMessage(
     PROTOCOL_BUTTON_MESSAGES,
-    2500,
+    4000,
     isSubmitting && submissionPhase === 'protocol'
   )
   const safetyMessage = useDynamicMessage(
     SAFETY_BUTTON_MESSAGES,
-    2500,
+    4000,
     isSubmitting && submissionPhase === 'safety'
   )
   // Use the message for the current phase
