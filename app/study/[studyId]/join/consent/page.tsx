@@ -108,7 +108,15 @@ export default function ConsentPage() {
           const intervention = data.intervention || 'the intervention'
           const durationWeeks = data.durationWeeks || 26
 
+          console.log('[Participant Consent] Fetched study data:', {
+            hasConsentDocument: !!data.consentDocument,
+            consentSectionCount: data.consentDocument?.sections?.length ?? 0,
+            hasProtocol: !!data.protocol,
+            scheduleCount: data.protocol?.schedule?.length ?? 0,
+          })
+
           if (data.consentDocument?.sections && data.consentDocument.sections.length > 0) {
+            console.log('[Participant Consent] Using stored consent document with', data.consentDocument.sections.length, 'sections')
             // Enhance stored consent with actual protocol data
             const enhanced = enhanceConsentWithProtocol(
               data.consentDocument.sections,
@@ -118,15 +126,16 @@ export default function ConsentPage() {
             setConsentSections(enhanced)
           } else {
             // Use personalized fallback with intervention name and schedule
-            console.log('[Consent] Using fallback with intervention:', intervention)
+            console.log('[Participant Consent] NO consent document stored - using FALLBACK with intervention:', intervention)
             setConsentSections(generateConsentSections(intervention, durationWeeks, data.protocol?.schedule))
           }
         } else {
           // Generic fallback if API fails
+          console.error('[Participant Consent] API request failed')
           setConsentSections(generateConsentSections('the intervention', 26))
         }
       } catch (error) {
-        console.error('Failed to fetch consent document:', error)
+        console.error('[Participant Consent] Failed to fetch consent document:', error)
         setConsentSections(generateConsentSections('the intervention', 26))
       }
       setIsLoading(false)

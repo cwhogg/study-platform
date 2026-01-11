@@ -143,13 +143,19 @@ function ConsentReviewContent() {
   useEffect(() => {
     try {
       const storedConsent = sessionStorage.getItem('generatedConsent')
+      console.log('[Sponsor Consent] SessionStorage consent:', storedConsent ? 'Found' : 'NOT FOUND')
       if (storedConsent) {
-        setConsent(JSON.parse(storedConsent) as GeneratedConsent)
+        const parsed = JSON.parse(storedConsent) as GeneratedConsent
+        console.log('[Sponsor Consent] Parsed consent document sections:', parsed?.document?.sections?.length ?? 'NONE')
+        console.log('[Sponsor Consent] Using AI-generated consent')
+        setConsent(parsed)
       } else {
+        console.warn('[Sponsor Consent] No consent in sessionStorage - using FALLBACK')
         setConsent(FALLBACK_CONSENT)
       }
     } catch (err) {
-      console.error('Failed to load consent:', err)
+      console.error('[Sponsor Consent] Failed to load consent:', err)
+      console.warn('[Sponsor Consent] Parse error - using FALLBACK')
       setConsent(FALLBACK_CONSENT)
     }
     setIsLoading(false)

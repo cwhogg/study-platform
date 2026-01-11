@@ -141,13 +141,19 @@ function ConsentReviewContent() {
   useEffect(() => {
     try {
       const storedConsent = sessionStorage.getItem('generatedConsent')
+      console.log('[Consent Page] SessionStorage consent:', storedConsent ? 'Found' : 'NOT FOUND')
       if (storedConsent) {
-        setConsent(JSON.parse(storedConsent) as GeneratedConsent)
+        const parsed = JSON.parse(storedConsent) as GeneratedConsent
+        console.log('[Consent Page] Parsed consent document sections:', parsed?.document?.sections?.length ?? 'NONE')
+        console.log('[Consent Page] Using AI-generated consent')
+        setConsent(parsed)
       } else {
+        console.warn('[Consent Page] No consent in sessionStorage - using FALLBACK')
         setConsent(FALLBACK_CONSENT)
       }
     } catch (err) {
-      console.error('Failed to load consent:', err)
+      console.error('[Consent Page] Failed to load consent:', err)
+      console.warn('[Consent Page] Parse error - using FALLBACK')
       setConsent(FALLBACK_CONSENT)
     }
     setIsLoading(false)
@@ -233,6 +239,14 @@ function ConsentReviewContent() {
       } catch (enrollmentErr) {
         console.warn('Error generating enrollment copy:', enrollmentErr)
       }
+
+      // Log what consent we're sending
+      console.log('[Consent Page] Creating study with consent document:', {
+        hasConsent: !!consent,
+        hasDocument: !!consent?.document,
+        sectionCount: consent?.document?.sections?.length ?? 0,
+        firstSectionTitle: consent?.document?.sections?.[0]?.title ?? 'NONE',
+      })
 
       const response = await fetch('/api/studies', {
         method: 'POST',
