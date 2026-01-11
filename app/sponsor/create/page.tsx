@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, ArrowLeft, Sparkles, Loader2, Pill, Target } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Sparkles, Pill, Target } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
@@ -442,19 +442,11 @@ export default function CreateStudyPage() {
               fullWidth
               disabled={!intervention.trim() || !goal.trim()}
               isLoading={isSubmitting}
+              loadingText={loadingMessage}
+              rightIcon={<ArrowRight className="w-5 h-5" />}
               className="mt-6"
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  {loadingMessage}
-                </>
-              ) : (
-                <>
-                  Continue
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
+              Continue
             </Button>
           </form>
         </Card>

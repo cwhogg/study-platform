@@ -16,7 +16,6 @@ import {
   ChevronUp,
   ListChecks,
   Sparkles,
-  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -516,18 +515,10 @@ function ConsentReviewContent() {
         onClick={handleFinalize}
         disabled={isSubmitting}
         isLoading={isSubmitting}
+        loadingText={finalizationMessage}
+        rightIcon={<Check className="w-5 h-5" />}
       >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            {finalizationMessage}
-          </>
-        ) : (
-          <>
-            Finalize Protocol
-            <Check className="w-5 h-5" />
-          </>
-        )}
+        Finalize Protocol
       </Button>
 
       <p className="mt-4 text-center text-sm text-[var(--text-muted)]">

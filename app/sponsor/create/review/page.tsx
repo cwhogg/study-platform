@@ -16,7 +16,6 @@ import {
   Shield,
   Info,
   Sparkles,
-  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -697,18 +696,10 @@ function ReviewProtocolContent() {
         onClick={handleSubmit}
         disabled={isSubmitting}
         isLoading={isSubmitting}
+        loadingText={consentMessage}
+        rightIcon={<ArrowRight className="w-5 h-5" />}
       >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            {consentMessage}
-          </>
-        ) : (
-          <>
-            Generate Consent Document
-            <ArrowRight className="w-5 h-5" />
-          </>
-        )}
+        Generate Consent Document
       </Button>
 
       {/* Criteria Edit Modal */}

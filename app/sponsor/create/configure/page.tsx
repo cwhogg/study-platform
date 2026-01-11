@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowRight, ArrowLeft, Info, Sparkles, Loader2, AlertTriangle } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Info, Sparkles, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -864,18 +864,10 @@ function ConfigureStudyContent() {
           fullWidth
           disabled={isSubmitting || !population || !treatmentStage || !primaryEndpoint}
           isLoading={isSubmitting}
+          loadingText={submissionPhase === 'safety' ? safetyMessage : protocolMessage}
+          rightIcon={<ArrowRight className="w-5 h-5" />}
         >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              {submissionPhase === 'safety' ? safetyMessage : protocolMessage}
-            </>
-          ) : (
-            <>
-              Generate Protocol
-              <ArrowRight className="w-5 h-5" />
-            </>
-          )}
+          Generate Protocol
         </Button>
       </form>
     </div>
