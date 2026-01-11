@@ -18,7 +18,7 @@ interface StudyData {
     summary?: string
     primaryEndpoint?: { name: string }
     secondaryEndpoints?: { name: string }[]
-    schedule?: { timepoint: string }[]
+    schedule?: { timepoint: string; labs?: string[] }[]
   }
 }
 
@@ -114,13 +114,32 @@ export default function JoinPage() {
     : study.protocol?.summary || 'Track your personal response with validated clinical measures'
 
   // Build dynamic bullets based on actual study data
-  // Calculate survey frequency from schedule
-  const scheduleCount = study.protocol?.schedule?.length || 0
-  const surveyDescription = scheduleCount > 0
-    ? scheduleCount <= 3
-      ? `${scheduleCount} check-ins over the study period`
-      : `${scheduleCount} surveys throughout the study`
-    : 'Short surveys at key timepoints'
+  // ALWAYS compute from protocol when available - enrollmentCopy may have generic text
+  const schedule = study.protocol?.schedule || []
+  const scheduleCount = schedule.length
+
+  // Count timepoints with labs
+  const labTimepoints = schedule.filter(tp => tp.labs && tp.labs.length > 0)
+  const hasLabs = labTimepoints.length > 0
+
+  // Build survey description from actual timepoints
+  let surveyDescription: string
+  if (scheduleCount > 0) {
+    const timepoints = schedule.map(tp => tp.timepoint)
+    if (scheduleCount <= 4) {
+      // Show specific timepoints: "4 check-ins: Baseline, Week 6, Week 13, Week 26"
+      surveyDescription = `${scheduleCount} check-ins: ${timepoints.join(', ')}`
+    } else {
+      surveyDescription = `${scheduleCount} surveys throughout the study`
+    }
+  } else {
+    surveyDescription = 'Short surveys at key timepoints'
+  }
+
+  // Build labs description
+  const labsDescription = hasLabs
+    ? `${labTimepoints.length} blood draws over the study`
+    : null
 
   // Calculate duration in months
   const durationMonths = Math.round(study.durationWeeks / 4.33)
@@ -133,15 +152,18 @@ export default function JoinPage() {
     ? `Track your ${study.protocol.primaryEndpoint.name.toLowerCase()}`
     : 'Help shape future treatments'
 
-  const dynamicBullets = [
-    surveyDescription,
-    durationDescription,
-    endpointDescription,
-  ]
+  // Build bullets array - include labs if present
+  const dynamicBullets = hasLabs
+    ? [surveyDescription, labsDescription!, durationDescription]
+    : [surveyDescription, durationDescription, endpointDescription]
 
-  const bullets = welcome.bullets && welcome.bullets.length > 0 && welcome.bullets[0] !== DEFAULT_WELCOME.bullets[0]
-    ? welcome.bullets
-    : dynamicBullets
+  // ALWAYS use dynamic bullets when we have protocol schedule data
+  // This ensures accuracy over potentially outdated enrollmentCopy
+  const bullets = scheduleCount > 0
+    ? dynamicBullets
+    : (welcome.bullets && welcome.bullets.length > 0 && welcome.bullets[0] !== DEFAULT_WELCOME.bullets[0]
+        ? welcome.bullets
+        : dynamicBullets)
 
   return (
     <>
