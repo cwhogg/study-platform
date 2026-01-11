@@ -42,10 +42,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate response format
+    // Validate response format - preserve original value types
+    // Values can be: number, string, array, or object depending on question type
     const validatedResponses: ProResponse[] = responses.map(r => ({
       questionId: r.questionId || r.id,
-      value: typeof r.value === 'number' ? r.value : parseInt(r.value, 10),
+      value: r.value, // Preserve the original value type
     }))
 
     console.log(`[Submission] Processing ${instrumentId} for participant ${participantId}`)

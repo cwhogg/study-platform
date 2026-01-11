@@ -179,23 +179,82 @@ interface Instrument {
   triggeredBy?: TriggerConfig;   // If this instrument is conditionally triggered
 }
 
+// Question types supported:
+// - single_choice: Radio buttons (PHQ-9, GAD-7 style) - value is number
+// - multiple_choice: Checkboxes (select all that apply) - value is array
+// - numeric_scale: Horizontal number buttons with labels (pain 0-10) - value is number
+// - likert_scale: Semantic scale buttons (agreement scales) - value is number
+// - number_input: Free numeric entry (hours of sleep) - value is number
+// - time_input: Time picker (PSQI bed time) - value is string "HH:MM" or "H:MM AM/PM"
+// - date_input: Date picker (symptom start date) - value is string "YYYY-MM-DD"
+// - duration_input: Duration with units - value is object { value: number, unit: string }
+// - text_input: Free text (open-ended) - value is string
+// - yes_no: Binary choice (screening questions) - value is 0 or 1
+// - visual_analog_scale: Slider (VAS pain) - value is number
+
+type QuestionType =
+  | "single_choice"
+  | "multiple_choice"
+  | "numeric_scale"
+  | "likert_scale"
+  | "number_input"
+  | "time_input"
+  | "date_input"
+  | "duration_input"
+  | "text_input"
+  | "yes_no"
+  | "visual_analog_scale";
+
 interface Question {
   id: string;                    // e.g., "q1", "q2"
   text: string;                  // The exact question text
-  type: "single_choice" | "numeric_scale" | "text";
-  options?: Option[];            // For single_choice
-  scale?: {                      // For numeric_scale
+  hint?: string;                 // Optional hint text shown below question
+  type: QuestionType;
+  required: boolean;
+  category?: string;             // For grouping (e.g., "Sleep Quality", "Mood")
+
+  // Type-specific properties (include based on type):
+  options?: Option[];            // For single_choice, multiple_choice
+  scale?: {                      // For numeric_scale, visual_analog_scale
     min: number;
     max: number;
     minLabel: string;
     maxLabel: string;
+    step?: number;               // Default: 1
+    showValue?: boolean;         // For VAS: display numeric value while sliding
   };
-  required: boolean;
+  likertScale?: {                // For likert_scale
+    points: 3 | 4 | 5 | 6 | 7;
+    labels: string[];            // Must match points count
+  };
+  input?: {                      // For number_input
+    min?: number;
+    max?: number;
+    step?: number;
+    unit?: string;               // e.g., "hours", "lbs"
+    placeholder?: string;
+  };
+  format?: "12h" | "24h";        // For time_input
+  dateConstraints?: {            // For date_input
+    allowPast?: boolean;
+    allowFuture?: boolean;
+  };
+  units?: string[];              // For duration_input: ["minutes", "hours", "days", "weeks"]
+  yesNoLabels?: {                // For yes_no
+    yes: string;                 // Default: "Yes"
+    no: string;                  // Default: "No"
+  };
+  multiline?: boolean;           // For text_input
+  maxLength?: number;            // For text_input
+  minSelections?: number;        // For multiple_choice
+  maxSelections?: number;        // For multiple_choice
 }
 
 interface Option {
-  value: number;
+  value: number | string;        // number for single_choice, string allowed for multiple_choice
   label: string;
+  description?: string;          // Optional description shown below label
+  exclusive?: boolean;           // For multiple_choice: "None of the above" style option
 }
 
 interface ScoringConfig {
@@ -216,6 +275,166 @@ interface AlertConfig {
 interface TriggerConfig {
   instrumentId: string;
   condition: string;
+}
+```
+
+---
+
+## Example Questions by Type
+
+### single_choice (PHQ-9 style)
+```json
+{
+  "id": "phq2_q1",
+  "text": "Little interest or pleasure in doing things",
+  "type": "single_choice",
+  "options": [
+    { "value": 0, "label": "Not at all" },
+    { "value": 1, "label": "Several days" },
+    { "value": 2, "label": "More than half the days" },
+    { "value": 3, "label": "Nearly every day" }
+  ],
+  "required": true
+}
+```
+
+### numeric_scale (Pain 0-10)
+```json
+{
+  "id": "pain_q1",
+  "text": "Rate your pain right now",
+  "type": "numeric_scale",
+  "scale": {
+    "min": 0,
+    "max": 10,
+    "minLabel": "No pain",
+    "maxLabel": "Worst pain imaginable"
+  },
+  "required": true
+}
+```
+
+### likert_scale (Agreement scale)
+```json
+{
+  "id": "satisfaction_q1",
+  "text": "I am satisfied with my treatment",
+  "type": "likert_scale",
+  "likertScale": {
+    "points": 5,
+    "labels": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]
+  },
+  "required": true
+}
+```
+
+### time_input (PSQI style)
+```json
+{
+  "id": "psqi_bedtime",
+  "text": "What time have you usually gone to bed?",
+  "type": "time_input",
+  "format": "12h",
+  "required": true
+}
+```
+
+### number_input (Hours of sleep)
+```json
+{
+  "id": "psqi_hours",
+  "text": "How many hours of actual sleep did you get?",
+  "hint": "This may be different than the number of hours you spent in bed.",
+  "type": "number_input",
+  "input": {
+    "min": 0,
+    "max": 24,
+    "step": 0.5,
+    "unit": "hours"
+  },
+  "required": true
+}
+```
+
+### yes_no (Screening question)
+```json
+{
+  "id": "screening_q1",
+  "text": "Are you currently taking testosterone replacement therapy?",
+  "type": "yes_no",
+  "required": true
+}
+```
+
+### multiple_choice (Symptom checklist)
+```json
+{
+  "id": "symptoms_q1",
+  "text": "Which symptoms have you experienced in the past week?",
+  "hint": "Select all that apply",
+  "type": "multiple_choice",
+  "options": [
+    { "value": "fatigue", "label": "Fatigue" },
+    { "value": "headache", "label": "Headache" },
+    { "value": "nausea", "label": "Nausea" },
+    { "value": "dizziness", "label": "Dizziness" },
+    { "value": "none", "label": "None of the above", "exclusive": true }
+  ],
+  "required": true
+}
+```
+
+### visual_analog_scale (VAS)
+```json
+{
+  "id": "vas_pain",
+  "text": "Mark your current pain level on the scale",
+  "type": "visual_analog_scale",
+  "scale": {
+    "min": 0,
+    "max": 100,
+    "minLabel": "No pain",
+    "maxLabel": "Worst pain",
+    "showValue": true
+  },
+  "required": true
+}
+```
+
+### duration_input (Episode length)
+```json
+{
+  "id": "episode_duration",
+  "text": "How long did the episode last?",
+  "type": "duration_input",
+  "units": ["minutes", "hours", "days"],
+  "required": true
+}
+```
+
+### text_input (Open-ended)
+```json
+{
+  "id": "comments",
+  "text": "Please describe any other symptoms or concerns",
+  "type": "text_input",
+  "multiline": true,
+  "maxLength": 500,
+  "required": false
+}
+```
+
+### date_input (Symptom start)
+```json
+{
+  "id": "symptom_start",
+  "text": "When did your symptoms start?",
+  "type": "date_input",
+  "dateConstraints": {
+    "allowPast": true,
+    "allowFuture": false
+  },
+  "required": true
 }
 ```
 

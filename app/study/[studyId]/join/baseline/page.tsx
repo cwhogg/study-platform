@@ -4,16 +4,18 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer } from '@/components/ui/MobileContainer'
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { createClient } from '@/lib/supabase/client'
-import { Loader2, ArrowRight } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import {
   getBaselineInstruments,
   groupAnswersByInstrument,
   FALLBACK_INSTRUMENTS,
   type Instrument,
   type Protocol,
+  type QuestionResponseValue,
 } from '@/lib/study/instruments'
+import { QuestionRenderer } from '@/components/questions'
+import type { Question } from '@/lib/questions/types'
 
 interface StudyData {
   name: string
@@ -29,8 +31,7 @@ export default function BaselinePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [instruments, setInstruments] = useState<Instrument[]>([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<Record<string, number | string>>({})
-  const [textInput, setTextInput] = useState('')
+  const [answers, setAnswers] = useState<Record<string, QuestionResponseValue>>({})
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [showInstructions, setShowInstructions] = useState(true)
   const [isCompleting, setIsCompleting] = useState(false)
@@ -112,7 +113,7 @@ export default function BaselinePage() {
   }, [currentQuestion, isNewInstrument, question])
 
   // Submit baseline data to API
-  const submitBaseline = useCallback(async (finalAnswers: Record<string, number | string>) => {
+  const submitBaseline = useCallback(async (finalAnswers: Record<string, QuestionResponseValue>) => {
     if (!participantId) {
       console.error('No participant ID')
       return
@@ -150,11 +151,9 @@ export default function BaselinePage() {
     }
   }, [participantId, startTime, allQuestions])
 
-  const handleAnswer = async (value: number | string) => {
+  const handleAnswer = async (value: QuestionResponseValue) => {
     if (isTransitioning || !question) return
 
-    // Reset text input when moving to next question
-    setTextInput('')
     const newAnswers = { ...answers, [question.id]: value }
     setAnswers(newAnswers)
     setIsTransitioning(true)
@@ -221,115 +220,22 @@ export default function BaselinePage() {
     )
   }
 
-  // Render options based on question type
-  const renderOptions = () => {
-    if (question.type === 'single_choice' && question.options) {
-      return (
-        <div className="space-y-3">
-          {question.options.map((option, idx) => {
-            const isSelected = answers[question.id] === option.value
-            return (
-              <button
-                key={idx}
-                onClick={() => handleAnswer(option.value)}
-                disabled={isTransitioning}
-                className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
-                  isSelected
-                    ? 'border-[var(--primary)] bg-[var(--primary-dim)] scale-[0.98]'
-                    : 'border-[var(--glass-border)] bg-[var(--glass-bg)] hover:border-[var(--text-muted)] active:scale-[0.98]'
-                }`}
-                style={{ minHeight: '56px' }}
-              >
-                <span className={`font-medium ${isSelected ? 'text-[var(--primary)]' : 'text-[var(--text-primary)]'}`}>
-                  {option.label}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      )
-    }
+  // Render question using the QuestionRenderer component
+  const renderQuestion = () => {
+    if (!question) return null
 
-    if (question.type === 'numeric_scale' && question.scale) {
-      const { min, max, minLabel, maxLabel } = question.scale
-      const values = Array.from({ length: max - min + 1 }, (_, i) => min + i)
-      return (
-        <div className="space-y-4">
-          <div className="flex justify-between text-sm text-[var(--text-muted)]">
-            <span>{minLabel}</span>
-            <span>{maxLabel}</span>
-          </div>
-          <div className="flex gap-2 flex-wrap justify-center">
-            {values.map(value => {
-              const isSelected = answers[question.id] === value
-              return (
-                <button
-                  key={value}
-                  onClick={() => handleAnswer(value)}
-                  disabled={isTransitioning}
-                  className={`w-12 h-12 rounded-xl border-2 font-medium transition-all ${
-                    isSelected
-                      ? 'border-[var(--primary)] bg-[var(--primary)] text-white'
-                      : 'border-[var(--glass-border)] bg-[var(--glass-bg)] text-[var(--text-secondary)] hover:border-[var(--text-muted)]'
-                  }`}
-                >
-                  {value}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )
-    }
+    // Cast to the comprehensive Question type for QuestionRenderer
+    // Protocol questions may have a simpler structure, so we need to handle type compatibility
+    const fullQuestion = question as unknown as Question
 
-    // Text input for free-form responses (e.g., time questions in PSQI)
-    if (question.type === 'text') {
-      return (
-        <div className="space-y-4">
-          <Input
-            value={textInput}
-            onChange={(e) => setTextInput(e.target.value)}
-            placeholder="Enter your answer..."
-            className="text-lg"
-            autoFocus
-          />
-          <Button
-            onClick={() => handleAnswer(textInput)}
-            disabled={!textInput.trim() || isTransitioning}
-            fullWidth
-            rightIcon={<ArrowRight className="w-5 h-5" />}
-          >
-            Continue
-          </Button>
-        </div>
-      )
-    }
-
-    // Fallback: render as text input if no options are provided
-    // This handles cases where the question type doesn't match or options are missing
-    if (!question.options || question.options.length === 0) {
-      return (
-        <div className="space-y-4">
-          <Input
-            value={textInput}
-            onChange={(e) => setTextInput(e.target.value)}
-            placeholder="Enter your answer..."
-            className="text-lg"
-            autoFocus
-          />
-          <Button
-            onClick={() => handleAnswer(textInput)}
-            disabled={!textInput.trim() || isTransitioning}
-            fullWidth
-            rightIcon={<ArrowRight className="w-5 h-5" />}
-          >
-            Continue
-          </Button>
-        </div>
-      )
-    }
-
-    return null
+    return (
+      <QuestionRenderer
+        question={fullQuestion}
+        value={answers[question.id]}
+        onChange={handleAnswer}
+        disabled={isTransitioning}
+      />
+    )
   }
 
   return (
@@ -372,8 +278,8 @@ export default function BaselinePage() {
           {question.text}
         </h2>
 
-        {/* Options */}
-        {renderOptions()}
+        {/* Question Input */}
+        {renderQuestion()}
       </div>
 
       {/* Subtle hint */}

@@ -45,10 +45,13 @@ export async function evaluateSafety(
   let showCrisisResources = false
   let triggerFollowUp: string | null = null
 
-  // Build response lookup
+  // Build response lookup - only include numeric values for safety evaluation
+  // Non-numeric values (text, time, etc.) are not evaluated for safety thresholds
   const responseMap: Record<string, number> = {}
   responses.forEach(r => {
-    responseMap[r.questionId] = r.value
+    if (typeof r.value === 'number') {
+      responseMap[r.questionId] = r.value
+    }
   })
 
   // Filter alerts for this instrument

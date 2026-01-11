@@ -12,11 +12,18 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import type { Instrument, SafetyProAlert } from '@/lib/agents/types'
 import { evaluateSafety, type SafetyEvaluationResult } from './safety'
+import type { QuestionResponseValue } from '@/lib/questions/types'
 
-
+/**
+ * Response value types supported:
+ * - number: single_choice, numeric_scale, likert_scale, number_input, yes_no, visual_analog_scale
+ * - string: time_input, date_input, text_input
+ * - (number | string)[]: multiple_choice
+ * - { value: number; unit: string }: duration_input
+ */
 export interface ProResponse {
   questionId: string
-  value: number
+  value: QuestionResponseValue
 }
 
 export interface SubmissionResult {
@@ -115,7 +122,8 @@ export async function handleProSubmission(
     const scores = calculateScores(instrument, responses)
 
     // 5. Save submission
-    const responsesMap: Record<string, { value: number }> = {}
+    // Store all values - DB supports number, string, array, and object types via JSONB
+    const responsesMap: Record<string, { value: QuestionResponseValue }> = {}
     responses.forEach(r => {
       responsesMap[r.questionId] = { value: r.value }
     })
@@ -193,6 +201,7 @@ export async function handleProSubmission(
 
 /**
  * Validate responses against instrument schema
+ * Handles all question types including those with non-numeric values
  */
 function validateResponses(
   instrument: Instrument | undefined,
@@ -207,7 +216,13 @@ function validateResponses(
   }
 
   // Convert questions to array if it's an object
-  type QuestionType = { id: string; required: boolean; type: string; options?: { value: number }[]; scale?: { min: number; max: number } }
+  type QuestionType = {
+    id: string
+    required: boolean
+    type: string
+    options?: { value: number | string }[]
+    scale?: { min: number; max: number }
+  }
   const questions: QuestionType[] = Array.isArray(instrument.questions)
     ? instrument.questions
     : Object.values(instrument.questions || {}) as QuestionType[]
@@ -222,24 +237,69 @@ function validateResponses(
     }
   }
 
-  // Validate each response
+  // Validate each response based on question type
   for (const response of responses) {
     const question = questions.find(q => q.id === response.questionId)
     if (!question) {
       continue // Skip unknown questions
     }
 
-    if (question.type === 'single_choice' && question.options) {
-      const validValues = question.options.map(o => o.value)
-      if (!validValues.includes(response.value)) {
-        return `Invalid value for question ${question.id}`
-      }
-    }
+    const value = response.value
 
-    if (question.type === 'numeric_scale' && question.scale) {
-      if (response.value < question.scale.min || response.value > question.scale.max) {
-        return `Value out of range for question ${question.id}`
-      }
+    // Validate based on question type
+    switch (question.type) {
+      case 'single_choice':
+        if (question.options && typeof value === 'number') {
+          const validValues = question.options.map(o => o.value)
+          if (!validValues.includes(value)) {
+            return `Invalid value for question ${question.id}`
+          }
+        }
+        break
+
+      case 'multiple_choice':
+        if (!Array.isArray(value)) {
+          return `Expected array for multiple choice question ${question.id}`
+        }
+        break
+
+      case 'numeric_scale':
+      case 'visual_analog_scale':
+        if (question.scale && typeof value === 'number') {
+          if (value < question.scale.min || value > question.scale.max) {
+            return `Value out of range for question ${question.id}`
+          }
+        }
+        break
+
+      case 'likert_scale':
+      case 'number_input':
+      case 'yes_no':
+        // Numeric types - just check it's a number
+        if (typeof value !== 'number') {
+          return `Expected number for question ${question.id}`
+        }
+        break
+
+      case 'time_input':
+      case 'date_input':
+      case 'text_input':
+        // String types - just check it's a string
+        if (typeof value !== 'string') {
+          return `Expected string for question ${question.id}`
+        }
+        break
+
+      case 'duration_input':
+        // Object type with value and unit
+        if (typeof value !== 'object' || value === null) {
+          return `Expected duration object for question ${question.id}`
+        }
+        break
+
+      default:
+        // Unknown type - allow it
+        break
     }
   }
 
@@ -248,15 +308,19 @@ function validateResponses(
 
 /**
  * Calculate scores using the instrument's scoring config
+ * Only numeric values are included in scoring - text, time, and other non-numeric
+ * response types are stored but not scored.
  */
 function calculateScores(
   instrument: Instrument | undefined,
   responses: ProResponse[]
 ): { total: number; [key: string]: number } {
-  const values = responses.map(r => r.value)
+  // Filter to only numeric values for scoring
+  const numericResponses = responses.filter(r => typeof r.value === 'number')
+  const values = numericResponses.map(r => r.value as number)
 
   if (!instrument?.scoring) {
-    // Default to sum
+    // Default to sum of numeric values
     const total = values.reduce((sum, v) => sum + v, 0)
     return { total }
   }
@@ -279,10 +343,10 @@ function calculateScores(
       total = values.reduce((sum, v) => sum + v, 0)
   }
 
-  // Add individual question scores
+  // Add individual question scores (only numeric values)
   const scores: { total: number; [key: string]: number } = { total }
-  responses.forEach(r => {
-    scores[r.questionId] = r.value
+  numericResponses.forEach(r => {
+    scores[r.questionId] = r.value as number
   })
 
   return scores

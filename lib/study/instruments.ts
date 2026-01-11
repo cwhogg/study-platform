@@ -5,24 +5,10 @@
  * baseline instruments from study protocols.
  */
 
-export interface Option {
-  value: number
-  label: string
-}
+import type { Question, QuestionResponseValue } from '@/lib/questions/types'
 
-export interface Question {
-  id: string
-  text: string
-  type: 'single_choice' | 'numeric_scale' | 'text'
-  options?: Option[]
-  scale?: {
-    min: number
-    max: number
-    minLabel: string
-    maxLabel: string
-  }
-  required: boolean
-}
+// Re-export Question type for convenience
+export type { Question, QuestionResponseValue }
 
 export interface Instrument {
   id: string
@@ -110,10 +96,10 @@ export function getTimepointInstruments(
  * Group answers by instrument for submission
  */
 export function groupAnswersByInstrument(
-  answers: Record<string, number | string>,
+  answers: Record<string, QuestionResponseValue>,
   questions: Array<{ id: string; instrumentId: string }>
-): Map<string, Array<{ questionId: string; value: number | string }>> {
-  const answersByInstrument = new Map<string, Array<{ questionId: string; value: number | string }>>()
+): Map<string, Array<{ questionId: string; value: QuestionResponseValue }>> {
+  const answersByInstrument = new Map<string, Array<{ questionId: string; value: QuestionResponseValue }>>()
 
   for (const q of questions) {
     const value = answers[q.id]
@@ -123,7 +109,7 @@ export function groupAnswersByInstrument(
       }
       answersByInstrument.get(q.instrumentId)!.push({
         questionId: q.id,
-        value
+        value: value as QuestionResponseValue
       })
     }
   }
@@ -143,7 +129,7 @@ export const FALLBACK_INSTRUMENTS: Instrument[] = [
       {
         id: 'phq2_q1',
         text: 'Little interest or pleasure in doing things',
-        type: 'single_choice',
+        type: 'single_choice' as const,
         options: [
           { value: 0, label: 'Not at all' },
           { value: 1, label: 'Several days' },
@@ -155,7 +141,7 @@ export const FALLBACK_INSTRUMENTS: Instrument[] = [
       {
         id: 'phq2_q2',
         text: 'Feeling down, depressed, or hopeless',
-        type: 'single_choice',
+        type: 'single_choice' as const,
         options: [
           { value: 0, label: 'Not at all' },
           { value: 1, label: 'Several days' },
@@ -174,7 +160,7 @@ export const FALLBACK_INSTRUMENTS: Instrument[] = [
       {
         id: 'qol_q1',
         text: 'In general, how would you rate your overall quality of life?',
-        type: 'single_choice',
+        type: 'single_choice' as const,
         options: [
           { value: 1, label: 'Very poor' },
           { value: 2, label: 'Poor' },

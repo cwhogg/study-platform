@@ -185,8 +185,21 @@ export interface ParticipantMetadata {
   [key: string]: unknown
 }
 
+/**
+ * Response value types supported by the question system:
+ * - number: single_choice, numeric_scale, likert_scale, number_input, yes_no, visual_analog_scale
+ * - string: time_input, date_input, text_input
+ * - (number | string)[]: multiple_choice
+ * - { value: number; unit: string }: duration_input
+ */
+export type ProResponseValue =
+  | number
+  | string
+  | (number | string)[]
+  | { value: number; unit: string }
+
 export interface ProResponse {
-  value: number
+  value: ProResponseValue
   label?: string
 }
 
