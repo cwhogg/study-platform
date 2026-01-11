@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { MobileContainer } from '@/components/ui/MobileContainer'
 import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import { createClient } from '@/lib/supabase/client'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ArrowRight } from 'lucide-react'
 import {
   getBaselineInstruments,
   groupAnswersByInstrument,
@@ -28,7 +29,8 @@ export default function BaselinePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [instruments, setInstruments] = useState<Instrument[]>([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<Record<string, number>>({})
+  const [answers, setAnswers] = useState<Record<string, number | string>>({})
+  const [textInput, setTextInput] = useState('')
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [showInstructions, setShowInstructions] = useState(true)
   const [isCompleting, setIsCompleting] = useState(false)
@@ -110,7 +112,7 @@ export default function BaselinePage() {
   }, [currentQuestion, isNewInstrument, question])
 
   // Submit baseline data to API
-  const submitBaseline = useCallback(async (finalAnswers: Record<string, number>) => {
+  const submitBaseline = useCallback(async (finalAnswers: Record<string, number | string>) => {
     if (!participantId) {
       console.error('No participant ID')
       return
@@ -148,9 +150,11 @@ export default function BaselinePage() {
     }
   }, [participantId, startTime, allQuestions])
 
-  const handleAnswer = async (value: number) => {
+  const handleAnswer = async (value: number | string) => {
     if (isTransitioning || !question) return
 
+    // Reset text input when moving to next question
+    setTextInput('')
     const newAnswers = { ...answers, [question.id]: value }
     setAnswers(newAnswers)
     setIsTransitioning(true)
@@ -274,6 +278,53 @@ export default function BaselinePage() {
               )
             })}
           </div>
+        </div>
+      )
+    }
+
+    // Text input for free-form responses (e.g., time questions in PSQI)
+    if (question.type === 'text') {
+      return (
+        <div className="space-y-4">
+          <Input
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            placeholder="Enter your answer..."
+            className="text-lg"
+            autoFocus
+          />
+          <Button
+            onClick={() => handleAnswer(textInput)}
+            disabled={!textInput.trim() || isTransitioning}
+            fullWidth
+            rightIcon={<ArrowRight className="w-5 h-5" />}
+          >
+            Continue
+          </Button>
+        </div>
+      )
+    }
+
+    // Fallback: render as text input if no options are provided
+    // This handles cases where the question type doesn't match or options are missing
+    if (!question.options || question.options.length === 0) {
+      return (
+        <div className="space-y-4">
+          <Input
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            placeholder="Enter your answer..."
+            className="text-lg"
+            autoFocus
+          />
+          <Button
+            onClick={() => handleAnswer(textInput)}
+            disabled={!textInput.trim() || isTransitioning}
+            fullWidth
+            rightIcon={<ArrowRight className="w-5 h-5" />}
+          >
+            Continue
+          </Button>
         </div>
       )
     }

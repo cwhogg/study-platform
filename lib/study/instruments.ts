@@ -110,10 +110,10 @@ export function getTimepointInstruments(
  * Group answers by instrument for submission
  */
 export function groupAnswersByInstrument(
-  answers: Record<string, number>,
+  answers: Record<string, number | string>,
   questions: Array<{ id: string; instrumentId: string }>
-): Map<string, Array<{ questionId: string; value: number }>> {
-  const answersByInstrument = new Map<string, Array<{ questionId: string; value: number }>>()
+): Map<string, Array<{ questionId: string; value: number | string }>> {
+  const answersByInstrument = new Map<string, Array<{ questionId: string; value: number | string }>>()
 
   for (const q of questions) {
     const value = answers[q.id]
