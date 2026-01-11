@@ -22,6 +22,12 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { CriteriaEditModal } from '@/components/sponsor/CriteriaEditModal'
 import { toTitleCase } from '@/lib/utils'
+import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
+import {
+  DynamicLoader,
+  PROTOCOL_MESSAGES,
+  CONSENT_BUTTON_MESSAGES,
+} from '@/components/ui/DynamicLoader'
 
 // Types for AI-generated protocol
 interface InclusionCriterion {
@@ -193,6 +199,9 @@ function ReviewProtocolContent() {
   const [error, setError] = useState('')
   const [editingCriteria, setEditingCriteria] = useState<'inclusion' | 'exclusion' | null>(null)
 
+  // Dynamic loading message for consent generation
+  const consentMessage = useDynamicMessage(CONSENT_BUTTON_MESSAGES, 2500, isSubmitting)
+
   // Load protocol and discovery data from sessionStorage
   useEffect(() => {
     try {
@@ -310,17 +319,7 @@ function ReviewProtocolContent() {
   }
 
   if (isLoading || !protocol) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center animate-fade-in">
-          <div className="w-12 h-12 mx-auto mb-4 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-[var(--glass-border)]" />
-            <div className="absolute inset-0 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" />
-          </div>
-          <p className="text-[var(--text-secondary)]">Loading protocol...</p>
-        </div>
-      </div>
-    )
+    return <DynamicLoader messages={PROTOCOL_MESSAGES} intervalMs={2500} />
   }
 
   // Find primary instrument (first one or one marked as such)
@@ -702,7 +701,7 @@ function ReviewProtocolContent() {
         {isSubmitting ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            Generating Consent Document...
+            {consentMessage}
           </>
         ) : (
           <>
