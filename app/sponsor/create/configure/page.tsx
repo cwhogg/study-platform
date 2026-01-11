@@ -260,6 +260,8 @@ function ConfigureStudyContent() {
 
       const safetyRequestBody = {
         intervention,
+        goal,  // Pass goal for context (e.g., "sleep")
+        primaryEndpoint,  // Pass primary endpoint (e.g., "Sleep Quality")
         interventionCategory: discoveryData?.riskAssessment?.interventionCategory || 'pharmacological',
         instruments: protocol.instruments || [],
         riskAssessment: discoveryData?.riskAssessment,

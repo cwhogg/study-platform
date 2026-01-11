@@ -19,6 +19,8 @@ You receive the study context after protocol generation is complete.
 ```json
 {
   "intervention": "Testosterone Replacement Therapy",
+  "goal": "energy",
+  "primaryEndpoint": "Energy and Vitality",
   "interventionCategory": "pharmacological",
   "instruments": [
     {
@@ -41,6 +43,15 @@ You receive the study context after protocol generation is complete.
   "labMarkers": ["hematocrit", "psa", "testosterone_total"]
 }
 ```
+
+**CRITICAL: Use `goal` and `primaryEndpoint` to determine relevance.** Only create alerts for instruments that:
+1. Directly measure the primary endpoint (e.g., PSQI for sleep studies)
+2. Are known safety concerns for this specific intervention
+3. Have established clinical thresholds relevant to the study context
+
+**Do NOT create generic alerts** for instruments that are not relevant to the study's goal. For example:
+- A sleep study should NOT have generic pain alerts unless pain affects sleep
+- A weight loss study should NOT have depression alerts unless mood is a secondary endpoint
 
 ### Output Schema
 

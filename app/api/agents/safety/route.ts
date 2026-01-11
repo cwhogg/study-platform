@@ -10,7 +10,7 @@ import type {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { intervention, interventionCategory, instruments, riskAssessment, labMarkers } = body
+    const { intervention, goal, primaryEndpoint, interventionCategory, instruments, riskAssessment, labMarkers } = body
 
     // Validate required fields
     if (!intervention || typeof intervention !== 'string') {
@@ -28,12 +28,16 @@ export async function POST(request: NextRequest) {
     }
 
     console.log(`[Safety Generation] Starting for: ${intervention}`)
+    console.log(`[Safety Generation] Goal: ${goal || 'not specified'}`)
+    console.log(`[Safety Generation] Primary Endpoint: ${primaryEndpoint || 'not specified'}`)
     console.log(`[Safety Generation] Instruments: ${instruments.map((i: Instrument) => i.id).join(', ')}`)
     console.log(`[Safety Generation] Lab markers: ${labMarkers?.join(', ') || 'none'}`)
 
-    // Build input for safety agent
+    // Build input for safety agent - include goal and primaryEndpoint for context
     const input: SafetyGenerationInput = {
       intervention,
+      goal: goal || undefined,
+      primaryEndpoint: primaryEndpoint || undefined,
       interventionCategory: interventionCategory || 'pharmacological',
       instruments: instruments as Instrument[],
       riskAssessment: riskAssessment as RiskAssessment | undefined,

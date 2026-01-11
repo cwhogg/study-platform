@@ -478,6 +478,8 @@ export interface MessageTemplatesOutput {
 
 export interface SafetyGenerationInput {
   intervention: string
+  goal?: string  // What the study is measuring (e.g., "sleep", "weight loss")
+  primaryEndpoint?: string  // Primary outcome (e.g., "Sleep Quality", "Weight")
   interventionCategory: 'pharmacological' | 'non_pharmacological'
   instruments: Instrument[]
   riskAssessment?: RiskAssessment
