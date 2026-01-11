@@ -5,12 +5,13 @@ import { useState, useEffect } from 'react'
 const DEFAULT_MESSAGE = 'Processing...'
 
 /**
- * Hook that cycles through an array of messages at a specified interval.
+ * Hook that progresses through an array of messages at a specified interval.
+ * Stops at the last message instead of cycling back to the beginning.
  * Useful for button loading states during long AI operations.
  *
- * @param messages - Array of messages to cycle through
+ * @param messages - Array of messages to progress through
  * @param intervalMs - Time between message changes (default 2500ms)
- * @param isActive - Whether the cycling is active (usually tied to loading state)
+ * @param isActive - Whether the progression is active (usually tied to loading state)
  * @returns The current message to display
  */
 export function useDynamicMessage(
@@ -36,7 +37,13 @@ export function useDynamicMessage(
     if (!isActive || safeMessages.length <= 1) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % safeMessages.length)
+      setCurrentIndex((prev) => {
+        // Stop at the last message instead of cycling
+        if (prev >= safeMessages.length - 1) {
+          return prev
+        }
+        return prev + 1
+      })
     }, intervalMs)
 
     return () => clearInterval(interval)
