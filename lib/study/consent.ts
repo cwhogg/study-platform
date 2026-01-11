@@ -17,14 +17,31 @@ export interface ConsentDocument {
   sections: ConsentSection[]
 }
 
+export interface ProtocolSchedule {
+  timepoint: string
+  labs?: string[]
+}
+
+/**
+ * Format timepoint name for display (e.g., "week_6" -> "Week 6")
+ */
+function formatTimepoint(tp: string): string {
+  const formatted = tp.replace(/_/g, ' ')
+  return formatted
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
 /**
  * Generate consent document sections personalized to the study intervention
  */
 export function generateConsentSections(
   intervention: string,
-  durationWeeks: number
+  durationWeeks: number,
+  schedule?: ProtocolSchedule[]
 ): ConsentSection[] {
-  const months = Math.round(durationWeeks / 4)
+  const months = Math.round(durationWeeks / 4.33)
 
   return [
     {
@@ -39,12 +56,28 @@ Your treatment will not change based on your participation - you'll receive the 
     {
       id: 'procedures',
       title: "What You'll Do",
-      content: `If you agree to participate, you will:
+      content: (() => {
+        if (schedule && schedule.length > 0) {
+          const scheduleCount = schedule.length
+          const timepoints = schedule.map(tp => formatTimepoint(tp.timepoint))
+          const timepointsText = scheduleCount <= 5
+            ? `at ${scheduleCount} timepoints: ${timepoints.join(', ')}`
+            : `at ${scheduleCount} timepoints throughout the study`
 
-- Complete short questionnaires about your symptoms every 2-4 weeks
+          return `If you agree to participate, you will:
+
+- Complete short questionnaires about your symptoms ${timepointsText}
 - The study lasts ${months} months total
 
-Questionnaires take about 5 minutes each. You'll complete approximately 9 questionnaires over ${months} months.`
+Questionnaires take about 5 minutes each. You'll complete ${scheduleCount} questionnaires over ${months} months.`
+        }
+        return `If you agree to participate, you will:
+
+- Complete short questionnaires about your symptoms at scheduled timepoints
+- The study lasts ${months} months total
+
+Questionnaires take about 5 minutes each.`
+      })()
     },
     {
       id: 'risks',
@@ -98,11 +131,10 @@ You will not be charged any fees for participating.`
       id: 'contact',
       title: 'Contact Information',
       content: `**Questions about the study:**
-Email: research@example.com
+Email: support@nofone.us
 
 **Questions about your rights as a participant:**
-Institutional Review Board
-Email: irb@example.com
+Contact our research team at support@nofone.us
 
 For medical emergencies, contact your healthcare provider or call 911.`
     }

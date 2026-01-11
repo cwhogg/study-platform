@@ -90,6 +90,10 @@ export default function ConsentPage() {
         )
       }
 
+      // Replace placeholder emails
+      content = content.replace(/research@example\.com/gi, 'support@nofone.us')
+      content = content.replace(/irb@example\.com/gi, 'support@nofone.us')
+
       return { ...section, content }
     })
   }
@@ -113,9 +117,9 @@ export default function ConsentPage() {
             )
             setConsentSections(enhanced)
           } else {
-            // Use personalized fallback with intervention name
+            // Use personalized fallback with intervention name and schedule
             console.log('[Consent] Using fallback with intervention:', intervention)
-            setConsentSections(generateConsentSections(intervention, durationWeeks))
+            setConsentSections(generateConsentSections(intervention, durationWeeks, data.protocol?.schedule))
           }
         } else {
           // Generic fallback if API fails
