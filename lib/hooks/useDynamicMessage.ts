@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 
+const DEFAULT_MESSAGE = 'Processing...'
+
 /**
  * Hook that cycles through an array of messages at a specified interval.
  * Useful for button loading states during long AI operations.
@@ -16,6 +18,11 @@ export function useDynamicMessage(
   intervalMs: number = 2500,
   isActive: boolean = true
 ): string {
+  // Defensive: ensure messages is a valid array
+  const safeMessages = Array.isArray(messages) && messages.length > 0
+    ? messages
+    : [DEFAULT_MESSAGE]
+
   const [currentIndex, setCurrentIndex] = useState(0)
 
   useEffect(() => {
@@ -26,14 +33,15 @@ export function useDynamicMessage(
   }, [isActive])
 
   useEffect(() => {
-    if (!isActive || messages.length <= 1) return
+    if (!isActive || safeMessages.length <= 1) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % messages.length)
+      setCurrentIndex((prev) => (prev + 1) % safeMessages.length)
     }, intervalMs)
 
     return () => clearInterval(interval)
-  }, [messages.length, intervalMs, isActive])
+  }, [safeMessages.length, intervalMs, isActive])
 
-  return messages[currentIndex] || messages[0]
+  // Triple fallback: current index -> first message -> default
+  return safeMessages[currentIndex] || safeMessages[0] || DEFAULT_MESSAGE
 }

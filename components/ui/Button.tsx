@@ -1,3 +1,5 @@
+'use client'
+
 import { forwardRef, ButtonHTMLAttributes, ReactNode } from 'react'
 import { Loader2 } from 'lucide-react'
 
@@ -94,7 +96,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {isLoading ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>{loadingText || 'Loading...'}</span>
+            <span>{typeof loadingText === 'string' && loadingText.length > 0 ? loadingText : 'Loading...'}</span>
           </>
         ) : (
           <>
