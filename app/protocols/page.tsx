@@ -34,7 +34,7 @@ function getShortIntervention(intervention: string): string {
   return cleaned
 }
 
-// Get goal from study - try config.goal, then extract from primary endpoint, or infer from name
+// Get goal from study - try config.goal, then extract from primary endpoint
 function getGoal(study: Study): string | null {
   // Check config first
   if (study.config?.goal) {
@@ -47,21 +47,15 @@ function getGoal(study: Study): string | null {
     // Extract goal from endpoint like "Symptom improvement (qADAM)" -> "symptom improvement"
     const match = endpointName.match(/^([^(]+)/)
     if (match) {
-      return match[1].trim().toLowerCase()
+      const goal = match[1].trim().toLowerCase()
+      // Only return if it's a meaningful goal (not just the intervention repeated)
+      if (goal && goal.length > 2) {
+        return goal
+      }
     }
   }
 
-  // Try to extract from study name (e.g. "Magnesium Supplementation Outcomes Study")
-  const nameMatch = study.name.match(/(.+?)\s+(?:Outcomes?\s+)?Study$/i)
-  if (nameMatch) {
-    // Remove "Supplementation" type words
-    const goal = nameMatch[1]
-      .replace(/\s+Supplementation$/i, '')
-      .replace(/\s+Therapy$/i, '')
-      .replace(/\s+Treatment$/i, '')
-    return goal.toLowerCase()
-  }
-
+  // No goal found - return null (will just show intervention without "for X")
   return null
 }
 
