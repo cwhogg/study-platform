@@ -64,7 +64,7 @@ export default function Home() {
             <h1 className="text-[clamp(48px,6vw,72px)] font-bold leading-[1.05] tracking-[-0.03em] mb-6">
               <span className="text-[var(--primary)]">Study yourself</span>.
               <br />
-              Measure what matters.
+              Learn together.
             </h1>
 
             {/* Subheadline */}
