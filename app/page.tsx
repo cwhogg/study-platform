@@ -531,29 +531,50 @@ export default function Home() {
           </div>
 
           <div className="bg-[var(--glass-bg)] backdrop-blur-md border border-[var(--glass-border)] rounded-2xl p-8">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-6">
               <span className="text-sm font-medium text-white">Response Distribution</span>
               <span className="text-xs text-[#6B7280]">n=1,247</span>
             </div>
-            <div className="h-32 flex items-end gap-1">
-              {[15, 25, 45, 70, 85, 95, 100, 90, 75, 55, 35, 20, 10].map((height, i) => (
-                <div
-                  key={i}
-                  className="flex-1 rounded-t transition-all duration-300"
-                  style={{
-                    height: `${height}%`,
-                    backgroundColor: i === 7 ? 'var(--primary)' : 'var(--glass-hover)',
-                  }}
-                />
-              ))}
+
+            {/* Distribution visualization */}
+            <div className="relative h-36">
+              {/* Bell curve bars */}
+              <div className="absolute inset-0 flex items-end gap-0.5">
+                {[8, 14, 24, 38, 56, 72, 86, 95, 100, 98, 90, 78, 62, 46, 32, 20, 12, 6].map((height, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 rounded-t"
+                    style={{
+                      height: `${height}%`,
+                      backgroundColor: 'rgba(156, 163, 175, 0.25)',
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Your result marker - positioned at 78th percentile */}
+              <div className="absolute bottom-0 left-[72%] -translate-x-1/2 flex flex-col items-center">
+                <div className="bg-[var(--primary)] text-[#0A0A0A] text-xs font-bold px-2 py-1 rounded mb-1 whitespace-nowrap">
+                  78th percentile
+                </div>
+                <div className="w-0.5 h-28 bg-[var(--primary)]" />
+                <div className="w-3 h-3 bg-[var(--primary)] rounded-full border-2 border-[var(--bg-elevated)]" />
+              </div>
             </div>
+
+            {/* X-axis labels */}
+            <div className="flex justify-between mt-3 text-xs text-[#6B7280]">
+              <span>Low response</span>
+              <span>High response</span>
+            </div>
+
             <div className="flex items-center gap-6 pt-4 mt-4 border-t border-[var(--glass-border)]">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-[var(--primary)] rounded" />
+                <div className="w-3 h-3 bg-[var(--primary)] rounded-full" />
                 <span className="text-xs text-[#9CA3AF]">Your Result</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-[var(--glass-hover)] rounded" />
+                <div className="w-3 h-3 bg-[rgba(156,163,175,0.25)] rounded border border-[rgba(156,163,175,0.3)]" />
                 <span className="text-xs text-[#9CA3AF]">Population</span>
               </div>
             </div>
