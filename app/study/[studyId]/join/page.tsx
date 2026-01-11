@@ -122,10 +122,21 @@ export default function JoinPage() {
   const labTimepoints = schedule.filter(tp => tp.labs && tp.labs.length > 0)
   const hasLabs = labTimepoints.length > 0
 
+  // Format timepoint name for display (e.g., "week_6" -> "Week 6", "baseline" -> "Baseline")
+  const formatTimepoint = (tp: string): string => {
+    // Handle snake_case like "week_6" -> "Week 6"
+    const formatted = tp.replace(/_/g, ' ')
+    // Capitalize first letter of each word
+    return formatted
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ')
+  }
+
   // Build survey description from actual timepoints
   let surveyDescription: string
   if (scheduleCount > 0) {
-    const timepoints = schedule.map(tp => tp.timepoint)
+    const timepoints = schedule.map(tp => formatTimepoint(tp.timepoint))
     if (scheduleCount <= 4) {
       // Show specific timepoints: "4 check-ins: Baseline, Week 6, Week 13, Week 26"
       surveyDescription = `${scheduleCount} check-ins: ${timepoints.join(', ')}`
