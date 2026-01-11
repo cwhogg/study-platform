@@ -21,7 +21,12 @@ const DEFAULT_PRE_CONSENT = {
 interface StudyData {
   name: string
   intervention: string
+  durationWeeks: number
   enrollmentCopy: EnrollmentCopy | null
+  protocol?: {
+    schedule?: { timepoint: string; labs?: string[] }[]
+    labMarkers?: string[]
+  }
 }
 
 // Icon mapping
@@ -63,7 +68,63 @@ export default function OverviewPage() {
   }, [studyId])
 
   const copy = study?.enrollmentCopy?.preConsent || DEFAULT_PRE_CONSENT
-  const sections = copy.sections || DEFAULT_PRE_CONSENT.sections
+
+  // Build dynamic sections from protocol data when available
+  const buildDynamicSections = () => {
+    if (!study?.protocol?.schedule) {
+      return copy.sections || DEFAULT_PRE_CONSENT.sections
+    }
+
+    const schedule = study.protocol.schedule
+    const scheduleCount = schedule.length
+    const labTimepoints = schedule.filter(tp => tp.labs && tp.labs.length > 0)
+    const hasLabs = labTimepoints.length > 0
+    const durationMonths = Math.round((study.durationWeeks || 26) / 4.33)
+
+    // Format timepoint names
+    const formatTimepoint = (tp: string): string => {
+      const formatted = tp.replace(/_/g, ' ')
+      return formatted
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ')
+    }
+
+    const timepoints = schedule.map(tp => formatTimepoint(tp.timepoint))
+
+    // Build surveys description
+    let surveysBody: string
+    if (scheduleCount <= 4) {
+      surveysBody = `${scheduleCount} check-ins at ${timepoints.join(', ')}. Each takes about 5 minutes.`
+    } else {
+      surveysBody = `${scheduleCount} check-ins throughout the study, each taking about 5 minutes.`
+    }
+
+    // Build labs description
+    let labsBody: string
+    if (hasLabs) {
+      const labMarkers = study.protocol.labMarkers || []
+      const labNames = labMarkers.slice(0, 3).map(m =>
+        m.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+      )
+      labsBody = labTimepoints.length === scheduleCount
+        ? `Blood tests at each visit to monitor ${labNames.length > 0 ? labNames.join(', ') : 'key markers'}. Handled by your healthcare provider.`
+        : `${labTimepoints.length} blood draws to monitor ${labNames.length > 0 ? labNames.join(', ') : 'key markers'}. Handled by your healthcare provider.`
+    } else {
+      labsBody = 'No blood tests required for this study.'
+    }
+
+    // Build timeline description
+    const timelineBody = `${durationMonths} months total. You can stop at any time if you choose.`
+
+    return [
+      { icon: 'clipboard', title: 'Surveys', body: surveysBody },
+      { icon: 'droplet', title: 'Lab Work', body: labsBody },
+      { icon: 'clock', title: 'Timeline', body: timelineBody },
+    ]
+  }
+
+  const sections = buildDynamicSections()
 
   const handleContinue = async () => {
     setIsLoading(true)
