@@ -141,7 +141,9 @@ export interface ProtocolGenerationInput {
   population: string
   treatmentStage: string
   primaryEndpoint: string
+  primaryInstrument?: string          // Suggested instrument from Discovery phase
   secondaryEndpoints: string[]
+  secondaryInstruments?: string[]     // Suggested instruments for secondary endpoints
   durationWeeks: number
 }
 

@@ -110,19 +110,27 @@ Produce a complete, actionable study protocol that:
 ### Call 2: Protocol Generation
 
 **Trigger:** Sponsor completes study configuration
-**Input:** 
+**Input:**
 ```json
 {
   "intervention": "string",
   "population": "string",
-  "treatmentStage": "string", 
+  "treatmentStage": "string",
   "primaryEndpoint": "string",
+  "primaryInstrument": "string (from Discovery phase)",
   "secondaryEndpoints": ["string"],
+  "secondaryInstruments": ["string (from Discovery phase)"],
   "durationWeeks": 26
 }
 ```
 
 **Task:** Generate complete protocol specification.
+
+**CRITICAL: Instrument Selection Consistency**
+- If `primaryInstrument` is provided, you MUST use that specific instrument for the primary endpoint
+- If `secondaryInstruments` are provided, use those instruments for the corresponding secondary endpoints
+- This ensures consistency between what the sponsor saw in the design phase and what appears in the final protocol
+- Only select different instruments if the provided ones are clinically inappropriate (and explain why)
 
 **Output Schema:**
 ```json

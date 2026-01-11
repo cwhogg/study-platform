@@ -95,7 +95,9 @@ function ConfigureStudyContent() {
   const [population, setPopulation] = useState('')
   const [treatmentStage, setTreatmentStage] = useState('')
   const [primaryEndpoint, setPrimaryEndpoint] = useState('')
+  const [primaryInstrument, setPrimaryInstrument] = useState('')
   const [secondaryEndpoints, setSecondaryEndpoints] = useState<string[]>([])
+  const [secondaryInstruments, setSecondaryInstruments] = useState<string[]>([])
   const [duration, setDuration] = useState(26)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -153,13 +155,13 @@ function ConfigureStudyContent() {
             return order[a.confidence] - order[b.confidence]
           })
           setPrimaryEndpoint(sortedEndpoints[0].name)
+          setPrimaryInstrument(sortedEndpoints[0].suggestedInstrument || '')
           // Set remaining high/moderate confidence endpoints as secondary
-          setSecondaryEndpoints(
-            sortedEndpoints
-              .slice(1)
-              .filter(e => e.confidence !== 'low')
-              .map(e => e.name)
-          )
+          const secondaryEps = sortedEndpoints
+            .slice(1)
+            .filter(e => e.confidence !== 'low')
+          setSecondaryEndpoints(secondaryEps.map(e => e.name))
+          setSecondaryInstruments(secondaryEps.map(e => e.suggestedInstrument || ''))
         }
         if (data.recommendedDuration?.weeks) {
           setDuration(data.recommendedDuration.weeks)
@@ -181,9 +183,15 @@ function ConfigureStudyContent() {
 
   const handleSecondaryEndpointChange = (name: string, checked: boolean) => {
     if (checked) {
+      // Find the instrument for this endpoint
+      const endpoint = endpoints.find(e => e.name === name)
+      const instrument = endpoint?.suggestedInstrument || ''
       setSecondaryEndpoints([...secondaryEndpoints, name])
+      setSecondaryInstruments([...secondaryInstruments, instrument])
     } else {
+      const index = secondaryEndpoints.indexOf(name)
       setSecondaryEndpoints(secondaryEndpoints.filter(e => e !== name))
+      setSecondaryInstruments(secondaryInstruments.filter((_, i) => i !== index))
     }
   }
 
@@ -198,7 +206,9 @@ function ConfigureStudyContent() {
       population,
       treatmentStage,
       primaryEndpoint,
+      primaryInstrument: primaryInstrument || undefined,  // Suggested instrument from Discovery
       secondaryEndpoints,
+      secondaryInstruments: secondaryInstruments.length > 0 ? secondaryInstruments : undefined,
       durationWeeks: duration,
     }
 
@@ -611,6 +621,7 @@ function ConfigureStudyContent() {
                   checked={primaryEndpoint === option.name && !customPrimaryEndpoint}
                   onChange={(e) => {
                     setPrimaryEndpoint(e.target.value)
+                    setPrimaryInstrument(option.suggestedInstrument || '')
                     setCustomPrimaryEndpoint('')
                   }}
                   className="w-4 h-4 mt-1.5 text-[var(--primary)] border-[var(--glass-border)] bg-[var(--glass-bg)] focus:ring-[var(--primary)]"
@@ -651,10 +662,16 @@ function ConfigureStudyContent() {
                 value={customPrimaryEndpoint}
                 onChange={(e) => {
                   setCustomPrimaryEndpoint(e.target.value)
-                  if (e.target.value) setPrimaryEndpoint(e.target.value)
+                  if (e.target.value) {
+                    setPrimaryEndpoint(e.target.value)
+                    setPrimaryInstrument('') // Clear instrument for custom endpoints
+                  }
                 }}
                 onFocus={() => {
-                  if (customPrimaryEndpoint) setPrimaryEndpoint(customPrimaryEndpoint)
+                  if (customPrimaryEndpoint) {
+                    setPrimaryEndpoint(customPrimaryEndpoint)
+                    setPrimaryInstrument('')
+                  }
                 }}
                 placeholder="Or describe the primary outcome you want to measure"
                 className="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-0 p-0"
