@@ -12,8 +12,7 @@ import { useDynamicMessage } from '@/lib/hooks/useDynamicMessage'
 import {
   DynamicLoader,
   DISCOVERY_MESSAGES,
-  PROTOCOL_BUTTON_MESSAGES,
-  SAFETY_BUTTON_MESSAGES,
+  PROTOCOL_GENERATION_MESSAGES,
 } from '@/components/ui/DynamicLoader'
 
 // Types for AI discovery response
@@ -112,17 +111,8 @@ function ConfigureStudyContent() {
     protocol: null,
   })
 
-  // Dynamic loading messages based on submission phase
-  const protocolMessage = useDynamicMessage(
-    PROTOCOL_BUTTON_MESSAGES,
-    2500,
-    isSubmitting && submissionPhase === 'protocol'
-  )
-  const safetyMessage = useDynamicMessage(
-    SAFETY_BUTTON_MESSAGES,
-    2500,
-    isSubmitting && submissionPhase === 'safety'
-  )
+  // Dynamic loading message for the entire generation process
+  const loadingMessage = useDynamicMessage(PROTOCOL_GENERATION_MESSAGES, 2500, isSubmitting)
 
   // Load discovery data from sessionStorage
   useEffect(() => {
@@ -864,7 +854,7 @@ function ConfigureStudyContent() {
           fullWidth
           disabled={isSubmitting || !population || !treatmentStage || !primaryEndpoint}
           isLoading={isSubmitting}
-          loadingText={submissionPhase === 'safety' ? safetyMessage : protocolMessage}
+          loadingText={loadingMessage}
           rightIcon={<ArrowRight className="w-5 h-5" />}
         >
           Generate Protocol

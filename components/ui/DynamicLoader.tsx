@@ -137,6 +137,18 @@ export const DISCOVERY_BUTTON_MESSAGES = [
   'Preparing options...',
 ]
 
+export const PROTOCOL_GENERATION_MESSAGES = [
+  'Calling Clinical Protocol Agent...',
+  'Designing protocol structure...',
+  'Generating inclusion criteria...',
+  'Selecting PRO instruments...',
+  'Building assessment schedule...',
+  'Calling Safety Monitoring Agent...',
+  'Analyzing intervention risks...',
+  'Setting alert thresholds...',
+  'Finalizing protocol...',
+]
+
 export const PROTOCOL_BUTTON_MESSAGES = [
   'Designing protocol...',
   'Selecting instruments...',
