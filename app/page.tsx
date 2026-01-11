@@ -64,83 +64,63 @@ export default function Home() {
             <h1 className="text-[clamp(48px,6vw,72px)] font-bold leading-[1.05] tracking-[-0.03em] mb-6">
               <span className="text-[var(--primary)]">Study yourself</span>.
               <br />
-              Learn together.
+              Learn together<span className="text-[var(--primary)]">.</span>
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-lg leading-relaxed text-[#9CA3AF] mb-10 max-w-[480px]">
-              Design a protocol. Collect your data. See your results.
-              <strong className="text-[#D1D5DB] font-medium"> Your N of 1 study</strong> joins thousands of others to reveal what actually works.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex gap-3 sm:gap-4 mb-16">
-              <Link
-                href="/create"
-                className="group inline-flex items-center gap-2 sm:gap-2.5 px-4 sm:px-7 py-2.5 sm:py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base whitespace-nowrap shadow-[0_0_0_0_rgba(234,88,12,0.4)] hover:bg-[var(--primary-light)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(234,88,12,0.4)] transition-all duration-200"
-              >
-                Create a protocol
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-              <Link
-                href="/protocols"
-                className="inline-flex items-center gap-2 sm:gap-2.5 px-4 sm:px-7 py-2.5 sm:py-4 bg-[var(--glass-bg)] text-white rounded-lg sm:rounded-xl font-medium text-sm sm:text-base whitespace-nowrap border border-[var(--glass-border)] backdrop-blur-sm hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.15)] transition-all"
-              >
-                Find a protocol
-              </Link>
-            </div>
-
-            {/* Mobile Data Viz Card - shows only on mobile */}
-            <div className="lg:hidden mb-10 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl p-5 relative overflow-hidden">
-              {/* Subtle glow */}
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-[var(--primary)] rounded-full opacity-10 blur-2xl" />
-
-              <div className="flex items-center justify-between mb-4 relative z-10">
-                <div>
-                  <div className="text-xs text-[#6B7280] uppercase tracking-wider mb-1">Your Progress</div>
-                  <div className="font-semibold text-white">Sexual Function Score</div>
-                </div>
-                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[rgba(34,197,94,0.15)] rounded-full text-xs font-semibold text-[#22C55E]">
-                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                    <path d="M2 8L5 5L7 7L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  +6 pts
-                </div>
-              </div>
-
-              {/* Mini chart */}
-              <div className="h-16 relative z-10">
-                <svg className="w-full h-full" viewBox="0 0 300 60" preserveAspectRatio="none">
+            {/* Subheadline + CTAs with background data viz on mobile */}
+            <div className="relative mb-16">
+              {/* Background data viz - mobile only */}
+              <div className="absolute inset-0 -inset-x-4 lg:hidden overflow-hidden pointer-events-none">
+                <svg className="w-full h-full opacity-[0.15]" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
                   {/* Grid lines */}
-                  <line x1="0" y1="30" x2="300" y2="30" stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
+                  <line x1="0" y1="50" x2="400" y2="50" stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
+                  <line x1="0" y1="100" x2="400" y2="100" stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
+                  <line x1="0" y1="150" x2="400" y2="150" stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
 
-                  {/* Aggregate line */}
-                  <path d="M0,45 Q75,42 150,38 T300,30" fill="none" stroke="rgba(107,114,128,0.3)" strokeWidth="2"/>
+                  {/* Area fill under the line */}
+                  <path d="M0,180 Q100,160 200,120 T400,40 L400,200 L0,200 Z" fill="url(#mobileGradient)" />
 
-                  {/* Your data line */}
-                  <path d="M0,50 Q75,40 150,25 T300,10" fill="none" stroke="#EA580C" strokeWidth="2.5" strokeLinecap="round"/>
+                  {/* Main data line */}
+                  <path d="M0,180 Q100,160 200,120 T400,40" fill="none" stroke="#EA580C" strokeWidth="3" strokeLinecap="round"/>
 
                   {/* Data points */}
-                  <circle cx="0" cy="50" r="3" fill="#EA580C"/>
-                  <circle cx="100" cy="35" r="3" fill="#EA580C"/>
-                  <circle cx="200" cy="18" r="3" fill="#EA580C"/>
-                  <circle cx="300" cy="10" r="4" fill="#EA580C">
-                    <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+                  <circle cx="0" cy="180" r="5" fill="#EA580C"/>
+                  <circle cx="133" cy="145" r="5" fill="#EA580C"/>
+                  <circle cx="266" cy="90" r="5" fill="#EA580C"/>
+                  <circle cx="400" cy="40" r="6" fill="#EA580C">
+                    <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite"/>
                   </circle>
+
+                  <defs>
+                    <linearGradient id="mobileGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#EA580C" stopOpacity="0.4"/>
+                      <stop offset="100%" stopColor="#EA580C" stopOpacity="0"/>
+                    </linearGradient>
+                  </defs>
                 </svg>
               </div>
 
-              {/* Legend */}
-              <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[var(--glass-border)] relative z-10">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-[var(--primary)] rounded-full" />
-                  <span className="text-xs text-[#9CA3AF]">You</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-[#6B7280] rounded-full" />
-                  <span className="text-xs text-[#9CA3AF]">Average</span>
-                </div>
-                <div className="ml-auto text-xs text-[#6B7280]">Week 8 of 12</div>
+              {/* Subheadline */}
+              <p className="relative z-10 text-lg leading-relaxed text-[#9CA3AF] mb-10 max-w-[480px]">
+                Design a protocol. Collect your data. See your results.
+                <strong className="text-[#D1D5DB] font-medium"> Your N of 1 study</strong> joins thousands of others to reveal what actually works.
+              </p>
+
+              {/* CTAs */}
+              <div className="relative z-10 flex gap-3 sm:gap-4">
+                <Link
+                  href="/create"
+                  className="group inline-flex items-center gap-2 sm:gap-2.5 px-4 sm:px-7 py-2.5 sm:py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base whitespace-nowrap shadow-[0_0_0_0_rgba(234,88,12,0.4)] hover:bg-[var(--primary-light)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(234,88,12,0.4)] transition-all duration-200"
+                >
+                  Create a protocol
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+                <Link
+                  href="/protocols"
+                  className="inline-flex items-center gap-2 sm:gap-2.5 px-4 sm:px-7 py-2.5 sm:py-4 bg-[var(--glass-bg)] text-white rounded-lg sm:rounded-xl font-medium text-sm sm:text-base whitespace-nowrap border border-[var(--glass-border)] backdrop-blur-sm hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.15)] transition-all"
+                >
+                  Find a protocol
+                </Link>
               </div>
             </div>
 
