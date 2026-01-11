@@ -524,7 +524,8 @@ interface TriggerConfig {
    - Adherence / satisfaction
 
 4. **Match instruments to endpoints**
-   - **ONLY use validated, published PRO instruments** - NEVER invent new instruments
+   - **ONLY use validated PATIENT SELF-REPORT (PRO) instruments** - NEVER invent new instruments
+   - **CRITICAL: Only use instruments designed for patients to complete themselves** - NOT clinician-administered scales
    - **ALWAYS use the FULL OFFICIAL NAME** of the instrument - NEVER use generic descriptions
    - **Primary reference: NIH PROMIS database (healthmeasures.net/search-view-measures)**
    - Also reference: FDA PRO Guidance instruments, published clinical literature, sralab.org/rehabilitation-measures
@@ -532,26 +533,56 @@ interface TriggerConfig {
    - Consider patient burden
    - Include brief screening versions where available
 
+   **CRITICAL: Self-Report vs Clinician-Administered**
+
+   This platform is for PATIENT SELF-REPORTING. Patients complete surveys on their phones without a clinician present.
+
+   **NEVER USE these CLINICIAN-ADMINISTERED instruments:**
+   - MADRS (Montgomery-Åsberg Depression Rating Scale) - clinician observes "apparent sadness"
+   - HAM-D / HDRS (Hamilton Depression Rating Scale) - requires clinician interview
+   - HAM-A (Hamilton Anxiety Rating Scale) - clinician-rated
+   - PANSS (Positive and Negative Syndrome Scale) - clinician interview for schizophrenia
+   - YMRS (Young Mania Rating Scale) - clinician observation
+   - CGI (Clinical Global Impression) - clinician rating
+   - BPRS (Brief Psychiatric Rating Scale) - clinician interview
+   - Any instrument with questions like "Appears sad", "Looks dispirited", "Observer-rated"
+
+   **ALWAYS USE these PATIENT SELF-REPORT instruments instead:**
+
+   **Mental health (SELF-REPORT):**
+   - PHQ-2, PHQ-9 (Patient Health Questionnaire) - "Over the last 2 weeks, how often have YOU been bothered by..."
+   - GAD-7 (Generalized Anxiety Disorder) - patient self-report
+   - BDI-II (Beck Depression Inventory) - patient self-report (asks "I feel sad" not "appears sad")
+   - CES-D (Center for Epidemiologic Studies Depression) - self-report
+   - QIDS-SR (Quick Inventory of Depressive Symptomatology - SELF-REPORT version)
+   - PCL-5 (PTSD Checklist) - self-report
+   - DASS-21 (Depression Anxiety Stress Scales) - self-report
+
    **CRITICAL: Be SPECIFIC with instrument names:**
    - WRONG: "Wound assessment tool" or "Pain scale" or "Depression questionnaire"
    - RIGHT: "Bates-Jensen Wound Assessment Tool (BWAT)" or "Brief Pain Inventory (BPI)" or "PHQ-9"
 
-   **Examples of VALID instruments by domain:**
+   **Examples of VALID SELF-REPORT instruments by domain:**
    - **PROMIS instruments:** PROMIS Pain Interference, PROMIS Physical Function, PROMIS Fatigue, PROMIS Depression, PROMIS Anxiety, PROMIS Sleep Disturbance, PROMIS Global Health
    - **Pain:** Brief Pain Inventory (BPI), Numeric Rating Scale (NRS), Visual Analog Scale (VAS), McGill Pain Questionnaire (MPQ), WOMAC Pain Subscale
-   - **Mental health:** PHQ-2, PHQ-9, GAD-7, PCL-5, Beck Depression Inventory (BDI-II), Hamilton Depression Rating Scale (HAM-D)
+   - **Depression (SELF-REPORT ONLY):** PHQ-2, PHQ-9, BDI-II, CES-D, QIDS-SR, PROMIS Depression
+   - **Anxiety (SELF-REPORT ONLY):** GAD-7, STAI (State-Trait Anxiety Inventory), PROMIS Anxiety, DASS-21
    - **General QoL:** SF-36, SF-12, EQ-5D-5L, WHOQOL-BREF
    - **Musculoskeletal:** VISA-A (Achilles tendinopathy), VISA-P (patellar tendinopathy), WOMAC (osteoarthritis), Oswestry Disability Index (ODI), DASH (upper extremity), Lysholm Knee Score, KOOS (knee)
-   - **Wound healing:** Bates-Jensen Wound Assessment Tool (BWAT), Pressure Ulcer Scale for Healing (PUSH), Wound Bed Score (WBS)
    - **Sexual function:** IIEF-5 (erectile function), Female Sexual Function Index (FSFI), qADAM (androgen deficiency)
-   - **Fatigue:** FACIT-Fatigue, Multidimensional Fatigue Inventory (MFI), Fatigue Severity Scale (FSS)
-   - **Sleep:** Pittsburgh Sleep Quality Index (PSQI), Insomnia Severity Index (ISI), Epworth Sleepiness Scale (ESS)
+   - **Fatigue:** FACIT-Fatigue, Multidimensional Fatigue Inventory (MFI), Fatigue Severity Scale (FSS), PROMIS Fatigue
+   - **Sleep:** Pittsburgh Sleep Quality Index (PSQI), Insomnia Severity Index (ISI), Epworth Sleepiness Scale (ESS), PROMIS Sleep Disturbance
    - **Functional status:** Barthel Index, Katz ADL Index, Lawton IADL Scale
-   - **Neurological:** Montreal Cognitive Assessment (MoCA), Mini-Mental State Examination (MMSE)
+
+   **Question wording validation:**
+   - Questions must be written in FIRST PERSON or addressed TO the patient
+   - CORRECT: "I feel sad", "How often have YOU felt...", "Rate YOUR pain"
+   - WRONG: "Appears sad", "Looks dispirited", "Patient demonstrates...", "Observer notes..."
 
    - **DO NOT** create instruments like "Tendon Healing Assessment Scale" or "Custom questionnaire" - these do not exist
    - **DO NOT** use generic names like "wound assessment tool" - always use the specific validated instrument name
-   - If unsure which specific instrument to use, search sralab.org/rehabilitation-measures or healthmeasures.net for validated options in that domain
+   - **DO NOT** use clinician-administered instruments - always verify the instrument is designed for patient self-report
+   - If unsure which specific instrument to use, search sralab.org/rehabilitation-measures or healthmeasures.net for validated self-report options in that domain
 
 5. **Determine populations and stages**
    - Who typically receives this intervention?

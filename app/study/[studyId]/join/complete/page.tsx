@@ -27,6 +27,9 @@ interface StudyData {
   name: string
   intervention: string
   enrollmentCopy: EnrollmentCopy | null
+  protocol?: {
+    schedule?: { timepoint: string; labs?: string[] }[]
+  }
 }
 
 function CompletePageContent() {
@@ -95,6 +98,9 @@ function CompletePageContent() {
 
   const copy = study?.enrollmentCopy?.enrollmentComplete || DEFAULT_ENROLLMENT_COMPLETE
 
+  // Check if study has labs
+  const hasLabs = study?.protocol?.schedule?.some(tp => tp.labs && tp.labs.length > 0) ?? false
+
   // Replace {{intervention}} placeholder
   const body = (copy.body || DEFAULT_ENROLLMENT_COMPLETE.body)
     .replace('{{intervention}}', study?.intervention || 'treatment')
@@ -142,18 +148,20 @@ function CompletePageContent() {
             </div>
           </div>
 
-          {/* Baseline Labs */}
-          <div className="flex items-start gap-4 p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
-            <div className="w-10 h-10 bg-[var(--primary-dim)] rounded-lg flex items-center justify-center flex-shrink-0 border border-[var(--primary)]/30">
-              <FlaskConical className="w-5 h-5 text-[var(--primary)]" />
-            </div>
-            <div>
-              <div className="font-medium text-[var(--text-primary)]">Baseline labs</div>
-              <div className="text-[var(--text-secondary)] text-sm">
-                Your doctor will order these as part of your normal care
+          {/* Baseline Labs - only show if study has labs */}
+          {hasLabs && (
+            <div className="flex items-start gap-4 p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">
+              <div className="w-10 h-10 bg-[var(--primary-dim)] rounded-lg flex items-center justify-center flex-shrink-0 border border-[var(--primary)]/30">
+                <FlaskConical className="w-5 h-5 text-[var(--primary)]" />
+              </div>
+              <div>
+                <div className="font-medium text-[var(--text-primary)]">Baseline labs</div>
+                <div className="text-[var(--text-secondary)] text-sm">
+                  Your doctor will order these as part of your normal care
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Email Confirmation */}
           <div className="flex items-start gap-4 p-4 bg-[var(--glass-bg)] rounded-xl border border-[var(--glass-border)]">

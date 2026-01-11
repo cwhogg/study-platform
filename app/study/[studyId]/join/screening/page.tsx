@@ -13,6 +13,7 @@ import {
   type ScreeningQuestion,
   type Protocol,
 } from '@/lib/study/screening'
+import { DateOfBirthInput } from '@/components/questions/inputs/DateOfBirthInput'
 
 interface StudyData {
   name: string
@@ -120,23 +121,10 @@ export default function ScreeningPage() {
     switch (question.type) {
       case 'date':
         return (
-          <div className="space-y-4">
-            <input
-              type="date"
-              value={typeof currentAnswer === 'string' ? currentAnswer : ''}
-              onChange={(e) => setAnswers({ ...answers, [question.id]: e.target.value })}
-              className="w-full px-4 py-4 border border-[var(--glass-border)] bg-[var(--glass-bg)] text-[var(--text-primary)] rounded-xl text-base focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] transition-all"
-              style={{ minHeight: '52px' }}
-            />
-            {hasAnswer && (
-              <Button
-                onClick={() => handleAnswer(currentAnswer as string)}
-                fullWidth
-              >
-                Continue
-              </Button>
-            )}
-          </div>
+          <DateOfBirthInput
+            value={typeof currentAnswer === 'string' ? currentAnswer : undefined}
+            onChange={(value) => handleAnswer(value)}
+          />
         )
 
       case 'yes_no':
