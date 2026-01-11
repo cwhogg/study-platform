@@ -77,14 +77,14 @@ export default function Home() {
             <div className="flex gap-4 mb-16">
               <Link
                 href="/create"
-                className="group inline-flex items-center gap-2.5 px-7 py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold text-base shadow-[0_0_0_0_rgba(234,88,12,0.4)] hover:bg-[var(--primary-light)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(234,88,12,0.4)] transition-all duration-200"
+                className="group inline-flex items-center gap-2.5 px-5 sm:px-7 py-3 sm:py-4 bg-[var(--primary)] text-[#0A0A0A] rounded-xl font-semibold text-sm sm:text-base whitespace-nowrap shadow-[0_0_0_0_rgba(234,88,12,0.4)] hover:bg-[var(--primary-light)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(234,88,12,0.4)] transition-all duration-200"
               >
                 Create a protocol
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
                 href="/protocols"
-                className="inline-flex items-center gap-2.5 px-7 py-4 bg-[var(--glass-bg)] text-white rounded-xl font-medium text-base border border-[var(--glass-border)] backdrop-blur-sm hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.15)] transition-all"
+                className="inline-flex items-center gap-2.5 px-5 sm:px-7 py-3 sm:py-4 bg-[var(--glass-bg)] text-white rounded-xl font-medium text-sm sm:text-base whitespace-nowrap border border-[var(--glass-border)] backdrop-blur-sm hover:bg-[var(--glass-bg-hover)] hover:border-[rgba(255,255,255,0.15)] transition-all"
               >
                 Find a protocol
               </Link>
