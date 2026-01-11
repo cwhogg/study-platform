@@ -15,7 +15,7 @@ export async function GET() {
 
     const { data: studies, error: studiesError } = await supabase
       .from('sp_studies')
-      .select('id, name, intervention, config')
+      .select('id, name, intervention, config, protocol')
       .eq('status', 'active')
       .order('created_at', { ascending: false })
       .limit(10)
@@ -28,7 +28,31 @@ export async function GET() {
       )
     }
 
-    return NextResponse.json({ studies: studies || [] })
+    // Get participant counts for each study
+    const studyIds = (studies || []).map(s => s.id)
+
+    let participantCounts: Record<string, number> = {}
+    if (studyIds.length > 0) {
+      const { data: participants } = await supabase
+        .from('sp_participants')
+        .select('study_id')
+        .in('study_id', studyIds)
+        .in('status', ['enrolled', 'active', 'completed'])
+
+      // Count participants per study
+      participantCounts = (participants || []).reduce((acc, p) => {
+        acc[p.study_id] = (acc[p.study_id] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+    }
+
+    // Add participant counts to studies
+    const studiesWithCounts = (studies || []).map(study => ({
+      ...study,
+      participant_count: participantCounts[study.id] || 0
+    }))
+
+    return NextResponse.json({ studies: studiesWithCounts })
 
   } catch (error) {
     console.error('Get active studies error:', error)
