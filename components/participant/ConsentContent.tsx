@@ -20,7 +20,7 @@ export function ConsentContent({ content }: ConsentContentProps) {
         switch (block.type) {
           case 'subheader':
             return (
-              <p key={idx} className="font-medium text-slate-800 mt-4 mb-1">
+              <p key={idx} className="font-medium text-[var(--text-primary)] mt-4 mb-1">
                 {renderInlineFormatting(block.text)}
               </p>
             )
@@ -29,8 +29,8 @@ export function ConsentContent({ content }: ConsentContentProps) {
               <ul key={idx} className="space-y-2 ml-1">
                 {block.items.map((item, itemIdx) => (
                   <li key={itemIdx} className="flex items-start gap-3">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0" />
-                    <span className="text-slate-700 leading-relaxed">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] mt-2 flex-shrink-0" />
+                    <span className="text-[var(--text-primary)] leading-relaxed">
                       {renderInlineFormatting(item)}
                     </span>
                   </li>
@@ -40,7 +40,7 @@ export function ConsentContent({ content }: ConsentContentProps) {
           case 'paragraph':
           default:
             return (
-              <p key={idx} className="text-slate-700 leading-relaxed">
+              <p key={idx} className="text-[var(--text-primary)] leading-relaxed">
                 {renderInlineFormatting(block.text)}
               </p>
             )
@@ -165,7 +165,7 @@ function renderInlineFormatting(text: string): React.ReactNode {
     if (part.startsWith('**') && part.endsWith('**')) {
       const boldText = part.slice(2, -2)
       return (
-        <strong key={idx} className="font-semibold text-slate-900">
+        <strong key={idx} className="font-semibold text-[var(--text-primary)]">
           {boldText}
         </strong>
       )
