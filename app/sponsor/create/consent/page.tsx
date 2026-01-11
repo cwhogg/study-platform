@@ -240,6 +240,7 @@ function ConsentReviewContent() {
         },
         body: JSON.stringify({
           intervention,
+          goal: discovery?.goal,
           studyName,
           studyDescription,
           population,

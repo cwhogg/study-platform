@@ -229,6 +229,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const {
       intervention,
+      goal,
       studyName: aiStudyName,
       studyDescription,
       population,
@@ -282,11 +283,12 @@ export async function POST(request: NextRequest) {
     console.log('[Studies] AI comprehension questions provided:', !!aiComprehensionQuestions)
     const comprehensionQuestions = aiComprehensionQuestions || generateComprehensionQuestions(durationWeeks)
 
-    // Create study config (includes description for display)
+    // Create study config (includes description and goal for display)
     const config: StudyConfig = {
       duration_weeks: durationWeeks,
       target_enrollment: 100,
       description: studyDescription || null,
+      goal: goal || null,
     }
 
     let sponsorId: string
