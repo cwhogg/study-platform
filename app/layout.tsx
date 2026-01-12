@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   keywords: ["n of 1", "self experiment", "personal science", "quantified self", "health data", "protocol", "clinical study"],
   authors: [{ name: "N of One" }],
   openGraph: {
-    title: "N of One Platform. Study yourself.",
+    title: "N of One | Study Yourself",
     description: "Design a clinical protocol. Collect your data. See what works for you.",
     type: "website",
     siteName: "N of One",
