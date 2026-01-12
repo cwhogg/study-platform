@@ -18,12 +18,12 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "N of One | Study Yourself. Measure What Matters.",
-  description: "Design a protocol. Collect your data. See your results. Your N of 1 study joins thousands of others to reveal what actually works.",
+  description: "Design a clinical protocol. Collect your data. See what works for you. Your N of 1 study joins thousands of others to reveal what actually works.",
   keywords: ["n of 1", "self experiment", "personal science", "quantified self", "health data", "protocol", "clinical study"],
   authors: [{ name: "N of One" }],
   openGraph: {
     title: "N of One | Study Yourself",
-    description: "Design a protocol. Collect your data. See your results.",
+    description: "Design a clinical protocol. Collect your data. See what works for you.",
     type: "website",
   },
 };

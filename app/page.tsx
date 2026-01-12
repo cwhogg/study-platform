@@ -102,7 +102,7 @@ export default function Home() {
 
               {/* Subheadline */}
               <p className="relative z-10 text-lg leading-relaxed text-[#9CA3AF] mb-10 max-w-[480px]">
-                Design a protocol. Collect your data. See your results.
+                Design a clinical protocol. Collect your data. See what works for you.
                 <strong className="text-[#D1D5DB] font-medium"> Your N of 1 study</strong> joins thousands of others to reveal what actually works.
               </p>
 
