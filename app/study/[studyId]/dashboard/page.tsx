@@ -67,6 +67,7 @@ export default function DashboardPage() {
   const [notEnrolled, setNotEnrolled] = useState(false)
   const [studyName, setStudyName] = useState('Your Protocol')
   const [totalWeeks, setTotalWeeks] = useState(12)
+  const [userProfile, setUserProfile] = useState<{ firstName?: string; lastName?: string; email?: string } | null>(null)
 
   const loadDashboardData = useCallback(async () => {
     const supabase = createClient()
@@ -76,6 +77,23 @@ export default function DashboardPage() {
       if (!user) {
         setLoading(false)
         return
+      }
+
+      // Load user profile for sidebar
+      const { data: profile } = await supabase
+        .from('sp_profiles')
+        .select('first_name, last_name, email')
+        .eq('id', user.id)
+        .single()
+
+      if (profile) {
+        setUserProfile({
+          firstName: profile.first_name || undefined,
+          lastName: profile.last_name || undefined,
+          email: profile.email || user.email,
+        })
+      } else {
+        setUserProfile({ email: user.email })
       }
 
       // Get study info including protocol
@@ -129,14 +147,14 @@ export default function DashboardPage() {
 
       const { data: submissions } = await supabase
         .from('sp_submissions')
-        .select('timepoint, instrument, submitted_at')
+        .select('timepoint, instrument, submitted_at, scores')
         .eq('participant_id', participant.id)
 
-      // Track submissions by timepoint
-      const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null }>()
+      // Track submissions by timepoint (including scores)
+      const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null; totalScore: number }>()
       submissions?.forEach(s => {
         if (!submissionsByTimepoint.has(s.timepoint)) {
-          submissionsByTimepoint.set(s.timepoint, { instruments: new Set(), lastSubmitted: null })
+          submissionsByTimepoint.set(s.timepoint, { instruments: new Set(), lastSubmitted: null, totalScore: 0 })
         }
         const entry = submissionsByTimepoint.get(s.timepoint)!
         entry.instruments.add(s.instrument)
@@ -145,6 +163,11 @@ export default function DashboardPage() {
           if (!entry.lastSubmitted || submittedDate > entry.lastSubmitted) {
             entry.lastSubmitted = submittedDate
           }
+        }
+        // Accumulate scores from submissions
+        const scores = s.scores as { total?: number } | null
+        if (scores?.total !== undefined) {
+          entry.totalScore += scores.total
         }
       })
 
@@ -186,8 +209,8 @@ export default function DashboardPage() {
           status = 'upcoming'
         }
 
-        // Mock scores for completed assessments
-        const score = allCompleted ? 55 + idx * 5 + Math.floor(Math.random() * 10) : undefined
+        // Use actual scores from submissions
+        const score = allCompleted && submissionEntry ? submissionEntry.totalScore : undefined
 
         return {
           id: config.id,
@@ -308,11 +331,15 @@ export default function DashboardPage() {
           <div className="pt-4 border-t border-[var(--glass-border)]">
             <div className="flex items-center gap-3 p-3 bg-[var(--glass-bg)] rounded-xl">
               <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center text-sm font-semibold">
-                U
+                {userProfile?.firstName?.[0]?.toUpperCase() || userProfile?.email?.[0]?.toUpperCase() || 'U'}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-white truncate">User</div>
-                <div className="text-xs text-[#6B7280] truncate">user@example.com</div>
+                <div className="text-sm font-medium text-white truncate">
+                  {userProfile?.firstName && userProfile?.lastName
+                    ? `${userProfile.firstName} ${userProfile.lastName}`
+                    : userProfile?.firstName || userProfile?.email?.split('@')[0] || 'User'}
+                </div>
+                <div className="text-xs text-[#6B7280] truncate">{userProfile?.email || 'user@example.com'}</div>
               </div>
             </div>
           </div>
@@ -523,7 +550,7 @@ export default function DashboardPage() {
             <NofOneLogo size={28} />
           </Link>
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center text-sm font-semibold">
-            U
+            {userProfile?.firstName?.[0]?.toUpperCase() || userProfile?.email?.[0]?.toUpperCase() || 'U'}
           </div>
         </div>
 
