@@ -663,26 +663,26 @@ export default function DashboardPage() {
             <div className="col-span-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl">
               <div className="text-sm font-medium text-[#9CA3AF] mb-4">Your Insights</div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-[var(--bg-elevated)] rounded-xl p-5 border border-[var(--glass-border)]">
-                  <div className="text-xs text-[#71717A] uppercase tracking-[0.05em] mb-2">Completion Rate</div>
+                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)] flex flex-col">
+                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2 whitespace-nowrap">Completion</div>
                   <div className="font-mono text-2xl font-semibold text-white">
                     {assessments.filter(a => a.status !== 'upcoming').length > 0
                       ? Math.round((completedAssessments.length / assessments.filter(a => a.status !== 'upcoming').length) * 100)
                       : 0}%
                   </div>
-                  <div className="text-xs text-[#52525B] mt-1">
-                    {completedAssessments.length} of {assessments.filter(a => a.status !== 'upcoming').length} due
+                  <div className="text-xs text-[#52525B] mt-auto pt-1">
+                    {completedAssessments.length}/{assessments.filter(a => a.status !== 'upcoming').length} due
                   </div>
                 </div>
-                <div className="bg-[var(--bg-elevated)] rounded-xl p-5 border border-[var(--glass-border)]">
-                  <div className="text-xs text-[#71717A] uppercase tracking-[0.05em] mb-2">Study Progress</div>
+                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)] flex flex-col">
+                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2 whitespace-nowrap">Progress</div>
                   <div className="font-mono text-2xl font-semibold text-[var(--primary)]">{progress}%</div>
-                  <div className="text-xs text-[#52525B] mt-1">{completedAssessments.length} of {assessments.length} total</div>
+                  <div className="text-xs text-[#52525B] mt-auto pt-1">{completedAssessments.length}/{assessments.length} total</div>
                 </div>
-                <div className="bg-[var(--bg-elevated)] rounded-xl p-5 border border-[var(--glass-border)]">
-                  <div className="text-xs text-[#71717A] uppercase tracking-[0.05em] mb-2">Days Remaining</div>
-                  <div className="font-mono text-2xl font-semibold text-white">{Math.max(0, (totalWeeks - currentWeek) * 7)}</div>
-                  <div className="text-xs text-[#52525B] mt-1">{Math.max(0, totalWeeks - currentWeek)} weeks left</div>
+                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)] flex flex-col">
+                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2 whitespace-nowrap">Remaining</div>
+                  <div className="font-mono text-2xl font-semibold text-white">{Math.max(0, (totalWeeks - currentWeek) * 7)}d</div>
+                  <div className="text-xs text-[#52525B] mt-auto pt-1">{Math.max(0, totalWeeks - currentWeek)} weeks</div>
                 </div>
               </div>
             </div>
