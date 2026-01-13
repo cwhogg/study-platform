@@ -446,15 +446,9 @@ export default function DashboardPage() {
         {/* Main Content */}
         <main className="ml-[240px] p-8">
           {/* Header */}
-          <div className="flex items-start justify-between mb-8">
-            <div>
-              <h1 className="text-[28px] font-bold tracking-[-0.02em] text-white mb-1">Your Dashboard</h1>
-              <p className="text-[#9CA3AF]">Track your N of 1 study progress</p>
-            </div>
-            <button className="flex items-center gap-2 px-5 py-3 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl text-white text-sm font-medium hover:bg-[var(--glass-bg-hover)] transition-colors">
-              <Download className="w-[18px] h-[18px]" />
-              Export Data
-            </button>
+          <div className="mb-8">
+            <h1 className="text-[28px] font-bold tracking-[-0.02em] text-white mb-1">Your Dashboard</h1>
+            <p className="text-[#9CA3AF]">Track your N of 1 study progress</p>
           </div>
 
           {/* Dashboard Grid */}
@@ -548,32 +542,71 @@ export default function DashboardPage() {
             <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl">
               <div className="flex justify-between items-center mb-5">
                 <span className="text-sm font-medium text-[#9CA3AF]">Progress Over Time</span>
-                <a href="#" className="text-[13px] font-medium text-[var(--primary)] hover:underline">Full analysis</a>
+                <span className="text-[13px] text-[#52525B]">Primary endpoint scores</span>
               </div>
-              <div className="h-44">
-                <svg className="w-full h-full" viewBox="0 0 400 150" preserveAspectRatio="none">
-                  <line x1="0" y1="75" x2="400" y2="75" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4"/>
-                  <path d="M0,100 Q50,95 100,90 T200,80 T300,75 T400,65 L400,150 L0,150 Z" fill="rgba(82,82,91,0.15)"/>
-                  <path d="M0,100 Q50,95 100,90 T200,80 T300,75 T400,65" fill="none" stroke="rgba(82,82,91,0.4)" strokeWidth="2"/>
-                  <path d="M0,110 Q50,100 100,80 T200,55 T300,40 T400,25" fill="none" stroke="#EA580C" strokeWidth="3" strokeLinecap="round"/>
-                  {completedAssessments.map((_, i) => {
-                    const x = (i / (completedAssessments.length)) * 400
-                    const y = 110 - (i * 20)
-                    return <circle key={i} cx={x} cy={Math.max(y, 25)} r="4" fill="#EA580C"/>
-                  })}
-                  <circle cx="400" cy="25" r="6" fill="#EA580C">
-                    <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
-                  </circle>
-                </svg>
+              <div className="h-44 bg-[var(--bg-elevated)] rounded-xl flex items-center justify-center">
+                {completedAssessments.length > 0 && completedAssessments.some(a => a.scores && Object.keys(a.scores).length > 0) ? (
+                  <svg className="w-full h-full p-4" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid meet">
+                    {/* Grid lines */}
+                    <line x1="40" y1="20" x2="380" y2="20" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4"/>
+                    <line x1="40" y1="65" x2="380" y2="65" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4"/>
+                    <line x1="40" y1="110" x2="380" y2="110" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4"/>
+                    {/* Y-axis labels */}
+                    <text x="35" y="24" textAnchor="end" fill="#52525B" fontSize="10">High</text>
+                    <text x="35" y="114" textAnchor="end" fill="#52525B" fontSize="10">Low</text>
+                    {/* Data points */}
+                    {completedAssessments.map((assessment, i) => {
+                      const scores = assessment.scores || {}
+                      const firstScore = Object.values(scores)[0]
+                      if (firstScore === undefined) return null
+                      // Normalize: assume max 27 (PHQ-9 style), lower is better so invert
+                      const maxScore = 27
+                      const normalizedY = 20 + (firstScore / maxScore) * 90
+                      const x = completedAssessments.length === 1
+                        ? 210
+                        : 60 + (i / (completedAssessments.length - 1)) * 300
+                      return (
+                        <g key={i}>
+                          <circle cx={x} cy={normalizedY} r="6" fill="#EA580C"/>
+                          <text x={x} y={normalizedY - 12} textAnchor="middle" fill="#EA580C" fontSize="11" fontWeight="600">{firstScore}</text>
+                        </g>
+                      )
+                    })}
+                    {/* Connect line if multiple points */}
+                    {completedAssessments.filter(a => a.scores && Object.values(a.scores)[0] !== undefined).length > 1 && (
+                      <path
+                        d={completedAssessments.map((assessment, i) => {
+                          const scores = assessment.scores || {}
+                          const firstScore = Object.values(scores)[0]
+                          if (firstScore === undefined) return ''
+                          const maxScore = 27
+                          const normalizedY = 20 + (firstScore / maxScore) * 90
+                          const x = 60 + (i / (completedAssessments.length - 1)) * 300
+                          return `${i === 0 ? 'M' : 'L'}${x},${normalizedY}`
+                        }).filter(Boolean).join(' ')}
+                        fill="none"
+                        stroke="#EA580C"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        opacity="0.5"
+                      />
+                    )}
+                  </svg>
+                ) : (
+                  <div className="text-center text-[#52525B]">
+                    <div className="text-sm">No score data yet</div>
+                    <div className="text-xs mt-1">Complete assessments to see your progress</div>
+                  </div>
+                )}
               </div>
               <div className="flex gap-5 mt-4">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-[var(--primary)]" />
-                  <span className="text-xs text-[#9CA3AF]">Your data</span>
+                  <span className="text-xs text-[#9CA3AF]">Your scores ({completedAssessments.filter(a => a.scores).length} point{completedAssessments.filter(a => a.scores).length !== 1 ? 's' : ''})</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-[#52525B]" />
-                  <span className="text-xs text-[#9CA3AF]">Collective (n=1,247)</span>
+                  <span className="text-xs text-[#52525B]">Collective (coming soon)</span>
                 </div>
               </div>
             </div>
@@ -632,13 +665,19 @@ export default function DashboardPage() {
               <div className="grid grid-cols-3 gap-4">
                 <div className="bg-[var(--bg-elevated)] rounded-xl p-5 border border-[var(--glass-border)]">
                   <div className="text-xs text-[#71717A] uppercase tracking-[0.05em] mb-2">Completion Rate</div>
-                  <div className="font-mono text-2xl font-semibold text-white">100%</div>
-                  <div className="text-xs text-[#52525B] mt-1">{completedAssessments.length} of {completedAssessments.length} entries</div>
+                  <div className="font-mono text-2xl font-semibold text-white">
+                    {assessments.filter(a => a.status !== 'upcoming').length > 0
+                      ? Math.round((completedAssessments.length / assessments.filter(a => a.status !== 'upcoming').length) * 100)
+                      : 0}%
+                  </div>
+                  <div className="text-xs text-[#52525B] mt-1">
+                    {completedAssessments.length} of {assessments.filter(a => a.status !== 'upcoming').length} due
+                  </div>
                 </div>
                 <div className="bg-[var(--bg-elevated)] rounded-xl p-5 border border-[var(--glass-border)]">
-                  <div className="text-xs text-[#71717A] uppercase tracking-[0.05em] mb-2">Your Percentile</div>
-                  <div className="font-mono text-2xl font-semibold text-[var(--primary)]">87th</div>
-                  <div className="text-xs text-[#52525B] mt-1">vs. collective</div>
+                  <div className="text-xs text-[#71717A] uppercase tracking-[0.05em] mb-2">Study Progress</div>
+                  <div className="font-mono text-2xl font-semibold text-[var(--primary)]">{progress}%</div>
+                  <div className="text-xs text-[#52525B] mt-1">{completedAssessments.length} of {assessments.length} total</div>
                 </div>
                 <div className="bg-[var(--bg-elevated)] rounded-xl p-5 border border-[var(--glass-border)]">
                   <div className="text-xs text-[#71717A] uppercase tracking-[0.05em] mb-2">Days Remaining</div>
@@ -647,6 +686,14 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Export Data */}
+          <div className="mt-8 flex justify-center">
+            <button className="flex items-center gap-2 px-6 py-3 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl text-[#9CA3AF] text-sm font-medium hover:bg-[var(--glass-bg-hover)] hover:text-white transition-colors">
+              <Download className="w-4 h-4" />
+              Export Your Data
+            </button>
           </div>
         </main>
       </div>
