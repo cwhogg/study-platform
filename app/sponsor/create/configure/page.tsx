@@ -176,7 +176,13 @@ function ConfigureStudyContent() {
   }, [])
 
   // Get options (AI-generated or fallback)
-  const populations = discoveryData?.populations?.length ? discoveryData.populations : FALLBACK_POPULATIONS
+  // Always include "All adults 18-75" as first option, but keep AI recommendation as default
+  const ALL_ADULTS_OPTION: PopulationOption = {
+    name: 'All adults 18-75',
+    description: 'No specific population restrictions'
+  }
+  const aiPopulations = discoveryData?.populations?.length ? discoveryData.populations : FALLBACK_POPULATIONS
+  const populations = [ALL_ADULTS_OPTION, ...aiPopulations.filter(p => p.name !== 'All adults 18-75')]
   const treatmentStages = discoveryData?.treatmentStages?.length ? discoveryData.treatmentStages : FALLBACK_TREATMENT_STAGES
   const endpoints = discoveryData?.endpoints?.length ? discoveryData.endpoints : FALLBACK_ENDPOINTS
   const durationRationale = discoveryData?.recommendedDuration?.rationale
