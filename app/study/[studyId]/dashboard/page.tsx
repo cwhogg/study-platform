@@ -890,23 +890,35 @@ export default function DashboardPage() {
           <div className="text-xs text-[#71717A] mt-2 text-right">{Math.round(progress)}% complete</div>
         </div>
 
-        {/* Due Assessment */}
-        {dueAssessment && (
-          <div className="bg-[var(--glass-bg)] border border-[var(--primary)]/30 rounded-2xl p-5 mb-5 relative overflow-hidden">
-            <div className="absolute -right-8 -top-8 w-24 h-24 bg-[var(--primary)]/10 rounded-full blur-2xl" />
-            <Badge variant={dueAssessment.status === 'overdue' ? 'danger' : 'warning'} dot dotPulse className="mb-3">
-              {dueAssessment.status === 'overdue' ? 'Overdue' : 'Due Now'}
-            </Badge>
-            <h3 className="text-lg font-semibold text-white mb-1">{dueAssessment.timepoint} Entry</h3>
-            <p className="text-sm text-[#9CA3AF] mb-4">~5 minutes to complete</p>
-            <Link href={`/study/${studyId}/assessment/${dueAssessment.id}`}>
-              <Button size="lg" fullWidth>
-                Record Data
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-        )}
+        {/* Next Entry */}
+        <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 mb-5 relative overflow-hidden">
+          {dueAssessment ? (
+            <>
+              <div className="absolute -right-8 -top-8 w-24 h-24 bg-[var(--primary)]/10 rounded-full blur-2xl" />
+              <Badge variant={dueAssessment.status === 'overdue' ? 'danger' : 'warning'} dot dotPulse className="mb-3">
+                {dueAssessment.status === 'overdue' ? 'Overdue' : 'Due Now'}
+              </Badge>
+              <h3 className="text-lg font-semibold text-white mb-1">{dueAssessment.timepoint} Entry</h3>
+              <p className="text-sm text-[#9CA3AF] mb-4">~5 minutes to complete</p>
+              <Link href={`/study/${studyId}/assessment/${dueAssessment.id}`}>
+                <Button size="lg" fullWidth>
+                  Record Data
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-[var(--success)]/15 rounded-full flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-6 h-6 text-[var(--success)]" />
+              </div>
+              <div>
+                <div className="text-white font-medium">All caught up!</div>
+                <div className="text-sm text-[#71717A]">Next entry coming soon</div>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Scores */}
         <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 mb-5">
@@ -930,6 +942,69 @@ export default function DashboardPage() {
             <div className="text-[#71717A] text-sm">No scores yet</div>
           )}
           <div className="text-xs text-[#71717A] mt-3 pt-3 border-t border-[var(--glass-border)]">Collective avg: NA</div>
+        </div>
+
+        {/* Score Trend */}
+        <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 mb-5">
+          <div className="text-sm font-medium text-[#9CA3AF] mb-4">Score Trend</div>
+          <div className="h-32 relative">
+            <svg className="w-full h-full" viewBox="0 0 300 100" preserveAspectRatio="none">
+              <line x1="0" y1="25" x2="300" y2="25" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+              <line x1="0" y1="50" x2="300" y2="50" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+              <line x1="0" y1="75" x2="300" y2="75" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+              <path
+                d="M0,45 C50,43 100,40 150,38 S250,32 300,30"
+                fill="none"
+                stroke="#52525B"
+                strokeWidth="2"
+                opacity="0.5"
+              />
+              {(() => {
+                const pointsWithScores = completedAssessments.filter(a => a.scores && Object.values(a.scores)[0] !== undefined)
+                if (pointsWithScores.length === 0) return null
+                const maxScore = 27
+                const getY = (score: number) => 80 - (score / maxScore) * 70
+                const getX = (index: number) => pointsWithScores.length === 1 ? 20 : (index / (assessments.length - 1)) * 280 + 10
+                return pointsWithScores.map((a, i) => {
+                  const score = Object.values(a.scores!)[0] as number
+                  return <circle key={i} cx={getX(completedAssessments.indexOf(a))} cy={getY(score)} r="5" fill="#EA580C"/>
+                })
+              })()}
+            </svg>
+          </div>
+          <div className="flex gap-4 mt-2">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-[var(--primary)]" />
+              <span className="text-xs text-[#9CA3AF]">You</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-[#52525B]" />
+              <span className="text-xs text-[#52525B]">Avg</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Insights */}
+        <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 mb-5">
+          <div className="text-sm font-medium text-[#9CA3AF] mb-4">Your Insights</div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-[var(--bg-elevated)] rounded-xl p-3 border border-[var(--glass-border)] text-center">
+              <div className="font-mono text-xl font-semibold text-white">
+                {assessments.filter(a => a.status !== 'upcoming').length > 0
+                  ? Math.round((completedAssessments.length / assessments.filter(a => a.status !== 'upcoming').length) * 100)
+                  : 0}%
+              </div>
+              <div className="text-[10px] text-[#71717A] uppercase tracking-wider mt-1">Complete</div>
+            </div>
+            <div className="bg-[var(--bg-elevated)] rounded-xl p-3 border border-[var(--glass-border)] text-center">
+              <div className="font-mono text-xl font-semibold text-[var(--primary)]">{progress}%</div>
+              <div className="text-[10px] text-[#71717A] uppercase tracking-wider mt-1">Progress</div>
+            </div>
+            <div className="bg-[var(--bg-elevated)] rounded-xl p-3 border border-[var(--glass-border)] text-center">
+              <div className="font-mono text-xl font-semibold text-white">{Math.max(0, (totalWeeks - currentWeek) * 7)}d</div>
+              <div className="text-[10px] text-[#71717A] uppercase tracking-wider mt-1">Left</div>
+            </div>
+          </div>
         </div>
 
         {/* Timeline */}
