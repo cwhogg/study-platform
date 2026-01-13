@@ -18,7 +18,7 @@ interface Assessment {
   dueDate?: string
   instruments: string[]
   completedInstruments: string[]
-  score?: number
+  scores?: Record<string, number>  // instrument -> score
 }
 
 interface ScheduleItem {
@@ -150,11 +150,11 @@ export default function DashboardPage() {
         .select('timepoint, instrument, submitted_at, scores')
         .eq('participant_id', participant.id)
 
-      // Track submissions by timepoint (including scores)
-      const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null; totalScore: number }>()
+      // Track submissions by timepoint (including scores per instrument)
+      const submissionsByTimepoint = new Map<string, { instruments: Set<string>; lastSubmitted: Date | null; scores: Record<string, number> }>()
       submissions?.forEach(s => {
         if (!submissionsByTimepoint.has(s.timepoint)) {
-          submissionsByTimepoint.set(s.timepoint, { instruments: new Set(), lastSubmitted: null, totalScore: 0 })
+          submissionsByTimepoint.set(s.timepoint, { instruments: new Set(), lastSubmitted: null, scores: {} })
         }
         const entry = submissionsByTimepoint.get(s.timepoint)!
         entry.instruments.add(s.instrument)
@@ -164,10 +164,10 @@ export default function DashboardPage() {
             entry.lastSubmitted = submittedDate
           }
         }
-        // Accumulate scores from submissions
-        const scores = s.scores as { total?: number } | null
-        if (scores?.total !== undefined) {
-          entry.totalScore += scores.total
+        // Store score per instrument
+        const scoreData = s.scores as { total?: number } | null
+        if (scoreData?.total !== undefined) {
+          entry.scores[s.instrument] = scoreData.total
         }
       })
 
@@ -209,8 +209,10 @@ export default function DashboardPage() {
           status = 'upcoming'
         }
 
-        // Use actual scores from submissions
-        const score = allCompleted && submissionEntry ? submissionEntry.totalScore : undefined
+        // Use actual scores from submissions (per instrument)
+        const scores = allCompleted && submissionEntry && Object.keys(submissionEntry.scores).length > 0
+          ? submissionEntry.scores
+          : undefined
 
         return {
           id: config.id,
@@ -223,7 +225,7 @@ export default function DashboardPage() {
           dueDate: formatDate(dueDate),
           instruments: config.instruments,
           completedInstruments,
-          score
+          scores
         }
       })
 
@@ -245,8 +247,10 @@ export default function DashboardPage() {
   const progress = assessments.length > 0
     ? Math.round((completedAssessments.length / assessments.length) * 100)
     : 0
-  const latestScore = completedAssessments.length > 0 ? completedAssessments[completedAssessments.length - 1].score || 78 : 78
-  const scoreChange = completedAssessments.length > 1 ? 23 : 0
+  // Get latest scores (all instruments from most recent completed assessment)
+  const latestScores = completedAssessments.length > 0
+    ? completedAssessments[completedAssessments.length - 1].scores
+    : undefined
 
   if (loading) {
     return (
@@ -418,30 +422,27 @@ export default function DashboardPage() {
             {/* Score Card */}
             <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl">
               <div className="flex justify-between items-center mb-5">
-                <span className="text-sm font-medium text-[#9CA3AF]">Primary Outcome</span>
+                <span className="text-sm font-medium text-[#9CA3AF]">Your Scores</span>
                 <a href="#" className="text-[13px] font-medium text-[var(--primary)] hover:underline">View details</a>
               </div>
-              <div className="flex items-baseline gap-3 mb-2">
-                <span className="font-mono text-[48px] font-semibold text-[var(--primary)] tracking-[-0.02em]">{latestScore}</span>
-                {scoreChange > 0 && (
-                  <span className="flex items-center gap-1 px-2.5 py-1 bg-[var(--success-dim)] rounded-full text-[13px] font-semibold text-[var(--success)]">
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                    +{scoreChange}%
-                  </span>
-                )}
-              </div>
-              <div className="text-sm text-[#71717A]">Response Score</div>
+              {latestScores && Object.keys(latestScores).length > 0 ? (
+                <div className="space-y-4">
+                  {Object.entries(latestScores).map(([instrument, score]) => (
+                    <div key={instrument}>
+                      <div className="text-xs text-[#71717A] uppercase tracking-wide mb-1">{instrument.replace(/_/g, '-').toUpperCase()}</div>
+                      <div className="font-mono text-3xl font-semibold text-[var(--primary)]">{score}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-[#71717A] text-sm">No scores yet</div>
+              )}
 
               <div className="mt-5 pt-5 border-t border-[var(--glass-border)] space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary-glow)]" />
-                  <span className="flex-1 text-[13px] text-[#9CA3AF]">Your score</span>
-                  <span className="font-mono text-sm font-medium text-[var(--primary)]">{latestScore}</span>
-                </div>
-                <div className="flex items-center gap-3">
                   <div className="w-2.5 h-2.5 rounded-full bg-[#52525B]" />
                   <span className="flex-1 text-[13px] text-[#9CA3AF]">Collective avg</span>
-                  <span className="font-mono text-sm font-medium text-white">62</span>
+                  <span className="font-mono text-sm font-medium text-[#71717A]">NA</span>
                 </div>
               </div>
             </div>
@@ -509,9 +510,13 @@ export default function DashboardPage() {
                          assessment.status === 'due' ? 'Due Today' :
                          assessment.status === 'overdue' ? 'Overdue' : 'Upcoming'}
                       </Badge>
-                      {assessment.score && (
-                        <div className="font-mono text-[13px] text-[#9CA3AF] mt-2">
-                          Score: <strong className="text-[var(--primary)] font-semibold">{assessment.score}</strong>
+                      {assessment.scores && Object.keys(assessment.scores).length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {Object.entries(assessment.scores).map(([instrument, score]) => (
+                            <div key={instrument} className="font-mono text-[13px] text-[#9CA3AF]">
+                              {instrument.replace(/_/g, '-').toUpperCase()}: <strong className="text-[var(--primary)] font-semibold">{score}</strong>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
@@ -598,19 +603,22 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Score */}
+        {/* Scores */}
         <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 mb-5">
-          <div className="text-sm text-[#9CA3AF] mb-2">Your Score</div>
-          <div className="flex items-baseline gap-3">
-            <span className="font-mono text-4xl font-semibold text-[var(--primary)]">{latestScore}</span>
-            {scoreChange > 0 && (
-              <span className="flex items-center gap-1 px-2 py-0.5 bg-[var(--success-dim)] rounded-full text-xs font-semibold text-[var(--success)]">
-                <ArrowUpRight className="w-3 h-3" />
-                +{scoreChange}%
-              </span>
-            )}
-          </div>
-          <div className="text-xs text-[#71717A] mt-1">Collective avg: 62</div>
+          <div className="text-sm text-[#9CA3AF] mb-3">Your Scores</div>
+          {latestScores && Object.keys(latestScores).length > 0 ? (
+            <div className="space-y-3">
+              {Object.entries(latestScores).map(([instrument, score]) => (
+                <div key={instrument}>
+                  <div className="text-xs text-[#71717A] uppercase tracking-wide">{instrument.replace(/_/g, '-').toUpperCase()}</div>
+                  <div className="font-mono text-2xl font-semibold text-[var(--primary)]">{score}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-[#71717A] text-sm">No scores yet</div>
+          )}
+          <div className="text-xs text-[#71717A] mt-3 pt-3 border-t border-[var(--glass-border)]">Collective avg: NA</div>
         </div>
 
         {/* Timeline */}
