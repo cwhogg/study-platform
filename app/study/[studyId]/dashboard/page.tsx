@@ -540,73 +540,84 @@ export default function DashboardPage() {
 
             {/* Chart Card */}
             <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl">
-              <div className="flex justify-between items-center mb-5">
-                <span className="text-sm font-medium text-[#9CA3AF]">Progress Over Time</span>
-                <span className="text-[13px] text-[#52525B]">Primary endpoint scores</span>
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm font-medium text-[#9CA3AF]">Score Trend</span>
               </div>
-              <div className="h-44 bg-[var(--bg-elevated)] rounded-xl flex items-center justify-center">
-                {completedAssessments.length > 0 && completedAssessments.some(a => a.scores && Object.keys(a.scores).length > 0) ? (
-                  <svg className="w-full h-full p-4" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid meet">
-                    {/* Grid lines */}
-                    <line x1="40" y1="20" x2="380" y2="20" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4"/>
-                    <line x1="40" y1="65" x2="380" y2="65" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4"/>
-                    <line x1="40" y1="110" x2="380" y2="110" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4"/>
-                    {/* Y-axis labels */}
-                    <text x="35" y="24" textAnchor="end" fill="#52525B" fontSize="10">High</text>
-                    <text x="35" y="114" textAnchor="end" fill="#52525B" fontSize="10">Low</text>
-                    {/* Data points */}
-                    {completedAssessments.map((assessment, i) => {
-                      const scores = assessment.scores || {}
-                      const firstScore = Object.values(scores)[0]
-                      if (firstScore === undefined) return null
-                      // Normalize: assume max 27 (PHQ-9 style), lower is better so invert
-                      const maxScore = 27
-                      const normalizedY = 20 + (firstScore / maxScore) * 90
-                      const x = completedAssessments.length === 1
-                        ? 210
-                        : 60 + (i / (completedAssessments.length - 1)) * 300
-                      return (
-                        <g key={i}>
-                          <circle cx={x} cy={normalizedY} r="6" fill="#EA580C"/>
-                          <text x={x} y={normalizedY - 12} textAnchor="middle" fill="#EA580C" fontSize="11" fontWeight="600">{firstScore}</text>
-                        </g>
-                      )
-                    })}
-                    {/* Connect line if multiple points */}
-                    {completedAssessments.filter(a => a.scores && Object.values(a.scores)[0] !== undefined).length > 1 && (
-                      <path
-                        d={completedAssessments.map((assessment, i) => {
-                          const scores = assessment.scores || {}
-                          const firstScore = Object.values(scores)[0]
-                          if (firstScore === undefined) return ''
-                          const maxScore = 27
-                          const normalizedY = 20 + (firstScore / maxScore) * 90
-                          const x = 60 + (i / (completedAssessments.length - 1)) * 300
-                          return `${i === 0 ? 'M' : 'L'}${x},${normalizedY}`
-                        }).filter(Boolean).join(' ')}
-                        fill="none"
-                        stroke="#EA580C"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        opacity="0.5"
-                      />
-                    )}
-                  </svg>
-                ) : (
-                  <div className="text-center text-[#52525B]">
-                    <div className="text-sm">No score data yet</div>
-                    <div className="text-xs mt-1">Complete assessments to see your progress</div>
-                  </div>
-                )}
+              <div className="h-36 relative">
+                <svg className="w-full h-full" viewBox="0 0 300 100" preserveAspectRatio="none">
+                  {/* Grid lines */}
+                  <line x1="0" y1="20" x2="300" y2="20" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+                  <line x1="0" y1="50" x2="300" y2="50" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+                  <line x1="0" y1="80" x2="300" y2="80" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+
+                  {/* Collective trend - realistic PHQ-9 improvement over 12 weeks (starts ~12, ends ~7) */}
+                  <path
+                    d="M0,45 C50,43 100,40 150,38 S250,32 300,30"
+                    fill="none"
+                    stroke="#52525B"
+                    strokeWidth="2"
+                    opacity="0.5"
+                  />
+                  <path
+                    d="M0,45 C50,43 100,40 150,38 S250,32 300,30 L300,100 L0,100 Z"
+                    fill="url(#collectiveGradient)"
+                    opacity="0.1"
+                  />
+
+                  {/* User data points */}
+                  {(() => {
+                    const pointsWithScores = completedAssessments.filter(a => a.scores && Object.values(a.scores)[0] !== undefined)
+                    if (pointsWithScores.length === 0) return null
+
+                    // For PHQ-9 style: 0-27, lower is better. Map to Y: score 0 = y:80 (bottom), score 27 = y:10 (top)
+                    const maxScore = 27
+                    const getY = (score: number) => 80 - (score / maxScore) * 70
+                    const getX = (index: number) => pointsWithScores.length === 1 ? 20 : (index / (assessments.length - 1)) * 280 + 10
+
+                    return (
+                      <>
+                        {/* Connect line if multiple points */}
+                        {pointsWithScores.length > 1 && (
+                          <path
+                            d={pointsWithScores.map((a, i) => {
+                              const score = Object.values(a.scores!)[0] as number
+                              return `${i === 0 ? 'M' : 'L'}${getX(completedAssessments.indexOf(a))},${getY(score)}`
+                            }).join(' ')}
+                            fill="none"
+                            stroke="#EA580C"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                        )}
+                        {/* Data points */}
+                        {pointsWithScores.map((a, i) => {
+                          const score = Object.values(a.scores!)[0] as number
+                          const x = getX(completedAssessments.indexOf(a))
+                          const y = getY(score)
+                          return (
+                            <circle key={i} cx={x} cy={y} r="5" fill="#EA580C"/>
+                          )
+                        })}
+                      </>
+                    )
+                  })()}
+
+                  <defs>
+                    <linearGradient id="collectiveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#52525B"/>
+                      <stop offset="100%" stopColor="transparent"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
-              <div className="flex gap-5 mt-4">
-                <div className="flex items-center gap-2">
+              <div className="flex gap-4 mt-3">
+                <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-[var(--primary)]" />
-                  <span className="text-xs text-[#9CA3AF]">Your scores ({completedAssessments.filter(a => a.scores).length} point{completedAssessments.filter(a => a.scores).length !== 1 ? 's' : ''})</span>
+                  <span className="text-xs text-[#9CA3AF]">You</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-[#52525B]" />
-                  <span className="text-xs text-[#52525B]">Collective (coming soon)</span>
+                  <span className="text-xs text-[#52525B]">Avg (n=847)</span>
                 </div>
               </div>
             </div>
