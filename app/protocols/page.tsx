@@ -34,6 +34,12 @@ function getShortIntervention(intervention: string): string {
   return cleaned
 }
 
+// Convert to sentence case (capitalize first letter, lowercase rest)
+function toSentenceCase(str: string): string {
+  if (!str) return str
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
+
 // Get goal from study - try config.goal, then extract from primary endpoint
 function getGoal(study: Study): string | null {
   // Check config first
@@ -202,7 +208,7 @@ export default function ProtocolsPage() {
                             <>
                               <span>{shortIntervention}</span>
                               <span className="text-[var(--text-muted)] font-normal"> for </span>
-                              <span className="text-[var(--primary)]">{goal}</span>
+                              <span className="text-[var(--primary)]">{toSentenceCase(goal)}</span>
                             </>
                           ) : (
                             shortIntervention
