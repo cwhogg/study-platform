@@ -239,9 +239,12 @@ export default function DashboardPage() {
     loadDashboardData()
   }, [loadDashboardData])
 
-  const progress = Math.min(((currentWeek) / totalWeeks) * 100, 100)
   const dueAssessment = assessments.find(a => a.status === 'due' || a.status === 'overdue')
   const completedAssessments = assessments.filter(a => a.status === 'completed')
+  // Progress based on completed assessments, not time
+  const progress = assessments.length > 0
+    ? Math.round((completedAssessments.length / assessments.length) * 100)
+    : 0
   const latestScore = completedAssessments.length > 0 ? completedAssessments[completedAssessments.length - 1].score || 78 : 78
   const scoreChange = completedAssessments.length > 1 ? 23 : 0
 
