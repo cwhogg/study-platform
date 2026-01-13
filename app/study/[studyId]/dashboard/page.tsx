@@ -57,8 +57,30 @@ function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-// Get severity label for validated PRO instruments
-function getSeverityLabel(instrumentId: string, score: number): string | null {
+// Threshold type from protocol
+interface SeverityThreshold {
+  min: number
+  max: number
+  label: string
+}
+
+// Get severity label - first check protocol thresholds, then fall back to hardcoded
+function getSeverityLabel(
+  instrumentId: string,
+  score: number,
+  protocolThresholds?: Record<string, SeverityThreshold[]>
+): string | null {
+  // First, try to get label from protocol thresholds
+  const thresholds = protocolThresholds?.[instrumentId]
+  if (thresholds && thresholds.length > 0) {
+    for (const t of thresholds) {
+      if (score >= t.min && score <= t.max) {
+        return t.label
+      }
+    }
+  }
+
+  // Fall back to hardcoded thresholds for common instruments
   const id = instrumentId.toLowerCase().replace(/[-_]/g, '')
 
   // PHQ-9: 0-27 scale
@@ -116,6 +138,7 @@ export default function DashboardPage() {
   const [studyName, setStudyName] = useState('Your Protocol')
   const [totalWeeks, setTotalWeeks] = useState(12)
   const [userProfile, setUserProfile] = useState<{ firstName?: string; lastName?: string; email?: string } | null>(null)
+  const [instrumentThresholds, setInstrumentThresholds] = useState<Record<string, SeverityThreshold[]>>({})
 
   const loadDashboardData = useCallback(async () => {
     const supabase = createClient()
@@ -160,7 +183,15 @@ export default function DashboardPage() {
 
       // Build schedule from protocol or use fallback
       let scheduleConfig: ScheduleItem[] = FALLBACK_SCHEDULE
-      const protocol = study?.protocol as { schedule?: { timepoint: string; instruments?: string[] }[] } | null
+      const protocol = study?.protocol as {
+        schedule?: { timepoint: string; instruments?: string[] }[]
+        instruments?: Array<{
+          id: string
+          scoring?: {
+            thresholds?: SeverityThreshold[]
+          }
+        }>
+      } | null
 
       if (protocol?.schedule && protocol.schedule.length > 0) {
         scheduleConfig = protocol.schedule.map(tp => ({
@@ -172,6 +203,18 @@ export default function DashboardPage() {
         console.log('[Dashboard] Using protocol schedule:', scheduleConfig.length, 'timepoints')
       } else {
         console.log('[Dashboard] Using fallback schedule')
+      }
+
+      // Extract instrument thresholds from protocol
+      if (protocol?.instruments && Array.isArray(protocol.instruments)) {
+        const thresholdsMap: Record<string, SeverityThreshold[]> = {}
+        for (const inst of protocol.instruments) {
+          if (inst.id && inst.scoring?.thresholds && inst.scoring.thresholds.length > 0) {
+            thresholdsMap[inst.id] = inst.scoring.thresholds
+          }
+        }
+        setInstrumentThresholds(thresholdsMap)
+        console.log('[Dashboard] Loaded thresholds for instruments:', Object.keys(thresholdsMap))
       }
 
       const { data: participant, error: participantError } = await supabase
@@ -476,7 +519,7 @@ export default function DashboardPage() {
               {latestScores && Object.keys(latestScores).length > 0 ? (
                 <div className="space-y-4">
                   {Object.entries(latestScores).map(([instrument, score]) => {
-                    const severity = getSeverityLabel(instrument, score)
+                    const severity = getSeverityLabel(instrument, score, instrumentThresholds)
                     return (
                       <div key={instrument}>
                         <div className="text-xs text-[#71717A] uppercase tracking-wide mb-1">{instrument.replace(/_/g, '-').toUpperCase()}</div>
@@ -567,7 +610,7 @@ export default function DashboardPage() {
                       {assessment.scores && Object.keys(assessment.scores).length > 0 && (
                         <div className="mt-2 space-y-1">
                           {Object.entries(assessment.scores).map(([instrument, score]) => {
-                            const severity = getSeverityLabel(instrument, score)
+                            const severity = getSeverityLabel(instrument, score, instrumentThresholds)
                             return (
                               <div key={instrument} className="font-mono text-[13px] text-[#9CA3AF]">
                                 {instrument.replace(/_/g, '-').toUpperCase()}: <strong className="text-[var(--primary)] font-semibold">{score}</strong>
@@ -667,7 +710,7 @@ export default function DashboardPage() {
           {latestScores && Object.keys(latestScores).length > 0 ? (
             <div className="space-y-3">
               {Object.entries(latestScores).map(([instrument, score]) => {
-                const severity = getSeverityLabel(instrument, score)
+                const severity = getSeverityLabel(instrument, score, instrumentThresholds)
                 return (
                   <div key={instrument}>
                     <div className="text-xs text-[#71717A] uppercase tracking-wide">{instrument.replace(/_/g, '-').toUpperCase()}</div>

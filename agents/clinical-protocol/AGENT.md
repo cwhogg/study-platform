@@ -269,7 +269,15 @@ interface ScoringConfig {
   method: "sum" | "average" | "custom";
   range: { min: number; max: number };
   interpretation: "higher_better" | "lower_better";
-  thresholds?: { value: number; label: string }[];
+  thresholds: SeverityThreshold[];  // REQUIRED: Clinical interpretation thresholds
+}
+
+// REQUIRED for all scored instruments - enables meaningful interpretation of scores
+interface SeverityThreshold {
+  min: number;           // Minimum score for this level (inclusive)
+  max: number;           // Maximum score for this level (inclusive)
+  label: string;         // Short label shown with score (e.g., "Minimal", "Mild", "Moderate", "Severe")
+  description?: string;  // Optional longer description for tooltips/details
 }
 
 interface AlertConfig {
@@ -486,7 +494,11 @@ interface TriggerConfig {
   "scoring": {
     "method": "sum",
     "range": { "min": 0, "max": 6 },
-    "interpretation": "lower_better"
+    "interpretation": "lower_better",
+    "thresholds": [
+      { "min": 0, "max": 2, "label": "Negative screen", "description": "Depression unlikely" },
+      { "min": 3, "max": 6, "label": "Positive screen", "description": "Further evaluation recommended" }
+    ]
   },
   "alerts": [
     {
@@ -913,10 +925,162 @@ Before returning a protocol, verify:
 - [ ] All instruments are in the required JSON schema
 - [ ] Every question has exact text and response options
 - [ ] Scoring logic is defined for each instrument
+- [ ] **Severity thresholds are included for ALL scored instruments** (see Common Instrument Severity Thresholds section)
 - [ ] Schedule includes baseline and covers expected response timeline
 - [ ] Patient burden is reasonable (< 5 min for routine, < 15 min for full assessments)
 - [ ] Inclusion criteria are specific and assessable
 - [ ] Exclusion criteria cover major safety concerns
+
+---
+
+## Common Instrument Severity Thresholds
+
+**IMPORTANT:** When returning instruments, you MUST include the validated clinical thresholds in the `scoring.thresholds` array. These allow participants to understand what their scores mean.
+
+### Depression Instruments
+
+**PHQ-9 (Patient Health Questionnaire-9)** - Range: 0-27
+```json
+"thresholds": [
+  { "min": 0, "max": 4, "label": "Minimal", "description": "Minimal depression symptoms" },
+  { "min": 5, "max": 9, "label": "Mild", "description": "Mild depression" },
+  { "min": 10, "max": 14, "label": "Moderate", "description": "Moderate depression" },
+  { "min": 15, "max": 19, "label": "Mod. severe", "description": "Moderately severe depression" },
+  { "min": 20, "max": 27, "label": "Severe", "description": "Severe depression" }
+]
+```
+
+**PHQ-2 (Patient Health Questionnaire-2)** - Range: 0-6
+```json
+"thresholds": [
+  { "min": 0, "max": 2, "label": "Negative screen", "description": "Depression unlikely" },
+  { "min": 3, "max": 6, "label": "Positive screen", "description": "Further evaluation recommended" }
+]
+```
+
+**BDI-II (Beck Depression Inventory-II)** - Range: 0-63
+```json
+"thresholds": [
+  { "min": 0, "max": 13, "label": "Minimal", "description": "Minimal depression" },
+  { "min": 14, "max": 19, "label": "Mild", "description": "Mild depression" },
+  { "min": 20, "max": 28, "label": "Moderate", "description": "Moderate depression" },
+  { "min": 29, "max": 63, "label": "Severe", "description": "Severe depression" }
+]
+```
+
+### Anxiety Instruments
+
+**GAD-7 (Generalized Anxiety Disorder-7)** - Range: 0-21
+```json
+"thresholds": [
+  { "min": 0, "max": 4, "label": "Minimal", "description": "Minimal anxiety" },
+  { "min": 5, "max": 9, "label": "Mild", "description": "Mild anxiety" },
+  { "min": 10, "max": 14, "label": "Moderate", "description": "Moderate anxiety" },
+  { "min": 15, "max": 21, "label": "Severe", "description": "Severe anxiety" }
+]
+```
+
+### Sexual Function Instruments
+
+**IIEF-5 (International Index of Erectile Function-5)** - Range: 5-25
+```json
+"thresholds": [
+  { "min": 22, "max": 25, "label": "Normal", "description": "No erectile dysfunction" },
+  { "min": 17, "max": 21, "label": "Mild ED", "description": "Mild erectile dysfunction" },
+  { "min": 12, "max": 16, "label": "Mild-mod ED", "description": "Mild to moderate erectile dysfunction" },
+  { "min": 8, "max": 11, "label": "Moderate ED", "description": "Moderate erectile dysfunction" },
+  { "min": 5, "max": 7, "label": "Severe ED", "description": "Severe erectile dysfunction" }
+]
+```
+
+### Pain Instruments
+
+**Numeric Pain Rating Scale (NRS)** - Range: 0-10
+```json
+"thresholds": [
+  { "min": 0, "max": 0, "label": "No pain", "description": "Pain free" },
+  { "min": 1, "max": 3, "label": "Mild", "description": "Mild pain" },
+  { "min": 4, "max": 6, "label": "Moderate", "description": "Moderate pain" },
+  { "min": 7, "max": 10, "label": "Severe", "description": "Severe pain" }
+]
+```
+
+**Brief Pain Inventory (BPI) - Severity Score** - Range: 0-10
+```json
+"thresholds": [
+  { "min": 0, "max": 0, "label": "No pain", "description": "No pain" },
+  { "min": 1, "max": 4, "label": "Mild", "description": "Mild pain" },
+  { "min": 5, "max": 6, "label": "Moderate", "description": "Moderate pain" },
+  { "min": 7, "max": 10, "label": "Severe", "description": "Severe pain" }
+]
+```
+
+### Sleep Instruments
+
+**Insomnia Severity Index (ISI)** - Range: 0-28
+```json
+"thresholds": [
+  { "min": 0, "max": 7, "label": "No insomnia", "description": "No clinically significant insomnia" },
+  { "min": 8, "max": 14, "label": "Subthreshold", "description": "Subthreshold insomnia" },
+  { "min": 15, "max": 21, "label": "Moderate", "description": "Moderate insomnia" },
+  { "min": 22, "max": 28, "label": "Severe", "description": "Severe insomnia" }
+]
+```
+
+**Epworth Sleepiness Scale (ESS)** - Range: 0-24
+```json
+"thresholds": [
+  { "min": 0, "max": 10, "label": "Normal", "description": "Normal daytime sleepiness" },
+  { "min": 11, "max": 14, "label": "Mild", "description": "Mild excessive daytime sleepiness" },
+  { "min": 15, "max": 17, "label": "Moderate", "description": "Moderate excessive daytime sleepiness" },
+  { "min": 18, "max": 24, "label": "Severe", "description": "Severe excessive daytime sleepiness" }
+]
+```
+
+### Fatigue Instruments
+
+**Fatigue Severity Scale (FSS)** - Range: 9-63, Average: 1-7
+```json
+"thresholds": [
+  { "min": 1, "max": 3.9, "label": "No fatigue", "description": "No significant fatigue" },
+  { "min": 4, "max": 7, "label": "Fatigue", "description": "Clinically significant fatigue" }
+]
+```
+
+### Quality of Life Instruments
+
+**EQ-5D VAS** - Range: 0-100
+```json
+"thresholds": [
+  { "min": 80, "max": 100, "label": "Excellent", "description": "Excellent health state" },
+  { "min": 60, "max": 79, "label": "Good", "description": "Good health state" },
+  { "min": 40, "max": 59, "label": "Fair", "description": "Fair health state" },
+  { "min": 0, "max": 39, "label": "Poor", "description": "Poor health state" }
+]
+```
+
+### Musculoskeletal Instruments
+
+**VISA-A (Victorian Institute of Sport Assessment - Achilles)** - Range: 0-100
+```json
+"thresholds": [
+  { "min": 80, "max": 100, "label": "Excellent", "description": "Minimal to no Achilles symptoms" },
+  { "min": 60, "max": 79, "label": "Good", "description": "Mild symptoms" },
+  { "min": 40, "max": 59, "label": "Fair", "description": "Moderate symptoms" },
+  { "min": 0, "max": 39, "label": "Poor", "description": "Significant symptoms/dysfunction" }
+]
+```
+
+**Oswestry Disability Index (ODI)** - Range: 0-100%
+```json
+"thresholds": [
+  { "min": 0, "max": 20, "label": "Minimal", "description": "Minimal disability" },
+  { "min": 21, "max": 40, "label": "Moderate", "description": "Moderate disability" },
+  { "min": 41, "max": 60, "label": "Severe", "description": "Severe disability" },
+  { "min": 61, "max": 80, "label": "Crippling", "description": "Crippling disability" },
+  { "min": 81, "max": 100, "label": "Bed-bound", "description": "Bed-bound or exaggerating" }
+]
+```
 
 ---
 
