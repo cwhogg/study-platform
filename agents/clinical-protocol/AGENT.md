@@ -625,13 +625,39 @@ interface TriggerConfig {
 
 1. **Define inclusion criteria**
    - Must be specific and measurable
-   - Must be assessable from available data or simple questions
+   - **CRITICAL: Must be SELF-REPORTABLE by participants** - participants complete screening on their phone without access to medical records or lab results
    - Should not be overly restrictive
+
+   **ONLY use criteria participants can answer themselves:**
+   - Age ranges (e.g., "Adults 18-65")
+   - Current symptoms they experience (e.g., "Experiencing fatigue")
+   - Current medications they take (e.g., "Currently taking vitamin D supplements")
+   - Medical conditions they've been diagnosed with (e.g., "Diagnosed with depression")
+   - Lifestyle factors (e.g., "Exercise less than 3x per week")
+   - Treatment status (e.g., "Planning to start testosterone therapy")
+
+   **NEVER use criteria requiring:**
+   - Lab values (e.g., "serum vitamin D <20 ng/mL", "testosterone <300 ng/dL", "HbA1c >6.5%")
+   - Clinical measurements (e.g., "BMI >30", "blood pressure >140/90")
+   - Medical test results (e.g., "positive for H. pylori", "MRI showing...")
+   - Information from medical records participants don't have memorized
 
 2. **Define exclusion criteria**
    - Focus on safety concerns
    - Include conditions that would confound results
    - Keep list practical
+   - **CRITICAL: Same self-reportable requirement as inclusion criteria** - no lab values or clinical measurements
+
+   **Valid exclusion examples:**
+   - "Currently pregnant or planning pregnancy" (participant knows this)
+   - "History of kidney disease" (participant knows their diagnoses)
+   - "Currently taking blood thinners" (participant knows their medications)
+   - "Allergy to [intervention]" (participant knows their allergies)
+
+   **Invalid exclusion examples:**
+   - "eGFR <30" (requires lab)
+   - "Liver enzymes >3x normal" (requires lab)
+   - "QTc prolongation" (requires ECG)
 
 3. **Select and specify instruments**
    - **ONLY use validated, published PRO instruments with known psychometric properties**
