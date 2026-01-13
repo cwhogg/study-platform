@@ -381,10 +381,10 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
-      {/* Desktop layout with sidebar */}
-      <div className="hidden lg:grid lg:grid-cols-[240px_1fr]">
+      {/* Desktop layout with sidebar - only on xl screens */}
+      <div className="hidden xl:block">
         {/* Sidebar */}
-        <aside className="fixed top-0 left-0 bottom-0 w-[240px] bg-[var(--bg-elevated)] border-r border-[var(--glass-border)] p-6 flex flex-col">
+        <aside className="fixed top-0 left-0 bottom-0 w-[240px] bg-[var(--bg-elevated)] border-r border-[var(--glass-border)] p-6 flex flex-col z-10">
           <div className="mb-8">
             <Link href="/">
               <NofOneLogo showText size={32} />
@@ -393,45 +393,45 @@ export default function DashboardPage() {
 
           <nav className="flex-1 space-y-1">
             <Link href={`/study/${studyId}/dashboard`} className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[var(--primary-dim)] text-[var(--primary)] font-medium text-sm">
-              <LayoutDashboard className="w-5 h-5" />
-              Dashboard
+              <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">Dashboard</span>
             </Link>
             <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#9CA3AF] hover:bg-[var(--glass-bg)] hover:text-white transition-colors text-sm">
-              <Activity className="w-5 h-5" />
-              Your Data
+              <Activity className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">Your Data</span>
             </Link>
             <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#9CA3AF] hover:bg-[var(--glass-bg)] hover:text-white transition-colors text-sm">
-              <Calendar className="w-5 h-5" />
-              Schedule
+              <Calendar className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">Schedule</span>
             </Link>
 
             <div className="pt-6 pb-2">
               <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#52525B] px-3">Discover</div>
             </div>
             <Link href="/protocols" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#9CA3AF] hover:bg-[var(--glass-bg)] hover:text-white transition-colors text-sm">
-              <Search className="w-5 h-5" />
-              Browse Protocols
+              <Search className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">Browse Protocols</span>
             </Link>
             <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#9CA3AF] hover:bg-[var(--glass-bg)] hover:text-white transition-colors text-sm">
-              <Users className="w-5 h-5" />
-              N of Many
+              <Users className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">N of Many</span>
             </Link>
 
             <div className="pt-6 pb-2">
               <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#52525B] px-3">Account</div>
             </div>
             <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#9CA3AF] hover:bg-[var(--glass-bg)] hover:text-white transition-colors text-sm">
-              <Settings className="w-5 h-5" />
-              Settings
+              <Settings className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">Settings</span>
             </Link>
           </nav>
 
           <div className="pt-4 border-t border-[var(--glass-border)]">
             <div className="flex items-center gap-3 p-3 bg-[var(--glass-bg)] rounded-xl">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center text-sm font-semibold">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center text-sm font-semibold flex-shrink-0">
                 {userProfile?.firstName?.[0]?.toUpperCase() || userProfile?.email?.[0]?.toUpperCase() || 'U'}
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 overflow-hidden">
                 <div className="text-sm font-medium text-white truncate">
                   {userProfile?.firstName && userProfile?.lastName
                     ? `${userProfile.firstName} ${userProfile.lastName}`
@@ -443,24 +443,24 @@ export default function DashboardPage() {
           </div>
         </aside>
 
-        {/* Main Content */}
+        {/* Main Content - xl screens with sidebar */}
         <main className="ml-[240px] p-8">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-[28px] font-bold tracking-[-0.02em] text-white mb-1">Your Dashboard</h1>
-            <p className="text-[#9CA3AF]">Track your N of 1 study progress</p>
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold tracking-tight text-white">Your Dashboard</h1>
+            <p className="text-sm text-[#71717A] mt-1">Track your N of 1 study progress</p>
           </div>
 
-          {/* Dashboard Grid */}
-          <div className="grid grid-cols-[1fr_1fr_320px] gap-5">
+          {/* Dashboard Grid - 3 columns on xl */}
+          <div className="grid grid-cols-[1fr_1fr_280px] gap-4">
             {/* Protocol Card - spans 2 cols */}
             <div className="col-span-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl">
               <div className="flex gap-6 items-start">
                 <div className="w-16 h-16 bg-[var(--primary-dim)] rounded-2xl flex items-center justify-center flex-shrink-0">
                   <Activity className="w-8 h-8 text-[var(--primary)]" />
                 </div>
-                <div className="flex-1">
-                  <h2 className="text-[22px] font-bold tracking-[-0.01em] text-white mb-1">{studyName}</h2>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-xl font-bold tracking-tight text-white mb-1 truncate">{studyName}</h2>
                   <p className="text-sm text-[#9CA3AF] mb-4">{totalWeeks}-week protocol · Started {assessments[0]?.dueDate}</p>
                   <div className="h-2 bg-[var(--bg-elevated-2)] rounded-full overflow-hidden mb-2">
                     <div
@@ -476,16 +476,64 @@ export default function DashboardPage() {
               </div>
             </div>
 
+            {/* Timeline Card - spans row 1-3, col 3 */}
+            <div className="row-span-3 col-start-3 row-start-1 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl self-start">
+              <div className="text-sm font-medium text-[#9CA3AF] mb-4">Protocol Timeline</div>
+              <div className="space-y-0">
+                {assessments.map((assessment, i) => (
+                  <div key={assessment.id} className="flex gap-4 pb-4 border-b border-[var(--glass-border)] last:border-b-0">
+                    <div className="flex flex-col items-center gap-1">
+                      <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                        assessment.status === 'completed' ? 'bg-[var(--success)]' :
+                        assessment.status === 'due' || assessment.status === 'overdue' ? 'bg-[var(--primary)] shadow-[0_0_0_4px_var(--primary-dim)]' :
+                        'bg-transparent border-2 border-[#52525B]'
+                      }`} />
+                      {i < assessments.length - 1 && <div className="w-0.5 flex-1 bg-[var(--glass-border)] min-h-[20px]" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm text-white mb-0.5 truncate">{assessment.timepoint}</div>
+                      <div className="text-xs text-[#71717A] mb-2">{assessment.dueDate}</div>
+                      <Badge
+                        variant={
+                          assessment.status === 'completed' ? 'success' :
+                          assessment.status === 'due' ? 'primary' :
+                          assessment.status === 'overdue' ? 'danger' : 'neutral'
+                        }
+                        size="sm"
+                      >
+                        {assessment.status === 'completed' ? 'Completed' :
+                         assessment.status === 'due' ? 'Due Today' :
+                         assessment.status === 'overdue' ? 'Overdue' : 'Upcoming'}
+                      </Badge>
+                      {assessment.scores && Object.keys(assessment.scores).length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {Object.entries(assessment.scores).map(([instrument, score]) => {
+                            const severity = getSeverityLabel(instrument, score, instrumentThresholds)
+                            return (
+                              <div key={instrument} className="font-mono text-[13px] text-[#9CA3AF]">
+                                <span className="truncate">{instrument.replace(/_/g, '-').toUpperCase()}</span>: <strong className="text-[var(--primary)] font-semibold">{score}</strong>
+                                {severity && <span className="text-[#71717A] font-sans"> ({severity})</span>}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Next Entry Card */}
-            <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl flex flex-col">
+            <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl flex flex-col min-h-[200px]">
               <div className="text-sm font-medium text-[#9CA3AF] mb-4">Next Entry</div>
               {dueAssessment ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center">
                   <div className={`text-[11px] font-semibold uppercase tracking-[0.08em] mb-2 ${dueAssessment.status === 'overdue' ? 'text-[var(--error)]' : 'text-[var(--success)]'}`}>
                     {dueAssessment.status === 'overdue' ? 'Overdue' : 'Due Today'}
                   </div>
-                  <div className="text-lg font-semibold text-white mb-1">{dueAssessment.timepoint} Entry</div>
-                  <div className="text-sm text-[#71717A] mb-5">~5 min to complete</div>
+                  <div className="text-lg font-semibold text-white mb-1">{dueAssessment.timepoint}</div>
+                  <div className="text-sm text-[#71717A] mb-5">~5 min</div>
                   <Link href={`/study/${studyId}/assessment/${dueAssessment.id}`} className="w-full">
                     <Button size="lg" fullWidth>
                       Record Data
@@ -499,16 +547,16 @@ export default function DashboardPage() {
                     <CheckCircle2 className="w-6 h-6 text-[var(--success)]" />
                   </div>
                   <div className="text-white font-medium">All caught up!</div>
-                  <div className="text-sm text-[#71717A]">Next entry coming soon</div>
+                  <div className="text-sm text-[#71717A]">Next entry soon</div>
                 </div>
               )}
             </div>
 
             {/* Score Card */}
-            <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl">
-              <div className="flex justify-between items-center mb-5">
+            <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl min-h-[200px]">
+              <div className="flex justify-between items-center mb-5 gap-2">
                 <span className="text-sm font-medium text-[#9CA3AF]">Your Scores</span>
-                <a href="#" className="text-[13px] font-medium text-[var(--primary)] hover:underline">View details</a>
+                <a href="#" className="text-[13px] font-medium text-[var(--primary)] hover:underline whitespace-nowrap">View details</a>
               </div>
               {latestScores && Object.keys(latestScores).length > 0 ? (
                 <div className="space-y-4">
@@ -516,8 +564,8 @@ export default function DashboardPage() {
                     const severity = getSeverityLabel(instrument, score, instrumentThresholds)
                     return (
                       <div key={instrument}>
-                        <div className="text-xs text-[#71717A] uppercase tracking-wide mb-1">{instrument.replace(/_/g, '-').toUpperCase()}</div>
-                        <div className="flex items-baseline gap-2">
+                        <div className="text-xs text-[#71717A] uppercase tracking-wide mb-1 truncate">{instrument.replace(/_/g, '-').toUpperCase()}</div>
+                        <div className="flex items-baseline gap-2 flex-wrap">
                           <span className="font-mono text-3xl font-semibold text-[var(--primary)]">{score}</span>
                           {severity && <span className="text-sm text-[#9CA3AF]">({severity})</span>}
                         </div>
@@ -529,10 +577,10 @@ export default function DashboardPage() {
                 <div className="text-[#71717A] text-sm">No scores yet</div>
               )}
 
-              <div className="mt-5 pt-5 border-t border-[var(--glass-border)] space-y-3">
+              <div className="mt-5 pt-5 border-t border-[var(--glass-border)]">
                 <div className="flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#52525B]" />
-                  <span className="flex-1 text-[13px] text-[#9CA3AF]">Collective avg</span>
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#52525B] flex-shrink-0" />
+                  <span className="flex-1 text-[13px] text-[#9CA3AF] truncate">Collective avg</span>
                   <span className="font-mono text-sm font-medium text-[#71717A]">NA</span>
                 </div>
               </div>
@@ -550,7 +598,7 @@ export default function DashboardPage() {
                   <line x1="0" y1="50" x2="300" y2="50" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
                   <line x1="0" y1="80" x2="300" y2="80" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
 
-                  {/* Collective trend - realistic PHQ-9 improvement over 12 weeks (starts ~12, ends ~7) */}
+                  {/* Collective trend */}
                   <path
                     d="M0,45 C50,43 100,40 150,38 S250,32 300,30"
                     fill="none"
@@ -569,14 +617,12 @@ export default function DashboardPage() {
                     const pointsWithScores = completedAssessments.filter(a => a.scores && Object.values(a.scores)[0] !== undefined)
                     if (pointsWithScores.length === 0) return null
 
-                    // For PHQ-9 style: 0-27, lower is better. Map to Y: score 0 = y:80 (bottom), score 27 = y:10 (top)
                     const maxScore = 27
                     const getY = (score: number) => 80 - (score / maxScore) * 70
                     const getX = (index: number) => pointsWithScores.length === 1 ? 20 : (index / (assessments.length - 1)) * 280 + 10
 
                     return (
                       <>
-                        {/* Connect line if multiple points */}
                         {pointsWithScores.length > 1 && (
                           <path
                             d={pointsWithScores.map((a, i) => {
@@ -589,7 +635,6 @@ export default function DashboardPage() {
                             strokeLinecap="round"
                           />
                         )}
-                        {/* Data points */}
                         {pointsWithScores.map((a, i) => {
                           const score = Object.values(a.scores!)[0] as number
                           const x = getX(completedAssessments.indexOf(a))
@@ -622,78 +667,30 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Timeline Card - spans row 1-3, col 3 */}
-            <div className="row-span-3 col-start-3 row-start-1 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl self-start">
-              <div className="text-sm font-medium text-[#9CA3AF] mb-4">Protocol Timeline</div>
-              <div className="space-y-0">
-                {assessments.map((assessment, i) => (
-                  <div key={assessment.id} className="flex gap-4 pb-4 border-b border-[var(--glass-border)] last:border-b-0">
-                    <div className="flex flex-col items-center gap-1">
-                      <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                        assessment.status === 'completed' ? 'bg-[var(--success)]' :
-                        assessment.status === 'due' || assessment.status === 'overdue' ? 'bg-[var(--primary)] shadow-[0_0_0_4px_var(--primary-dim)]' :
-                        'bg-transparent border-2 border-[#52525B]'
-                      }`} />
-                      {i < assessments.length - 1 && <div className="w-0.5 flex-1 bg-[var(--glass-border)] min-h-[20px]" />}
-                    </div>
-                    <div className="flex-1 pt-0">
-                      <div className="font-semibold text-sm text-white mb-0.5">{assessment.timepoint}</div>
-                      <div className="text-xs text-[#71717A] mb-2">{assessment.dueDate}</div>
-                      <Badge
-                        variant={
-                          assessment.status === 'completed' ? 'success' :
-                          assessment.status === 'due' ? 'primary' :
-                          assessment.status === 'overdue' ? 'danger' : 'neutral'
-                        }
-                        size="sm"
-                      >
-                        {assessment.status === 'completed' ? 'Completed' :
-                         assessment.status === 'due' ? 'Due Today' :
-                         assessment.status === 'overdue' ? 'Overdue' : 'Upcoming'}
-                      </Badge>
-                      {assessment.scores && Object.keys(assessment.scores).length > 0 && (
-                        <div className="mt-2 space-y-1">
-                          {Object.entries(assessment.scores).map(([instrument, score]) => {
-                            const severity = getSeverityLabel(instrument, score, instrumentThresholds)
-                            return (
-                              <div key={instrument} className="font-mono text-[13px] text-[#9CA3AF]">
-                                {instrument.replace(/_/g, '-').toUpperCase()}: <strong className="text-[var(--primary)] font-semibold">{score}</strong>
-                                {severity && <span className="text-[#71717A] font-sans"> ({severity})</span>}
-                              </div>
-                            )
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             {/* Insights Card - spans 2 cols */}
             <div className="col-span-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 backdrop-blur-xl">
               <div className="text-sm font-medium text-[#9CA3AF] mb-4">Your Insights</div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)] flex flex-col">
-                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2 whitespace-nowrap">Completion</div>
+                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)]">
+                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2">Completion</div>
                   <div className="font-mono text-2xl font-semibold text-white">
                     {assessments.filter(a => a.status !== 'upcoming').length > 0
                       ? Math.round((completedAssessments.length / assessments.filter(a => a.status !== 'upcoming').length) * 100)
                       : 0}%
                   </div>
-                  <div className="text-xs text-[#52525B] mt-auto pt-1">
+                  <div className="text-xs text-[#52525B] mt-1">
                     {completedAssessments.length}/{assessments.filter(a => a.status !== 'upcoming').length} due
                   </div>
                 </div>
-                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)] flex flex-col">
-                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2 whitespace-nowrap">Progress</div>
+                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)]">
+                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2">Progress</div>
                   <div className="font-mono text-2xl font-semibold text-[var(--primary)]">{progress}%</div>
-                  <div className="text-xs text-[#52525B] mt-auto pt-1">{completedAssessments.length}/{assessments.length} total</div>
+                  <div className="text-xs text-[#52525B] mt-1">{completedAssessments.length}/{assessments.length} total</div>
                 </div>
-                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)] flex flex-col">
-                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2 whitespace-nowrap">Remaining</div>
+                <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)]">
+                  <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2">Remaining</div>
                   <div className="font-mono text-2xl font-semibold text-white">{Math.max(0, (totalWeeks - currentWeek) * 7)}d</div>
-                  <div className="text-xs text-[#52525B] mt-auto pt-1">{Math.max(0, totalWeeks - currentWeek)} weeks</div>
+                  <div className="text-xs text-[#52525B] mt-1">{Math.max(0, totalWeeks - currentWeek)} weeks</div>
                 </div>
               </div>
             </div>
@@ -707,6 +704,155 @@ export default function DashboardPage() {
             </button>
           </div>
         </main>
+      </div>
+
+      {/* Tablet layout - lg screens (no sidebar) */}
+      <div className="hidden lg:block xl:hidden px-8 py-6">
+        {/* Header with logo */}
+        <div className="flex items-center justify-between mb-6">
+          <Link href="/">
+            <NofOneLogo showText size={28} />
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center text-sm font-semibold">
+              {userProfile?.firstName?.[0]?.toUpperCase() || userProfile?.email?.[0]?.toUpperCase() || 'U'}
+            </div>
+          </div>
+        </div>
+
+        <h1 className="text-2xl font-bold text-white mb-1">Your Dashboard</h1>
+        <p className="text-[#9CA3AF] mb-6">Week {Math.min(currentWeek, totalWeeks)} of {totalWeeks}</p>
+
+        {/* Two-column grid for tablet */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Protocol Progress - spans full width */}
+          <div className="col-span-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-[var(--primary-dim)] rounded-xl flex items-center justify-center flex-shrink-0">
+                <Activity className="w-7 h-7 text-[var(--primary)]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-white text-lg truncate">{studyName}</div>
+                <div className="text-sm text-[#71717A]">{totalWeeks}-week protocol</div>
+              </div>
+            </div>
+            <div className="h-2 bg-[var(--bg-elevated-2)] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full"
+                style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--primary-dark), var(--primary))' }}
+              />
+            </div>
+            <div className="text-sm text-[#71717A] mt-2 text-right">{Math.round(progress)}% complete</div>
+          </div>
+
+          {/* Due Assessment */}
+          <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5 flex flex-col">
+            <div className="text-sm font-medium text-[#9CA3AF] mb-3">Next Entry</div>
+            {dueAssessment ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center">
+                <Badge variant={dueAssessment.status === 'overdue' ? 'danger' : 'warning'} dot className="mb-3">
+                  {dueAssessment.status === 'overdue' ? 'Overdue' : 'Due Now'}
+                </Badge>
+                <div className="text-lg font-semibold text-white mb-1">{dueAssessment.timepoint}</div>
+                <div className="text-sm text-[#71717A] mb-4">~5 min</div>
+                <Link href={`/study/${studyId}/assessment/${dueAssessment.id}`} className="w-full">
+                  <Button size="lg" fullWidth>
+                    Record Data
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center text-center">
+                <div className="w-12 h-12 bg-[var(--success)]/15 rounded-full flex items-center justify-center mb-3">
+                  <CheckCircle2 className="w-6 h-6 text-[var(--success)]" />
+                </div>
+                <div className="text-white font-medium">All caught up!</div>
+                <div className="text-sm text-[#71717A]">Next entry soon</div>
+              </div>
+            )}
+          </div>
+
+          {/* Scores */}
+          <div className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5">
+            <div className="text-sm text-[#9CA3AF] mb-3">Your Scores</div>
+            {latestScores && Object.keys(latestScores).length > 0 ? (
+              <div className="space-y-3">
+                {Object.entries(latestScores).map(([instrument, score]) => {
+                  const severity = getSeverityLabel(instrument, score, instrumentThresholds)
+                  return (
+                    <div key={instrument}>
+                      <div className="text-xs text-[#71717A] uppercase tracking-wide truncate">{instrument.replace(/_/g, '-').toUpperCase()}</div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono text-2xl font-semibold text-[var(--primary)]">{score}</span>
+                        {severity && <span className="text-sm text-[#9CA3AF]">({severity})</span>}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="text-[#71717A] text-sm">No scores yet</div>
+            )}
+            <div className="text-xs text-[#71717A] mt-3 pt-3 border-t border-[var(--glass-border)]">Collective avg: NA</div>
+          </div>
+
+          {/* Insights - spans full width */}
+          <div className="col-span-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5">
+            <div className="text-sm font-medium text-[#9CA3AF] mb-4">Your Insights</div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)]">
+                <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2">Completion</div>
+                <div className="font-mono text-2xl font-semibold text-white">
+                  {assessments.filter(a => a.status !== 'upcoming').length > 0
+                    ? Math.round((completedAssessments.length / assessments.filter(a => a.status !== 'upcoming').length) * 100)
+                    : 0}%
+                </div>
+                <div className="text-xs text-[#52525B] mt-1">
+                  {completedAssessments.length}/{assessments.filter(a => a.status !== 'upcoming').length} due
+                </div>
+              </div>
+              <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)]">
+                <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2">Progress</div>
+                <div className="font-mono text-2xl font-semibold text-[var(--primary)]">{progress}%</div>
+                <div className="text-xs text-[#52525B] mt-1">{completedAssessments.length}/{assessments.length} total</div>
+              </div>
+              <div className="bg-[var(--bg-elevated)] rounded-xl p-4 border border-[var(--glass-border)]">
+                <div className="text-[10px] text-[#71717A] uppercase tracking-wider mb-2">Remaining</div>
+                <div className="font-mono text-2xl font-semibold text-white">{Math.max(0, (totalWeeks - currentWeek) * 7)}d</div>
+                <div className="text-xs text-[#52525B] mt-1">{Math.max(0, totalWeeks - currentWeek)} wks</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Timeline - spans full width */}
+          <div className="col-span-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-5">
+            <div className="text-sm font-medium text-[#9CA3AF] mb-4">Timeline</div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+              {assessments.map((assessment) => (
+                <div key={assessment.id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                      assessment.status === 'completed' ? 'bg-[var(--success)]' :
+                      assessment.status === 'due' || assessment.status === 'overdue' ? 'bg-[var(--primary)]' :
+                      'border-2 border-[#52525B]'
+                    }`} />
+                    <span className="text-sm text-white truncate">{assessment.timepoint}</span>
+                  </div>
+                  <span className="text-xs text-[#71717A] flex-shrink-0 ml-2">{assessment.status === 'completed' ? 'Done' : assessment.dueDate}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Export Data */}
+        <div className="mt-6 flex justify-center">
+          <button className="flex items-center gap-2 px-6 py-3 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl text-[#9CA3AF] text-sm font-medium hover:bg-[var(--glass-bg-hover)] hover:text-white transition-colors">
+            <Download className="w-4 h-4" />
+            Export Your Data
+          </button>
+        </div>
       </div>
 
       {/* Mobile Layout */}
