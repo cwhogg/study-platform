@@ -57,6 +57,54 @@ function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
+// Get severity label for validated PRO instruments
+function getSeverityLabel(instrumentId: string, score: number): string | null {
+  const id = instrumentId.toLowerCase().replace(/[-_]/g, '')
+
+  // PHQ-9: 0-27 scale
+  if (id.includes('phq9') || id.includes('phq-9')) {
+    if (score >= 20) return 'Severe'
+    if (score >= 15) return 'Mod. severe'
+    if (score >= 10) return 'Moderate'
+    if (score >= 5) return 'Mild'
+    return 'Minimal'
+  }
+
+  // GAD-7: 0-21 scale
+  if (id.includes('gad7') || id.includes('gad-7')) {
+    if (score >= 15) return 'Severe'
+    if (score >= 10) return 'Moderate'
+    if (score >= 5) return 'Mild'
+    return 'Minimal'
+  }
+
+  // PHQ-2: 0-6 scale
+  if (id.includes('phq2') || id.includes('phq-2')) {
+    if (score >= 3) return 'Positive screen'
+    return 'Negative screen'
+  }
+
+  // IIEF-5: 5-25 scale (higher is better)
+  if (id.includes('iief')) {
+    if (score >= 22) return 'Normal'
+    if (score >= 17) return 'Mild ED'
+    if (score >= 12) return 'Mild-mod ED'
+    if (score >= 8) return 'Moderate ED'
+    return 'Severe ED'
+  }
+
+  // BDI-II: 0-63 scale
+  if (id.includes('bdi')) {
+    if (score >= 29) return 'Severe'
+    if (score >= 20) return 'Moderate'
+    if (score >= 14) return 'Mild'
+    return 'Minimal'
+  }
+
+  // No label for unknown instruments
+  return null
+}
+
 export default function DashboardPage() {
   const params = useParams()
   const studyId = params.studyId as string
@@ -427,12 +475,18 @@ export default function DashboardPage() {
               </div>
               {latestScores && Object.keys(latestScores).length > 0 ? (
                 <div className="space-y-4">
-                  {Object.entries(latestScores).map(([instrument, score]) => (
-                    <div key={instrument}>
-                      <div className="text-xs text-[#71717A] uppercase tracking-wide mb-1">{instrument.replace(/_/g, '-').toUpperCase()}</div>
-                      <div className="font-mono text-3xl font-semibold text-[var(--primary)]">{score}</div>
-                    </div>
-                  ))}
+                  {Object.entries(latestScores).map(([instrument, score]) => {
+                    const severity = getSeverityLabel(instrument, score)
+                    return (
+                      <div key={instrument}>
+                        <div className="text-xs text-[#71717A] uppercase tracking-wide mb-1">{instrument.replace(/_/g, '-').toUpperCase()}</div>
+                        <div className="flex items-baseline gap-2">
+                          <span className="font-mono text-3xl font-semibold text-[var(--primary)]">{score}</span>
+                          {severity && <span className="text-sm text-[#9CA3AF]">({severity})</span>}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               ) : (
                 <div className="text-[#71717A] text-sm">No scores yet</div>
@@ -512,11 +566,15 @@ export default function DashboardPage() {
                       </Badge>
                       {assessment.scores && Object.keys(assessment.scores).length > 0 && (
                         <div className="mt-2 space-y-1">
-                          {Object.entries(assessment.scores).map(([instrument, score]) => (
-                            <div key={instrument} className="font-mono text-[13px] text-[#9CA3AF]">
-                              {instrument.replace(/_/g, '-').toUpperCase()}: <strong className="text-[var(--primary)] font-semibold">{score}</strong>
-                            </div>
-                          ))}
+                          {Object.entries(assessment.scores).map(([instrument, score]) => {
+                            const severity = getSeverityLabel(instrument, score)
+                            return (
+                              <div key={instrument} className="font-mono text-[13px] text-[#9CA3AF]">
+                                {instrument.replace(/_/g, '-').toUpperCase()}: <strong className="text-[var(--primary)] font-semibold">{score}</strong>
+                                {severity && <span className="text-[#71717A] font-sans"> ({severity})</span>}
+                              </div>
+                            )
+                          })}
                         </div>
                       )}
                     </div>
@@ -608,12 +666,18 @@ export default function DashboardPage() {
           <div className="text-sm text-[#9CA3AF] mb-3">Your Scores</div>
           {latestScores && Object.keys(latestScores).length > 0 ? (
             <div className="space-y-3">
-              {Object.entries(latestScores).map(([instrument, score]) => (
-                <div key={instrument}>
-                  <div className="text-xs text-[#71717A] uppercase tracking-wide">{instrument.replace(/_/g, '-').toUpperCase()}</div>
-                  <div className="font-mono text-2xl font-semibold text-[var(--primary)]">{score}</div>
-                </div>
-              ))}
+              {Object.entries(latestScores).map(([instrument, score]) => {
+                const severity = getSeverityLabel(instrument, score)
+                return (
+                  <div key={instrument}>
+                    <div className="text-xs text-[#71717A] uppercase tracking-wide">{instrument.replace(/_/g, '-').toUpperCase()}</div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-2xl font-semibold text-[var(--primary)]">{score}</span>
+                      {severity && <span className="text-sm text-[#9CA3AF]">({severity})</span>}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           ) : (
             <div className="text-[#71717A] text-sm">No scores yet</div>
