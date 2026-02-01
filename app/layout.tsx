@@ -17,24 +17,36 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "N of One | Study Yourself. Measure What Matters.",
+  metadataBase: new URL("https://nofone.us"),
+  title: {
+    default: "N of One | Study Yourself. Measure What Matters.",
+    template: "%s | N of One",
+  },
   description: "Design a clinical protocol. Collect your data. See what works for you. Your N of 1 study joins thousands of others to reveal what works for others.",
-  keywords: ["n of 1", "self experiment", "personal science", "quantified self", "health data", "protocol", "clinical study"],
+  keywords: ["n of 1", "self experiment", "personal science", "quantified self", "health data", "protocol", "clinical study", "patient-reported outcomes", "observational study"],
   authors: [{ name: "N of One" }],
   openGraph: {
-    title: "N of One Platform. Study yourself.",
+    title: "N of One | Study Yourself. Measure What Matters.",
     description: "Design a clinical protocol. Collect your data. See what works for you.",
     type: "website",
     siteName: "N of One",
     url: "https://nofone.us",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "N of One | Study Yourself. Measure What Matters.",
+    description: "Design a clinical protocol. Collect your data. See what works for you.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
   themeColor: "#0A0A0A",
 };

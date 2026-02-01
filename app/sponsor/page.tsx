@@ -1,6 +1,19 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FileText, Users, BarChart3, Shield, ArrowRight, Target, Check, Stethoscope, UserCheck, PieChart, Palette, ClipboardCheck, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+
+export const metadata: Metadata = {
+  title: 'Enterprise Sponsored Protocols',
+  description: 'Launch AI-powered observational study protocols in minutes. Physician oversight, IRB-ready documentation, white-label branding, and aggregate data insights for sponsors.',
+  openGraph: {
+    title: 'Enterprise Sponsored Protocols | N of One',
+    description: 'Launch AI-powered observational study protocols in minutes with physician oversight and IRB-ready documentation.',
+  },
+  alternates: {
+    canonical: '/sponsor',
+  },
+}
 
 export default function SponsorPage() {
   return (

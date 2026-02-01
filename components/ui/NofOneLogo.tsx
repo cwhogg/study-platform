@@ -17,6 +17,8 @@ export function NofOneLogo({ className = '', size = 36, showText = false }: NofO
         width={size}
         height={size}
         className="flex-shrink-0"
+        role="img"
+        aria-label="N of One logo"
       >
         {/* The N shape - burnt orange */}
         <path
@@ -66,6 +68,8 @@ export function NofOneLogoMark({ className = '', size = 32 }: { className?: stri
       width={size}
       height={size}
       className={className}
+      role="img"
+      aria-label="N of One logo"
     >
       <path
         d="M6 28V8L18 22V8"

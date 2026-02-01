@@ -1,18 +1,57 @@
-'use client'
-
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { NofOneLogo } from '@/components/ui/NofOneLogo'
 
+export const metadata: Metadata = {
+  title: 'N of One | Study Yourself. Measure What Matters.',
+  description: 'Design a clinical protocol. Collect your data. See what works for you. Your N of 1 study joins thousands of others to reveal what works for others.',
+  alternates: {
+    canonical: '/',
+  },
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      name: 'N of One',
+      url: 'https://nofone.us',
+      description: 'Personal science platform for running rigorous N-of-1 self-experiments with validated clinical instruments.',
+    },
+    {
+      '@type': 'WebApplication',
+      name: 'N of One',
+      url: 'https://nofone.us',
+      applicationCategory: 'HealthApplication',
+      operatingSystem: 'Web',
+      description: 'Design a clinical protocol, collect your data, and see what works for you. Your N of 1 study joins thousands of others to reveal collective insights.',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+    },
+  ],
+}
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-16 px-6 flex items-center justify-between bg-[rgba(10,10,10,0.8)] backdrop-blur-xl border-b border-[var(--glass-border)]">
         <NofOneLogo showText size={32} />
         <nav className="hidden sm:flex items-center gap-8">
           <Link href="#how-it-works" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
             How it works
+          </Link>
+          <Link href="/blog" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
+            Blog
           </Link>
           <Link href="/protocols" className="text-sm font-medium text-[var(--text-tertiary)] hover:text-white transition-colors">
             Protocols
@@ -71,7 +110,7 @@ export default function Home() {
             <div className="relative mb-16">
               {/* Background data viz - mobile only */}
               <div className="absolute inset-0 -inset-x-4 lg:hidden overflow-hidden pointer-events-none">
-                <svg className="w-full h-full opacity-[0.15]" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+                <svg className="w-full h-full opacity-[0.15]" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
                   {/* Grid lines */}
                   <line x1="0" y1="50" x2="400" y2="50" stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
                   <line x1="0" y1="100" x2="400" y2="100" stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
@@ -166,7 +205,7 @@ export default function Home() {
               {/* Chart */}
               <div className="relative h-44 mt-4">
                 <span className="absolute left-0 top-[65%] text-[10px] text-[#6B7280] uppercase tracking-[0.05em]">Baseline</span>
-                <svg className="w-full h-full" viewBox="0 0 400 150" preserveAspectRatio="none">
+                <svg className="w-full h-full" viewBox="0 0 400 150" preserveAspectRatio="none" aria-hidden="true">
                   {/* Baseline grid line */}
                   <line x1="0" y1="97" x2="400" y2="97" stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
 
@@ -611,12 +650,6 @@ export default function Home() {
         </div>
       </footer>
 
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-      `}</style>
     </div>
   )
 }
