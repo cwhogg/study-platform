@@ -639,13 +639,48 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[var(--glass-border)] py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <NofOneLogo size={24} />
-          <div className="text-sm text-[#6B7280]">Personal science with collective insight.</div>
-          <div className="flex items-center gap-6 text-sm text-[#6B7280]">
-            <Link href="/sponsor" className="hover:text-[#9CA3AF] transition-colors">Enterprise</Link>
-            <Link href="/admin" className="hover:text-[#9CA3AF] transition-colors">Admin</Link>
+      <footer className="border-t border-[var(--glass-border)] py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+            {/* Brand column */}
+            <div className="col-span-2 md:col-span-1">
+              <NofOneLogo size={24} />
+              <p className="mt-3 text-sm text-[#6B7280] leading-relaxed">
+                Personal science with collective insight.
+              </p>
+            </div>
+
+            {/* Platform */}
+            <div>
+              <h4 className="text-sm font-semibold text-[#9CA3AF] mb-3">Platform</h4>
+              <ul className="space-y-2 text-sm text-[#6B7280]">
+                <li><Link href="/protocols" className="hover:text-[#D1D5DB] transition-colors">Protocols</Link></li>
+                <li><Link href="/create" className="hover:text-[#D1D5DB] transition-colors">Create a Protocol</Link></li>
+                <li><Link href="/blog" className="hover:text-[#D1D5DB] transition-colors">Blog</Link></li>
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h4 className="text-sm font-semibold text-[#9CA3AF] mb-3">Resources</h4>
+              <ul className="space-y-2 text-sm text-[#6B7280]">
+                <li><Link href="/faq/n-of-1-self-experimentation" className="hover:text-[#D1D5DB] transition-colors">FAQ</Link></li>
+                <li><Link href="/compare/nofone-vs-quantified-self" className="hover:text-[#D1D5DB] transition-colors">Compare</Link></li>
+                <li><Link href="/sponsor" className="hover:text-[#D1D5DB] transition-colors">Enterprise</Link></li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h4 className="text-sm font-semibold text-[#9CA3AF] mb-3">Company</h4>
+              <ul className="space-y-2 text-sm text-[#6B7280]">
+                <li><Link href="/admin" className="hover:text-[#D1D5DB] transition-colors">Admin</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-[var(--glass-border)] pt-6 text-center text-xs text-[#4B5563]">
+            &copy; {new Date().getFullYear()} N of One. All rights reserved.
           </div>
         </div>
       </footer>
