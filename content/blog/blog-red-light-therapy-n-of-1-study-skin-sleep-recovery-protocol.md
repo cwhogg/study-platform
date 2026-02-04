@@ -4,7 +4,7 @@ description: "Learn how to run a scientifically rigorous N-of-1 study on red lig
 type: blog-post
 targetKeywords: ["quantified self experiment design guide", "how to run n of 1 study on yourself", "longevity intervention tracking methods", "photobiomodulation self testing"]
 contentGap: "Red light therapy is increasingly popular but lacks structured personal testing protocols with proper outcome measures"
-generatedAt: "2026-02-02T05:52:29.928Z"
+date: "2026-02-02T10:00:00.000Z"
 ideaName: "N of One Study Platform"
 status: published
 wordCount: 2847

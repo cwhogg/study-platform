@@ -2,7 +2,7 @@
 title: "N-of-1 Self-Experimentation FAQ: Everything Biohackers Need to Know"
 type: faq
 targetKeywords: ["What is an example of an N of 1 study", "Can you do a research study on your own", "What are the steps in single-subject design"]
-generatedAt: "2026-02-01T19:24:34.971Z"
+date: "2026-01-19T10:00:00.000Z"
 ideaName: "N of One Study Platform"
 status: published
 wordCount: 2847

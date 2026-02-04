@@ -4,7 +4,7 @@ description: "Learn how to design rigorous personal experiments to test cold the
 type: blog-post
 targetKeywords: ["longevity intervention tracking methods", "how to track supplement effectiveness personally", "biohacker study yourself methodology", "quantified self experiment design guide"]
 contentGap: "No existing content covers specific intervention protocols - existing content focuses on methodology but not practical application to popular biohacker interventions"
-generatedAt: "2026-02-02T05:03:19.012Z"
+date: "2026-01-25T10:00:00.000Z"
 ideaName: "N of One Study Platform"
 status: published
 wordCount: 2847

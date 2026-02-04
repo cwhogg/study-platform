@@ -3,7 +3,7 @@ title: "Single-Subject Research Design Templates: Free Tools for Personal Health
 type: blog-post
 targetKeywords: ["single subject research design template", "What are the five critical elements of single-case research designs", "longevity intervention tracking methods"]
 contentGap: "SERP shows academic sources but no practical, downloadable templates for health-focused self-experimentation."
-generatedAt: "2026-02-01T19:26:51.776Z"
+date: "2026-01-21T10:00:00.000Z"
 ideaName: "N of One Study Platform"
 status: published
 wordCount: 2847

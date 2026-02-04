@@ -4,7 +4,7 @@ description: "Learn how to design rigorous N-of-1 experiments using CGM data to 
 type: blog-post
 targetKeywords: ["self experimentation reddit community insights 2026", "longevity intervention tracking methods", "how to run n of 1 study on yourself", "quantified self experiment design guide"]
 contentGap: "CGM for non-diabetics is heavily discussed in biohacker communities but no structured protocols exist for personal experimentation"
-generatedAt: "2026-02-02T05:04:27.944Z"
+date: "2026-01-27T10:00:00.000Z"
 ideaName: "N of One Study Platform"
 status: published
 wordCount: 2847

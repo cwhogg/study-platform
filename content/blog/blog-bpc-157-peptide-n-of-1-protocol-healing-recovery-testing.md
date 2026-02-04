@@ -4,7 +4,7 @@ description: "Learn how to design and execute a rigorous N-of-1 study to test BP
 type: blog-post
 targetKeywords: ["how to track supplement effectiveness personally", "biohacker study yourself methodology", "peptide self experimentation protocol", "BPC-157 personal testing guide", "longevity intervention tracking methods"]
 contentGap: "No existing content covers peptide testing protocols, specifically BPC-157 which is extremely popular in biohacker communities"
-generatedAt: "2026-02-02T05:51:20.644Z"
+date: "2026-01-31T10:00:00.000Z"
 ideaName: "N of One Study Platform"
 status: published
 wordCount: 2847

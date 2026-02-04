@@ -4,7 +4,7 @@ description: "Learn how N-of-1 studies let you run rigorous self-experiments to 
 type: blog-post
 targetKeywords: ["n of 1 study", "self-experimentation", "personal science", "quantified self"]
 contentGap: "Most content explains N-of-1 trials in academic terms. No practical guide for non-researchers."
-generatedAt: "2026-02-01T20:00:00.000Z"
+date: "2026-01-23T10:00:00.000Z"
 ideaName: "N of One Platform"
 status: published
 wordCount: 1450

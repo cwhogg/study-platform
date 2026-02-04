@@ -4,7 +4,7 @@ description: "Learn how to scientifically test NAD+ supplements on yourself usin
 type: blog-post
 targetKeywords: ["how to track supplement effectiveness personally", "biohacker study yourself methodology", "longevity intervention tracking methods", "self experimentation reddit community insights 2026"]
 contentGap: "Supplement effectiveness tracking is covered generally but no specific protocols exist for expensive longevity supplements like NAD+ precursors"
-generatedAt: "2026-02-02T05:05:43.736Z"
+date: "2026-01-29T10:00:00.000Z"
 ideaName: "N of One Study Platform"
 status: published
 wordCount: 2847

@@ -3,7 +3,7 @@ title: "The Complete Guide to Running N-of-1 Studies on Yourself: From Biohacker
 type: blog-post
 targetKeywords: ["how to run n of 1 study on yourself", "biohacker study yourself methodology", "quantified self experiment design guide", "self experimentation reddit community insights 2026"]
 contentGap: "SERP shows content gap with only forums and basic academic content ranking. No comprehensive, actionable guide exists for biohackers wanting clinical-grade methodology."
-generatedAt: "2026-02-01T19:23:23.173Z"
+date: "2026-01-17T10:00:00.000Z"
 ideaName: "N of One Study Platform"
 status: published
 wordCount: 2847
