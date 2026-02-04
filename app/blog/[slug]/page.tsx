@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: post.meta.description || `Read ${post.meta.title} on N of One.`,
       type: 'article',
       url: `https://nofone.us/blog/${slug}`,
-      publishedTime: post.meta.generatedAt,
+      publishedTime: post.meta.date || post.meta.generatedAt,
     },
     ...(post.meta.canonicalUrl && {
       alternates: { canonical: post.meta.canonicalUrl },
@@ -70,9 +70,9 @@ export default async function BlogPostPage({ params }: PageProps) {
         <h1 className="heading-1 mb-4">{post.meta.title}</h1>
 
         <div className="flex items-center gap-3 mb-10 flex-wrap">
-          {post.meta.generatedAt && (
+          {(post.meta.date || post.meta.generatedAt) && (
             <span className="text-sm text-[var(--text-muted)]">
-              {new Date(post.meta.generatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              {new Date(post.meta.date || post.meta.generatedAt!).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </span>
           )}
           {post.meta.targetKeywords?.slice(0, 4).map((kw) => (

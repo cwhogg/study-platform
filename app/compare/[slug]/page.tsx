@@ -68,9 +68,9 @@ export default async function ComparisonPage({ params }: PageProps) {
         <h1 className="heading-1 mb-4">{item.meta.title}</h1>
 
         <div className="flex items-center gap-3 mb-10 flex-wrap">
-          {item.meta.generatedAt && (
+          {(item.meta.date || item.meta.generatedAt) && (
             <span className="text-sm text-[var(--text-muted)]">
-              {new Date(item.meta.generatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              {new Date(item.meta.date || item.meta.generatedAt!).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </span>
           )}
           {item.meta.targetKeywords?.slice(0, 4).map((kw) => (

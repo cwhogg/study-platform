@@ -9,6 +9,7 @@ export interface ContentMeta {
   description?: string;
   targetKeywords?: string[];
   contentGap?: string;
+  date?: string;
   generatedAt?: string;
   ideaName?: string;
   status?: string;
@@ -60,12 +61,12 @@ export function getAllContent(type: string): ContentItem[] {
     };
   });
 
-  // Only return published items, sorted by generatedAt descending
+  // Only return published items, sorted by date descending
   return items
     .filter((item) => item.meta.status === 'published')
     .sort((a, b) => {
-      const dateA = a.meta.generatedAt ? new Date(a.meta.generatedAt).getTime() : 0;
-      const dateB = b.meta.generatedAt ? new Date(b.meta.generatedAt).getTime() : 0;
+      const dateA = new Date(a.meta.date || a.meta.generatedAt || 0).getTime();
+      const dateB = new Date(b.meta.date || b.meta.generatedAt || 0).getTime();
       return dateB - dateA;
     });
 }

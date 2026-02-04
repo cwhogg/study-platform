@@ -61,9 +61,9 @@ export default function BlogPage() {
                   </p>
                 )}
                 <div className="flex items-center gap-3 flex-wrap">
-                  {post.meta.generatedAt && (
+                  {(post.meta.date || post.meta.generatedAt) && (
                     <span className="text-xs text-[var(--text-muted)]">
-                      {new Date(post.meta.generatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {new Date(post.meta.date || post.meta.generatedAt!).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </span>
                   )}
                   {post.meta.targetKeywords?.slice(0, 3).map((kw) => (

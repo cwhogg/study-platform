@@ -13,7 +13,7 @@ function buildArticleSchema(meta: ContentMeta, url: string) {
     '@type': 'Article',
     headline: meta.title,
     description: meta.description || '',
-    datePublished: meta.generatedAt || new Date().toISOString(),
+    datePublished: meta.date || meta.generatedAt || new Date().toISOString(),
     url,
     author: {
       '@type': 'Organization',
